@@ -1,0 +1,12 @@
+# Webicity
+
+Webicity is a simple web browser that I am working on (it is unfinished).
+
+Webicity consists of multiple components:
+* Webicity browser: Allows the user to directly launch Webicity, manages UI, disk, network, navigation and more
+* Webicity: Responsible for rendering content
+* Ribbon: Provides a GUI component system, and interfaces with the preferred drawing system
+* Ribbon web: Part of Webicity. A web-oriented GUI component system based off of Ribbon.
+* DoubleJ: Manages script execution
+
+![image](https://cdn.discordapp.com/attachments/717047461780389928/734859541698576384/unknown.png)
