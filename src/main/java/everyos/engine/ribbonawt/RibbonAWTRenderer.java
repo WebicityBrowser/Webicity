@@ -2,6 +2,7 @@ package everyos.engine.ribbonawt;
 
 
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -19,6 +20,8 @@ public class RibbonAWTRenderer implements Renderer {
 	private int y;
 	private int l;
 	private int h;
+	private FontMetrics metrics;
+	private int height = -1;
 
 	public RibbonAWTRenderer(Graphics g) {
 		this.g = g;
@@ -69,18 +72,26 @@ public class RibbonAWTRenderer implements Renderer {
 	}
 
 	@Override public int getFontHeight() {
-		return g.getFontMetrics().getHeight();
+		if (height==-1) {
+			if (metrics==null) metrics = g.getFontMetrics();
+			height = metrics.getHeight();
+		}
+		return height;
 	}
 	
 	@Override public int getFontPaddingHeight() {
-		return g.getFontMetrics().getMaxDescent();
+		if (metrics==null) metrics = g.getFontMetrics();
+		return metrics.getMaxDescent();
 	}
 
 	@Override public int charWidth(int ch) {
-		return g.getFontMetrics().charWidth(ch);
+		if (metrics==null) metrics = g.getFontMetrics();
+		return metrics.charWidth(ch);
 	}
 
 	@Override public void setFont(String name, FontStyle style, int size) {
+		this.metrics = null;
+		this.height = -1;
 		int fontstyle;
 		switch(style) {
 			case PLAIN:

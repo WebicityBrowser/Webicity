@@ -95,7 +95,6 @@ public class TabFrame extends BlockComponent {
 							//.attribute("url", "file:C:\\Users\\jason\\Downloads\\test4.html")
 							.attribute("url", "https://html.spec.whatwg.org/")
 							//.attribute("url", "https://www.wikipedia.org/")
-							//.attribute("url", "https://discord.com/new")
 					})
 			});
 	}

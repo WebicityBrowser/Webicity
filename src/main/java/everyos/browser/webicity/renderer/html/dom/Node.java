@@ -1,9 +1,7 @@
-package everyos.browser.webicity.dom;
+package everyos.browser.webicity.renderer.html.dom;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import everyos.browser.webicity.webribbon.component.WebComponent;
 
 public class Node {
 	public ArrayList<Node> children = new ArrayList<>();
@@ -11,7 +9,6 @@ public class Node {
 	
 	public HashMap<String, Object> fields = new HashMap<>();
 	protected Node parent;
-	protected WebComponent component;
 	
 	public void appendChild(Node child) {
 		//if (child==null) return;
@@ -35,9 +32,5 @@ public class Node {
 	public Node lastChild() {
 		if (children.isEmpty()) return null;
 		return children.get(children.size()-1);
-	}
-	
-	public WebComponent component() {
-		return component;
 	}
 }

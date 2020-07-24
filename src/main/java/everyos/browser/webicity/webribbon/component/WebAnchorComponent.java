@@ -2,13 +2,13 @@ package everyos.browser.webicity.webribbon.component;
 
 import java.util.HashMap;
 
-import everyos.browser.webicity.dom.Node;
+import everyos.browser.webicity.renderer.html.dom.Node;
 import everyos.browser.webicity.webribbon.misc.DrawData;
 import everyos.engine.ribbon.graphics.Color;
 import everyos.engine.ribbon.graphics.Renderer;
 
-public class WebAComponent extends WebComponent { //TODO: Code will be moved to WebUI
-	public WebAComponent(Node node) {
+public class WebAnchorComponent extends WebComponent { //TODO: Code will be moved to WebUI
+	public WebAnchorComponent(Node node) {
 		super(node);
 	}
 	

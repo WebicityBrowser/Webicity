@@ -13,7 +13,9 @@ import everyos.engine.ribbonlwjgl.opengl.GLWindow;
 
 public class RibbonLWJGLWindowComponent extends Component {
 	public GLWindow window;
+	@SuppressWarnings("unused")
 	private Runnable closeEvent;
+	@SuppressWarnings("unused")
 	private ArrayList<MouseBinding> bindings = new ArrayList<MouseBinding>();
 
 	public RibbonLWJGLWindowComponent(int monitor) {

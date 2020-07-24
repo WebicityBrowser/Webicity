@@ -2,7 +2,7 @@ package everyos.browser.webicity.webribbon.component;
 
 import java.util.ArrayList;
 
-import everyos.browser.webicity.dom.TextNode;
+import everyos.browser.webicity.renderer.html.dom.TextNode;
 import everyos.browser.webicity.webribbon.misc.DrawData;
 import everyos.browser.webicity.webribbon.shape.Position;
 import everyos.browser.webicity.webribbon.shape.SizePosGroup;

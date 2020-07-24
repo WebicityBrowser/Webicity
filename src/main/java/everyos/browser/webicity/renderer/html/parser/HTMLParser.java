@@ -6,11 +6,11 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Stack;
 
-import everyos.browser.webicity.dom.Comment;
-import everyos.browser.webicity.dom.Document;
-import everyos.browser.webicity.dom.Element;
-import everyos.browser.webicity.dom.Node;
-import everyos.browser.webicity.dom.TextNode;
+import everyos.browser.webicity.renderer.html.dom.Comment;
+import everyos.browser.webicity.renderer.html.dom.Document;
+import everyos.browser.webicity.renderer.html.dom.Element;
+import everyos.browser.webicity.renderer.html.dom.Node;
+import everyos.browser.webicity.renderer.html.dom.TextNode;
 
 public final class HTMLParser {
 	private static final String HTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
@@ -20,6 +20,7 @@ public final class HTMLParser {
 	private TokenizeState state = TokenizeState.DATA;
 	private Document document = new Document();
 	private Stack<Element> elements = new Stack<Element>();
+	@SuppressWarnings("unused")
 	private Element head;
 	private boolean fostering = false;
 	

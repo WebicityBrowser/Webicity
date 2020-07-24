@@ -8,7 +8,7 @@ public interface Renderer {
 	public void drawEllipse(int x, int y, int l, int h);
 	public void drawLine(int x, int y, int l, int h);
 	public void drawText(int x, int y, String text);
-	public void setColor(Color color); //TODO: Not AWT colors
+	public void setColor(Color color);
 	public void draw();
 	public int getFontHeight();
 	public int getFontPaddingHeight();
