@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import everyos.browser.webicity.renderer.html.dom.Node;
+import everyos.browser.webicity.renderer.html.dom.NodeList;
 import everyos.browser.webicity.webribbon.misc.DrawData;
 import everyos.browser.webicity.webribbon.shape.SizePosGroup;
 import everyos.engine.ribbon.graphics.Renderer;
@@ -112,10 +113,11 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 	
 	public WebComponent[] children() {
 		if (this.children == null) {
-			Node[] nchildren = node.children.toArray(new Node[node.children.size()]);
-			this.children = new ArrayList<>(nchildren.length);
-			for (Node child: nchildren) {
-				WebComponent c = WebComponentFactory.createComponentFromNode(child);
+			NodeList nchildren = node.getChildNodes();
+			int len = (int) nchildren.getLength();
+			this.children = new ArrayList<>(len);
+			for (int i=0; i<len; i++) {
+				WebComponent c = WebComponentFactory.createComponentFromNode(nchildren.item(i));
 				c.setParent(this);
 				if (c!=null) children.add(c);
 			}
@@ -129,12 +131,6 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 	/*public WebComponent[] parent() {
 		return null;
 	}*/
-	protected void setField(String key, Object value) {
-		node.setField(key, value);
-	}
-	protected Object getField() {
-		return null;
-	}
 	
 	protected void renderBefore(Renderer r, SizePosGroup sizepos) {
 		

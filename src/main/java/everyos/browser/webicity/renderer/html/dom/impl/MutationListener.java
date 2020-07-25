@@ -1,4 +1,6 @@
-package everyos.browser.webicity.renderer.html.dom;
+package everyos.browser.webicity.renderer.html.dom.impl;
+
+import everyos.browser.webicity.renderer.html.dom.Node;
 
 public interface MutationListener {
 	public void onBind(Node el);

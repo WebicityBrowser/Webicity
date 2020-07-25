@@ -1,36 +1,46 @@
 package everyos.browser.webicity.renderer.html.dom;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import everyos.browser.webicity.renderer.html.dom.impl.DocumentImpl;
 
-public class Node {
-	public ArrayList<Node> children = new ArrayList<>();
-	public Document nodeDocument;
+public interface Node {
+	String getNodeName();
+	short getNodeType();
 	
-	public HashMap<String, Object> fields = new HashMap<>();
-	protected Node parent;
+	String getBaseURI();
+	boolean getIsConnected();
+	DocumentImpl getOwnerDocument();
+	Node getRootNode(); //TODO: Dictionary
+	Node getParentNode();
+	Element getParentElement();
+	boolean hasChildNodes();
+	NodeList getChildNodes();
+	Node getFirstChild();
+	Node getLastChild();
+	Node getPreviousSibling();
+	Node getNextSibling();
 	
-	public void appendChild(Node child) {
-		//if (child==null) return;
-		//System.out.println(this+":"+child);
-		children.add(child);
-		child.parent = this;
-		child.nodeDocument = this.nodeDocument;
-	}
-
-	public void setField(String key, Object value) {
-		fields.put(key, value);
-	}
-	public Object getFieldOrDefault(String key, Object value) {
-		return fields.getOrDefault(key, value);
-	}
+	String getNodeValue();
+	void setNodeValue(String nodeValue);
+	String getTextContent();
+	void setTextContent(String textContent);
+	void normalize();
 	
-	public Node getParent() {
-		return parent;
-	}
-
-	public Node lastChild() {
-		if (children.isEmpty()) return null;
-		return children.get(children.size()-1);
-	}
+	Node cloneNode(boolean deep);
+	boolean isSameNode(Node other);
+	boolean isEqualNode(Node arg);
+	
+	short compareDocumentPosition(Node other);
+	boolean contains(Node other);
+	
+	String lookupPrefix(String namespaceURI);
+	String lookupNamespaceURI(String prefix);
+	boolean isDefaultNamespace(String namespaceURI);
+	
+	Node insertBefore(Node newChild, Node refChild);
+	Node appendChild(Node child);
+	Node replaceChild(Node newChild, Node oldChild);
+	Node removeChild(Node oldChild);
+	
+	//Implementation Specific
+	void setParent(Node parent);
 }

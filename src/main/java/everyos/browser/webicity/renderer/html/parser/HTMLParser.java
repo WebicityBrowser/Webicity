@@ -6,25 +6,25 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Stack;
 
-import everyos.browser.webicity.renderer.html.dom.Comment;
-import everyos.browser.webicity.renderer.html.dom.Document;
 import everyos.browser.webicity.renderer.html.dom.Element;
 import everyos.browser.webicity.renderer.html.dom.Node;
-import everyos.browser.webicity.renderer.html.dom.TextNode;
+import everyos.browser.webicity.renderer.html.dom.impl.CommentImpl;
+import everyos.browser.webicity.renderer.html.dom.impl.DocumentImpl;
+import everyos.browser.webicity.renderer.html.dom.impl.TextNodeImpl;
 
 public final class HTMLParser {
-	private static final String HTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
+	public static final String HTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
 	
 	private InsertionState istate = InsertionState.INITIAL;
 	private InsertionState ostate = null;
 	private TokenizeState state = TokenizeState.DATA;
-	private Document document = new Document();
+	private DocumentImpl document = new DocumentImpl();
 	private Stack<Element> elements = new Stack<Element>();
 	@SuppressWarnings("unused")
 	private Element head;
 	private boolean fostering = false;
 	
-	public Document getDocument() { return document; }
+	public DocumentImpl getDocument() { return document; }
 	
 	public void parse(Reader istream) throws IOException {
 		//TODO: Chunk into 8 kibibyte sections. Preload IO on seperate thread.
@@ -974,7 +974,7 @@ public final class HTMLParser {
 					insertCharacter(((CharToken) token).ch);
 				} else if (isStartTag(token) && name.equals("body")) {
 					Element e = insertElement((TagToken) token, HTML_NAMESPACE);
-					System.out.println(e+" parent is "+e.getParent());
+					System.out.println(e+" parent is "+e.getParentNode());
 					//TODO
 					istate = InsertionState.IN_BODY;
 				} else {
@@ -1019,7 +1019,7 @@ public final class HTMLParser {
 					while (!elements.isEmpty()) {
 						//System.out.println(elements.size());
 						s.add(elements.pop());
-						if (s.peek().tagName.equals(name)) break;
+						if (s.peek().getTagName().equals(name)) break;
 						if (elements.isEmpty()) {
 							while(!s.isEmpty()) elements.push(s.pop());
 							break;
@@ -1040,7 +1040,7 @@ public final class HTMLParser {
 					Stack<Element> s = new Stack<>();
 					while (!elements.isEmpty()) {
 						s.add(elements.pop());
-						if (s.peek().tagName.equals(name)) break;
+						if (s.peek().getTagName().equals(name)) break;
 						if (elements.isEmpty()) {
 							while(!s.isEmpty()) elements.push(s.pop());
 							break;
@@ -1085,7 +1085,7 @@ public final class HTMLParser {
 	
 	private void insertComment(CommentToken comment, Node location) {
 		Node adjusted = location==null?getNodeInsertionLocation(null):location;
-		insert(location, new Comment(comment.data));
+		insert(location, new CommentImpl(getNodeDocument(adjusted), comment.data));
 	}
 
 	private void insert(Node location, Node child) {
@@ -1116,34 +1116,40 @@ public final class HTMLParser {
 	}
 	
 	private Element createElement(TagToken toke, String namespace, Node parent) {
-		Document document = parent.nodeDocument;
+		DocumentImpl document = getNodeDocument(parent);
+		
 		//TODO: Custom element code
 		return createElement(document, toke.name.toString(), namespace, null, toke.is, false);
 	}
 	private Element createElement_1(String name, Node parent) {
-		Document document = parent.nodeDocument;
+		DocumentImpl document = getNodeDocument(parent);
 		return createElement(document, name, HTML_NAMESPACE, null, null, false);
 	}
-	private Element createElement(Document document, String localName, String namespace, String prefix, String is, boolean synccus) {
+	private Element createElement(DocumentImpl document, String localName, String namespace, String prefix, String is, boolean synccus) {
 		//TODO: a lot of stupid logic
-		Element el = new Element();
-		el.namespaceURI = namespace;
-		el.prefix = prefix;
-		el.localName = localName;
-		el.tagName = localName; //?
-		el.is = is;
-		el.nodeDocument = document;
+		Element el = ElementFactory.element(namespace, localName, document);
+		el.setNamespaceURI(namespace);
+		el.setPrefix(prefix);
+		el.setLocalName(localName);
+		el.setTagName(localName); //?
+		el.setIs(is);
 		return el;
 	}
 	
 	private void insertCharacter(char data) {
 		Node parent = getNodeInsertionLocation(null);
-		if (parent instanceof Document) return;
-		Node lc = parent.lastChild();
-		if (!(lc instanceof TextNode)) {
-			lc = new TextNode();
+		if (parent instanceof DocumentImpl) return;
+		Node lc = parent.getLastChild();
+		if (!(lc instanceof TextNodeImpl)) {
+			lc = new TextNodeImpl(getNodeDocument(parent));
 			parent.appendChild(lc);
 		}
-		((TextNode) lc).wholeText.appendCodePoint(data);
+		((TextNodeImpl) lc).wholeText.appendCodePoint(data);
+	}
+	
+	private DocumentImpl getNodeDocument(Node n) {
+		DocumentImpl nd = n.getOwnerDocument();
+		if (nd==null) nd = (DocumentImpl) n;
+		return nd;
 	}
 }

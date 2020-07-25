@@ -7,9 +7,9 @@ import java.io.InputStreamReader;
 
 import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.renderer.Renderer;
-import everyos.browser.webicity.renderer.html.dom.Document;
-import everyos.browser.webicity.renderer.html.dom.MutationListener;
 import everyos.browser.webicity.renderer.html.dom.Node;
+import everyos.browser.webicity.renderer.html.dom.impl.DocumentImpl;
+import everyos.browser.webicity.renderer.html.dom.impl.MutationListener;
 import everyos.browser.webicity.renderer.html.parser.HTMLParser;
 import everyos.browser.webicity.webribbon.WebComponentWrapper;
 import everyos.browser.webicity.webribbon.component.WebComponent;
@@ -24,7 +24,7 @@ public class HTMLRenderer implements Renderer {
 		System.out.println("TIME: "+(System.currentTimeMillis()-time));
 		stream.close();
 		
-		Document doc = parser.getDocument();
+		DocumentImpl doc = parser.getDocument();
 		HTMLScreen screen = new HTMLScreen();
 		doc.bind(screen);
 		
