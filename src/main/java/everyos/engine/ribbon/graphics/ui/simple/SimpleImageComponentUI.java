@@ -1,6 +1,6 @@
 package everyos.engine.ribbon.graphics.ui.simple;
 
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.component.Component;
 import everyos.engine.ribbon.graphics.ui.ComponentUI;
 import everyos.engine.ribbon.graphics.ui.DrawData;
@@ -16,7 +16,7 @@ public class SimpleImageComponentUI extends SimpleBlockComponentUI {
 	@Override public ComponentUI create(Component c) {
 		return new SimpleImageComponentUI(c);
 	};
-	@Override protected void calcInternalSize(Renderer r, SizePosGroup sizepos, DrawData data) {
+	@Override protected void calcInternalSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		/*if (image!=null) {
 			sizepos.x+=image.getWidth();
 			sizepos.minIncrease(image.getHeight());
@@ -25,7 +25,7 @@ public class SimpleImageComponentUI extends SimpleBlockComponentUI {
 		super.calcInternalSize(r, sizepos, data);
 	}
 
-	@Override protected void drawInternal(Renderer r, DrawData data) {
+	@Override protected void drawInternal(GUIRenderer r, DrawData data) {
 		/*if (image!=null) {
 			Image scaled = image.getScaledInstance((int) bounds.getWidth(), (int) bounds.getHeight(), Image.SCALE_SMOOTH);
 			Color fillcolor = (Color) data.attributes.getOrDefault("fill-color", data.attributes.getOrDefault("bg-color", Color.WHITE));

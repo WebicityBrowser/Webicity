@@ -2,7 +2,7 @@ package everyos.engine.ribbon.graphics.ui.simple;
 
 import java.util.HashMap;
 
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.component.Component;
 import everyos.engine.ribbon.graphics.ui.ComponentUI;
 import everyos.engine.ribbon.graphics.ui.DrawData;
@@ -21,21 +21,21 @@ public class SimpleComponentUI extends ComponentUI {
 	@Override public ComponentUI create(Component c) {
 		return new SimpleComponentUI(c);
 	};
-	@Override public void calcSize(Renderer r, SizePosGroup sizepos, DrawData data) {
+	@Override public void calcSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		saveAndSetData(data);
 		calcChildren(r, sizepos, data);
 		restoreData(data);
 	}
-	protected void calcChildren(Renderer r, SizePosGroup sizepos, DrawData data) {
+	protected void calcChildren(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		for (Component child: c.getChildren()) child.calcSize(r, sizepos, data);
 	}
 	
-	@Override public void draw(Renderer r, DrawData data) {
+	@Override public void draw(GUIRenderer r, DrawData data) {
 		saveAndSetData(data);
 		drawChildren(r, data);
 		restoreData(data);
 	}
-	protected void drawChildren(Renderer r, DrawData data) {
+	protected void drawChildren(GUIRenderer r, DrawData data) {
 		for (Component child: c.getChildren()) child.draw(r, data);
 	}
 	

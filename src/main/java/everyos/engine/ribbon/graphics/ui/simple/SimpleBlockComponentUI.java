@@ -1,7 +1,7 @@
 package everyos.engine.ribbon.graphics.ui.simple;
 
 import everyos.engine.ribbon.graphics.Color;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.component.Component;
 import everyos.engine.ribbon.graphics.ui.ComponentUI;
 import everyos.engine.ribbon.graphics.ui.Dimension;
@@ -28,7 +28,7 @@ public class SimpleBlockComponentUI extends SimpleComponentUI {
 	@Override public ComponentUI create(Component c) {
 		return new SimpleBlockComponentUI(c);
 	};
-	@Override public void calcSize(Renderer r, SizePosGroup sizepos, DrawData data) {
+	@Override public void calcSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		//TODO: Offset bindings
 		//TODO: Auto-wrap
 		saveAndSetData(data);
@@ -80,11 +80,11 @@ public class SimpleBlockComponentUI extends SimpleComponentUI {
 		}
 		restoreData(data);
 	}
-	protected void calcInternalSize(Renderer r, SizePosGroup sizepos, DrawData data) {
+	protected void calcInternalSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		calcChildren(r, sizepos, data);
 	}
 	
-	@Override public void draw(Renderer r, DrawData data) {
+	@Override public void draw(GUIRenderer r, DrawData data) {
 		saveAndSetData(data);
 		if (bounds==null) bounds = new Rectangle(-1, -1, 1, 1);
 		data.bindings.add(c.parent.boundBind(new MouseBinding(bounds, this.c)));
@@ -93,12 +93,12 @@ public class SimpleBlockComponentUI extends SimpleComponentUI {
 			r.setColor(color);
 			r.drawFilledRect(bounds.x, bounds.y, bounds.width, bounds.height);
 		}
-		Renderer r2 = r.getSubcontext(bounds.x, bounds.y, bounds.width, bounds.height);
+		GUIRenderer r2 = r.getSubcontext(bounds.x, bounds.y, bounds.width, bounds.height);
 		drawInternal(r2, data);
 		restoreData(data);
 	}
 	
-	protected void drawInternal(Renderer r, DrawData data) {
+	protected void drawInternal(GUIRenderer r, DrawData data) {
 		drawChildren(r, data);
 	}
 	

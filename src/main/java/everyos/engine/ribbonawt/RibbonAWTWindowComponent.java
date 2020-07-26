@@ -20,7 +20,7 @@ import everyos.engine.ribbon.event.MouseEvent;
 import everyos.engine.ribbon.event.MouseListener;
 import everyos.engine.ribbon.event.ScrollEvent;
 import everyos.engine.ribbon.event.ScrollListener;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.component.BufferedComponent;
 import everyos.engine.ribbon.graphics.component.Component;
 import everyos.engine.ribbon.graphics.ui.DrawData;
@@ -45,7 +45,7 @@ public class RibbonAWTWindowComponent extends Component {
 			private static final long serialVersionUID = -8891910348013739659L;
 			
 			@Override public void paint(Graphics g) {
-				Renderer r = new RibbonAWTRenderer(g); //TODO
+				GUIRenderer r = new RibbonAWTRenderer(g); //TODO
 				long time = System.currentTimeMillis();
 				calcSize(r, null, new DrawData());
 				System.out.println(System.currentTimeMillis()-time);

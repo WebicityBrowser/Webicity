@@ -1,9 +1,9 @@
 package everyos.engine.ribbon.graphics;
 
-public interface Renderer {
+public interface GUIRenderer {
 	//This will be an abstraction for implementation-dependent rendering code
-	public Renderer getSubcontext(int x, int y, int l, int h);
-	public Renderer getBufferedSubcontext(int x, int y, int width, int height);
+	public GUIRenderer getSubcontext(int x, int y, int l, int h);
+	public GUIRenderer getBufferedSubcontext(int x, int y, int width, int height);
 	public void drawFilledRect(int x, int y, int width, int height);
 	public void drawEllipse(int x, int y, int l, int h);
 	public void drawLine(int x, int y, int l, int h);

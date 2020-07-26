@@ -2,11 +2,11 @@ package everyos.engine.ribbon.graphics.ui.simple.helper;
 
 import java.util.ArrayList;
 
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.shape.SizePosGroup;
 
 public class StringWrapHelper {
-	public static ArrayList<String> calculateString(String text, Renderer r, SizePosGroup sizepos) {
+	public static ArrayList<String> calculateString(String text, GUIRenderer r, SizePosGroup sizepos) {
 		ArrayList<String> lines = new ArrayList<String>();
 		
 		StringBuilder line = new StringBuilder();
@@ -73,7 +73,7 @@ public class StringWrapHelper {
 		return lines;
 	}
 	
-	public static int stringWidth(Renderer r, String str) {
+	public static int stringWidth(GUIRenderer r, String str) {
 		int width = 0;
 		for (String spl: str.split("\n")) {
 			int mw = 0;

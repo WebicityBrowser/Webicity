@@ -2,7 +2,7 @@ package everyos.browser.webicity.webribbon;
 
 import everyos.browser.webicity.webribbon.component.WebComponent;
 import everyos.browser.webicity.webribbon.shape.Position;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.component.Component;
 import everyos.engine.ribbon.graphics.ui.ComponentUI;
 import everyos.engine.ribbon.graphics.ui.Dimension;
@@ -22,7 +22,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		return new WebComponentWrapperUI(c);
 	};
 
-	@Override protected void calcInternalSize(Renderer r, SizePosGroup sizepos, DrawData data) {
+	@Override protected void calcInternalSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		if (wui!=null) {
 			System.out.println("W:"+sizepos.size.width);
 			wui.render(r, new everyos.browser.webicity.webribbon.shape.SizePosGroup(
@@ -32,7 +32,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		}
 	}
 
-	@Override protected void drawInternal(Renderer r, DrawData data) {
+	@Override protected void drawInternal(GUIRenderer r, DrawData data) {
 		if (wui!=null) {
 			everyos.browser.webicity.webribbon.misc.DrawData d = new everyos.browser.webicity.webribbon.misc.DrawData(); 
 			wui.paint(r, d);

@@ -4,7 +4,7 @@ import java.awt.Point;
 
 import everyos.engine.ribbon.graphics.Color;
 import everyos.engine.ribbon.graphics.FontStyle;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.component.Component;
 import everyos.engine.ribbon.graphics.ui.ComponentUI;
 import everyos.engine.ribbon.graphics.ui.DrawData;
@@ -23,7 +23,7 @@ public class SimpleLabelComponentUI extends SimpleComponentUI {
 	@Override public ComponentUI create(Component c) {
 		return new SimpleLabelComponentUI(c);
 	};
-	@Override public void calcSize(Renderer r, SizePosGroup sizepos, DrawData data) {
+	@Override public void calcSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		r.setFont(
 			(String) data.attributes.getOrDefault("font", "Arial"), 
 			FontStyle.PLAIN,
@@ -36,7 +36,7 @@ public class SimpleLabelComponentUI extends SimpleComponentUI {
 		sizepos.normalize();
 		super.calcSize(r, sizepos, data);
 	}
-	@Override public void draw(Renderer r, DrawData data) {
+	@Override public void draw(GUIRenderer r, DrawData data) {
 		super.draw(r, data);
 		r.setFont(
 			(String) data.attributes.getOrDefault("font", "Arial"), 

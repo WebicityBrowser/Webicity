@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import everyos.engine.ribbon.graphics.Color;
 import everyos.engine.ribbon.graphics.FontStyle;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.component.Component;
 import everyos.engine.ribbon.graphics.ui.ComponentUI;
 import everyos.engine.ribbon.graphics.ui.DrawData;
@@ -23,13 +23,13 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 	@Override public ComponentUI create(Component c) {
 		return new SimpleTextBoxComponentUI(c);
 	};
-	@Override protected void calcInternalSize(Renderer r, SizePosGroup sizepos, DrawData data) {
+	@Override protected void calcInternalSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		setRenderingData(r, data);
 		lines = StringWrapHelper.calculateString(text, r, sizepos);
 		super.calcInternalSize(r, sizepos, data);
 	}
 
-	@Override protected void drawInternal(Renderer r, DrawData data) {
+	@Override protected void drawInternal(GUIRenderer r, DrawData data) {
 		super.drawInternal(r, data);
 		setRenderingData(r, data);
 		for (int i=0; i<lines.size(); i++) {
@@ -48,7 +48,7 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 		}
 	}
 	
-	protected void setRenderingData(Renderer r, DrawData data) {
+	protected void setRenderingData(GUIRenderer r, DrawData data) {
 		r.setFont(
 			(String) data.attributes.getOrDefault("font", "Arial"),
 			FontStyle.PLAIN,

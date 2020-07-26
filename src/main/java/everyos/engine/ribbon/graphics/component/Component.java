@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Function;
 
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.ui.ComponentUI;
 import everyos.engine.ribbon.graphics.ui.DrawData;
 import everyos.engine.ribbon.graphics.ui.UIManager;
@@ -92,10 +92,10 @@ public class Component {
 		return attribute(name, (Object) attr);
 	}
 	
-	public void calcSize(Renderer r, SizePosGroup sizepos, DrawData data) {
+	public void calcSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		getUI().calcSize(r, sizepos, data);
 	}
-	public void draw(Renderer r, DrawData data) {
+	public void draw(GUIRenderer r, DrawData data) {
 		getUI().draw(r, data);
 	}
 

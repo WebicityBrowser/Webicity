@@ -3,10 +3,10 @@ package everyos.browser.webicity.webribbon.ui.webui.helper;
 import java.util.ArrayList;
 
 import everyos.browser.webicity.webribbon.shape.SizePosGroup;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 
 public class StringWrapHelper {
-	public static ArrayList<String> calculateString(String text, Renderer r, SizePosGroup sizepos, boolean ew) {
+	public static ArrayList<String> calculateString(String text, GUIRenderer r, SizePosGroup sizepos, boolean ew) {
 		ArrayList<String> lines = new ArrayList<String>();
 		
 		StringBuilder line = new StringBuilder();
@@ -67,7 +67,7 @@ public class StringWrapHelper {
 		return lines;
 	}
 	
-	public static int stringWidth(Renderer r, String str) {
+	public static int stringWidth(GUIRenderer r, String str) {
 		int width = 0;
 		for (String spl: str.split("\n")) {
 			int mw = 0;

@@ -1,7 +1,7 @@
 package everyos.engine.ribbon.graphics.ui.simple;
 
 import everyos.engine.ribbon.graphics.Color;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.component.Component;
 import everyos.engine.ribbon.graphics.ui.ComponentUI;
 import everyos.engine.ribbon.graphics.ui.DrawData;
@@ -16,13 +16,13 @@ public class SimpleBufferedComponentUI extends SimpleBlockComponentUI {
 		return new SimpleBufferedComponentUI(c);
 	};
 	
-	@Override public void calcSize(Renderer r, SizePosGroup sizepos, DrawData data) {
+	@Override public void calcSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {
 		super.calcSize(r.getBufferedSubcontext(0, 0, 1, 1), sizepos, data);
 	}
 	
-	@Override public void draw(Renderer r, DrawData data) {
+	@Override public void draw(GUIRenderer r, DrawData data) {
 		saveAndSetData(data);
-		Renderer r2 = r.getBufferedSubcontext(bounds.x, bounds.y, bounds.width, bounds.height);
+		GUIRenderer r2 = r.getBufferedSubcontext(bounds.x, bounds.y, bounds.width, bounds.height);
 		r2.setColor((Color) data.attributes.getOrDefault("bg-color", Color.WHITE));
 		r2.drawFilledRect(0, 0, bounds.width, bounds.height);
 		for (Component child: c.getChildren()) {

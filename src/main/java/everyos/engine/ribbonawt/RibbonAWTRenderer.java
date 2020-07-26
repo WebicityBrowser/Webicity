@@ -9,9 +9,9 @@ import java.awt.image.BufferedImage;
 
 import everyos.engine.ribbon.graphics.Color;
 import everyos.engine.ribbon.graphics.FontStyle;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 
-public class RibbonAWTRenderer implements Renderer {
+public class RibbonAWTRenderer implements GUIRenderer {
 	private Graphics g;
 	private BufferedImage image;
 	private Graphics parent;
@@ -34,7 +34,7 @@ public class RibbonAWTRenderer implements Renderer {
 		this.l = l; this.h = h;
 	}
 
-	@Override public Renderer getSubcontext(int x, int y, int l, int h) {
+	@Override public GUIRenderer getSubcontext(int x, int y, int l, int h) {
 		return new RibbonAWTRenderer(g.create(x, y, l, h));
 	}
 
@@ -58,7 +58,7 @@ public class RibbonAWTRenderer implements Renderer {
 		g.setColor(new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue()));
 	}
 
-	@Override public Renderer getBufferedSubcontext(int x, int y, int width, int height) {
+	@Override public GUIRenderer getBufferedSubcontext(int x, int y, int width, int height) {
 		return new RibbonAWTRenderer(g, x, y, width, height);
 	}
 

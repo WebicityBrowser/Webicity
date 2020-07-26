@@ -9,7 +9,7 @@ import everyos.browser.webicity.webribbon.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.helper.StringWrapHelper;
 import everyos.engine.ribbon.graphics.Color;
 import everyos.engine.ribbon.graphics.FontStyle;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 
 public class WebTextComponent extends WebComponent {
 	
@@ -20,7 +20,7 @@ public class WebTextComponent extends WebComponent {
 		super(node);
 	}
 	
-	@Override public void render(Renderer r, SizePosGroup sizepos) {
+	@Override public void render(GUIRenderer r, SizePosGroup sizepos) {
 		//node.getParent().component.attributes.get("word-wrap");
 		calculateCascade();
 		String text = ((TextNode) node).wholeText.toString();
@@ -30,7 +30,7 @@ public class WebTextComponent extends WebComponent {
 		this.lines = StringWrapHelper.calculateString(text, r, sizepos, false);
 	}
 	
-	@Override public void paint(Renderer r, DrawData d) {
+	@Override public void paint(GUIRenderer r, DrawData d) {
 		Color dcolor = (Color) resolveAttribute("color", Color.BLACK);
 		
 		setRenderingData(r);
@@ -42,7 +42,7 @@ public class WebTextComponent extends WebComponent {
 		}
 	}
 	
-	protected void setRenderingData(Renderer r) {
+	protected void setRenderingData(GUIRenderer r) {
 		r.setFont("Arial", FontStyle.PLAIN, 12);
 	}
 }

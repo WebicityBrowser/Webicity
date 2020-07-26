@@ -2,18 +2,18 @@ package everyos.engine.ribbonlwjgl.opengl;
 
 import everyos.engine.ribbon.graphics.Color;
 import everyos.engine.ribbon.graphics.FontStyle;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 
-public abstract class GLRenderer implements Renderer {
+public abstract class GLRenderer implements GUIRenderer {
 
 	@Override
-	public Renderer getSubcontext(int x, int y, int l, int h) {
+	public GUIRenderer getSubcontext(int x, int y, int l, int h) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Renderer getBufferedSubcontext(int x, int y, int width, int height) {
+	public GUIRenderer getBufferedSubcontext(int x, int y, int width, int height) {
 		// TODO Auto-generated method stub
 		return null;
 	}

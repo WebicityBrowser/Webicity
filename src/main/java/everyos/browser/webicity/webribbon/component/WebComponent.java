@@ -6,7 +6,7 @@ import java.util.HashMap;
 import everyos.browser.webicity.dom.Node;
 import everyos.browser.webicity.webribbon.misc.DrawData;
 import everyos.browser.webicity.webribbon.shape.SizePosGroup;
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.ui.Dimension;
 
 public class WebComponent { //TODO: Code will be moved to WebUI
@@ -36,7 +36,7 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 		return defaultValue;
 	}
 	
-	public void render(Renderer r, SizePosGroup sizepos) {
+	public void render(GUIRenderer r, SizePosGroup sizepos) {
 		calculateCascade();
 		
 		Object display = resolveAttribute("display", "block"); //TODO: Check display supported
@@ -81,14 +81,14 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 		renderAfter(r, sizepos);
 	}
 
-	public void renderInBounds(Renderer r, SizePosGroup sizepos) {
+	public void renderInBounds(GUIRenderer r, SizePosGroup sizepos) {
 		renderChildren(r, sizepos);
 	}
-	public void renderChildren(Renderer r, SizePosGroup sizepos) {
+	public void renderChildren(GUIRenderer r, SizePosGroup sizepos) {
 		for (WebComponent c: children()) c.render(r, sizepos);
 	}
 	
-	public void paint(Renderer r, DrawData d) {
+	public void paint(GUIRenderer r, DrawData d) {
 		if (this.bounds==null) {
 			paintChildren(r, d);
 		} else {
@@ -96,7 +96,7 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 		}
 		//paintChildren(r);
 	}
-	public void paintChildren(Renderer r, DrawData d) {
+	public void paintChildren(GUIRenderer r, DrawData d) {
 		if (this.bounds!=null) {
 			r = r.getSubcontext(
 				bounds.position.x,
@@ -125,10 +125,10 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 		return null;
 	}
 	
-	protected void renderBefore(Renderer r, SizePosGroup sizepos) {
+	protected void renderBefore(GUIRenderer r, SizePosGroup sizepos) {
 		
 	}
-	protected void renderAfter(Renderer r, SizePosGroup sizepos) {
+	protected void renderAfter(GUIRenderer r, SizePosGroup sizepos) {
 		
 	}
 }

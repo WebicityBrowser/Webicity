@@ -2,7 +2,7 @@ package everyos.engine.ribbon.graphics.ui;
 
 import java.util.HashMap;
 
-import everyos.engine.ribbon.graphics.Renderer;
+import everyos.engine.ribbon.graphics.GUIRenderer;
 import everyos.engine.ribbon.graphics.component.Component;
 import everyos.engine.ribbon.input.MouseBinding;
 import everyos.engine.ribbon.shape.SizePosGroup;
@@ -14,8 +14,8 @@ public class ComponentUI {
 	public ComponentUI create(Component c) {
 		return new ComponentUI(c);
 	};
-	public void draw(Renderer r, DrawData data) {}
-	public void calcSize(Renderer r, SizePosGroup sizepos, DrawData data) {}
+	public void draw(GUIRenderer r, DrawData data) {}
+	public void calcSize(GUIRenderer r, SizePosGroup sizepos, DrawData data) {}
 	public void attribute(String name, Object attr) {
 		if (attr==null) {
 			attributes.remove(name);
