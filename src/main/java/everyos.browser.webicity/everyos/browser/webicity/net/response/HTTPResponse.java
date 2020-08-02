@@ -2,6 +2,7 @@ package everyos.browser.webicity.net.response;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
@@ -127,6 +128,7 @@ public class HTTPResponse extends Response {
 
 	@Override public Renderer getProbableRenderer() {
 		String type = headers.getOrDefault("content-type", "text/plain");
+		//this.inputStream.
 		if (type.indexOf(';')!=-1) type = type.substring(0, type.indexOf(';'));
 		switch(type) {//TODO: Move this to a registry
 			case "text/html":
@@ -140,7 +142,7 @@ public class HTTPResponse extends Response {
 		return status;
 	}
 
-	@Override public InputStream getConnection() {
+	@Override public InputStream getConnection() throws UnsupportedEncodingException {
 		return this.inputStream;
 	}
 	

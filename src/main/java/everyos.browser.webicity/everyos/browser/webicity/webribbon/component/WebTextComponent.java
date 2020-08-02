@@ -2,7 +2,7 @@ package everyos.browser.webicity.webribbon.component;
 
 import java.util.ArrayList;
 
-import everyos.browser.webicity.dom.TextNode;
+import everyos.browser.webicity.renderer.html.dom.impl.TextNodeImpl;
 import everyos.browser.webicity.webribbon.misc.DrawData;
 import everyos.browser.webicity.webribbon.shape.Position;
 import everyos.browser.webicity.webribbon.shape.SizePosGroup;
@@ -16,14 +16,14 @@ public class WebTextComponent extends WebComponent {
 	private ArrayList<String> lines;
 	private Position position;
 
-	public WebTextComponent(TextNode node) {
+	public WebTextComponent(TextNodeImpl node) {
 		super(node);
 	}
 	
 	@Override public void render(GUIRenderer r, SizePosGroup sizepos) {
 		//node.getParent().component.attributes.get("word-wrap");
 		calculateCascade();
-		String text = ((TextNode) node).wholeText.toString();
+		String text = ((TextNodeImpl) node).wholeText.toString();
 		
 		setRenderingData(r);
 		this.position = sizepos.pointer();

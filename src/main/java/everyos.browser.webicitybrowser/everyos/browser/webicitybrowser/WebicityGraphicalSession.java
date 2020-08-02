@@ -19,6 +19,7 @@ public class WebicityGraphicalSession {
 	public WebicityGraphicalSession(RibbonAWTWindow window, RenderingEngine rengine) {
 		/*window
 			.attribute("title", "Webicity Browser")
+			.attribute("icon-resource", "webicity.png")
 			.attribute("min-size", new Location(0, 400, 0, 400))
 			.attribute("decorated", false)
 			;*/

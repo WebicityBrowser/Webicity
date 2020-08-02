@@ -9,4 +9,5 @@ public abstract class Response {
 	public abstract int getStatus();
 	public abstract InputStream getConnection() throws IOException;
 	public abstract Renderer getProbableRenderer();
+	//public abstract String getPreferredEncoding();
 }

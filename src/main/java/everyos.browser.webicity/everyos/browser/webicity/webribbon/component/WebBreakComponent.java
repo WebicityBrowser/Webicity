@@ -1,6 +1,6 @@
 package everyos.browser.webicity.webribbon.component;
 
-import everyos.browser.webicity.dom.Node;
+import everyos.browser.webicity.renderer.html.dom.Node;
 import everyos.browser.webicity.webribbon.misc.DrawData;
 import everyos.browser.webicity.webribbon.shape.SizePosGroup;
 import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;

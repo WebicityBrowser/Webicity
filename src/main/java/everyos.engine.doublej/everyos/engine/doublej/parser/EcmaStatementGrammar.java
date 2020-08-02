@@ -3,6 +3,7 @@ package everyos.engine.doublej.parser;
 class EcmaStatementGrammar extends EcmaGrammar {
 	private boolean yield;
 	private boolean await;
+	@SuppressWarnings("unused")
 	private boolean ret;
 
 	public EcmaStatementGrammar(boolean yield, boolean await, boolean ret) {

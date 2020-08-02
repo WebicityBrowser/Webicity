@@ -11,7 +11,6 @@ import everyos.browser.webicity.net.protocol.AboutProtocol;
 import everyos.browser.webicity.net.protocol.FileProtocol;
 import everyos.browser.webicity.net.protocol.HTTPProtocol;
 import everyos.browser.webicity.net.protocol.Protocol;
-import everyos.browser.webicity.net.protocol.TestProtocol;
 import everyos.browser.webicity.net.request.Request;
 import everyos.browser.webicity.net.response.Response;
 import everyos.engine.ribbon.core.rendering.RenderingEngine;
@@ -39,8 +38,6 @@ public abstract class WebicityEngine {
 		
 		registerProtocol("about", new AboutProtocol());
 		registerProtocol("file", new FileProtocol());
-		
-		registerProtocol("test", new TestProtocol());
 	}
 
 	public void registerProtocol(String string, Protocol protocol) {

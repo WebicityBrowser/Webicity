@@ -3,7 +3,8 @@ package everyos.browser.webicity.webribbon.component;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import everyos.browser.webicity.dom.Node;
+import everyos.browser.webicity.renderer.html.dom.Node;
+import everyos.browser.webicity.renderer.html.dom.NodeList;
 import everyos.browser.webicity.webribbon.misc.DrawData;
 import everyos.browser.webicity.webribbon.shape.SizePosGroup;
 import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;
@@ -13,6 +14,8 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 	protected HashMap<String, Object> attributes;
 	protected Node node;
 	protected SizePosGroup bounds;
+	protected ArrayList<WebComponent> children;
+	protected WebComponent parent;
 	
 	public WebComponent(Node node) {
 		this.node = node;
@@ -30,7 +33,7 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 			Object attr = e.attributes.getOrDefault(name, defaultValue);
 			if (attr==null||!attr.equals("inherit")) return attr;
 			WebComponent oe = e;
-			e = node.getParent().component();
+			e = e.parent;
 			if (oe==e) return defaultValue; //TODO: Fix
 		}
 		return defaultValue;
@@ -56,7 +59,7 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 			sizepos.minIncrease(blockBounds.size.height);
 			sizepos.pointer.x+=blockBounds.size.width;
 			//System.out.println("H:"+blockBounds.size.height);
-			System.out.println("W:"+blockBounds.size.width);
+			//System.out.println("W:"+blockBounds.size.width);
 			sizepos.nextLine();
 		} else if (display.equals("inline-block")) {
 			SizePosGroup blockBounds = new SizePosGroup(sizepos, new Dimension(sizepos.size.width-sizepos.pointer.x, -1));
@@ -109,21 +112,25 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 	}
 	
 	public WebComponent[] children() {
-		Node[] nchildren = node.children.toArray(new Node[node.children.size()]);
-		ArrayList<WebComponent> children = new ArrayList<>(nchildren.length);
-		for (Node child: nchildren)
-			if (child.component()!=null) children.add(child.component());
-		return children.toArray(new WebComponent[children.size()]);
+		if (this.children == null) {
+			NodeList nchildren = node.getChildNodes();
+			int len = (int) nchildren.getLength();
+			this.children = new ArrayList<>(len);
+			for (int i=0; i<len; i++) {
+				WebComponent c = WebComponentFactory.createComponentFromNode(nchildren.item(i));
+				c.setParent(this);
+				if (c!=null) children.add(c);
+			}
+		}
+		return this.children.toArray(new WebComponent[this.children.size()]);
 	}
+	private void setParent(WebComponent parent) {
+		this.parent = parent;
+	}
+
 	/*public WebComponent[] parent() {
 		return null;
 	}*/
-	protected void setField(String key, Object value) {
-		node.setField(key, value);
-	}
-	protected Object getField() {
-		return null;
-	}
 	
 	protected void renderBefore(GUIRenderer r, SizePosGroup sizepos) {
 		

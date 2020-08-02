@@ -1,7 +1,9 @@
 package everyos.engine.doublej.parser;
 
 class EcmaDeclarationGrammar extends EcmaGrammar {
+	@SuppressWarnings("unused")
 	private boolean yield;
+	@SuppressWarnings("unused")
 	private boolean await;
 
 	public EcmaDeclarationGrammar(boolean yield, boolean await) {
