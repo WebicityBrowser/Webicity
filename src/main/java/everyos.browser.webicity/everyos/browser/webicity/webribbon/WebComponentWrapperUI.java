@@ -25,6 +25,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 	};
 
 	@Override protected void renderUI(GUIRenderer r, SizePosGroup sizepos, UIManager<GUIComponentUI> uimgr) {
+		this.wui = this.<WebComponentWrapper>getComponent().getUI();
 		if (wui!=null) {
 			System.out.println("W:"+sizepos.size.width);
 			wui.render(r, new everyos.browser.webicity.webribbon.shape.SizePosGroup(

@@ -17,10 +17,11 @@ public class PlainTextRenderer implements Renderer {
 	//TODO: WhatWG actually specifies how this should be done
 	@Override public void execute(WebicityFrame frame, InputStream stream) throws IOException {
 		//TODO: Specialized rendering context, to prevent lag on browser UI
-		Component text = new TextBoxComponent(frame.innerFrame)
+		TextBoxComponent text = new TextBoxComponent(frame.innerFrame)
 			.attribute("font", "Courier")
 			.directive(PositionDirective.of(new Location(0, 5, 0, 0)))
-			.directive(SizeDirective.of(new Location(1, -10, 1, 0)));
+			.directive(SizeDirective.of(new Location(1, -10, 1, 0)))
+			.casted(TextBoxComponent.class);
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		StringBuilder builder = new StringBuilder();
@@ -29,6 +30,6 @@ public class PlainTextRenderer implements Renderer {
 		while (!frame.tasks.hasQuit()&&(chi=reader.read())!=-1) builder.appendCodePoint(chi);
 		stream.close();
 		
-		frame.engine.createThread(()->text.attribute("text", builder.toString()));
+		frame.engine.createThread(()->text.text(builder.toString()));
 	}
 }

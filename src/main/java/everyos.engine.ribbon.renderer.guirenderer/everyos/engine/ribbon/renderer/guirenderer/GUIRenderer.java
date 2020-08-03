@@ -3,6 +3,7 @@ package everyos.engine.ribbon.renderer.guirenderer;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.FontStyle;
+import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 
 public interface GUIRenderer extends Renderer {
 	//This will be an abstraction for implementation-dependent rendering code
@@ -18,6 +19,10 @@ public interface GUIRenderer extends Renderer {
 	public int getFontPaddingHeight();
 	public int charWidth(int ch);
 	public void setFont(String name, FontStyle style, int size);
+	
+	//State management
+	public GUIState getState();
+	public void restoreState(GUIState state);
 	
 	//Implementations should also include a method of creating/retrieving a window or screen
 }

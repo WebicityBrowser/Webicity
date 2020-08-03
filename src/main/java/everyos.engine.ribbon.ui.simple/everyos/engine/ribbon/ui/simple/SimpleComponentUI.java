@@ -15,7 +15,7 @@ public class SimpleComponentUI extends GUIComponentUI {
 	private Component component;
 	private ArrayList<ComponentUI> children;
 	private GUIComponentUI parent;
-	private boolean invalidated;
+	private boolean invalidated = true;
 	
 	public SimpleComponentUI() {}
 	public SimpleComponentUI(Component component, GUIComponentUI parent) {
@@ -77,7 +77,7 @@ public class SimpleComponentUI extends GUIComponentUI {
 	@Override public void invalidate() {
 		GUIComponentUI cui = this;
 		while (cui!=null) {
-			if (cui.getValidated()) return;
+			if (!cui.getValidated()) return;
 			cui.invalidateLocal();
 			cui = cui.getParent();
 		}

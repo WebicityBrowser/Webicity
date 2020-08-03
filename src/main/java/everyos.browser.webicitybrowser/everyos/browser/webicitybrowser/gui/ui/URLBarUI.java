@@ -1,5 +1,6 @@
 package everyos.browser.webicitybrowser.gui.ui;
 
+import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
@@ -21,6 +22,7 @@ public class URLBarUI extends SimpleBlockComponentUI {
 		return new URLBarUI(c, (GUIComponentUI) parent);
 	};
 	@Override protected void renderUI(GUIRenderer r, SizePosGroup sizepos, UIManager<GUIComponentUI> mgrui) {
+		this.text = this.<URLBar>getComponent().getText();
 		
 		/*r.setFont(
 			(String) data.attributes.getOrDefault("font", "Arial"), 

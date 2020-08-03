@@ -30,7 +30,7 @@ public class HTMLRenderer implements Renderer {
 		doc.bind(screen);
 		
 		new WebComponentWrapper(frame)
-			.attribute("ui", screen.getComponent())
+			.ui(screen.getComponent())
 			.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
 	}
 }

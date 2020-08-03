@@ -3,6 +3,7 @@ package everyos.engine.ribbon.ui.simple;
 import java.util.ArrayList;
 
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.component.TextBoxComponent;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.renderer.guirenderer.GUIComponentUI;
@@ -24,6 +25,8 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 	};
 	
 	@Override protected void renderUI(GUIRenderer r, SizePosGroup sizepos, UIManager<GUIComponentUI> uimgr) {
+		text = this.<TextBoxComponent>getComponent().getText();
+		
 		lines = StringWrapHelper.calculateString(text, r, sizepos);
 		super.renderUI(r, sizepos, uimgr);
 	}

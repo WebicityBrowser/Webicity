@@ -16,6 +16,7 @@ import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.renderer.guirenderer.GUIComponentUI;
 import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;
+import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 
 public class RibbonAWTWindow {
@@ -36,7 +37,8 @@ public class RibbonAWTWindow {
 			private static final long serialVersionUID = -8891910348013739659L;
 			
 			@Override public void paint(Graphics g) {
-				GUIRenderer r = new RibbonAWTRenderer(g); //TODO
+				GUIRenderer r = new RibbonAWTRenderer(g, new GUIState()); //TODO
+				//GUIRenderer r = _r.getBufferedSubcontext(0, 0, panel.getWidth(), panel.getHeight());
 				long time = System.currentTimeMillis();
 				ui.render(r, new SizePosGroup(
 					panel.getWidth(), panel.getHeight(), 
@@ -45,6 +47,7 @@ public class RibbonAWTWindow {
 				System.out.println(System.currentTimeMillis()-time);
 				time = System.currentTimeMillis();
 				ui.paint(r);
+				//r.draw();
 				System.out.println(System.currentTimeMillis()-time);
 			}
 			@Override public void update(Graphics g) {
@@ -116,6 +119,7 @@ public class RibbonAWTWindow {
 			
 			@Override public void invalidateLocal() {
 				panel.invalidate();
+				panel.repaint();
 			}
 		});
 		component.bind(ui);

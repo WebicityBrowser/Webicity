@@ -11,6 +11,8 @@ import everyos.browser.webicity.net.NullStreamHandler;
 import everyos.browser.webicity.net.response.Response;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.renderer.guirenderer.directive.BackgroundDirective;
+import everyos.engine.ribbon.renderer.guirenderer.directive.FontSizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.PositionDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
@@ -56,8 +58,8 @@ public class WebicityFrame extends BlockComponent {
 		innerFrame = new BlockComponent(this) //TODO: This should be a Webicity IsolatedComponent
 			.directive(SizeDirective.of(new Location(1, 0, 1, 0)))
 			.directive(PositionDirective.of(new Location(0, 0, 0, 0)))
-			.attribute("font-size", 12)
-			.attribute("bg-color", Color.WHITE);
+			.directive(FontSizeDirective.of(12))
+			.directive(BackgroundDirective.of(Color.WHITE));
 		
 		
 		tasks.queue(()->{

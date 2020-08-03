@@ -110,7 +110,7 @@ public class Component {
 		if (this.parent!=null) this.parent.delete(this);
 		this.parent = parent;
 		parent.children.add(pos, this);
-		invalidate();
+		parent.invalidate();
 	}
 
 	public void delete() {
@@ -132,6 +132,13 @@ public class Component {
 	}
 	
 	public void invalidate() {
+		Component c = this;
+		while (c!=null) {
+			c.invalidateLocal();
+			c = c.parent;
+		}
+	}
+	protected void invalidateLocal() {
 		for (ComponentUI ui: bound.toArray(new ComponentUI[bound.size()])) {
 			ui.invalidate();
 		}
