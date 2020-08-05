@@ -6,4 +6,5 @@ public interface  ComponentUI {
 	public ComponentUI create(Component c, ComponentUI parent);
 	public void directive(UIDirective directive);
 	public void invalidate();
+	public void hint(int hint);
 }

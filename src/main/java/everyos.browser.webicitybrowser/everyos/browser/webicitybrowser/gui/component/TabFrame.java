@@ -11,10 +11,10 @@ import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.renderer.guirenderer.directive.BackgroundDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.FontSizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.ForegroundDirective;
+import everyos.engine.ribbon.renderer.guirenderer.directive.MouseListenerDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.PositionDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.event.MouseEvent;
-import everyos.engine.ribbon.renderer.guirenderer.event.MouseListener;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
 
@@ -44,37 +44,34 @@ public class TabFrame extends BlockComponent {
 							.directive(PositionDirective.of(new Location(0, Styling.PADDING, 0, 3)))
 							.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)))
 							.directive(BackgroundDirective.of(Color.DARK_GRAY))
-							.attribute("onrelease", new MouseListener() {
-								@Override public void accept(MouseEvent e) {
-									if (e.getButton()==MouseEvent.LEFT_BUTTON) {
-										
-									}
+							.directive(MouseListenerDirective.of(e->{
+								if (e.getButton()==MouseEvent.LEFT_BUTTON) {
+									
 								}
-							}),
+							})),
 						new CircularText(null)
 							.text(">")
 							.directive(PositionDirective.of(new Location(0, Styling.BUTTON_WIDTH+Styling.PADDING*2, 0, 3)))
 							.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)))
 							.directive(BackgroundDirective.of(Color.DARK_GRAY))
-							.attribute("onrelease", new MouseListener() {
-								@Override public void accept(MouseEvent e) {
-									if (e.getButton()==MouseEvent.LEFT_BUTTON) {
+							.directive(MouseListenerDirective.of(e->{
+								if (e.getButton()==MouseEvent.LEFT_BUTTON) {
 										
-									}
 								}
-							}),
+							})),
 						new CircularText(null)
 							.text("x")
 							.directive(PositionDirective.of(new Location(0, (Styling.BUTTON_WIDTH+Styling.PADDING)*2+Styling.PADDING, 0, 3)))
 							.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)))
 							.directive(BackgroundDirective.of(Color.DARK_GRAY))
-							.attribute("onrelease", new MouseListener() {
-								@Override public void accept(MouseEvent e) {
-									if (e.getButton()==MouseEvent.LEFT_BUTTON) {
-										getBrowserComponent().tasks.quit();
-									}
+							.directive(MouseListenerDirective.of(e->{
+								if (e.getButton()!=MouseEvent.LEFT_BUTTON) return;
+								if (e.getAction()==MouseEvent.RELEASE) {
+									getBrowserComponent().tasks.quit();
+								} else if (e.getAction()==MouseEvent.MOVE) {
+									
 								}
-							}),
+							})),
 						new URLBar(null)
 							.tag("id", "url-bar")
 							.directive(SizeDirective.of(new Location(1, -(Styling.BUTTON_WIDTH+Styling.PADDING)*3-2*Styling.PADDING, 0, Styling.BUTTON_WIDTH)))
@@ -93,11 +90,10 @@ public class TabFrame extends BlockComponent {
 							.casted(WebicityFrame.class)
 							//.navigate("https://www.w3.org/TR/PNG/iso_8859-1.txt")
 							//.navigate("https://www.google.com/")
-							//.navigate("https://www.yahoo.com/")
+							.navigate("https://www.yahoo.com/")
 							//.navigate("file:C:\\Users\\jason\\Downloads\\sample-2mb-text-file (1).txt")
-							//.navigate("https://www.google.com/")
 							//.navigate("https://html.spec.whatwg.org/")
-							.navigate("https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html")
+							//.navigate("https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html")
 					})
 			});
 	}

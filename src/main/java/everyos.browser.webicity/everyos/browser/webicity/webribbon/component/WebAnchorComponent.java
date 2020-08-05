@@ -19,8 +19,7 @@ public class WebAnchorComponent extends WebComponent { //TODO: Code will be move
 	};
 	
 	public void paint(GUIRenderer r, DrawData d) {
-		//System.out.println("A");
-		r.setColor(Color.BLUE);
+		r.setForeground(Color.BLUE);
 		paintChildren(r, d);
 	}
 }

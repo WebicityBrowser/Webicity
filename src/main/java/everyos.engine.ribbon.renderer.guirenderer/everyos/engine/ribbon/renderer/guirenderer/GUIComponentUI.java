@@ -11,7 +11,10 @@ public abstract class GUIComponentUI implements ComponentUI {
 	//public abstract void composite(GUIRenderer r);
 	
 	public abstract GUIComponentUI getParent();
+	
 	public abstract void invalidateLocal();
 	public abstract void validate();
 	public abstract boolean getValidated();
+	
+	public abstract void repaintLocal();
 }

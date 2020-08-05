@@ -18,7 +18,6 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 	public WebComponentWrapperUI() {}
 	public WebComponentWrapperUI(Component c, GUIComponentUI parent) {
 		super(c, parent);
-		autofill = false;
 	}
 	@Override public ComponentUI create(Component c, ComponentUI parent) {
 		return new WebComponentWrapperUI(c, (GUIComponentUI) parent);

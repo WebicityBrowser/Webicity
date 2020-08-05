@@ -6,8 +6,12 @@ import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.renderer.guirenderer.GUIComponentUI;
 import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;
+import everyos.engine.ribbon.renderer.guirenderer.directive.ExternalMouseListenerDirective;
+import everyos.engine.ribbon.renderer.guirenderer.directive.MouseListenerDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.PositionDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
+import everyos.engine.ribbon.renderer.guirenderer.event.MouseListener;
+import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Offset;
@@ -19,9 +23,10 @@ public class SimpleBlockComponentUI extends SimpleComponentUI {
 	protected Location position;
 	protected Location size;
 	protected Offset offset;
-	protected boolean autofill = true;
 	
 	protected boolean forceCursor;
+	protected MouseListener mouseListener;
+	protected MouseListener externalMouseListener;
 	
 	public SimpleBlockComponentUI() {}
 	public SimpleBlockComponentUI(Component c, GUIComponentUI parent) {
@@ -85,47 +90,38 @@ public class SimpleBlockComponentUI extends SimpleComponentUI {
 	}
 	
 	@Override public void paint(GUIRenderer r) {
-		if (bounds==null) bounds = new Rectangle(-1, -1, 1, 1);
-		/*data.bindings.add(c.parent.boundBind(new MouseBinding(bounds, this.c)));
-		Color color = (Color) data.attributes.get("bg-color");
-		if (color!=null&&autofill) {
-			r.setColor(color);
-			r.drawFilledRect(bounds.x, bounds.y, bounds.width, bounds.height);
-		}*/
+		GUIState state = r.getState();
+		
+		//if (bounds==null) bounds = new Rectangle(-1, -1, 1, 1);
 		GUIRenderer r2 = r.getSubcontext(bounds.x, bounds.y, bounds.width, bounds.height);
+		if (background!=null) r2.setBackground(background);
+		if (foreground!=null) r2.setForeground(foreground);
 		paintUI(r2);
+		
+		r.restoreState(state);
 	}
 	
 	protected void paintUI(GUIRenderer r) {
+		paintMouse(r);
+		r.useBackground();
+		r.drawFilledRect(0, 0, bounds.width, bounds.height);
 		paintChildren(r);
+	}
+	
+	protected void paintMouse(GUIRenderer r) {
+		r.paintMouseListener(this.getComponent(), 0, 0, bounds.width, bounds.height, e->{
+			if (e.isExternal()&&externalMouseListener!=null) externalMouseListener.accept(e);
+			if (!e.isExternal()&&mouseListener!=null) mouseListener.accept(e);
+			
+		});
 	}
 	
 	@Override public void directive(UIDirective directive) {
 		super.directive(directive);
+		//TODO: Optimize: Don't unnecessarily redraw redundant data
 		if (directive instanceof PositionDirective) this.position = ((PositionDirective) directive).getPosition();
 		if (directive instanceof SizeDirective) this.size = ((SizeDirective) directive).getSize();
+		if (directive instanceof MouseListenerDirective) this.mouseListener = ((MouseListenerDirective) directive).getListener();
+		if (directive instanceof ExternalMouseListenerDirective) this.externalMouseListener = ((ExternalMouseListenerDirective) directive).getListener();
 	}
-	
-	
-	/*@Override public MouseBinding boundBind(MouseBinding binding) {
-		binding.bounds.x+=bounds.x;
-		if (binding.bounds.x>bounds.x+bounds.width) {
-			binding.bounds.x = -1;
-			binding.bounds.width = -1;
-		}
-		if (binding.bounds.x+binding.bounds.width>bounds.x+bounds.width)
-			binding.bounds.width=bounds.x+bounds.width-binding.bounds.x;
-		
-		binding.bounds.y+=bounds.y;
-		if (binding.bounds.y>bounds.y+bounds.height) {
-			binding.bounds.y = -1;
-			binding.bounds.height = -1;
-		}
-		if (binding.bounds.y+binding.bounds.height>bounds.y+bounds.height)
-			binding.bounds.height=bounds.height-binding.bounds.y;
-		
-		//TODO: Left bound cut
-		
-		return c.parent.boundBind(binding);
-	}*/
 }

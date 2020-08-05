@@ -16,7 +16,6 @@ public class URLBarUI extends SimpleBlockComponentUI {
 	public URLBarUI() {}
 	public URLBarUI(Component c, GUIComponentUI parent) {
 		super(c, parent);
-		autofill = false;
 	}
 	@Override public GUIComponentUI create(Component c, ComponentUI parent) {
 		return new URLBarUI(c, (GUIComponentUI) parent);
@@ -37,19 +36,17 @@ public class URLBarUI extends SimpleBlockComponentUI {
 	}
 
 	@Override protected void paintUI(GUIRenderer r) {
-		/*Color color = (Color) data.attributes.get("bg-color");
-		if (color!=null) {
-			r.setColor(color);
-			r.drawEllipse(0, 0, bounds.height, bounds.height);
-			r.drawEllipse(bounds.width-bounds.height, 0, bounds.height, bounds.height);
-			r.drawFilledRect(bounds.height/2, 0, bounds.width-bounds.height, bounds.height);
-		}
 		
-		r.setFont(
+		r.useBackground();
+		r.drawEllipse(0, 0, bounds.height, bounds.height);
+		r.drawEllipse(bounds.width-bounds.height, 0, bounds.height, bounds.height);
+		r.drawFilledRect(bounds.height/2, 0, bounds.width-bounds.height, bounds.height);
+		
+		/*r.setFont(
 			(String) data.attributes.getOrDefault("font", "Arial"), 
 			FontStyle.PLAIN,
-			(int) data.attributes.getOrDefault("font-size", 16));
-		r.setColor((Color) data.attributes.getOrDefault("fg-color", Color.BLACK));*/
+			(int) data.attributes.getOrDefault("font-size", 16));*/
+		r.useForeground();
 		r.drawText(bounds.height, bounds.height/2-r.getFontHeight()/2, text);
 	}
 }

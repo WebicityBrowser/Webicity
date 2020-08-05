@@ -5,17 +5,21 @@ import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.BreakComponent;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.renderer.guirenderer.directive.BackgroundDirective;
+import everyos.engine.ribbon.renderer.guirenderer.directive.ExternalMouseListenerDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.FontSizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.ForegroundDirective;
+import everyos.engine.ribbon.renderer.guirenderer.directive.MouseListenerDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.PositionDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.event.MouseEvent;
-import everyos.engine.ribbon.renderer.guirenderer.event.MouseListener;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
 
 public class WindowFrame extends BlockComponent{
-
+	private Runnable onClose;
+	private Runnable onMinimize;
+	private Runnable onRestore;
+	
 	public WindowFrame(Component window) {
 		super(window);
 		
@@ -52,39 +56,65 @@ public class WindowFrame extends BlockComponent{
 									.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)))
 									.directive(BackgroundDirective.of(Color.DARK_GRAY))
 									.directive(ForegroundDirective.of(Color.BLACK))
-									.attribute("onrelease", new MouseListener() {
-										@Override public void accept(MouseEvent e) {
-											/*if (parent.getAttribute("onminimize")!=null&&e.getButton()==MouseEvent.LEFT_BUTTON) {
-												((Runnable) parent.getAttribute("onminimize")).run();
-											}*/
+									.directive(MouseListenerDirective.of(e->{
+										if (e.getAction()==MouseEvent.MOVE) {
+											e.getComponent().directive(BackgroundDirective.of(Color.LIGHT_GRAY));
 										}
-									}),
+										if (e.getAction()==MouseEvent.PRESS||e.getAction()==MouseEvent.DRAG) {
+											e.getComponent().directive(BackgroundDirective.of(Color.WHITE));
+										}
+										if (e.getButton()!=MouseEvent.LEFT_BUTTON) return;
+										if (e.getAction()==MouseEvent.RELEASE) {
+											if (onMinimize!=null) onMinimize.run();
+											e.getComponent().directive(BackgroundDirective.of(Color.DARK_GRAY));
+										}
+									}))
+									.directive(ExternalMouseListenerDirective.of(e->{
+										e.getComponent().directive(BackgroundDirective.of(Color.DARK_GRAY));
+									})),
 								new CircularText(null)
 									.text("+")
 									.directive(PositionDirective.of(new Location(1, (-(Styling.BUTTON_WIDTH)-Styling.PADDING)*2, 0, 5)))
 									.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)))
 									.directive(BackgroundDirective.of(Color.DARK_GRAY))
 									.directive(ForegroundDirective.of(Color.BLACK))
-									.attribute("onrelease", new MouseListener() {
-										@Override public void accept(MouseEvent e) {
-											/*if (parent.getAttribute("onrestore")!=null&&e.getButton()==MouseEvent.LEFT_BUTTON) {
-												((Runnable) parent.getAttribute("onrestore")).run();
-											}*/
+									.directive(MouseListenerDirective.of(e->{
+										if (e.getAction()==MouseEvent.MOVE) {
+											e.getComponent().directive(BackgroundDirective.of(Color.LIGHT_GRAY));
 										}
-									}),
+										if (e.getAction()==MouseEvent.PRESS||e.getAction()==MouseEvent.DRAG) {
+											e.getComponent().directive(BackgroundDirective.of(Color.WHITE));
+										}
+										if (e.getButton()!=MouseEvent.LEFT_BUTTON) return;
+										if (e.getAction()==MouseEvent.RELEASE) {
+											if (onRestore!=null) onRestore.run();
+											e.getComponent().directive(BackgroundDirective.of(Color.DARK_GRAY));
+										}
+									}))
+									.directive(ExternalMouseListenerDirective.of(e->{
+										e.getComponent().directive(BackgroundDirective.of(Color.DARK_GRAY));
+									})),
 								new CircularText(null)
 									.text("X")
 									.directive(PositionDirective.of(new Location(1, -(Styling.BUTTON_WIDTH)-Styling.PADDING, 0, 5)))
 									.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)))
 									.directive(BackgroundDirective.of(Color.RED))
 									.directive(ForegroundDirective.of(Color.BLACK))
-									.attribute("onrelease", new MouseListener() {
-										@Override public void accept(MouseEvent e) {
-											/*if (parent.getAttribute("onclose")!=null&&e.getButton()==MouseEvent.LEFT_BUTTON) {
-												((Runnable) parent.getAttribute("onclose")).run();
-											}*/
+									.directive(MouseListenerDirective.of(e->{
+										if (e.getAction()==MouseEvent.MOVE) {
+											e.getComponent().directive(BackgroundDirective.of(new Color(255, 100, 100)));
 										}
-									})
+										if (e.getAction()==MouseEvent.PRESS||e.getAction()==MouseEvent.DRAG) {
+											e.getComponent().directive(BackgroundDirective.of(new Color(255, 50, 0)));
+										}
+										if (e.getButton()!=MouseEvent.LEFT_BUTTON) return;
+										if (e.getAction()==MouseEvent.RELEASE) {
+											if (onClose!=null) onClose.run();
+										}
+									}))
+									.directive(ExternalMouseListenerDirective.of(e->{
+										e.getComponent().directive(BackgroundDirective.of(Color.RED));
+									}))
 							}),
 						new BreakComponent(null),
 						new BlockComponent(null)
@@ -100,5 +130,15 @@ public class WindowFrame extends BlockComponent{
 	}
 	public Component getDisplayPane() {
 		return getComponentByID("content-pane");
+	}
+
+	public void onClose(Runnable listener) {
+		this.onClose = listener;
+	}
+	public void onMinimize(Runnable listener) {
+		this.onMinimize = listener;
+	}
+	public void onRestore(Runnable listener) {
+		this.onRestore = listener;
 	}
 }

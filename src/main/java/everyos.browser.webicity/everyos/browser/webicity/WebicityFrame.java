@@ -13,6 +13,7 @@ import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.renderer.guirenderer.directive.BackgroundDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.FontSizeDirective;
+import everyos.engine.ribbon.renderer.guirenderer.directive.ForegroundDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.PositionDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
@@ -29,6 +30,8 @@ public class WebicityFrame extends BlockComponent {
 
 	public WebicityFrame(Component parent, WebicityEngine engine, NavigateHandler navigator) {
 		super(parent);
+		
+		this.directive(ForegroundDirective.of(Color.BLACK));
 		
 		this.engine = engine;
 		this.navigator = navigator;

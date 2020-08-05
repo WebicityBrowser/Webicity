@@ -12,7 +12,6 @@ public class WebComponentWrapper extends BlockComponent {
 	}
 
 	public WebComponentWrapper ui(WebComponent component) {
-		System.out.println("CALL");
 		this.wui = component;
 		invalidate();
 		return this;

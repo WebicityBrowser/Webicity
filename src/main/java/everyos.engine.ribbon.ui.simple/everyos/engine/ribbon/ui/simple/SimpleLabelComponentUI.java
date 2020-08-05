@@ -40,8 +40,8 @@ public class SimpleLabelComponentUI extends SimpleComponentUI {
 		/*r.setFont(
 			(String) data.attributes.getOrDefault("font", "Arial"), 
 			FontStyle.PLAIN,
-			(int) data.attributes.getOrDefault("font-size", 16));
-		r.setColor((Color) data.attributes.getOrDefault("fg-color", Color.BLACK));*/
+			(int) data.attributes.getOrDefault("font-size", 16));*/
+		r.useForeground();
 		r.drawText(position.x, position.y+height, text);
 	}
 }

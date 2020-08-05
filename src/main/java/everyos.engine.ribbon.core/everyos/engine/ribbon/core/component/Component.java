@@ -42,6 +42,7 @@ public class Component {
 		for (ComponentUI ui: bound.toArray(new ComponentUI[bound.size()])) {
 			if (uicls.isAssignableFrom(ui.getClass()))
 			ui.directive(directive.getDirective());
+			ui.hint(directive.getPipelineHint());
 		}
 		return this;
 	}

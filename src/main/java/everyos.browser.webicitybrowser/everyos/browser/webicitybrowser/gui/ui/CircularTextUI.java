@@ -17,7 +17,6 @@ public class CircularTextUI extends SimpleBlockComponentUI {
 	public CircularTextUI() {}
 	public CircularTextUI(Component c, GUIComponentUI parent) {
 		super(c, parent);
-		autofill = false;
 	}
 	@Override public ComponentUI create(Component c, ComponentUI parent) {
 		return new CircularTextUI(c, (GUIComponentUI) parent);
@@ -38,19 +37,18 @@ public class CircularTextUI extends SimpleBlockComponentUI {
 	}
 
 	@Override protected void paintUI(GUIRenderer r) {
-		/*Color color = (Color) data.attributes.get("bg-color");
-		if (color!=null) {
-			r.setColor(color);
-			r.drawEllipse(0, 0, bounds.height, bounds.height);
-			r.drawEllipse(bounds.width-bounds.height, 0, bounds.height, bounds.height);
-			r.drawFilledRect(bounds.height/2, 0, bounds.width-bounds.height, bounds.height);
-		}
+		paintMouse(r);
 		
-		r.setFont(
+		r.useBackground();
+		r.drawEllipse(0, 0, bounds.height, bounds.height);
+		r.drawEllipse(bounds.width-bounds.height, 0, bounds.height, bounds.height);
+		r.drawFilledRect(bounds.height/2, 0, bounds.width-bounds.height, bounds.height);
+		
+		/*r.setFont(
 			(String) data.attributes.getOrDefault("font", "Arial"), 
 			FontStyle.PLAIN,
-			(int) data.attributes.getOrDefault("font-size", 16));
-		r.setColor((Color) data.attributes.getOrDefault("fg-color", Color.BLACK));*/
+			(int) data.attributes.getOrDefault("font-size", 16));*/
+		r.useForeground();
 		r.drawText(bounds.width/2-strwidth/2, bounds.height/2-r.getFontHeight()/2, text);
 	}
 }

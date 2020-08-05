@@ -42,11 +42,6 @@ public abstract class GLRenderer implements GUIRenderer {
 
 	}
 
-	@Override
-	public void setColor(Color color) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void draw() {

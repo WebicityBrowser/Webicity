@@ -8,7 +8,6 @@ import everyos.browser.webicity.webribbon.shape.Position;
 import everyos.browser.webicity.webribbon.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.helper.StringWrapHelper;
 import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.FontStyle;
 
 public class WebTextComponent extends WebComponent {
@@ -31,10 +30,8 @@ public class WebTextComponent extends WebComponent {
 	}
 	
 	@Override public void paint(GUIRenderer r, DrawData d) {
-		Color dcolor = (Color) resolveAttribute("color", Color.BLACK);
-		
 		setRenderingData(r);
-		r.setColor(dcolor);
+		r.useForeground();
 		for (int i=0; i<lines.size(); i++) {
 			int py = i*r.getFontHeight();
 			//System.out.println("py:"+py);
