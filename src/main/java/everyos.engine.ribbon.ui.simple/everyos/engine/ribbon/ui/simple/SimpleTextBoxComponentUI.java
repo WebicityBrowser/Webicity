@@ -33,6 +33,7 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 
 	@Override protected void paintUI(GUIRenderer r) {
 		super.paintUI(r);
+		r.useForeground();
 		for (int i=0; i<lines.size(); i++) {
 			int py = i*r.getFontHeight();
 			if (py>bounds.height) break;

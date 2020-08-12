@@ -11,8 +11,8 @@ import everyos.browser.webicity.renderer.html.dom.Node;
 import everyos.browser.webicity.renderer.html.dom.impl.DocumentImpl;
 import everyos.browser.webicity.renderer.html.dom.impl.MutationListener;
 import everyos.browser.webicity.renderer.html.parser.HTMLParser;
-import everyos.browser.webicity.webribbon.WebComponentWrapper;
-import everyos.browser.webicity.webribbon.component.WebComponent;
+import everyos.browser.webicity.webribbon.core.component.WebComponent;
+import everyos.browser.webicity.webribbon.gui.WebComponentWrapper;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
 

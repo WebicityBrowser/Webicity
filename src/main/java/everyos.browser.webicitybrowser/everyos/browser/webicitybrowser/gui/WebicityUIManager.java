@@ -1,7 +1,7 @@
 package everyos.browser.webicitybrowser.gui;
 
-import everyos.browser.webicity.webribbon.WebComponentWrapper;
-import everyos.browser.webicity.webribbon.WebComponentWrapperUI;
+import everyos.browser.webicity.webribbon.gui.WebComponentWrapper;
+import everyos.browser.webicity.webribbon.gui.WebComponentWrapperUI;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.browser.webicitybrowser.gui.ui.CircularTextUI;

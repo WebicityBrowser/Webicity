@@ -1,6 +1,6 @@
-package everyos.browser.webicity.webribbon;
+package everyos.browser.webicity.webribbon.gui;
 
-import everyos.browser.webicity.webribbon.component.WebComponent;
+import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
 

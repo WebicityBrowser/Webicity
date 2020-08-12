@@ -2,7 +2,7 @@ package everyos.browser.webicity.webribbon.ui.webui.helper;
 
 import java.util.ArrayList;
 
-import everyos.browser.webicity.webribbon.shape.SizePosGroup;
+import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;
 
 public class StringWrapHelper {

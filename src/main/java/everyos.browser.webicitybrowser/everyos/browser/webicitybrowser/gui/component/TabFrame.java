@@ -73,6 +73,7 @@ public class TabFrame extends BlockComponent {
 								}
 							})),
 						new URLBar(null)
+							//.text("about:blank")
 							.tag("id", "url-bar")
 							.directive(SizeDirective.of(new Location(1, -(Styling.BUTTON_WIDTH+Styling.PADDING)*3-2*Styling.PADDING, 0, Styling.BUTTON_WIDTH)))
 							.directive(PositionDirective.of(new Location(0, (Styling.BUTTON_WIDTH+Styling.PADDING)*3+Styling.PADDING, 0, 3)))
@@ -94,6 +95,7 @@ public class TabFrame extends BlockComponent {
 							//.navigate("file:C:\\Users\\jason\\Downloads\\sample-2mb-text-file (1).txt")
 							//.navigate("https://html.spec.whatwg.org/")
 							//.navigate("https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html")
+							//.navigate("https://www.example.com/")
 					})
 			});
 	}

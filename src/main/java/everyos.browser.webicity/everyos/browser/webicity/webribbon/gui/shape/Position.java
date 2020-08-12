@@ -1,4 +1,4 @@
-package everyos.browser.webicity.webribbon.shape;
+package everyos.browser.webicity.webribbon.gui.shape;
 
 public class Position {
 	public int x;

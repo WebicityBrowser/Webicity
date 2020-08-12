@@ -1,4 +1,4 @@
-package everyos.browser.webicity.webribbon.shape;
+package everyos.browser.webicity.webribbon.gui.shape;
 
 import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
 

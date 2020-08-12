@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 
 import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.renderer.Renderer;
-import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.component.TextBoxComponent;
 import everyos.engine.ribbon.renderer.guirenderer.directive.PositionDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
@@ -18,7 +17,7 @@ public class PlainTextRenderer implements Renderer {
 	@Override public void execute(WebicityFrame frame, InputStream stream) throws IOException {
 		//TODO: Specialized rendering context, to prevent lag on browser UI
 		TextBoxComponent text = new TextBoxComponent(frame.innerFrame)
-			.attribute("font", "Courier")
+			//.attribute("font", "Courier")
 			.directive(PositionDirective.of(new Location(0, 5, 0, 0)))
 			.directive(SizeDirective.of(new Location(1, -10, 1, 0)))
 			.casted(TextBoxComponent.class);

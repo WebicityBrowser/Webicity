@@ -10,7 +10,7 @@ import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 public class Component {
 	public Component parent;
 	protected ArrayList<Component> children;
-	protected ArrayList<ComponentUI> bound;
+	protected ArrayList<ComponentUI> boundObservers;
 	protected HashMap<String, Object> tags;
 	protected HashMap<Class<? extends ComponentUI>, ArrayList<UIDirectiveWrapper>> directives;
 	
@@ -20,7 +20,7 @@ public class Component {
 	public Component(Component parent) {
 		children = new ArrayList<Component>();
 		tags = new HashMap<>();
-		bound = new ArrayList<>();
+		boundObservers = new ArrayList<>();
 		directives = new HashMap<>();
 		if (parent!=null) this.setParent(parent);
 	}
@@ -39,7 +39,7 @@ public class Component {
 			if (dir.getClass().isAssignableFrom(uicls.getClass())) dirs.remove(i);
 		}
 		dirs.add(directive);
-		for (ComponentUI ui: bound.toArray(new ComponentUI[bound.size()])) {
+		for (ComponentUI ui: boundObservers.toArray(new ComponentUI[boundObservers.size()])) {
 			if (uicls.isAssignableFrom(ui.getClass()))
 			ui.directive(directive.getDirective());
 			ui.hint(directive.getPipelineHint());
@@ -140,7 +140,7 @@ public class Component {
 		}
 	}
 	protected void invalidateLocal() {
-		for (ComponentUI ui: bound.toArray(new ComponentUI[bound.size()])) {
+		for (ComponentUI ui: boundObservers.toArray(new ComponentUI[boundObservers.size()])) {
 			ui.invalidate();
 		}
 	}
@@ -163,7 +163,7 @@ public class Component {
 	 * @param ui The ComponentUI to be bound
 	 */
 	public void bind(ComponentUI ui) {
-		bound.add(ui);
+		boundObservers.add(ui);
 		for (UIDirectiveWrapper dir: getDirectives(ui.getClass())) ui.directive(dir.getDirective());
 	}
 

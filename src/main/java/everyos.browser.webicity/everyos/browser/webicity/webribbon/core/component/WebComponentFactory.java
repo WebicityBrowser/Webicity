@@ -1,10 +1,12 @@
-package everyos.browser.webicity.webribbon.component;
+package everyos.browser.webicity.webribbon.core.component;
 
 import everyos.browser.webicity.renderer.html.dom.Element;
 import everyos.browser.webicity.renderer.html.dom.Node;
 import everyos.browser.webicity.renderer.html.dom.impl.TextNodeImpl;
 
 public final class WebComponentFactory {
+	private WebComponentFactory() {}
+	
 	public static WebComponent createComponentFromNode(Node child) {
 		if (child instanceof TextNodeImpl) {
 			return new WebTextComponent((TextNodeImpl) child);

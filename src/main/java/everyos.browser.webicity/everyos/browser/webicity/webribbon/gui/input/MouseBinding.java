@@ -1,6 +1,6 @@
-package everyos.browser.webicity.webribbon.input;
+package everyos.browser.webicity.webribbon.gui.input;
 
-import everyos.browser.webicity.webribbon.component.WebComponent;
+import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
 
 public class MouseBinding {
