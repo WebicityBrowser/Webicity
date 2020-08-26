@@ -28,7 +28,7 @@ public class WebicityInstance {
 			
 			window.setTitle("Webicity Browser");
 			window.setIcon("webicity.png");
-			window.setMinSize(new Location(0, 400, 0, 400));
+			window.setMinSize(new Location(0, 600, 0, 400));
 			window.setDecorated(false);
 		
 			UIManager<GUIComponentUI> mgr = WebicityUIManager.createUI();

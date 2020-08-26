@@ -91,10 +91,10 @@ public class TabFrame extends BlockComponent {
 							.casted(WebicityFrame.class)
 							//.navigate("https://www.w3.org/TR/PNG/iso_8859-1.txt")
 							//.navigate("https://www.google.com/")
-							.navigate("https://www.yahoo.com/")
+							//.navigate("https://www.yahoo.com/")
 							//.navigate("file:C:\\Users\\jason\\Downloads\\sample-2mb-text-file (1).txt")
 							//.navigate("https://html.spec.whatwg.org/")
-							//.navigate("https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html")
+							.navigate("https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html")
 							//.navigate("https://www.example.com/")
 					})
 			});

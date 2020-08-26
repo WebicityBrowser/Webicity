@@ -1,45 +1,22 @@
-import org.gradle.internal.os.OperatingSystem
-
 plugins {
     id 'java-library'
     id 'java'
 }
 
-switch (OperatingSystem.current()) {
-	case OperatingSystem.LINUX:
-		def osArch = System.getProperty("os.arch")
-		project.ext.lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
-			? "natives-linux-${osArch.contains("64") || osArch.startsWith("armv8") ? "arm64" : "arm32"}"
-			: "natives-linux"
-		break
-	case OperatingSystem.MAC_OS:
-		project.ext.lwjglNatives = "natives-macos"
-		break
-	case OperatingSystem.WINDOWS:
-		project.ext.lwjglNatives = System.getProperty("os.arch").contains("64") ? "natives-windows" : "natives-windows-x86"
-		break
-}
-
 repositories {
     jcenter()
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
+	implementation 'com.github.WebicityBrowser:Ribbon:ea5bcac526'
+	implementation 'com.github.WebicityBrowser:RibbonGUIRenderer:f130331afa'
+	implementation 'com.github.WebicityBrowser:RibbonAWTRenderer:59a8d19201'
+	implementation 'com.github.WebicityBrowser:RibbonSimpleUI:627975ba8f'
+
 	implementation 'com.google.code.gson:gson:2.8.6'
 	implementation 'net.java.dev.jna:jna:5.5.0'
-	
-	implementation platform("org.lwjgl:lwjgl-bom:3.2.3")
-	implementation "org.lwjgl:lwjgl"
-	implementation "org.lwjgl:lwjgl-glfw"
-	implementation "org.lwjgl:lwjgl-openal"
-	implementation "org.lwjgl:lwjgl-opengl"
-	implementation "org.lwjgl:lwjgl-stb"
-	runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
-	runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
-	runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
-	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 }
 
 apply plugin: 'java'

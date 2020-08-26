@@ -2,11 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java/everyos.browser.webicity"/>
 	<classpathentry kind="src" path="src/main/java/everyos.browser.webicitybrowser"/>
-	<classpathentry kind="src" path="src/main/java/everyos.engine.ribbon.core"/>
-	<classpathentry kind="src" path="src/main/java/everyos.engine.ribbon.renderer.guirenderer"/>
-	<classpathentry kind="src" path="src/main/java/everyos.engine.ribbon.renderer.awtrenderer"/>
-	<classpathentry kind="src" path="src/main/java/everyos.engine.ribbon.renderer.lwjglrenderer"/>
-	<classpathentry kind="src" path="src/main/java/everyos.engine.ribbon.ui.simple"/>
 	<classpathentry kind="src" output="bin/main" path="src/main/resources">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
@@ -37,5 +32,8 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="/Ribbon"/>
+	<classpathentry kind="src" path="/RibbonGUIRenderer"/>
+	<classpathentry kind="src" path="/RibbonSimpleUI"/>
 	<classpathentry kind="output" path="bin/default"/>
 </classpath>
