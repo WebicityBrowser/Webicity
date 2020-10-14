@@ -12,7 +12,7 @@ repositories {
 dependencies {
 	implementation 'com.github.WebicityBrowser:Ribbon:ea5bcac526'
 	implementation 'com.github.WebicityBrowser:RibbonGUIRenderer:f130331afa'
-	implementation 'com.github.WebicityBrowser:RibbonAWTRenderer:59a8d19201'
+	implementation 'com.github.WebicityBrowser:RibbonAWTRenderer:1049b34e54'
 	implementation 'com.github.WebicityBrowser:RibbonSimpleUI:627975ba8f'
 
 	implementation 'com.google.code.gson:gson:2.8.6'
