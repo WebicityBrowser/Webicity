@@ -5,17 +5,17 @@ import everyos.browser.webicity.webribbon.core.component.WebBreakComponent;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.component.WebTextComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
-import everyos.browser.webicity.webribbon.gui.GUIWebComponentUI;
+import everyos.browser.webicity.webribbon.ui.webui.helper.WebReflectiveFactory;
 
 public class WebUIWebUIManager {
 	private WebUIWebUIManager() {};
 	
-	public static WebUIManager<GUIWebComponentUI> createUI() {
-		WebUIManager<GUIWebComponentUI> wuim = new WebUIManager<>();
-		wuim.put(WebComponent.class, new WebUIWebComponentUI());
-		wuim.put(WebTextComponent.class, new WebUIWebTextComponentUI());
-		wuim.put(WebBreakComponent.class, new WebUIWebBreakComponentUI());
-		wuim.put(WebAnchorComponent.class, new WebUIWebAnchorComponentUI());
+	public static WebUIManager createUI() {
+		WebUIManager wuim = new WebUIManager();
+		wuim.put(WebComponent.class, new WebReflectiveFactory(WebUIWebComponentUI.class));
+		wuim.put(WebTextComponent.class, new WebReflectiveFactory(WebUIWebTextComponentUI.class));
+		wuim.put(WebBreakComponent.class, new WebReflectiveFactory(WebUIWebBreakComponentUI.class));
+		wuim.put(WebAnchorComponent.class, new WebReflectiveFactory(WebUIWebAnchorComponentUI.class));
 		
 		return wuim;
 	}

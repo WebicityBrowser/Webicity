@@ -2,10 +2,9 @@ package everyos.browser.webicitybrowser.gui.ui;
 
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.guirenderer.GUIComponentUI;
-import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;
 import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
@@ -13,14 +12,11 @@ import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 public class URLBarUI extends SimpleBlockComponentUI {
 	protected String text = "";
 
-	public URLBarUI() {}
-	public URLBarUI(Component c, GUIComponentUI parent) {
+	public URLBarUI(Component c, ComponentUI parent) {
 		super(c, parent);
 	}
-	@Override public GUIComponentUI create(Component c, ComponentUI parent) {
-		return new URLBarUI(c, (GUIComponentUI) parent);
-	};
-	@Override protected void renderUI(GUIRenderer r, SizePosGroup sizepos, UIManager<GUIComponentUI> mgrui) {
+	@Override
+	protected void renderUI(Renderer r, SizePosGroup sizepos, UIManager mgrui) {
 		this.text = this.<URLBar>getComponent().getText();
 		
 		/*r.setFont(
@@ -35,7 +31,8 @@ public class URLBarUI extends SimpleBlockComponentUI {
 		//super.renderUI(r, sizepos, mgrui);
 	}
 
-	@Override protected void paintUI(GUIRenderer r) {
+	@Override
+	protected void paintUI(Renderer r) {
 		
 		r.useBackground();
 		r.drawEllipse(0, 0, bounds.height, bounds.height);

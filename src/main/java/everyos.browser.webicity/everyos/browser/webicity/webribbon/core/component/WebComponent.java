@@ -6,7 +6,7 @@ import java.util.HashMap;
 import everyos.browser.javadom.intf.Node;
 import everyos.browser.javadom.intf.NodeList;
 import everyos.browser.webicity.webribbon.core.cssom.Attribute;
-import everyos.browser.webicity.webribbon.gui.GUIWebComponentUI;
+import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 
 public class WebComponent { //TODO: Code will be moved to WebUI
@@ -37,7 +37,7 @@ public class WebComponent { //TODO: Code will be moved to WebUI
 		this.parent = parent;
 	}
 
-	public void bind(GUIWebComponentUI ui) {
+	public void bind(WebComponentUI ui) {
 		// TODO Auto-generated method stub
 		
 	}

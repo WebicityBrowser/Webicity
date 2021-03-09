@@ -6,7 +6,6 @@ import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTMonitor;
 import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTMonitor.NoMonitorAvailableException;
 import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTWindow;
-import everyos.engine.ribbon.renderer.guirenderer.GUIComponentUI;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
 
@@ -21,7 +20,7 @@ public class RibbonWindow {
 		window.setMinSize(new Location(0, 600, 0, 400));
 		window.setDecorated(false);
 	
-		UIManager<GUIComponentUI> mgr = WebicityUIManager.createUI();
+		UIManager mgr = WebicityUIManager.createUI();
 		
 		BlockComponent component = new BlockComponent(null);		
 		window.bind(component, mgr);

@@ -1,34 +1,31 @@
 package everyos.browser.webicity.webribbon.gui;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
+import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 import everyos.browser.webicity.webribbon.gui.shape.Position;
 import everyos.browser.webicity.webribbon.ui.webui.WebUIWebUIManager;
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.guirenderer.GUIComponentUI;
-import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
 import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 
 public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 	private WebComponent wui;
-	private GUIWebComponentUI ui;
-	private WebUIManager<GUIWebComponentUI> wuim;
+	private WebComponentUI ui;
+	private WebUIManager wuim;
 	
-	public WebComponentWrapperUI() {}
-	public WebComponentWrapperUI(Component c, GUIComponentUI parent) {
+	public WebComponentWrapperUI(Component c, ComponentUI parent) {
 		super(c, parent);
 		
 		wuim = WebUIWebUIManager.createUI();
 	}
-	@Override public ComponentUI create(Component c, ComponentUI parent) {
-		return new WebComponentWrapperUI(c, (GUIComponentUI) parent);
-	};
 
-	@Override protected void renderUI(GUIRenderer r, SizePosGroup sizepos, UIManager<GUIComponentUI> uimgr) {
+	@Override
+	protected void renderUI(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
 		WebComponent owui = this.wui;
 		this.wui = this.<WebComponentWrapper>getComponent().getUI();
 		if (wui!=owui) {
@@ -43,7 +40,8 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		}
 	}
 
-	@Override protected void paintUI(GUIRenderer r) {
+	@Override
+	protected void paintUI(Renderer r) {
 		if (wui!=null) {
 			ui.paint(r);
 		}

@@ -6,26 +6,20 @@ import everyos.browser.javadom.intf.Text;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
-import everyos.browser.webicity.webribbon.gui.GUIWebComponentUI;
 import everyos.browser.webicity.webribbon.gui.shape.Position;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.helper.StringWrapHelper;
-import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;
+import everyos.engine.ribbon.core.rendering.Renderer;
 
 public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
-	public WebUIWebTextComponentUI() {}
-	@Override public WebComponentUI create(WebComponent component, WebComponentUI parent) {
-		return new WebUIWebTextComponentUI(component, (GUIWebComponentUI) parent);
-	}
-	
 	private ArrayList<String> lines;
 	private Position position;
 	
-	public WebUIWebTextComponentUI(WebComponent component, GUIWebComponentUI parent) {
+	public WebUIWebTextComponentUI(WebComponent component, WebComponentUI parent) {
 		super(component, parent);
 	}
 	
-	@Override public void render(GUIRenderer r, SizePosGroup sizepos, WebUIManager<GUIWebComponentUI> uimgr) {
+	@Override public void render(Renderer r, SizePosGroup sizepos, WebUIManager uimgr) {
 		//node.getParent().component.attributes.get("word-wrap");
 		//calculateCascade();
 		String text = ((Text) getComponent().getNode()).getWholeText();
@@ -35,7 +29,7 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 		this.lines = StringWrapHelper.calculateString(text, r, sizepos, false);
 	}
 	
-	@Override public void paintUI(GUIRenderer r) {
+	@Override public void paintUI(Renderer r) {
 		//setRenderingData(r);
 		r.useForeground();
 		for (int i=0; i<lines.size(); i++) {

@@ -7,6 +7,12 @@ import everyos.browser.webicitybrowser.gui.InstanceGUI;
 
 public class Webicity {
 	public static void main(String[] args) {
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		WebicityInstance instance = new WebicityInstance();
 		
 		new InstanceGUI(instance).start();

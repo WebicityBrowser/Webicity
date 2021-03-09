@@ -65,6 +65,7 @@ public class WindowGUI {
 	
 	private void configureWindow(Component pane) {
 		pane.directive(BackgroundDirective.of(Color.DARK_GRAY));
+		pane.directive(ForegroundDirective.of(Styling.FOREGROUND_PRIMARY));
 		
 		Component innerPane = new BlockComponent(null);
 		innerPane.directive(SizeDirective.of(new Location(1, -2, 1, -2)));
@@ -86,7 +87,6 @@ public class WindowGUI {
 	private Component createWindowDecorations() {
 		BlockComponent windowDecor = new BlockComponent(null);
 		windowDecor.directive(BackgroundDirective.of(Styling.BACKGROUND_PRIMARY));
-		windowDecor.directive(ForegroundDirective.of(Styling.FOREGROUND_PRIMARY));
 		
 		// Add the menu button
 		CircularText menuButton = new CircularText(null);
@@ -137,8 +137,7 @@ public class WindowGUI {
 		tabPane.directive(SizeDirective.of(new Location(
 			1, -Styling.BORDER_PADDING*2-(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*6,
 			0, Styling.BUTTON_WIDTH)));
-		//TODO: I shouldn't need to set the bg color here, Ribbon is bugged
-		tabPane.directive(BackgroundDirective.of(Styling.BACKGROUND_PRIMARY));
+		
 		windowDecor.addChild(tabPane);
 		
 		return windowDecor;
@@ -183,7 +182,6 @@ public class WindowGUI {
 		
 		Component spacer = new BlockComponent(null);
 		spacer.directive(SizeDirective.of(new Location(0, Styling.ELEMENT_PADDING, 0, Styling.BUTTON_WIDTH)));
-		spacer.directive(BackgroundDirective.of(Styling.BACKGROUND_PRIMARY)); //TODO: Also remove this when I fix Ribbon's bug
 		
 		tabPane.addChild(tabButton);
 		tabPane.addChild(spacer);

@@ -13,7 +13,6 @@ import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.renderer.guirenderer.directive.BackgroundDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.PositionDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
 
 public class TabGUI {
@@ -70,11 +69,9 @@ public class TabGUI {
 	
 	private void createTabPane() {
 		this.tabPane = new BlockComponent(null);
-		tabPane.directive(BackgroundDirective.of(Color.WHITE)); //TODO: Ribbon is just so glitched
 		
 		Component tabDecor = createTabDecorations();
 		int decorHeight = Styling.BUTTON_WIDTH+(int)(Styling.ELEMENT_PADDING*1.5);
-		System.out.println(decorHeight);
 		tabDecor.directive(SizeDirective.of(new Location(1, 0, 0, decorHeight)));
 		tabPane.addChild(tabDecor);
 	}
@@ -115,7 +112,7 @@ public class TabGUI {
 		tabDecor.addChild(reloadButton);
 		
 		this.urlBar = new URLBar(null);
-		
+		urlBar.directive(BackgroundDirective.of(Styling.BACKGROUND_SECONDARY));
 		urlBar.directive(PositionDirective.of(new Location(
 			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
 			0, horizontalDrop)));
@@ -123,9 +120,6 @@ public class TabGUI {
 			1, -Styling.BORDER_PADDING*2-(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
 			0, Styling.BUTTON_WIDTH)));
 		urlBar.text("about:blank");
-		
-		//TODO: You know the deal. Ribbon is broken
-		urlBar.directive(BackgroundDirective.of(Styling.BACKGROUND_SECONDARY));
 		
 		tabDecor.addChild(urlBar);
 		

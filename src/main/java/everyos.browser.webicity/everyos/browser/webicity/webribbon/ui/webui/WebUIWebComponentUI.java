@@ -5,26 +5,20 @@ import java.util.ArrayList;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
-import everyos.browser.webicity.webribbon.gui.GUIWebComponentUI;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
-import everyos.engine.ribbon.renderer.guirenderer.GUIRenderer;
+import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
 
-public class WebUIWebComponentUI extends GUIWebComponentUI {
+public class WebUIWebComponentUI implements WebComponentUI {
 	private SizePosGroup bounds;
 	private WebComponent component;
-	private GUIWebComponentUI parent;
-	private ArrayList<GUIWebComponentUI> children;
+	private WebComponentUI parent;
+	private ArrayList<WebComponentUI> children;
 
-	public WebUIWebComponentUI() {}
-	public WebUIWebComponentUI(WebComponent component, GUIWebComponentUI parent) {
+	public WebUIWebComponentUI(WebComponent component, WebComponentUI parent) {
 		this.component = component;
 		this.parent = parent;
-	}
-	
-	@Override public WebComponentUI create(WebComponent component, WebComponentUI parent) {
-		return new WebUIWebComponentUI(component, (GUIWebComponentUI) parent);
 	}
 	
 	/*public void calculateCascade() {
@@ -49,7 +43,7 @@ public class WebUIWebComponentUI extends GUIWebComponentUI {
 		
 	}
 
-	@Override public void render(GUIRenderer r, SizePosGroup sizepos, WebUIManager<GUIWebComponentUI> uimgr) {
+	@Override public void render(Renderer r, SizePosGroup sizepos, WebUIManager uimgr) {
 		//Object display = resolveAttribute("display", "block"); //TODO: Check display supported
 		String display = "block";
 		
@@ -98,32 +92,32 @@ public class WebUIWebComponentUI extends GUIWebComponentUI {
 		renderAfter(r, sizepos, uimgr);
 	}
 	
-	protected void renderUI(GUIRenderer r, SizePosGroup sizepos, WebUIManager<GUIWebComponentUI> uimgr) {
+	protected void renderUI(Renderer r, SizePosGroup sizepos, WebUIManager uimgr) {
 		renderChildren(r, sizepos, uimgr);
 	}
 	
-	protected void renderBefore(GUIRenderer r, SizePosGroup sizepos, WebUIManager<GUIWebComponentUI> uimgr) {
+	protected void renderBefore(Renderer r, SizePosGroup sizepos, WebUIManager uimgr) {
 		
 	}
-	protected void renderAfter(GUIRenderer r, SizePosGroup sizepos, WebUIManager<GUIWebComponentUI> uimgr) {
+	protected void renderAfter(Renderer r, SizePosGroup sizepos, WebUIManager uimgr) {
 		
 	}
-	protected void renderChildren(GUIRenderer r, SizePosGroup sizepos, WebUIManager<GUIWebComponentUI> uimgr) {
-		for (GUIWebComponentUI c: calcChildren(uimgr)) c.render(r, sizepos, uimgr);
+	protected void renderChildren(Renderer r, SizePosGroup sizepos, WebUIManager uimgr) {
+		for (WebComponentUI c: calcChildren(uimgr)) c.render(r, sizepos, uimgr);
 	}
 
-	@Override public void paint(GUIRenderer r) {
+	@Override public void paint(Renderer r) {
 		GUIState state = r.getState();
 		r.restoreState(state.clone());
 		paintUI(r); //TODO
 		r.restoreState(state);
 	}
 	
-	protected void paintUI(GUIRenderer r) {
+	protected void paintUI(Renderer r) {
 		paintChildren(r);
 	}
 	
-	protected void paintChildren(GUIRenderer r) {
+	protected void paintChildren(Renderer r) {
 		if (this.bounds!=null) {
 			r = r.getSubcontext(
 				bounds.position.x,
@@ -131,11 +125,12 @@ public class WebUIWebComponentUI extends GUIWebComponentUI {
 				bounds.size.width,
 				bounds.size.height);
 		}
-		for (GUIWebComponentUI c: getChildren()) c.paint(r);
+		for (WebComponentUI c: getChildren()) c.paint(r);
 		//TODO: Sort by Z-index
 	}
 
-	@Override public GUIWebComponentUI getParent() {
+	@Override
+	public WebComponentUI getParent() {
 		return parent;
 	}
 
@@ -161,16 +156,16 @@ public class WebUIWebComponentUI extends GUIWebComponentUI {
 		return this.component;
 	}
 	
-	protected GUIWebComponentUI[] calcChildren(WebUIManager<GUIWebComponentUI> uimgr) {
-		this.children = new ArrayList<GUIWebComponentUI>();
+	protected WebComponentUI[] calcChildren(WebUIManager uimgr) {
+		this.children = new ArrayList<WebComponentUI>();
 		for (WebComponent child: component.getChildren()) {
-			GUIWebComponentUI ui = uimgr.get(child, parent);
+			WebComponentUI ui = uimgr.get(child, parent);
 			child.bind(ui);
 			children.add(ui);
 		}
-		return children.toArray(new GUIWebComponentUI[children.size()]);
+		return children.toArray(new WebComponentUI[children.size()]);
 	}
-	protected GUIWebComponentUI[] getChildren() {
-		return children.toArray(new GUIWebComponentUI[children.size()]);
+	protected WebComponentUI[] getChildren() {
+		return children.toArray(new WebComponentUI[children.size()]);
 	}
 }
