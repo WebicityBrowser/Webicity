@@ -1,58 +1,64 @@
 package everyos.browser.webicity.renderer.html;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
+import everyos.browser.javadom.intf.Document;
+import everyos.browser.javadom.intf.Element;
+import everyos.browser.javadom.intf.Node;
+import everyos.browser.javadom.intf.NodeList;
+import everyos.browser.javadom.intf.Text;
+import everyos.browser.jhtml.JHTMLParser;
 import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.renderer.Renderer;
-import everyos.browser.webicity.renderer.html.dom.Node;
-import everyos.browser.webicity.renderer.html.dom.impl.DocumentImpl;
-import everyos.browser.webicity.renderer.html.dom.impl.MutationListener;
-import everyos.browser.webicity.renderer.html.parser.HTMLParser;
-import everyos.browser.webicity.webribbon.core.component.WebComponent;
-import everyos.browser.webicity.webribbon.gui.WebComponentWrapper;
-import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
 
 public class HTMLRenderer implements Renderer {
 	@Override public void execute(WebicityFrame frame, InputStream stream) throws IOException {
+		/*try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}*/
+		
 		System.out.println("HTML");
 		long time = System.currentTimeMillis();
-		HTMLParser parser = new HTMLParser();
-		parser.parse(new BufferedReader(new InputStreamReader(stream, "UTF-8")));
+		JHTMLParser parser = new JHTMLParser(stream);
+		parser.parse();
+		System.out.println();
 		System.out.println("TIME: "+(System.currentTimeMillis()-time));
 		stream.close();
 		
-		DocumentImpl doc = parser.getDocument();
-		HTMLScreen screen = new HTMLScreen();
+		Document doc = parser.getDocument();
+		
+		//recurse(doc, 0);
+		/*HTMLScreen screen = new HTMLScreen();
 		doc.bind(screen);
 		
 		new WebComponentWrapper(frame)
 			.ui(screen.getComponent())
-			.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
-	}
-}
-
-class HTMLScreen implements MutationListener {
-	private WebComponent component;
-
-	@Override public void onBind(Node el) {
-		this.component = new WebComponent(el);
+			.directive(SizeDirective.of(new Location(1, 0, 1, 0)));*/
 	}
 
-	@Override public void onChildrenMutate(Node el, MutationType type) {
-		
-	}
-
-	@Override public void onNodeMutate(Node el) {
-		
-	}
-
-	@Override public void onUnbind(Node el) {}
-	
-	public WebComponent getComponent() {
-		return component;
+	private void recurse(Node e, int j) {
+		for (int i=0; i<j; i++) {
+			if (i==j-1) {
+				System.out.print("|");
+			} else {
+				System.out.print(" ");
+			}
+		}
+		System.out.print("#");
+		if (e instanceof Text) {
+			System.out.println(((Text)e).getWholeText());
+		} else if (e instanceof Element) {
+			System.out.println(((Element)e).getTagName());
+		} else {
+			System.out.println(e.getNodeName());
+		}
+		NodeList children = e.getChildNodes();
+		int l = (int) children.getLength();
+		for (int i=0; i<l; i++) {
+			recurse(children.item(i), j+1);
+		}
 	}
 }

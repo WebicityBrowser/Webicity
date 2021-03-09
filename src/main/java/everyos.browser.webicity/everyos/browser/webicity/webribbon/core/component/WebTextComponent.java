@@ -1,9 +1,9 @@
 package everyos.browser.webicity.webribbon.core.component;
 
-import everyos.browser.webicity.renderer.html.dom.impl.TextNodeImpl;
+import everyos.browser.javadom.intf.Text;
 
 public class WebTextComponent extends WebComponent {
-	public WebTextComponent(TextNodeImpl node) {
+	public WebTextComponent(Text node) {
 		super(node);
 	}
 }

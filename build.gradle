@@ -15,13 +15,28 @@ dependencies {
 	implementation 'com.github.WebicityBrowser:RibbonAWTRenderer:1049b34e54'
 	implementation 'com.github.WebicityBrowser:RibbonSimpleUI:627975ba8f'
 
-	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'net.java.dev.jna:jna:5.5.0'
+	//implementation 'com.google.code.gson:gson:2.8.6'
+	//implementation 'net.java.dev.jna:jna:5.5.0'
+	implementation 'com.github.marianobarrios:tls-channel:0.4.0'
+	implementation 'ch.qos.logback:logback-classic:1.2.3'
 }
 
 apply plugin: 'java'
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
+
+sourceSets {
+	main {
+		java {
+			srcDirs = [
+				'src/main/java/everyos.engine.doublej',
+				'src/main/java/everyos.browser.javadom',
+				'src/main/java/everyos.browser.webicity',
+				'src/main/java/everyos.browser.webicitybrowser',
+			]
+		}
+	}
+}
 
 task run(type: JavaExec) {
   group = 'Run'

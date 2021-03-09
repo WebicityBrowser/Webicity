@@ -3,8 +3,9 @@ package everyos.browser.webicity.net.response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.nio.channels.ByteChannel;
+import java.nio.channels.SocketChannel;
 import java.util.HashMap;
 
 import everyos.browser.webicity.renderer.Renderer;
@@ -16,11 +17,11 @@ public class HTTPResponse extends Response {
 	private HashMap<String, String> headers;
 	private InputStream inputStream;
 
-	public HTTPResponse(Socket sock) throws IOException {
+	public HTTPResponse(SocketChannel sockChannel, ByteChannel byteChannel) throws IOException {
 		this.status = 0;
 		
 		//Read until we get to the content
-		InputStream stream = sock.getInputStream();
+		InputStream stream = new ByteChannelInputStream(byteChannel, /*8192*/16704);
 		ParseState state = ParseState.STATUS_HEADER;
 		ParseState returnState = null;
 		StringBuilder tmp_buf = null;
@@ -29,8 +30,15 @@ public class HTTPResponse extends Response {
 		this.headers = new HashMap<String, String>();
 		
 		try {
-			int chi = -1;
-			while (state!=null&&(chi=stream.read())!=-1) {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			while (state!=null) {
+				int chi = stream.read();
+				if (chi==-1) break;
 				char ch = (char) chi;
 				switch(state) {
 					case STATUS_HEADER:
@@ -94,36 +102,80 @@ public class HTTPResponse extends Response {
 		} else if (headers.containsKey("content-length")) {
 			len = Integer.valueOf(headers.get("content-length"));
 		} else {
-			sock.close();
+			byteChannel.close();
 			throw new IOException("Content Length is missing!");
 		}
+		
+		sockChannel.configureBlocking(false);
 		
 		int mlen = len; boolean chunked = uchunked;
 		this.inputStream = new InputStream() {
 			int flen = mlen;
 			
 			private int pos = 0;
+			private boolean ended = false;
 
-			@Override public int read() throws IOException {
+			@Override
+			public int read() throws IOException {
+				if (ended) return -1;
+				
+				byte[] bytes = new byte[1];
+				if (read(bytes, 0, 1)==0) {
+					throw new IOException("Not enough bytes were available!");
+				};
+				return bytes[0];
+			}
+			
+			@Override
+			public int read(byte[] b, int off, int len) throws IOException {
+				//if (len==0) return 0;
+				if (ended) {
+					b[1] = -1;
+					return -1;
+				};
 				if (pos==flen) {
 					if (!chunked) return -1;
 					StringBuilder size = new StringBuilder(4);
 					int chi;
 					while((chi=stream.read())!='\r') {
 						//pos++;
-						if (chi==-1) break;
+						if (chi==-1) {
+							ended = true;
+							break;
+						}
 						size.append((char) chi);
 					}
 					stream.read();
-					if (size.toString().equals("")) return -1;
-					if(Integer.parseInt(size.toString(), 16)==0) return -1;
+					if (size.toString().equals("")||Integer.parseInt(size.toString(), 16)==0) {
+						ended = true;
+						b[0] = -1;
+						return -1;
+					}
 					flen = pos+Integer.parseInt(size.toString(), 16);
 				}
-				pos++;
-				int ch = stream.read();
-				return ch;
+				
+				if (pos+len>flen) {
+					len = flen-pos;
+				}
+				pos+=len;
+				
+				return stream.read(b, off, len); //TODO
+			}
+			
+			@Override
+			public int available() throws IOException {
+				if (ended) return -1;
+				return stream.available();
+			}
+			
+			@Override
+			public void close() throws IOException {
+				stream.close();
+				super.close();
 			}
 		};
+		
+		//this.inputStream = stream;
 	}
 
 	@Override public Renderer getProbableRenderer() {

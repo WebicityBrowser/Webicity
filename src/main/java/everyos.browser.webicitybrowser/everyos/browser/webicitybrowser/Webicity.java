@@ -1,13 +1,32 @@
 package everyos.browser.webicitybrowser;
 
-import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTMonitor.NoMonitorAvailableException;
+import java.net.MalformedURLException;
+
+import everyos.browser.webicity.net.URL;
+import everyos.browser.webicitybrowser.gui.InstanceGUI;
 
 public class Webicity {
 	public static void main(String[] args) {
-		try {
-			WebicityInstance instance = new WebicityInstance();
-		} catch (NoMonitorAvailableException e) {
-			e.printStackTrace();
+		WebicityInstance instance = new WebicityInstance();
+		
+		new InstanceGUI(instance).start();
+		
+		for (String arg: args) {
+			try {
+				instance.open(new URL(arg));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
 		}
+		if (args.length==0) {
+			try {
+				//TODO: Configuration
+				instance.open(new URL("https://www.google.com/"));
+				instance.open(new URL("https://www.example.com/"));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}
+		instance.start();
 	}
 }

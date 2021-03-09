@@ -1,68 +1,44 @@
 package everyos.browser.webicitybrowser;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import everyos.browser.webicity.WebicityEngine;
-import everyos.browser.webicity.net.request.Request;
-import everyos.browser.webicity.net.response.Response;
-import everyos.browser.webicitybrowser.gui.WebicityUIManager;
-import everyos.browser.webicitybrowser.gui.component.TabFrame;
-import everyos.browser.webicitybrowser.gui.component.WindowFrame;
-import everyos.engine.ribbon.core.rendering.RenderingEngine;
-import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTMonitor;
-import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTMonitor.NoMonitorAvailableException;
-import everyos.engine.ribbon.renderer.guirenderer.GUIComponentUI;
-import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
-import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTRenderingEngine;
-import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTWindow;
+import everyos.browser.webicity.net.URL;
+import everyos.browser.webicitybrowser.event.EventDispatcher;
+import everyos.browser.webicitybrowser.ui.Window;
+import everyos.browser.webicitybrowser.ui.event.InstanceMutationEventListener;
 
 public class WebicityInstance {
-	public WebicityInstance() throws NoMonitorAvailableException {
-		RenderingEngine renderingEngine = new RibbonAWTRenderingEngine();
-		RibbonAWTMonitor monitor = new RibbonAWTMonitor(0);
-		
-		renderingEngine.queueRenderingTask(()->{
-			RibbonAWTWindow window = monitor.createWindow();
-			
-			window.setTitle("Webicity Browser");
-			window.setIcon("webicity.png");
-			window.setMinSize(new Location(0, 600, 0, 400));
-			window.setDecorated(false);
-		
-			UIManager<GUIComponentUI> mgr = WebicityUIManager.createUI();
-			
-			WindowFrame wframe = new WindowFrame(null);		
-			window.bind(wframe, mgr);
-			
-			WebicityEngine engine = new WebicityEngine() {
-				@Override public Response processRequest(Request request) throws IOException {
-					return request.send();
-				}
+	private List<Window> windows = new ArrayList<>();
+	private EventDispatcher<InstanceMutationEventListener> mutationEventDispatcher = new EventDispatcher<>();
 	
-				@Override public RenderingEngine getRenderingEngine() {
-					return renderingEngine;
-				}
-			};
-			
-			engine.registerDefaultProtocols();
-			
-			wframe.onClose(()->{
-				engine.quit();
-				window.close();
-			});
-			wframe.onMinimize(()->{
-				window.minimize();
-			});
-			wframe.onRestore(()->{
-				window.restore();
-			});
-			
-			TabFrame tab = new TabFrame(wframe.getDisplayPane(), engine);
-			tab.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
-			
-			window.setVisible(true);
-		});
+	public WebicityInstance() {
+		createWindow();
+	}
+	
+	private Window createWindow() {
+		Window window = new Window(this);
+		windows.add(window);
+		mutationEventDispatcher.fire(l->l.onWindowAdded(window));
+		return window;
+	}
+
+	public void open(URL url) {
+		windows.get(0).openTab(url);
+	}
+
+	public void start() {
+		
+	}
+	
+	public Window[] getWindows() {
+		return windows.toArray(new Window[windows.size()]);
+	}
+
+	public void addInstanceMutationListener(InstanceMutationEventListener mutationListener) {
+		mutationEventDispatcher.addListener(mutationListener);
+	}
+	public void removeInstanceMutationListener(InstanceMutationEventListener mutationListener) {
+		mutationEventDispatcher.removeListener(mutationListener);
 	}
 }

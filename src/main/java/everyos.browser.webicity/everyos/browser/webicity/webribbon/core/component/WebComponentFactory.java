@@ -1,15 +1,15 @@
 package everyos.browser.webicity.webribbon.core.component;
 
-import everyos.browser.webicity.renderer.html.dom.Element;
-import everyos.browser.webicity.renderer.html.dom.Node;
-import everyos.browser.webicity.renderer.html.dom.impl.TextNodeImpl;
+import everyos.browser.javadom.intf.Element;
+import everyos.browser.javadom.intf.Node;
+import everyos.browser.javadom.intf.Text;
 
 public final class WebComponentFactory {
 	private WebComponentFactory() {}
 	
 	public static WebComponent createComponentFromNode(Node child) {
-		if (child instanceof TextNodeImpl) {
-			return new WebTextComponent((TextNodeImpl) child);
+		if (child instanceof Text) {
+			return new WebTextComponent((Text) child);
 		} else if (child instanceof Element) {
 			Element e = (Element) child;
 			switch (e.getLocalName()) {

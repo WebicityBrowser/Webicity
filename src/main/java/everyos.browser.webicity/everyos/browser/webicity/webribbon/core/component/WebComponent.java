@@ -3,8 +3,8 @@ package everyos.browser.webicity.webribbon.core.component;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import everyos.browser.webicity.renderer.html.dom.Node;
-import everyos.browser.webicity.renderer.html.dom.NodeList;
+import everyos.browser.javadom.intf.Node;
+import everyos.browser.javadom.intf.NodeList;
 import everyos.browser.webicity.webribbon.core.cssom.Attribute;
 import everyos.browser.webicity.webribbon.gui.GUIWebComponentUI;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;

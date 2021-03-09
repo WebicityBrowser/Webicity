@@ -2,7 +2,7 @@ package everyos.browser.webicity.webribbon.ui.webui;
 
 import java.util.ArrayList;
 
-import everyos.browser.webicity.renderer.html.dom.impl.TextNodeImpl;
+import everyos.browser.javadom.intf.Text;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
@@ -28,7 +28,7 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 	@Override public void render(GUIRenderer r, SizePosGroup sizepos, WebUIManager<GUIWebComponentUI> uimgr) {
 		//node.getParent().component.attributes.get("word-wrap");
 		//calculateCascade();
-		String text = ((TextNodeImpl) getComponent().getNode()).wholeText.toString();
+		String text = ((Text) getComponent().getNode()).getWholeText();
 		
 		//setRenderingData(r);
 		this.position = sizepos.pointer();
