@@ -1,7 +1,6 @@
 package everyos.browser.webicity.net.protocol;
 
-import java.net.URL;
-
+import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.net.request.FileRequest;
 import everyos.browser.webicity.net.request.Request;
 

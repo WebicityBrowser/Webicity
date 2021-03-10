@@ -160,7 +160,6 @@ public class WebUIWebComponentUI implements WebComponentUI {
 		this.children = new ArrayList<WebComponentUI>();
 		for (WebComponent child: component.getChildren()) {
 			WebComponentUI ui = uimgr.get(child, parent);
-			child.bind(ui);
 			children.add(ui);
 		}
 		return children.toArray(new WebComponentUI[children.size()]);

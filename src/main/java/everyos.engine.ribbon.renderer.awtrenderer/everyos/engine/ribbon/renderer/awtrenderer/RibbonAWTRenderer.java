@@ -108,7 +108,10 @@ public class RibbonAWTRenderer implements Renderer {
 
 	@Override
 	public void draw() {
-		if (this.image!=null) parent.drawImage(image, x, y, l, h, null);
+		if (this.image!=null) {
+			parent.drawImage(image, x, y, l, h, null);
+			image.flush(); //TODO: Make sure this is suitable
+		}
 	}
 
 	@Override

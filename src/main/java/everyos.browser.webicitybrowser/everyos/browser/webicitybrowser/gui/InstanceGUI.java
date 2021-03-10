@@ -8,6 +8,7 @@ import everyos.browser.webicitybrowser.ui.Window;
 import everyos.browser.webicitybrowser.ui.event.InstanceMutationEventListener;
 
 public class InstanceGUI {
+	//TODO: Add tooltips
 	private WebicityInstance instance;
 	private MutationEventListener mutationListener;
 	private List<WindowGUI> windows = new ArrayList<>();

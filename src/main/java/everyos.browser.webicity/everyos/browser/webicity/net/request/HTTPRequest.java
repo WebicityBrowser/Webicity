@@ -3,7 +3,6 @@ package everyos.browser.webicity.net.request;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.channels.ByteChannel;
 import java.nio.channels.SocketChannel;
@@ -17,6 +16,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
 
+import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.net.response.HTTPResponse;
 import everyos.browser.webicity.net.response.Response;
 import tlschannel.ClientTlsChannel;

@@ -9,6 +9,7 @@ import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
+import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
 import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
@@ -32,16 +33,17 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 			this.ui = wuim.get(wui, null);
 		}
 		if (wui!=null) {
-			ui.render(r, new everyos.browser.webicity.webribbon.gui.shape.SizePosGroup(
+			everyos.browser.webicity.webribbon.gui.shape.SizePosGroup spg = new everyos.browser.webicity.webribbon.gui.shape.SizePosGroup(
 				new Position(),
 				new Dimension(sizepos.size.width, sizepos.size.height),
-				sizepos.size.width),
-				wuim);
+				sizepos.size.width);
+			ui.render(r, spg, wuim);
 		}
 	}
 
 	@Override
 	protected void paintUI(Renderer r) {
+		r.restoreState(new GUIState());
 		if (wui!=null) {
 			ui.paint(r);
 		}

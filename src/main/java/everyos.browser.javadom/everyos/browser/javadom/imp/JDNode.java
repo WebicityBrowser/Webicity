@@ -10,7 +10,7 @@ import everyos.browser.javadom.intf.NodeList;
 //TODO: I skipped all of the spec before this
 public class JDNode extends JDEventTarget implements Node {
 	private Document nodeDocument;
-	private List<Node> children = new ArrayList<Node>(4);
+	private List<Node> children = createChildrenList();
 	
 	protected JDNode(Document nodeDocument) {
 		this.nodeDocument = nodeDocument;
@@ -54,9 +54,10 @@ public class JDNode extends JDEventTarget implements Node {
 	}
 	@Override
 	public Node getLastChild() {
-		if (children.isEmpty()) return null;
+		if (isEmpty(children)) return null;
 		return children.get(children.size()-1);
 	}
+
 	@Override
 	public Document getOwnerDocument() {
 		return nodeDocument;
@@ -75,6 +76,10 @@ public class JDNode extends JDEventTarget implements Node {
 		this.nodeDocument = nodeDocument;
 	}
 	
+	protected ArrayList<Node> createChildrenList() {
+		return new ArrayList<Node>(1);
+	}
+	
 	private Node preInsert(Node node, Node child) {
 		//TODO: Ensure validity
 		Node referenceChild = child;
@@ -88,7 +93,12 @@ public class JDNode extends JDEventTarget implements Node {
 	}
 
 	private void insert(Node node, Node child, boolean suppressObservers) {
+		if (children == null) return;
 		//TODO: Actually implement
 		children.add(node);
+	}
+	
+	protected boolean isEmpty(List<Node> children) {
+		return children==null || children.isEmpty();
 	}
 }

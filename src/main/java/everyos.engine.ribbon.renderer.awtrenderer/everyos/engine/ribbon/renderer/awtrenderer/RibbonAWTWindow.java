@@ -57,7 +57,7 @@ public class RibbonAWTWindow {
 						0, 0, 
 						panel.getWidth(), panel.getHeight()), uimanager);
 					ui.validate();
-					System.out.println("RENDER: "+(System.currentTimeMillis()-time));
+					//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 				}
 				ArrayList<ListenerRect> newMouseBindings = new ArrayList<>(mouseBindings.size());
 				_r.onPaint((c, x, y, l, h, listener)->{
@@ -67,7 +67,7 @@ public class RibbonAWTWindow {
 				long time = System.currentTimeMillis();
 				ui.paint(r);
 				r.draw();
-				System.out.println("PAINT: "+(System.currentTimeMillis()-time));
+				//System.out.println("PAINT: "+(System.currentTimeMillis()-time));
 			}
 			@Override public void update(Graphics g) {
 				paint(g);

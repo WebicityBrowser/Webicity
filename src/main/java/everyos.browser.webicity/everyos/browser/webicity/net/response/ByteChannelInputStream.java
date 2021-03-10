@@ -38,6 +38,7 @@ public class ByteChannelInputStream extends InputStream {
 			}
 			if (available==-1) {
 				b[i] = -1;
+				if (i>1) return i-1;
 				return i;
 			} else if (available==0){
 				if (i==0) {
@@ -46,7 +47,7 @@ public class ByteChannelInputStream extends InputStream {
 					// Since it is not, we basically have to throw an exception, in hopes that we have enough data the next read attempt
 					throw new IOException("Hackful compatibility until I have a better solution");
 				}
-				return i-1;
+				return i;
 			}
 			
 			int flen = len-i;

@@ -1,5 +1,7 @@
 package everyos.browser.webicitybrowser.gui;
 
+import everyos.browser.webicity.webribbon.gui.WebComponentWrapper;
+import everyos.browser.webicity.webribbon.gui.WebComponentWrapperUI;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.browser.webicitybrowser.gui.ui.CircularTextUI;
@@ -13,6 +15,7 @@ public class WebicityUIManager {
 		UIManager ui = SimpleUIManager.createUI();
 		ui.put(CircularText.class, new ReflectiveFactory(CircularTextUI.class));
 		ui.put(URLBar.class, new ReflectiveFactory(URLBarUI.class));
+		ui.put(WebComponentWrapper.class, new ReflectiveFactory(WebComponentWrapperUI.class));
 		
 		return ui;
 	}

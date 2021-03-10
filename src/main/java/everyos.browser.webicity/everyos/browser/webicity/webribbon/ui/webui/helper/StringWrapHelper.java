@@ -9,7 +9,7 @@ public class StringWrapHelper {
 	public static ArrayList<String> calculateString(String text, Renderer r, SizePosGroup sizepos, boolean ew) {
 		ArrayList<String> lines = new ArrayList<String>();
 		
-		StringBuilder line = new StringBuilder();
+		StringBuilder line = new StringBuilder(20);
 		StringBuilder word = new StringBuilder();
 		boolean isNewLine = true;
 		boolean isNewLineNLTriggered = true;

@@ -22,6 +22,7 @@ public class TabGUI {
 	private boolean selected;
 	private URLBar urlBar;
 	private TabEventListener mutationListener;
+	private FrameGUI frame;
 
 	public TabGUI(Tab tab) {
 		this.tab = tab;
@@ -29,7 +30,6 @@ public class TabGUI {
 	
 	public void start() {
 		this.tabButton = new CircularText(null);
-		configureTabButton(tabButton);
 		
 		createTabPane();
 		
@@ -74,6 +74,13 @@ public class TabGUI {
 		int decorHeight = Styling.BUTTON_WIDTH+(int)(Styling.ELEMENT_PADDING*1.5);
 		tabDecor.directive(SizeDirective.of(new Location(1, 0, 0, decorHeight)));
 		tabPane.addChild(tabDecor);
+		
+		this.frame = new FrameGUI(tab.getFrame());
+		frame.start();
+		Component frameComponent = frame.getDisplayPane();
+		frameComponent.directive(SizeDirective.of(new Location(1, 0, 1, -decorHeight)));
+		frameComponent.directive(PositionDirective.of(new Location(0, 0, 0, decorHeight)));
+		tabPane.addChild(frameComponent);
 	}
 
 	private Component createTabDecorations() {
@@ -107,7 +114,7 @@ public class TabGUI {
 			0, horizontalDrop)));
 		reloadButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		reloadButton.text("O");
-		addButtonBehavior(reloadButton, ()->{});
+		addButtonBehavior(reloadButton, ()->tab.reload());
 		
 		tabDecor.addChild(reloadButton);
 		
@@ -138,6 +145,7 @@ public class TabGUI {
 	private class TabEventListener implements TabMutationEventListener {
 		@Override
 		public void onNavigate(URL url) {
+			configureTabButton(tabButton);
 			urlBar.text(url.toString());
 		}
 	}

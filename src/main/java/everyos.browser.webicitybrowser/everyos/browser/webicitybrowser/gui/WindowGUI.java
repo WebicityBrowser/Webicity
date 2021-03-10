@@ -48,7 +48,7 @@ public class WindowGUI {
 		window.addWindowMutationListener(mutationListener);
 		
 		for (Tab tab: window.getTabs()) {
-			mutationListener.onTabAdded(tab);
+			mutationListener.onTabAdded(window, tab);
 		}
 		if (tabs.size()>0) selectTab(tabs.get(0));
 	}
@@ -125,7 +125,7 @@ public class WindowGUI {
 		closeButton.directive(PositionDirective.of(new Location(1, -Styling.BORDER_PADDING-Styling.BUTTON_WIDTH, 0, Styling.ELEMENT_PADDING)));
 		closeButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		closeButton.text("X");
-		addDangerousButtonBehavior(closeButton, ()->windowGrip.close());
+		addDangerousButtonBehavior(closeButton, ()->close());
 		
 		windowDecor.addChild(closeButton);
 		
@@ -140,7 +140,25 @@ public class WindowGUI {
 		
 		windowDecor.addChild(tabPane);
 		
+		// and the New Tab button...
+		CircularText newTabButton = new CircularText(null);
+		//newTabButton.directive(PositionDirective.of(new Location(1, -Styling.BORDER_PADDING-Styling.BUTTON_WIDTH, 0, Styling.ELEMENT_PADDING)));
+		newTabButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
+		newTabButton.text("+");
+		addButtonBehavior(newTabButton, ()->window.openNewTab());
+		
+		Component spacer = new BlockComponent(null);
+		spacer.directive(SizeDirective.of(new Location(0, Styling.ELEMENT_PADDING, 0, Styling.BUTTON_WIDTH)));
+		
+		tabPane.addChild(newTabButton);
+		tabPane.addChild(spacer);
+		
 		return windowDecor;
+	}
+
+	private void close() {
+		windowGrip.close();
+		window.close();
 	}
 
 	private void addButtonBehavior(Component button, Runnable handler) {
@@ -191,7 +209,7 @@ public class WindowGUI {
 	
 	private class WindowEventListener implements WindowMutationEventListener {
 		@Override
-		public void onTabAdded(Tab tab) {
+		public void onTabAdded(Window window, Tab tab) {
 			TabGUI newTabGUI = createTabGUI(tab);
 			selectTab(newTabGUI);
 		}

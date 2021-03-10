@@ -7,15 +7,7 @@ import everyos.browser.webicitybrowser.gui.InstanceGUI;
 
 public class Webicity {
 	public static void main(String[] args) {
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
 		WebicityInstance instance = new WebicityInstance();
-		
-		new InstanceGUI(instance).start();
 		
 		for (String arg: args) {
 			try {
@@ -29,10 +21,12 @@ public class Webicity {
 				//TODO: Configuration
 				instance.open(new URL("https://www.google.com/"));
 				instance.open(new URL("https://www.example.com/"));
+				instance.open(new URL("http://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
 		}
 		instance.start();
+		new InstanceGUI(instance).start();
 	}
 }

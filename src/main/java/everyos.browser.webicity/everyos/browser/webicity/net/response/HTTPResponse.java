@@ -21,6 +21,7 @@ public class HTTPResponse extends Response {
 		this.status = 0;
 		
 		//Read until we get to the content
+		//TODO: Move the parser to it's own file
 		InputStream stream = new ByteChannelInputStream(byteChannel, /*8192*/16704);
 		ParseState state = ParseState.STATUS_HEADER;
 		ParseState returnState = null;
@@ -28,12 +29,6 @@ public class HTTPResponse extends Response {
 		StringBuilder tmp_buf_2 = null;
 		
 		this.headers = new HashMap<String, String>();
-		
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		
 		try {
 			while (state!=null) {
@@ -94,7 +89,8 @@ public class HTTPResponse extends Response {
 			this.status = 408;
 		}
 		
-		int len = 0; boolean uchunked = false;
+		int len = 0;
+		boolean uchunked = false;
 		headers.forEach((n, v)->System.out.println(n+": "+v));
 		
 		if (headers.getOrDefault("transfer-encoding", "").equals("chunked")) {
@@ -103,84 +99,21 @@ public class HTTPResponse extends Response {
 			len = Integer.valueOf(headers.get("content-length"));
 		} else {
 			byteChannel.close();
+			stream.close();
 			throw new IOException("Content Length is missing!");
 		}
 		
 		sockChannel.configureBlocking(false);
 		
-		int mlen = len; boolean chunked = uchunked;
-		this.inputStream = new InputStream() {
-			int flen = mlen;
-			
-			private int pos = 0;
-			private boolean ended = false;
-
-			@Override
-			public int read() throws IOException {
-				if (ended) return -1;
-				
-				byte[] bytes = new byte[1];
-				if (read(bytes, 0, 1)==0) {
-					throw new IOException("Not enough bytes were available!");
-				};
-				return bytes[0];
-			}
-			
-			@Override
-			public int read(byte[] b, int off, int len) throws IOException {
-				//if (len==0) return 0;
-				if (ended) {
-					b[1] = -1;
-					return -1;
-				};
-				if (pos==flen) {
-					if (!chunked) return -1;
-					StringBuilder size = new StringBuilder(4);
-					int chi;
-					while((chi=stream.read())!='\r') {
-						//pos++;
-						if (chi==-1) {
-							ended = true;
-							break;
-						}
-						size.append((char) chi);
-					}
-					stream.read();
-					if (size.toString().equals("")||Integer.parseInt(size.toString(), 16)==0) {
-						ended = true;
-						b[0] = -1;
-						return -1;
-					}
-					flen = pos+Integer.parseInt(size.toString(), 16);
-				}
-				
-				if (pos+len>flen) {
-					len = flen-pos;
-				}
-				pos+=len;
-				
-				return stream.read(b, off, len); //TODO
-			}
-			
-			@Override
-			public int available() throws IOException {
-				if (ended) return -1;
-				return stream.available();
-			}
-			
-			@Override
-			public void close() throws IOException {
-				stream.close();
-				super.close();
-			}
-		};
-		
-		//this.inputStream = stream;
+		if (uchunked) {
+			this.inputStream = new ChunkedInputStream(stream);
+		} else {
+			this.inputStream = new LimitedInputStream(stream, len);
+		}
 	}
 
 	@Override public Renderer getProbableRenderer() {
 		String type = headers.getOrDefault("content-type", "text/plain");
-		//this.inputStream.
 		if (type.indexOf(';')!=-1) type = type.substring(0, type.indexOf(';'));
 		switch(type) {//TODO: Move this to a registry
 			case "text/html":

@@ -1,6 +1,7 @@
 package everyos.browser.webicitybrowser.ui;
 
 import java.io.Closeable;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,17 +20,32 @@ public class Window implements Closeable {
 	}
 	
 	public void openTab(URL url) {
-		Tab tab = Tab.fromURL(instance, url);
+		Tab tab = new Tab(instance);
+		tab.setURL(url);
 		tabs.add(tab);
-		mutationEventDispatcher.fire(l->l.onTabAdded(tab));
+		mutationEventDispatcher.fire(l->l.onTabAdded(this, tab));
+	}
+	
+	public void openNewTab() {
+		try {
+			openTab(new URL("https://www.google.com/"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Tab[] getTabs() {
 		return tabs.toArray(new Tab[tabs.size()]);
 	}
 	
+
+	public void start() {
+		
+	}
+	
 	@Override
 	public void close() {
+		mutationEventDispatcher.fire(l->l.onClose(this));
 		for (Tab tab: tabs) {
 			tab.close();
 		}

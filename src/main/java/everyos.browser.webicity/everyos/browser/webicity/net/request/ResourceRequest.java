@@ -1,9 +1,9 @@
 package everyos.browser.webicity.net.request;
 
 import java.io.IOException;
-import java.net.URL;
 import java.net.UnknownHostException;
 
+import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.net.response.Response;
 
 public class ResourceRequest implements Request {

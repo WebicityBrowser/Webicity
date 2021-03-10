@@ -9,4 +9,4 @@ Webicity consists of multiple components:
 * Ribbon web: Part of Webicity. A web-oriented GUI component system based off of Ribbon.
 * DoubleJ: Manages script execution
 
-![image](https://cdn.discordapp.com/attachments/717047461780389928/734859541698576384/unknown.png)
+![image](https://user-images.githubusercontent.com/15697938/110673238-891b0f80-819e-11eb-81e9-26d927419837.png)

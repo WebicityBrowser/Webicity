@@ -11,7 +11,7 @@ import everyos.browser.javadom.intf.ServiceWorkerGlobalScope;
 
 public class JDEventTarget implements EventTarget {
 	//TODO: Implement
-	private ArrayList<InternalEventListener> eventListenerList = new ArrayList<>(); //TODO: Use Infra List instead
+	private ArrayList<InternalEventListener> eventListenerList; //TODO: Use Infra List instead
 	
 	//TODO: Might be tricky to automatically create the wrapping for EventListener, we will have to tell
 	//our WebIDL handling library how to do this.
@@ -33,7 +33,7 @@ public class JDEventTarget implements EventTarget {
 			return;
 		}
 		if (!eventListenerList.contains(listener)) {
-			eventListenerList.add(listener);
+			addToListeners(listener);
 		}
 	}
 	
@@ -44,5 +44,11 @@ public class JDEventTarget implements EventTarget {
 	@Override
 	public Consumer<Event> getActivationBehaviour() {
 		return null;
+	}
+	
+	private void addToListeners(InternalEventListener listeners) {
+		if (eventListenerList==null) {
+			eventListenerList = new ArrayList<>(1);
+		}
 	}
 }

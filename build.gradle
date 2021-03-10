@@ -1,5 +1,5 @@
 plugins {
-    id 'java-library'
+    id 'application'
     id 'java'
 }
 
@@ -17,7 +17,7 @@ dependencies {
 }
 
 apply plugin: 'java'
-apply plugin: 'java-library'
+apply plugin: 'application'
 apply plugin: 'eclipse'
 
 sourceSets {
@@ -36,10 +36,6 @@ sourceSets {
 	}
 }
 
-task run(type: JavaExec) {
-  group = 'Run'
-  description = 'Runs the app'
-  
-  classpath sourceSets.main.runtimeClasspath
-  main = "everyos.browser.webicitybrowser.Webicity"
-}
+mainClassName = "everyos.browser.webicitybrowser.Webicity"
+
+applicationDefaultJvmArgs = ["-Djavax.net.ssl.trustStoreType=Windows-ROOT"]

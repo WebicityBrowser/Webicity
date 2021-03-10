@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import everyos.browser.webicity.WebicityEngine;
 
-public class ThreadQueue implements Runnable{
-	protected boolean stopped;
-	protected WebicityEngine engine;
-	protected ArrayList<Runnable> queue = new ArrayList<>();
+public class ThreadQueue implements Runnable {
+	private boolean stopped;
+	private WebicityEngine engine;
+	private ArrayList<Runnable> queue = new ArrayList<>();
 	
 	public ThreadQueue(WebicityEngine engine) {
 		this.engine = engine;
@@ -17,7 +17,9 @@ public class ThreadQueue implements Runnable{
 		engine.addActive(queue);
 		while (!this.hasQuit()) {
 			try {
-				synchronized(queue) {queue.wait();}
+				synchronized(queue) {
+					if (queue.isEmpty()) queue.wait();
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -37,7 +39,9 @@ public class ThreadQueue implements Runnable{
 		return stopped||engine.hasQuit();
 	}
 	public void queue(Runnable action) {
-		queue.add(action);
-		synchronized(queue) {queue.notify();}
+		synchronized(queue) {
+			queue.add(action);
+			queue.notify();
+		}
 	}
 }

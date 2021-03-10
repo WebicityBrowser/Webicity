@@ -1,6 +1,6 @@
 package everyos.browser.webicity.event;
 
-import java.net.URL;
+import everyos.browser.webicity.net.URL;
 
 public class NavigateEvent {
 	private URL url;

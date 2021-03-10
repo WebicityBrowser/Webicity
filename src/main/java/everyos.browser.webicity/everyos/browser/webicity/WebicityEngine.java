@@ -1,24 +1,25 @@
 package everyos.browser.webicity;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import everyos.browser.webicity.concurrency.ThreadQueue;
+import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.net.protocol.AboutProtocol;
 import everyos.browser.webicity.net.protocol.FileProtocol;
 import everyos.browser.webicity.net.protocol.HTTPProtocol;
 import everyos.browser.webicity.net.protocol.Protocol;
 import everyos.browser.webicity.net.request.Request;
 import everyos.browser.webicity.net.response.Response;
-import everyos.engine.ribbon.core.rendering.RenderingEngine;
 
 public abstract class WebicityEngine {
 	protected HashMap<String, Protocol> protocols = new HashMap<>();
 	protected ArrayList<Object> locks = new ArrayList<>();
-	protected ExecutorService threads = Executors.newCachedThreadPool();
+	protected ExecutorService threads = Executors.newWorkStealingPool();
+			//Executors.newCachedThreadPool();
 	protected boolean stopped = false;
 	
 	public abstract Response processRequest(Request request) throws IOException;
@@ -44,17 +45,18 @@ public abstract class WebicityEngine {
 		protocols.put(string, protocol);
 	};
 	
-	public abstract RenderingEngine getRenderingEngine();
-	
-	public void createThread(Runnable action) {
-		
+	public ThreadQueue createThreadQueue() {
+		ThreadQueue tasks = new ThreadQueue(this);
 		threads.execute(()->{
 			if (this.stopped) return;
-			action.run();
+			tasks.run();
 		});
+		
+		return tasks;
 	}
 	
 	public void quit() {
+		// TODO: This does not seem to work if you close the program while it is processing
 		threads.shutdown();
 		locks.forEach(l->{
 			synchronized(l) { l.notifyAll(); }	
