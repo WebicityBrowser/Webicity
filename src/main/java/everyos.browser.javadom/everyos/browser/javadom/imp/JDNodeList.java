@@ -1,5 +1,6 @@
 package everyos.browser.javadom.imp;
 
+import java.util.Iterator;
 import java.util.List;
 
 import everyos.browser.javadom.intf.Node;
@@ -20,5 +21,10 @@ public class JDNodeList implements NodeList {
 	@Override
 	public Node item(long index) {
 		return children.get((int) index);
+	}
+
+	@Override
+	public Iterator<Node> iterator() {
+		return children.iterator();
 	}
 }

@@ -1,4 +1,4 @@
-package everyos.browser.jhtml;
+package everyos.browser.jhtml.parser;
 
 public enum TokenizeState {
 	DATA, CHARACTER_REFERENCE, TAG_OPEN, RCDATA, RCDATA_LT_SIGN, RAWTEXT, RAWTEXT_LT_SIGN, SCRIPT_DATA, SCRIPT_DATA_LT_SIGN, PLAINTEXT, MARKUP_DECLARATION_OPEN, 

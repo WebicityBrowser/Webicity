@@ -1,11 +1,12 @@
-package everyos.browser.jhtml;
+package everyos.browser.jhtml.parser;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PushbackReader;
 import java.io.UnsupportedEncodingException;
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 import everyos.browser.javadom.imp.JDComment;
@@ -21,13 +22,22 @@ import everyos.browser.javadom.intf.Text;
 public final class JHTMLParser {
 	public static final String HTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
 	private static final char rep_char = '\uFFFD';
+	private static String[] specialHTML = new String[] {
+		"address", "applet", "area", "article", "aside", "base", "basefont", "bgsound", "blockquote",
+		"body", "br", "button", "caption", "center", "col", "colgroup", "dd", "details", "dir", "div",
+		"dl", "dt", "embed", "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset",
+		"h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "iframe", "img",
+		"input", "keygen", "li", "link", "listing", "main", "marquee", "menu", "meta", "nav", "noembed",
+		"noframes", "noscript", "object", "ol", "p", "param", "plaintext", "pre", "script", "section",
+		"select", "source", "style", "summary", "table", "tbody", "td", "template", "textarea", "tfoot",
+		"th", "thead", "title", "tr", "track", "ul", "wbr", "xmp"
+	};
 	
 	private InsertionState istate = InsertionState.INITIAL;
 	private InsertionState ostate = null;
 	private TokenizeState state = TokenizeState.DATA;
 	private Document document = new JDDocument();
 	private Stack<Element> elements = new Stack<Element>();
-	@SuppressWarnings("unused")
 	private Element head;
 	private boolean fostering = false;
 	private PushbackReader reader;
@@ -38,7 +48,7 @@ public final class JHTMLParser {
 	
 	
 	public JHTMLParser(InputStream stream) throws UnsupportedEncodingException {
-		this.reader = new PushbackReader(new BufferedReader(new InputStreamReader(stream, "UTF-8")), 7);
+		this.reader = new PushbackReader(new InputStreamReader(new BufferedInputStream(stream), "UTF-8"), 7);
 	}
 	
 	public Document getDocument() {
@@ -211,6 +221,8 @@ public final class JHTMLParser {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
 					} else if (ch=='>'&&token instanceof TagToken) {
 						state = TokenizeState.DATA;
+						//TODO
+						emit(token);
 					} else if (Character.isAlphabetic(ch)) {
 						((TagToken) token).getNameBuilder().appendCodePoint(Character.toLowerCase(ch));
 						tmp_buf.appendCodePoint(ch);
@@ -580,7 +592,6 @@ public final class JHTMLParser {
 					} else if (ch=='\0') {
 						((TagToken) token).getAttributeValueBuilder().appendCodePoint(rep_char);
 					} else {
-						//System.out.print((char) ch);
 						((TagToken) token).getAttributeValueBuilder().appendCodePoint(ch);
 					}
 					break;
@@ -892,8 +903,6 @@ public final class JHTMLParser {
 		String name = null;
 		if (token instanceof TagToken) {
 			name = ((TagToken) token).getNameBuilder().toString();
-			//System.out.println(cstate);
-			//System.out.println(name+":"+(((TagToken) token).isEnd?"END":"START"));
 		}
 		switch(cstate) {
 			case INITIAL:
@@ -917,11 +926,9 @@ public final class JHTMLParser {
 					Element el = createElement((TagToken) token, HTML_NAMESPACE, document);
 					document.appendChild(el);
 					elements.push(el);
-					//TODO:
 					istate = InsertionState.BEFORE_HEAD;
 				} else if (isEndTag(token) && !tagIs(name, "head", "body", "html", "br")) {
 				} else {
-					//TODO
 					Element el = createElement_1("html", document);
 					document.appendChild(el);
 					elements.push(el);
@@ -936,44 +943,43 @@ public final class JHTMLParser {
 				} else if (isStartTag(token)&&name.equals("html")) {
 					emit(InsertionState.IN_BODY, token);
 				} else if (isStartTag(token)&&name.equals("head")) {
-					//TODO:
 					head = insertElement((TagToken) token, HTML_NAMESPACE);
 					istate = InsertionState.IN_HEAD;
 				} else if (isEndTag(token) && !tagIs(name, "head", "body", "html", "br")) {
 				} else {
-					//TODO:
+					head = insertElement((TagToken) token, HTML_NAMESPACE);
+					istate = InsertionState.IN_HEAD;
 					istate = InsertionState.IN_HEAD;
 					emit(token);
 				}
 				break;
 			case IN_HEAD:
 				if (isWhitespace(token)) {
-					//TODO
+					insertCharacter(((CharToken)token).getCharacter());
 				} else if (token instanceof CommentToken) {
 					//TODO
 				} else if (token instanceof DoctypeToken) {
 				} else if (isStartTag(token) && name.equals("html")) {
 					emit(InsertionState.IN_BODY, token);
 				} else if (isStartTag(token)&&tagIs(name, "base", "basefont", "bgsound", "link")) {
-					//TODO:
+					insertElement((TagToken) token, HTML_NAMESPACE);
+					elements.pop();
+					//TODO: "Acknowledge" the element
 				} else if (isStartTag(token) && name.equals("meta")) {
 					insertElement((TagToken) token, HTML_NAMESPACE);
 					elements.pop();
-					//TODO
+					//TODO: "Acknowledge" the element
+					//TODO: Encoding games
 				} else if (isStartTag(token) && name.equals("title")) {
-					//TODO:
+					parseGenericRCDATA((TagToken)token);
 				} else if (isStartTag(token) && tagIs(name, "noframes", "style")) {
 					//TODO: Handle noscript
-					//TODO:
-					insertElement((TagToken) token, HTML_NAMESPACE);
-					state = TokenizeState.RAWTEXT;
-					ostate = istate;
-					istate = InsertionState.TEXT;
+					parseGenericRawText((TagToken) token);
 				} else if (isStartTag(token) && name.equals("script")) {
-					//System.out.println("\n***SCRIPT ENTER***");
 					//TODO:
 					Node insertion = getNodeInsertionLocation(null);
-					createElement((TagToken) token, HTML_NAMESPACE, insertion);
+					Element e = createElement((TagToken) token, HTML_NAMESPACE, insertion);
+					elements.push(e);
 					state = TokenizeState.SCRIPT_DATA;
 					ostate = istate;
 					istate = InsertionState.TEXT;
@@ -983,7 +989,6 @@ public final class JHTMLParser {
 				} else if (isEndTag(token) && !tagIs(name,  "body", "html", "br")) { /*TODO: Template*/ 
 				} else if (isStartTag(token) && name.equals("head") || isEndTag(token)) {
 				} else {
-					//System.out.println(name);
 					if (!elements.isEmpty()) elements.pop();
 					istate = InsertionState.AFTER_HEAD;
 					emit(token);
@@ -996,16 +1001,27 @@ public final class JHTMLParser {
 			case AFTER_HEAD:
 				if (token instanceof CharToken && ("\t\n\f\r ").indexOf(((CharToken) token).getCharacter())!=-1) {
 					insertCharacter(((CharToken) token).getCharacter());
+				} else if (token instanceof CommentToken) {
+					//TODO:
+				} else if (token instanceof DoctypeToken) {
+				} else if (isStartTag(token) && name.equals("html")) {
+					emit(InsertionState.IN_BODY, token);
 				} else if (isStartTag(token) && name.equals("body")) {
 					Element e = insertElement((TagToken) token, HTML_NAMESPACE);
-					System.out.println(e+" parent is "+e.getParentNode());
 					//TODO
 					istate = InsertionState.IN_BODY;
+				} else if (isStartTag(token) && name.equals("frameset")) {
+					insertElement((TagToken) token, HTML_NAMESPACE);
+					istate = InsertionState.IN_FRAMESET;
+				} else if (isStartTag(token) && tagIs(name, "base", "basefont", "bgsound", "link", "meta", "noframes", "script", "style", "template", "title")) {
+					elements.push(head);
+					emit(InsertionState.IN_HEAD, token);
+					while (elements.pop()!=head); //TODO: Am I supposed to remove only head? Or all elements afterwards?
+				} else if (isEndTag(token) && name.equals("template")) {
+					emit(InsertionState.IN_HEAD, token);
+				} else if ((isStartTag(token)&&name.equals("head")) || (isEndTag(token)&&!tagIs(name, "body", "html", "br"))) {
 				} else {
-					//System.out.println("T:"+token.toString());
-					//if (token instanceof CharToken ) System.out.println((int) ((CharToken) token).ch);
-					Element e = insertElement(new TagToken("body", false), HTML_NAMESPACE);
-					//TODO: Why is this being fired?
+					insertElement(new TagToken("body", false), HTML_NAMESPACE);
 					istate = InsertionState.IN_BODY;
 					emit(token);
 				}
@@ -1016,22 +1032,50 @@ public final class JHTMLParser {
 					//TODO: All char processing
 					char data = ((CharToken) token).getCharacter();
 					if (data=='\0') break;
-					//System.out.print(data);
 					insertCharacter(data);
-				//TODO: Many things in between
+				} else if (token instanceof CommentToken) {
+					//TODO
+				} else if (token instanceof DoctypeToken) {
+				} else if (isStartTag(token) && name.equals("html")) {
 				} else if ((isStartTag(token) && tagIs(name, "base", "basefont", "bgsound", "link", 
 						"meta", "noframes", "script", "style", /*"template",*/ "title"))
 						/*|| (isEndTag(token) && name.equals("template"))*/) {
 					emit(InsertionState.IN_HEAD, token);
-				//TODO: Many things in between
+				} else if (isStartTag(token) && name.equals("body")) {
+					//TODO
+				} else if (isStartTag(token) && name.equals("frameset")) {
+					//TODO
+				} else if (token instanceof EOFToken) {
+					//TODO
+					break;
+				} else if (isEndTag(token) && name.equals("body")) {
+					//TODO
+					istate = InsertionState.AFTER_BODY;
+				} else if (isEndTag(token) && name.equals("html")) {
+					//TODO
+					istate = InsertionState.AFTER_BODY;
+					emit(token);
 				} else if (isStartTag(token) && tagIs(name, "address", "article", "aside", "blockquote", "center", "details",
 						"dialog", "dir", "div", "dl", "fieldset", "figcaption", "figure", "footer", "header", "hgroup", "main", "menu",
 						"nav", "ol", "p", "section", "summary", "ul")) {
 					
 					//TODO: Button in scope
 					insertElement((TagToken) token, HTML_NAMESPACE);
-					//System.out.println(elements.size());
-					//TODO: Many things in between
+				} else if (isStartTag(token) && tagIs(name, "h1", "h2", "h3", "h4", "h5", "h6")) {
+					//TODO: Close p element if in button scope
+					try {
+						Element top = elements.peek();
+						if (elementIs(top, HTML_NAMESPACE, "h1", "h2", "h3", "h4", "h5", "h6")) {
+							elements.pop();
+						}
+					} catch (EmptyStackException e) {}
+					
+					insertElement((TagToken) token, HTML_NAMESPACE);
+				} else if (isStartTag(token) && tagIs(name, "pre", "listing")) {
+					//TODO
+					insertElement((TagToken) token, HTML_NAMESPACE);
+					
+					//TODO: Yet more html tags
 				} else if (isEndTag(token) && tagIs(name, "address", "article", "aside", "blockquote", "center", "details",
 						"dialog", "dir", "div", "dl", "fieldset", "figcaption", "figure", "footer", "header", "hgroup", "main", "menu",
 						"nav", "ol", "p", "section", "summary", "ul")) {
@@ -1050,7 +1094,6 @@ public final class JHTMLParser {
 						}
 					}
 					//while(!elements.pop().tagName.equals(name)) {}
-					//System.out.println("B");
 					
 					//TODO: Many things in between
 				} else if (isStartTag(token) && name.equals("a")) {
@@ -1059,7 +1102,7 @@ public final class JHTMLParser {
 					
 					//TODO: Many things in between
 				} else if (isEndTag(token) && name.equals("a")) {
-					//TODO: algorithim
+					//TODO: adoption agency algorithm
 					
 					Stack<Element> s = new Stack<>();
 					while (!elements.isEmpty()) {
@@ -1070,17 +1113,36 @@ public final class JHTMLParser {
 							break;
 						}
 					}
+					//TODO: Many things in between
+				} else if (isStartTag(token)) {
+					//TODO: Reconstruct active formatting elements
+					insertElement((TagToken) token, HTML_NAMESPACE);
+				} else if (isEndTag(token)) {
+					int pos = elements.size();
+					while (true) {
+						pos--;
+						Element el = elements.get(pos);
+						if (elementIs(el, HTML_NAMESPACE, name)) {
+							generateEmpliedEndTags(name);
+							while (!elements.pop().equals(el));
+							break;
+						} else if (isSpecial(el.getNamespaceURI(), el.getTagName())) {
+							break;
+						}
+					}
 				}
 				break;
 				
 			case TEXT:
 				//TODO:
 				if (token instanceof CharToken) {
-					//insertCharacter(((CharToken) token).ch);
-					//System.out.print(((CharToken) token).ch);
+					insertCharacter(((CharToken) token).getCharacter());
 				} else if (isEndTag(token) && name.equals("script")) {
-					//System.out.println("\n***SCRIPT EXIT***");
 					Element e = elements.isEmpty()?null:elements.pop();
+					//TODO
+					istate = ostate;
+				} else if (isEndTag(token)) {
+					elements.pop();
 					istate = ostate;
 				}
 				break;
@@ -1176,5 +1238,40 @@ public final class JHTMLParser {
 		Document nd = n.getOwnerDocument();
 		if (nd==null) nd = (Document) n;
 		return nd;
+	}
+	
+	private void parseGenericRCDATA(TagToken token) {
+		insertElement(token, HTML_NAMESPACE);
+		state = TokenizeState.RCDATA;
+		ostate = istate;
+		istate = InsertionState.TEXT;
+	}
+	private void parseGenericRawText(TagToken token) {
+		insertElement(token, HTML_NAMESPACE);
+		state = TokenizeState.RAWTEXT;
+		ostate = istate;
+		istate = InsertionState.TEXT;
+	}
+	
+	private boolean elementIs(Element element, String namespace, String... options) {
+		if (element==null) return false;
+		if (!element.getNamespaceURI().equals(namespace)) return false;
+		for (String tagName: options) {
+			if (tagName.equals(element.getTagName())) return true;
+		}
+		return false;
+	}
+	
+	private boolean isSpecial(String namespace, String name) {
+		if (namespace.equals(HTML_NAMESPACE)) {
+			for (String n: specialHTML) {
+				if (n.equals(name)) return true;
+			}
+		}
+		return false;
+	}
+	
+	private void generateEmpliedEndTags(String excluded) {
+		//TODO
 	}
 }

@@ -148,5 +148,10 @@ public class TabGUI {
 			configureTabButton(tabButton);
 			urlBar.text(url.toString());
 		}
+		
+		@Override
+		public void onTitleChange(String name) {
+			configureTabButton(tabButton);
+		}
 	}
 }

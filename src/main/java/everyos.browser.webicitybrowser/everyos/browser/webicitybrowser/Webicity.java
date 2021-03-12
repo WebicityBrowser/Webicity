@@ -21,7 +21,7 @@ public class Webicity {
 				//TODO: Configuration
 				instance.open(new URL("https://www.google.com/"));
 				instance.open(new URL("https://www.example.com/"));
-				instance.open(new URL("http://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
+				instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}

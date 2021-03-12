@@ -7,4 +7,6 @@ import everyos.browser.webicity.WebicityFrame;
 
 public interface Renderer {
 	void execute(WebicityFrame frame, InputStream stream) throws IOException;
+	String getTitle();
+	void addReadyHook(Runnable hook);
 }

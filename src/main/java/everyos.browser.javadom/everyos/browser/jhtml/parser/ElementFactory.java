@@ -1,8 +1,9 @@
-package everyos.browser.jhtml;
+package everyos.browser.jhtml.parser;
 
-import everyos.browser.javadom.imp.JDElement;
 import everyos.browser.javadom.intf.Document;
 import everyos.browser.javadom.intf.Element;
+import everyos.browser.jhtml.imp.JHTMLHTMLElement;
+import everyos.browser.jhtml.imp.JHTMLHTMLTitleElement;
 
 public class ElementFactory {
 	private Document document;
@@ -48,10 +49,17 @@ public class ElementFactory {
 		return this.localName;
 	}
 
+	public String getNamespaceURL() {
+		return namespaceURI;
+	}
+	
 	public Element createElement(String namespace, String localName) {
 		switch(localName) {
+			case "title":
+				return new JHTMLHTMLTitleElement(this);
+		
 			default:
-				return new JDElement(this);
+				return new JHTMLHTMLElement(this);
 		}
 	}
 }

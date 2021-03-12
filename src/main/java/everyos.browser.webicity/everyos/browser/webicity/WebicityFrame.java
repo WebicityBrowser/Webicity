@@ -55,4 +55,11 @@ public class WebicityFrame {
 	public Renderer getRenderer() {
 		return renderer;
 	}
+
+	public String getTitle() {
+		if (renderer!=null) {
+			return renderer.getTitle();
+		}
+		return null;
+	}
 }

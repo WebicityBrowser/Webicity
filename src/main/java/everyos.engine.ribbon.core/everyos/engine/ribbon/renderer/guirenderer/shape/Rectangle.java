@@ -1,6 +1,6 @@
 package everyos.engine.ribbon.renderer.guirenderer.shape;
 
-public class Rectangle {
+public class Rectangle implements Cloneable {
 	public int x;
 	public int y;
 	public int width;
@@ -12,8 +12,19 @@ public class Rectangle {
 		this.width = l;
 		this.height = h;
 	}
+
+	public boolean intersects(Rectangle r2) {
+		if (r2.x+r2.width<x || x+width<r2.x) {
+			return false;
+		}
+		if (r2.y+r2.height<y || y+height<r2.y) {
+			return false;
+		}
+		return true;
+	}
 	
-	public Object clone() {
+	@Override
+	public Rectangle clone() {
 		return new Rectangle(x, y, width, height);
 	}
 }

@@ -80,6 +80,14 @@ public class JDNode extends JDEventTarget implements Node {
 		return new ArrayList<Node>(1);
 	}
 	
+	protected boolean isEmpty(List<Node> list) {
+		return list==null || list.isEmpty();
+	}
+	
+	protected List<Node> getChildren() {
+		return children;
+	}
+	
 	private Node preInsert(Node node, Node child) {
 		//TODO: Ensure validity
 		Node referenceChild = child;
@@ -96,9 +104,5 @@ public class JDNode extends JDEventTarget implements Node {
 		if (children == null) return;
 		//TODO: Actually implement
 		children.add(node);
-	}
-	
-	protected boolean isEmpty(List<Node> children) {
-		return children==null || children.isEmpty();
 	}
 }

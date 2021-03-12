@@ -21,6 +21,9 @@ public class Frame {
 	}
 	
 	public String getName() {
+		String name = frame.getTitle();
+		if (name!=null) return name;
+		
 		String host = getURL().getHost();
 		return host.isEmpty()?"New tab":host;
 	}

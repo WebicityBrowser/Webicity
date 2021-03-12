@@ -21,6 +21,7 @@ public class Window implements Closeable {
 	
 	public void openTab(URL url) {
 		Tab tab = new Tab(instance);
+		tab.start();
 		tab.setURL(url);
 		tabs.add(tab);
 		mutationEventDispatcher.fire(l->l.onTabAdded(this, tab));

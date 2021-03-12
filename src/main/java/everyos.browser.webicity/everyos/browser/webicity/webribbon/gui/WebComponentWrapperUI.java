@@ -11,6 +11,7 @@ import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
+import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
 import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 
@@ -18,6 +19,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 	private WebComponent wui;
 	private WebComponentUI ui;
 	private WebUIManager wuim;
+	private Rectangle viewport;
 	
 	public WebComponentWrapperUI(Component c, ComponentUI parent) {
 		super(c, parent);
@@ -37,7 +39,8 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 				new Position(),
 				new Dimension(sizepos.size.width, sizepos.size.height),
 				sizepos.size.width);
-			ui.render(r, spg, wuim);
+			this.viewport = new Rectangle(0, 0, spg.size.width, spg.size.height);
+			ui.render(r, spg, new UIContextImp(wuim));
 		}
 	}
 
@@ -45,7 +48,25 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 	protected void paintUI(Renderer r) {
 		r.restoreState(new GUIState());
 		if (wui!=null) {
-			ui.paint(r);
+			ui.paint(r, viewport);
+		}
+	}
+	
+	private class UIContextImp implements UIContext {
+		private WebUIManager uimanager;
+
+		public UIContextImp(WebUIManager uimgr) {
+			this.uimanager = uimgr;
+		}
+
+		@Override
+		public WebUIManager getManager() {
+			return uimanager;
+		}
+
+		@Override
+		public void addTopLevelUIBox(UIBox box) {
+			// TODO: Implement this when needed
 		}
 	}
 }

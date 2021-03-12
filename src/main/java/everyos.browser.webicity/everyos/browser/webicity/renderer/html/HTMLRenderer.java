@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import everyos.browser.javadom.intf.Document;
-import everyos.browser.jhtml.JHTMLParser;
+import everyos.browser.jhtml.parser.JHTMLParser;
 import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.renderer.Renderer;
 
@@ -21,11 +21,9 @@ public class HTMLRenderer implements Renderer {
 			e.printStackTrace();
 		}*/
 		
-		System.out.println("HTML");
 		long time = System.currentTimeMillis();
 		JHTMLParser parser = new JHTMLParser(stream);
 		parser.parse();
-		System.out.println();
 		System.out.println("TIME: "+(System.currentTimeMillis()-time));
 		stream.close();
 		
@@ -39,6 +37,7 @@ public class HTMLRenderer implements Renderer {
 		readyHooks.clear();
 	}
 
+	@Override
 	public void addReadyHook(Runnable hook) {
 		if (this.document!=null) {
 			hook.run();
@@ -49,5 +48,11 @@ public class HTMLRenderer implements Renderer {
 	
 	public Document getDocument() {
 		return document;
+	}
+
+	@Override
+	public String getTitle() {
+		if (document==null) return null;
+		return document.getTitle();
 	}
 }

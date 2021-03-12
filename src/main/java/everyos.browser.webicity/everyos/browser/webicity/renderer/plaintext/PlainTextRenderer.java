@@ -41,4 +41,15 @@ public class PlainTextRenderer implements Renderer {
 		
 		
 	}
+
+	@Override
+	public String getTitle() {
+		return null;
+	}
+
+	@Override
+	public void addReadyHook(Runnable hook) {
+		// TODO Auto-generated method stub
+		
+	}
 }

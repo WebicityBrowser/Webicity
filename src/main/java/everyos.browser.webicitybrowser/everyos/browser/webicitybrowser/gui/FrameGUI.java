@@ -40,7 +40,6 @@ public class FrameGUI {
 		public void onRendererCreated(Renderer r) {
 			if (r==null) return;
 			if (r.getClass() == HTMLRenderer.class) {
-				System.out.println("I support this renderer!");
 				//TODO: Store "cleanup" to runnable for later
 				HTMLRendererGUI rendererGUI = new HTMLRendererGUI((HTMLRenderer) r);
 				rendererGUI.start();

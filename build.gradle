@@ -38,4 +38,4 @@ sourceSets {
 
 mainClassName = "everyos.browser.webicitybrowser.Webicity"
 
-applicationDefaultJvmArgs = ["-Djavax.net.ssl.trustStoreType=Windows-ROOT"]
+applicationDefaultJvmArgs = ["-Djavax.net.ssl.trustStoreType=Windows-ROOT", "-Dsun.java2d.opengl=true"]

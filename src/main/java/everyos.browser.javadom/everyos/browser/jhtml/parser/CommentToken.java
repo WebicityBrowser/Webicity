@@ -1,4 +1,4 @@
-package everyos.browser.jhtml;
+package everyos.browser.jhtml.parser;
 
 public class CommentToken extends Token {
 	private StringBuilder dataBuilder;

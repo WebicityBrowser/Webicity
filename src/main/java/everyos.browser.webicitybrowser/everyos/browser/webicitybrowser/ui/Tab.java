@@ -4,6 +4,7 @@ import java.io.Closeable;
 
 import everyos.browser.webicity.event.NavigateEvent;
 import everyos.browser.webicity.net.URL;
+import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicitybrowser.WebicityInstance;
 import everyos.browser.webicitybrowser.event.EventDispatcher;
 import everyos.browser.webicitybrowser.ui.event.FrameMutationEventListener;
@@ -64,6 +65,12 @@ public class Tab implements Closeable {
 		@Override
 		public void onNavigate(NavigateEvent event) {
 			mutationEventDispatcher.fire(l->l.onNavigate(event.getURL()));
+		}
+		
+		@Override
+		public void onRendererCreated(Renderer r) {
+			r.addReadyHook(()->
+				mutationEventDispatcher.fire(l->l.onTitleChange(frame.getName())));
 		}
 	}
 }
