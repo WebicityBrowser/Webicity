@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PushbackReader;
 import java.io.UnsupportedEncodingException;
 import java.util.EmptyStackException;
+import java.util.HashMap;
 import java.util.Stack;
 
 import everyos.browser.javadom.imp.JDComment;
@@ -16,6 +17,7 @@ import everyos.browser.javadom.intf.Document;
 import everyos.browser.javadom.intf.Element;
 import everyos.browser.javadom.intf.Node;
 import everyos.browser.javadom.intf.Text;
+import everyos.browser.webicity.net.protocol.http.IOPendingException;
 
 //TODO: Do not fire mutation events
 
@@ -67,13 +69,13 @@ public final class JHTMLParser {
 		return eof;
 	}
 	
+	//TODO: Debug why parsing yahoo is totally broken
 	public void parseChunk() throws IOException {
 		while (!eof) {
 			int ich;
 			try {
 				ich = reader.read();
-			} catch(IOException e) {
-				//e.printStackTrace();
+			} catch(IOPendingException e) {
 				return;
 			}
 			
@@ -929,7 +931,7 @@ public final class JHTMLParser {
 					istate = InsertionState.BEFORE_HEAD;
 				} else if (isEndTag(token) && !tagIs(name, "head", "body", "html", "br")) {
 				} else {
-					Element el = createElement_1("html", document);
+					Element el = createElement(new TagToken("html", false), HTML_NAMESPACE, document);
 					document.appendChild(el);
 					elements.push(el);
 					istate = InsertionState.BEFORE_HEAD;
@@ -947,8 +949,7 @@ public final class JHTMLParser {
 					istate = InsertionState.IN_HEAD;
 				} else if (isEndTag(token) && !tagIs(name, "head", "body", "html", "br")) {
 				} else {
-					head = insertElement((TagToken) token, HTML_NAMESPACE);
-					istate = InsertionState.IN_HEAD;
+					head = insertElement(new TagToken("head", true), HTML_NAMESPACE);
 					istate = InsertionState.IN_HEAD;
 					emit(token);
 				}
@@ -1205,11 +1206,12 @@ public final class JHTMLParser {
 		Document document = getNodeDocument(parent);
 		
 		//TODO: Custom element code
-		return createElement(document, token.getNameBuilder().toString(), namespace, null, token.getIs(), false);
-	}
-	private Element createElement_1(String name, Node parent) {
-		Document document = getNodeDocument(parent);
-		return createElement(document, name, HTML_NAMESPACE, null, null, false);
+		HashMap<String, String> attributes = token.getAttributes();
+		Element e = createElement(document, token.getNameBuilder().toString(), namespace, null, attributes.get("is"), false);
+		
+		attributes.forEach((n, v)->e.setAttribute(n, v));
+		
+		return e;
 	}
 	private Element createElement(Document document, String localName, String namespace, String prefix, String is, boolean synccus) {
 		//TODO: a lot of logic

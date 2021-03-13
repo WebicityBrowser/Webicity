@@ -1,6 +1,6 @@
 package everyos.engine.ribbon.renderer.guirenderer.event;
 
-public class ScrollEvent {
+public class ScrollEvent implements UIEvent {
 	private int x, y;
 
 	public ScrollEvent(int x, int y) {

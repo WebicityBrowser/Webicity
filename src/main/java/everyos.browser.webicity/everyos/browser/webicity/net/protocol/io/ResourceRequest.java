@@ -1,10 +1,11 @@
-package everyos.browser.webicity.net.request;
+package everyos.browser.webicity.net.protocol.io;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import everyos.browser.webicity.net.Request;
+import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
-import everyos.browser.webicity.net.response.Response;
 
 public class ResourceRequest implements Request {
 	protected URL url;

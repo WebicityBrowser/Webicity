@@ -20,21 +20,21 @@ public final class ActionButtonBehavior {
 			.directive(BackgroundDirective.of(activeChecker.get()?activeColor:defaultColor))
 			.directive(MouseListenerDirective.of(e->{
 				if (e.getAction()==MouseEvent.MOVE) {
-					e.getComponent().directive(BackgroundDirective.of(hoverColor));
+					((Component) e.getEventTarget()).directive(BackgroundDirective.of(hoverColor));
 				}
 				//TODO: These elements should only respond to the left mouse button, but the drag handler
 				// wasn't working when I tried to do that.
 				if (e.getAction()==MouseEvent.PRESS||e.getAction()==MouseEvent.DRAG) {
-					e.getComponent().directive(BackgroundDirective.of(selectedColor));
+					((Component) e.getEventTarget()).directive(BackgroundDirective.of(selectedColor));
 				}
 				if (e.getButton()!=MouseEvent.LEFT_BUTTON) return;
 				if (e.getAction()==MouseEvent.RELEASE) {
 					if (handler!=null) handler.run();
-					e.getComponent().directive(BackgroundDirective.of(hoverColor));
+					((Component) e.getEventTarget()).directive(BackgroundDirective.of(hoverColor));
 				}
 			}))
 			.directive(ExternalMouseListenerDirective.of(e->{
-				e.getComponent().directive(BackgroundDirective.of(activeChecker.get()?activeColor:defaultColor));
+				((Component) e.getEventTarget()).directive(BackgroundDirective.of(activeChecker.get()?activeColor:defaultColor));
 			}));
 	}
 }

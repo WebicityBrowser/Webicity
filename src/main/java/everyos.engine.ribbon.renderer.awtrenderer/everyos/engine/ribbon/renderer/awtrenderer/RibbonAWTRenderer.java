@@ -8,9 +8,9 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.renderer.guirenderer.event.MouseListener;
+import everyos.engine.ribbon.renderer.guirenderer.event.UIEventTarget;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.FontStyle;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
@@ -73,8 +73,9 @@ public class RibbonAWTRenderer implements Renderer {
 	}
 
 	@Override
-	public void drawText(int x, int y, String text) {
+	public int drawText(int x, int y, String text) {
 		g.drawString(text, x, y+g.getFontMetrics().getAscent());
+		return g.getFontMetrics().stringWidth(text);
 	}
 
 	@Override
@@ -155,7 +156,7 @@ public class RibbonAWTRenderer implements Renderer {
 		this.lpl = l;
 	}
 	@Override
-	public void paintMouseListener(Component c, int x, int y, int l, int h, MouseListener listener) {
+	public void paintMouseListener(UIEventTarget c, int x, int y, int l, int h, MouseListener listener) {
 		if (this.x==-1) {
 			if (lpl!=null) lpl.onPaint(c, x, y, l, h, listener);
 			return;

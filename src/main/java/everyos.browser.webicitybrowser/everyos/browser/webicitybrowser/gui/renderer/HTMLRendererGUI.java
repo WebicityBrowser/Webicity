@@ -21,7 +21,7 @@ public class HTMLRendererGUI {
 		renderer.addReadyHook(()->{
 			WebComponentWrapper innerPane = new WebComponentWrapper(null);
 			innerPane.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
-			innerPane.ui(new WebComponent(renderer.getDocument()));
+			innerPane.ui(new WebComponent(renderer, renderer.getDocument()));
 			displayPane.children(new Component[] {innerPane});
 		});
 	}

@@ -49,6 +49,14 @@ public class Tab implements Closeable {
 		frame.reload();
 	}
 	
+	public void back() {
+		frame.back();
+	}
+	
+	public void forward() {
+		frame.forward();
+	}
+	
 	public Frame getFrame() {
 		return frame;
 	}

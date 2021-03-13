@@ -94,7 +94,7 @@ public class TabGUI {
 		backButton.directive(PositionDirective.of(new Location(0, Styling.BORDER_PADDING, 0, horizontalDrop)));
 		backButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		backButton.text("<");
-		addButtonBehavior(backButton, ()->{});
+		addButtonBehavior(backButton, ()->tab.back());
 		
 		tabDecor.addChild(backButton);
 		
@@ -104,7 +104,7 @@ public class TabGUI {
 			0, horizontalDrop)));
 		forwardButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		forwardButton.text(">");
-		addButtonBehavior(forwardButton, ()->{});
+		addButtonBehavior(forwardButton, ()->tab.forward());
 		
 		tabDecor.addChild(forwardButton);
 		

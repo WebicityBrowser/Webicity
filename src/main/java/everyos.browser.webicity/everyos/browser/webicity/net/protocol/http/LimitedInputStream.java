@@ -1,4 +1,4 @@
-package everyos.browser.webicity.net.response;
+package everyos.browser.webicity.net.protocol.http;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,9 +1,10 @@
 package everyos.browser.webicity.webribbon.core.component;
 
 import everyos.browser.javadom.intf.Node;
+import everyos.browser.webicity.renderer.html.HTMLRenderer;
 
 public class WebStyleComponent extends WebComponent {
-	public WebStyleComponent(Node node) {
-		super(node);
+	public WebStyleComponent(HTMLRenderer renderer, Node node) {
+		super(renderer, node);
 	}
 }

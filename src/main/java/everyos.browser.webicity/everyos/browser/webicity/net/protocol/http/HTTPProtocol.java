@@ -1,8 +1,8 @@
-package everyos.browser.webicity.net.protocol;
+package everyos.browser.webicity.net.protocol.http;
 
+import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.URL;
-import everyos.browser.webicity.net.request.HTTPRequest;
-import everyos.browser.webicity.net.request.Request;
+import everyos.browser.webicity.net.protocol.Protocol;
 
 public class HTTPProtocol implements Protocol {
 	@Override public Request getGenericRequest(URL url) {

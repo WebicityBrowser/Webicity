@@ -1,4 +1,4 @@
-package everyos.browser.webicity.net.response;
+package everyos.browser.webicity.net.protocol.http;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,9 +21,7 @@ public class ByteChannelInputStream extends InputStream {
 	public int read() throws IOException {
 		if (available==-1) return -1;
 		byte[] bytes = new byte[1];
-		if (read(bytes, 0, 1)==0) {
-			throw new IOException("Not enough bytes were available!");
-		};
+		read(bytes, 0, 1);
 		return bytes[0];
 	}
 	
@@ -45,7 +43,7 @@ public class ByteChannelInputStream extends InputStream {
 					// This can break very easily, however, it is the best easy solution I could come up with at the time.
 					// InputReaders tend to believe that the stream they wrap is blocking
 					// Since it is not, we basically have to throw an exception, in hopes that we have enough data the next read attempt
-					throw new IOException("Hackful compatibility until I have a better solution");
+					throw new IOPendingException();
 				}
 				return i;
 			}
@@ -74,7 +72,9 @@ public class ByteChannelInputStream extends InputStream {
 		if (available==0) {
 			byteBuffer.clear();
 			try {
+				//System.out.println("A");
 				available = byteChannel.read(byteBuffer);
+				//System.out.println("B");
 			} catch (NeedsReadException e) {
 				available = 0;
 			}

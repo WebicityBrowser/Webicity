@@ -22,7 +22,6 @@ public class SimpleBlockComponentUI extends SimpleComponentUI {
 	protected Location size;
 	protected Offset offset;
 	
-	//protected boolean forceCursor;
 	protected MouseListener mouseListener;
 	protected MouseListener externalMouseListener;
 	
@@ -79,7 +78,7 @@ public class SimpleBlockComponentUI extends SimpleComponentUI {
 			sizepos.add(new Dimension(bounds.width, bounds.height));
 		} else {
 			// Components with a fixed position do not affect the pointer
-			// However, we do still need to stretch the parent container to accomadate the component.
+			// However, we do still need to stretch the parent container to accommodate the component.
 			sizepos.min(new Dimension(bounds.x+bounds.width, bounds.y+bounds.height));
 		}
 	}

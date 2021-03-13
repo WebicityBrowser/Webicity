@@ -41,8 +41,11 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 		r.useForeground();
 		for (int i=0; i<lines.size(); i++) {
 			int py = i*r.getFontHeight();
-			//System.out.println("py:"+py);
-			r.drawText(i==0?position.x:0, position.y+py, lines.get(i));
+			int width = r.drawText(i==0?position.x:0, position.y+py, lines.get(i));
+			r.paintMouseListener(getComponent(), position.x, position.y+py, width, r.getFontHeight(), e->{
+				if (e.isExternal()) return;
+				processEvent(e);
+			});
 		}
 	}
 }

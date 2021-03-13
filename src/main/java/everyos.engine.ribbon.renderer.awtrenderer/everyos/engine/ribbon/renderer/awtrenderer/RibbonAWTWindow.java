@@ -51,7 +51,7 @@ public class RibbonAWTWindow {
 				if (!window.getSize().equals(oldSize)) ui.invalidateLocal();
 				if (!ui.getValidated()) {
 					oldSize = window.getSize();
-					long time = System.currentTimeMillis();
+					//time = System.currentTimeMillis();
 					ui.render(r, new SizePosGroup(
 						panel.getWidth(), panel.getHeight(), 
 						0, 0, 
@@ -64,7 +64,7 @@ public class RibbonAWTWindow {
 					newMouseBindings.add(new ListenerRect(new Rectangle(x, y, l, h), c, listener));
 				});
 				mouseBindings = newMouseBindings;
-				long time = System.currentTimeMillis();
+				//long time = System.currentTimeMillis();
 				ui.paint(r);
 				r.draw();
 				//System.out.println("PAINT: "+(System.currentTimeMillis()-time));
@@ -95,18 +95,24 @@ public class RibbonAWTWindow {
 		});
 		
 		MouseInputAdapter madapter = new MouseInputAdapter() {
-			@Override public void mousePressed(java.awt.event.MouseEvent e) {
+			@Override
+			public void mousePressed(java.awt.event.MouseEvent e) {
 				emitEvent(e, MouseEvent.PRESS);
 			}
-			@Override public void mouseReleased(java.awt.event.MouseEvent e) {
+			@Override
+			public void mouseReleased(java.awt.event.MouseEvent e) {
 				emitEvent(e, MouseEvent.RELEASE);
 			}
-			@Override public void mouseDragged(java.awt.event.MouseEvent e) {
+			@Override
+			public void mouseDragged(java.awt.event.MouseEvent e) {
 				emitEvent(e, MouseEvent.DRAG);
 			};
-			@Override public void mouseMoved(java.awt.event.MouseEvent e) {
+			@Override
+			public void mouseMoved(java.awt.event.MouseEvent e) {
 				emitEvent(e, MouseEvent.MOVE);
 			};
+			
+			//TODO: Mouse wheel
 			
 			private void emitEvent(java.awt.event.MouseEvent e, int action) {
 				boolean isDetermined = false;
@@ -117,7 +123,7 @@ public class RibbonAWTWindow {
 						e.getY()>=bounds.y&&e.getY()<=bounds.y+bounds.height) {
 						
 						binding.getListener().accept(
-							new MouseEvent(binding.getComponent(), e.getX(), e.getY(), e.getButton(), action, !isDetermined));
+							new MouseEvent(binding.getEventTarget(), e.getX(), e.getY(), e.getButton(), action, !isDetermined));
 						isDetermined = true;
 						
 						//TODO: Accept should return a boolean value to indicate if we should break
@@ -128,23 +134,14 @@ public class RibbonAWTWindow {
 						//where 0,0 is the window's top left corner
 					} else {
 						binding.getListener().accept(
-							new MouseEvent(binding.getComponent(), e.getX(), e.getY(), e.getButton(), action, false));
+							new MouseEvent(binding.getEventTarget(), e.getX(), e.getY(), e.getButton(), action, false));
 					}
 				}
 			}
 		};
 		this.panel.addMouseListener(madapter);
 		this.panel.addMouseMotionListener(madapter);
-		/*this.panel.addMouseWheelListener(e->{
-			for (int i = bindings.size()-1; i>=0; i--) {
-				if (bindings.get(i).aabb(e.getX(), e.getY())) {
-					ScrollListener l = (ScrollListener) bindings.get(i).component.getAttribute("onscroll");
-					if (l==null) return; //TODO: Move to component code
-					l.accept(new ScrollEvent(e.getX(), e.getY()));
-					break;
-				}
-			}
-		});*/
+		this.panel.addMouseWheelListener(madapter);
 		
 		java.awt.Rectangle bounds = screen.getDefaultConfiguration().getBounds();
 		this.window.setLocation(bounds.x+100, bounds.y+100);

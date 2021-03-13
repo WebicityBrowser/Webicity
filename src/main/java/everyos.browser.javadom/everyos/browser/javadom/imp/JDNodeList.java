@@ -15,11 +15,13 @@ public class JDNodeList implements NodeList {
 
 	@Override
 	public long getLength() {
+		if (children==null) return 0;
 		return children.size();
 	}
 
 	@Override
 	public Node item(long index) {
+		if (children==null) return null;
 		return children.get((int) index);
 	}
 

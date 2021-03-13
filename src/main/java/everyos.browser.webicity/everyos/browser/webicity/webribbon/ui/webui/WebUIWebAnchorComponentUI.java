@@ -1,10 +1,13 @@
 package everyos.browser.webicity.webribbon.ui.webui;
 
+import everyos.browser.javadom.intf.Element;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.renderer.guirenderer.event.MouseEvent;
+import everyos.engine.ribbon.renderer.guirenderer.event.UIEvent;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
 
@@ -22,5 +25,18 @@ public class WebUIWebAnchorComponentUI extends WebUIWebComponentUI {
 	public void paintUI(Renderer r, Rectangle viewport) {
 		r.setForeground(Color.BLUE);
 		paintChildren(r, viewport);
+	}
+	
+	@Override
+	public void processEvent(UIEvent event) {
+		if (event instanceof MouseEvent) {
+			MouseEvent ev = (MouseEvent) event;
+			if (ev.getAction()==MouseEvent.PRESS && ev.getButton()==MouseEvent.LEFT_BUTTON) {
+				//TODO: Resolve url properly
+				String href = ((Element) getComponent().getNode()).getAttribute("href");
+				getComponent().getRenderer().getFrame().browse(href);
+			}
+		}
+		super.processEvent(event);
 	}
 }

@@ -1,4 +1,4 @@
-package everyos.browser.webicity.net.response;
+package everyos.browser.webicity.net.protocol.http;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +51,7 @@ public class ChunkedInputStream extends InputStream {
 				b[0] = -1;
 				return -1;
 			}
-			next = Integer.parseInt(size.toString(), 16);
+			next = Integer.parseInt(size.toString(), 16)+2;
 		}
 		
 		if (len > next) {
@@ -75,12 +75,12 @@ public class ChunkedInputStream extends InputStream {
 		super.close();
 	}
 	
-	private int safeRead() {
+	private int safeRead() throws IOException {
 		while (true) {
 			try {
 				//TODO: Thanks, I hate it
 				return stream.read();
-			} catch (IOException e) {
+			} catch (IOPendingException e) {
 				try {
 					Thread.sleep(15);
 				} catch (InterruptedException e1) {

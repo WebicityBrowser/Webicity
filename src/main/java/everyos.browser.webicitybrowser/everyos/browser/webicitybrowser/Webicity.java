@@ -20,8 +20,9 @@ public class Webicity {
 			try {
 				//TODO: Configuration
 				instance.open(new URL("https://www.google.com/"));
-				instance.open(new URL("https://www.example.com/"));
-				instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
+				//instance.open(new URL("https://www.whatismybrowser.com/detect/what-http-headers-is-my-browser-sending"));
+				//instance.open(new URL("https://www.example.com/"));
+				//instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}

@@ -1,13 +1,13 @@
-package everyos.browser.webicity.net.request;
+package everyos.browser.webicity.net.protocol.io;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
+import everyos.browser.webicity.net.Request;
+import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
-import everyos.browser.webicity.net.response.IOResponse;
-import everyos.browser.webicity.net.response.Response;
 
 public class FileRequest implements Request {
 	protected URL url;

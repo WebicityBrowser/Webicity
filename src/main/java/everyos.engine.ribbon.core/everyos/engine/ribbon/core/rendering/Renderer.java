@@ -1,7 +1,7 @@
 package everyos.engine.ribbon.core.rendering;
 
-import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.renderer.guirenderer.event.MouseListener;
+import everyos.engine.ribbon.renderer.guirenderer.event.UIEventTarget;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.FontStyle;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
@@ -15,7 +15,7 @@ public interface Renderer {
 	public void drawFilledRect(int x, int y, int width, int height);
 	public void drawEllipse(int x, int y, int l, int h);
 	public void drawLine(int x, int y, int l, int h);
-	public void drawText(int x, int y, String text);
+	public int drawText(int x, int y, String text);
 	public void setForeground(Color color);
 	public void setBackground(Color color);
 	public void useForeground();
@@ -28,7 +28,8 @@ public interface Renderer {
 	
 	//User interaction
 	public void onPaint(ListenerPaintListener listener);
-	public void paintMouseListener(Component c, int x, int y, int l, int w, MouseListener listener); //TODO: We should be able to support non-rectangular shapes
+	//TODO: We should be able to support non-rectangular shapes
+	public void paintMouseListener(UIEventTarget c, int x, int y, int l, int w, MouseListener listener);
 	
 	//State management
 	public GUIState getState();
@@ -38,6 +39,6 @@ public interface Renderer {
 	
 	//Allows for hooking into our renderer
 	public static interface ListenerPaintListener {
-		public void onPaint(Component c, int x, int y, int l, int h, MouseListener listener);
+		public void onPaint(UIEventTarget c, int x, int y, int l, int h, MouseListener listener);
 	}
 }

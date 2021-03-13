@@ -6,8 +6,9 @@ import java.util.function.Function;
 
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
+import everyos.engine.ribbon.renderer.guirenderer.event.UIEventTarget;
 
-public class Component {
+public class Component implements UIEventTarget {
 	public Component parent;
 	protected ArrayList<Component> children;
 	protected ArrayList<ComponentUI> boundObservers;

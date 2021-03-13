@@ -1,6 +1,7 @@
 package everyos.browser.webicitybrowser.ui;
 
 import java.net.MalformedURLException;
+import java.util.Stack;
 
 import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.event.FrameCallback;
@@ -15,6 +16,8 @@ public class Frame {
 	private EventDispatcher<FrameMutationEventListener> mutationEventDispatcher = new EventDispatcher<>();
 	private WebicityFrame frame;
 	private WebicityInstance instance;
+	private Stack<URL> history = new Stack<>();
+	private Stack<URL> forwardHistory = new Stack<>();
 
 	public Frame(WebicityInstance instance) {
 		this.instance = instance;
@@ -40,7 +43,14 @@ public class Frame {
 	}
 	
 	public void setURL(URL url) {
+		setURL(url, true);
+	}
+	private void setURL(URL url, boolean clearFutureHistory) {
 		//TODO: Use a "thread context" instead
+		if (clearFutureHistory) {
+			forwardHistory.clear();
+		}
+		history.push(url);
 		this.frame = createFrame(url);
 		mutationEventDispatcher.fire(l->l.onNavigate(new NavigateEvent(url)));
 	}
@@ -50,6 +60,17 @@ public class Frame {
 		URL url = frame.getURL();
 		this.frame = createFrame(url);
 		mutationEventDispatcher.fire(l->l.onNavigate(new NavigateEvent(url)));
+	}
+	
+	public void back() {
+		if (history.size()<2) return;
+		forwardHistory.push(history.pop());
+		setURL(history.pop(), false);
+	}
+	
+	public void forward() {
+		if (forwardHistory.isEmpty()) return;
+		setURL(forwardHistory.pop(), false);
 	}
 	
 	public Renderer getCurrentRenderer() {

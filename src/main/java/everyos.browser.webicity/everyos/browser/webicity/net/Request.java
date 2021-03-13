@@ -1,10 +1,7 @@
-package everyos.browser.webicity.net.request;
+package everyos.browser.webicity.net;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-
-import everyos.browser.webicity.net.URL;
-import everyos.browser.webicity.net.response.Response;
 
 public interface Request {
 	//TODO: Not really sure if this takes Service Workers into account

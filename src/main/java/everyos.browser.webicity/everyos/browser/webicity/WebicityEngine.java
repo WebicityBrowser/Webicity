@@ -7,13 +7,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import everyos.browser.webicity.concurrency.ThreadQueue;
+import everyos.browser.webicity.net.Request;
+import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
-import everyos.browser.webicity.net.protocol.AboutProtocol;
-import everyos.browser.webicity.net.protocol.FileProtocol;
-import everyos.browser.webicity.net.protocol.HTTPProtocol;
 import everyos.browser.webicity.net.protocol.Protocol;
-import everyos.browser.webicity.net.request.Request;
-import everyos.browser.webicity.net.response.Response;
+import everyos.browser.webicity.net.protocol.http.HTTPProtocol;
+import everyos.browser.webicity.net.protocol.io.AboutProtocol;
+import everyos.browser.webicity.net.protocol.io.FileProtocol;
 
 public abstract class WebicityEngine {
 	protected HashMap<String, Protocol> protocols = new HashMap<>();

@@ -13,6 +13,7 @@ import everyos.browser.webicity.renderer.Renderer;
 public class HTMLRenderer implements Renderer {
 	private Document document;
 	private List<Runnable> readyHooks = new ArrayList<>();
+	private WebicityFrame frame;
 
 	@Override public void execute(WebicityFrame frame, InputStream stream) throws IOException {
 		/*try {
@@ -20,6 +21,8 @@ public class HTMLRenderer implements Renderer {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}*/
+		
+		this.frame = frame;
 		
 		long time = System.currentTimeMillis();
 		JHTMLParser parser = new JHTMLParser(stream);
@@ -42,7 +45,7 @@ public class HTMLRenderer implements Renderer {
 		if (this.document!=null) {
 			hook.run();
 		} else {
-			readyHooks .add(hook);
+			readyHooks.add(hook);
 		}
 	}
 	
@@ -54,5 +57,9 @@ public class HTMLRenderer implements Renderer {
 	public String getTitle() {
 		if (document==null) return null;
 		return document.getTitle();
+	}
+
+	public WebicityFrame getFrame() {
+		return frame;
 	}
 }

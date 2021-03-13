@@ -1,8 +1,6 @@
 package everyos.engine.ribbon.renderer.guirenderer.event;
 
-import everyos.engine.ribbon.core.component.Component;
-
-public class MouseEvent {
+public class MouseEvent implements UIEvent {
 	public static final int LEFT_BUTTON = 1;
 	public static final int RIGHT_BUTTON = 2;
 	
@@ -13,13 +11,13 @@ public class MouseEvent {
 	
 	private int button;
 	private int action;
-	private Component component;
+	private UIEventTarget target;
 	private boolean isExternal;
 
-	public MouseEvent(Component component, int x, int y, int button, int action, boolean isInternal) {
+	public MouseEvent(UIEventTarget target, int x, int y, int button, int action, boolean isInternal) {
 		this.button = button;
 		this.action = action;
-		this.component = component;
+		this.target = target;
 		this.isExternal = !isInternal;
 	}
 	
@@ -29,8 +27,8 @@ public class MouseEvent {
 	public int getAction() {
 		return this.action;
 	}
-	public Component getComponent() {
-		return this.component;
+	public UIEventTarget getEventTarget() {
+		return this.target;
 	}
 	public boolean isExternal() {
 		return this.isExternal;

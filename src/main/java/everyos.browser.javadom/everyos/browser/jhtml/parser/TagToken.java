@@ -1,12 +1,15 @@
 package everyos.browser.jhtml.parser;
 
+import java.util.HashMap;
+
 public class TagToken extends Token{
 	private StringBuilder name;
+	@SuppressWarnings("unused")
 	private boolean selfClosing = false;
 	private StringBuilder attribute_name;
 	private StringBuilder attribute_value;
 	private boolean isEnd;
-	private String is;
+	private HashMap<String, String> attributes = new HashMap<>();
 	
 	public TagToken(String name, boolean isEnd) {
 		this.name = new StringBuilder(8);
@@ -27,6 +30,9 @@ public class TagToken extends Token{
 	}
 
 	public void resetAttributeNameBuilder() {
+		if (attribute_name!=null && attribute_value!=null) {
+			attributes.put(attribute_name.toString().toLowerCase(), attribute_value.toString());
+		}
 		attribute_name = new StringBuilder(8);
 	}
 	public void resetAttributeValueBuilder() {
@@ -40,8 +46,9 @@ public class TagToken extends Token{
 	public boolean getIsEnd() {
 		return isEnd;
 	}
-
-	public String getIs() {
-		return is;
+	
+	public HashMap<String, String> getAttributes() {
+		resetAttributeNameBuilder();
+		return attributes;
 	}
 }

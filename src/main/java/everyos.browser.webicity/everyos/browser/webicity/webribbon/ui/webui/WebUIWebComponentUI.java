@@ -8,6 +8,7 @@ import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.renderer.guirenderer.event.UIEvent;
 import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
@@ -23,24 +24,6 @@ public class WebUIWebComponentUI implements WebComponentUI {
 		this.component = component;
 		this.parent = parent;
 	}
-	
-	/*public void calculateCascade() {
-		attributes = new HashMap<>();
-		attributes.put(Attribute.FOREGROUND_COLOR, "inherit");
-	};
-	
-	public Object resolveAttribute(String name, Object defaultValue) {
-		WebComponent e = this;
-		while (e!=null) {
-			//if (e.node instanceof Element) System.out.println(((Element) e.node).tagName);
-			Object attr = e.attributes.getOrDefault(name, defaultValue);
-			if (attr==null||!attr.equals("inherit")) return attr;
-			WebComponent oe = e;
-			e = e.parent;
-			if (oe==e) return defaultValue; //TODO: Fix
-		}
-		return defaultValue;
-	}*/
 
 	@Override
 	public void invalidate() {
@@ -142,22 +125,21 @@ public class WebUIWebComponentUI implements WebComponentUI {
 				bounds.position.y,
 				bounds.size.width,
 				bounds.size.height);
-			//System.out.println(bounds.size.width);
 			vp = new Rectangle(
 				0, 0, 
 				bounds.size.width, bounds.size.height);
-			//Adding 1 fixed a bug. Don't ask me why, I don't know
 			if (bounds.position.x+vp.width>viewport.width) {
 				vp.width = viewport.width - bounds.position.x;
 			}
 			if (bounds.position.y+vp.height>viewport.height) {
-				vp.height = viewport.height - bounds.position.y+1;
+				//Adding 1 fixed a bug. Don't ask me why, I don't know
+				vp.height = viewport.height - bounds.position.y;
 			}
 		}
 		for (WebComponentUI c: getChildren()) {
-			if (c.getUIBox().intersectsWith(vp)) {
+			//if (c.getUIBox().intersectsWith(vp)) {
 				c.paint(r, vp);
-			}
+			//}
 		}
 		//TODO: Sort by Z-index
 	}
@@ -167,20 +149,31 @@ public class WebUIWebComponentUI implements WebComponentUI {
 		return parent;
 	}
 
-	@Override public void invalidateLocal() {
+	@Override
+	public void invalidateLocal() {
 		
 	}
 
-	@Override public void validate() {
+	@Override
+	public void validate() {
 		
 	}
 
-	@Override public boolean getValidated() {
+	@Override
+	public boolean getValidated() {
 		return false;
 	}
 
-	@Override public void repaintLocal() {
+	@Override
+	public void repaintLocal() {
 		
+	}
+	
+	@Override
+	public void processEvent(UIEvent ev) {
+		if (parent!=null) {
+			parent.processEvent(ev);
+		}
 	}
 	
 	
@@ -192,7 +185,7 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	protected WebComponentUI[] calcChildren(UIContext context) {
 		this.children = new ArrayList<WebComponentUI>();
 		for (WebComponent child: component.getChildren()) {
-			WebComponentUI ui = context.getManager().get(child, parent);
+			WebComponentUI ui = context.getManager().get(child, this);
 			children.add(ui);
 		}
 		return children.toArray(new WebComponentUI[children.size()]);

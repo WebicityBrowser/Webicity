@@ -1,11 +1,13 @@
 package everyos.browser.webicity;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import everyos.browser.webicity.concurrency.ThreadQueue;
 import everyos.browser.webicity.event.FrameCallback;
+import everyos.browser.webicity.event.NavigateEvent;
+import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
-import everyos.browser.webicity.net.response.Response;
 import everyos.browser.webicity.renderer.Renderer;
 
 public class WebicityFrame {
@@ -61,5 +63,14 @@ public class WebicityFrame {
 			return renderer.getTitle();
 		}
 		return null;
+	}
+
+	//TODO: Specify target
+	public void browse(String href) {
+		try {
+			callback.onNavigate(new NavigateEvent(new URL(url, href)));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 }

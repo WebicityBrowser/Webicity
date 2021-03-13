@@ -3,8 +3,8 @@ package everyos.browser.webicitybrowser;
 import java.io.IOException;
 
 import everyos.browser.webicity.WebicityEngine;
-import everyos.browser.webicity.net.request.Request;
-import everyos.browser.webicity.net.response.Response;
+import everyos.browser.webicity.net.Request;
+import everyos.browser.webicity.net.Response;
 
 public class WebicityEngineImp extends WebicityEngine {
 	public WebicityEngineImp() {

@@ -1,8 +1,9 @@
-package everyos.browser.webicity.net.response;
+package everyos.browser.webicity.net.protocol.io;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
 
