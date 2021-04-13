@@ -40,7 +40,7 @@ public class SecureStringBuilder {
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	public void finalize() {
 		destroy();
 	}

@@ -76,7 +76,7 @@ public class JDNode extends JDEventTarget implements Node {
 		this.nodeDocument = nodeDocument;
 	}
 	
-	protected ArrayList<Node> createChildrenList() {
+	protected List<Node> createChildrenList() {
 		return new ArrayList<Node>(1);
 	}
 	

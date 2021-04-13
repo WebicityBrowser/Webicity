@@ -3,6 +3,7 @@ package everyos.browser.webicity;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import everyos.browser.jhtml.browsing.BrowsingContext;
 import everyos.browser.webicity.concurrency.ThreadQueue;
 import everyos.browser.webicity.event.FrameCallback;
 import everyos.browser.webicity.event.NavigateEvent;
@@ -11,16 +12,21 @@ import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.renderer.Renderer;
 
 public class WebicityFrame {
+	//TODO: Move some of this to a "browsing context"
 	private final URL url;
 	private final FrameCallback callback;
 	private final WebicityEngine engine;
 	private ThreadQueue tasks;
 	private Renderer renderer;
+	@SuppressWarnings("unused")
+	private BrowsingContext context;
 
 	public WebicityFrame(WebicityEngine engine, FrameCallback callback, URL url, ThreadQueue queue) {
 		this.engine = engine;
 		this.callback = callback;
 		this.tasks = queue;
+		
+		this.context = new BrowsingContext(null, null, null);
 		
 		this.url = url;
 		navigate(url);

@@ -32,6 +32,8 @@ public class WebUIWebComponentUI implements WebComponentUI {
 
 	@Override
 	public void render(Renderer r, SizePosGroup sizepos, UIContext context) {
+		//TODO: Avoid re-running this step, if possible
+		
 		//Object display = resolveAttribute("display", "block"); //TODO: Check display supported
 		String display = "block";
 		
@@ -53,8 +55,6 @@ public class WebUIWebComponentUI implements WebComponentUI {
 			blockBounds.finished();
 			sizepos.minIncrease(blockBounds.size.height);
 			sizepos.pointer.x+=blockBounds.size.width;
-			//System.out.println("H:"+blockBounds.size.height);
-			//System.out.println("W:"+blockBounds.size.width);
 			sizepos.nextLine();
 		} else if (display.equals("inline-block")) {
 			SizePosGroup blockBounds = new SizePosGroup(sizepos, new Dimension(sizepos.size.width-sizepos.pointer.x, -1));
@@ -69,13 +69,7 @@ public class WebUIWebComponentUI implements WebComponentUI {
 		} else if (display.equals("contents")) {
 			renderChildren(r, sizepos, context);
 		}
-		/*if (this.sizepos!=null) {
-			sizepos.pointer.x = this.sizepos.position.x + this.sizepos.size.width;
-			sizepos.pointer.y = this.sizepos.position.y + this.sizepos.size.height;
-			System.out.println(sizepos.preferredWidth);
-			if (sizepos.position.x>sizepos.preferredWidth) sizepos.nextLine();
-			System.out.println("X:"+sizepos.position.x);
-		}*/
+		
 		r.restoreState(state);
 		
 		renderAfter(r, sizepos, context);
@@ -125,21 +119,24 @@ public class WebUIWebComponentUI implements WebComponentUI {
 				bounds.position.y,
 				bounds.size.width,
 				bounds.size.height);
-			vp = new Rectangle(
-				0, 0, 
+			
+			//AABB based culling
+			vp = new Rectangle( //The viewport is the area in which subcomponents *could* be drawn
+				0, 0, // Child components actually use the parent's location as the origin
 				bounds.size.width, bounds.size.height);
+			
+			// The new viewport should fit within the old viewport
 			if (bounds.position.x+vp.width>viewport.width) {
 				vp.width = viewport.width - bounds.position.x;
 			}
 			if (bounds.position.y+vp.height>viewport.height) {
-				//Adding 1 fixed a bug. Don't ask me why, I don't know
 				vp.height = viewport.height - bounds.position.y;
 			}
 		}
 		for (WebComponentUI c: getChildren()) {
-			//if (c.getUIBox().intersectsWith(vp)) {
+			if (c.getUIBox().intersectsWith(vp)) {
 				c.paint(r, vp);
-			//}
+			}
 		}
 		//TODO: Sort by Z-index
 	}

@@ -1,6 +1,7 @@
 package everyos.browser.javadom.imp;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import everyos.browser.javadom.intf.Document;
 import everyos.browser.javadom.intf.Node;
@@ -18,7 +19,7 @@ public class JDText extends JDCharacterData implements Text {
 	}
 
 	@Override
-	protected ArrayList<Node> createChildrenList() {
-		return null;
+	protected List<Node> createChildrenList() {
+		return Collections.emptyList();
 	}
 }

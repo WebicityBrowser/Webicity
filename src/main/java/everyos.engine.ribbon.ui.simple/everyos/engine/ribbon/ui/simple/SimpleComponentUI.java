@@ -66,7 +66,7 @@ public class SimpleComponentUI implements ComponentUI {
 	
 	
 	protected ComponentUI[] calcChildren(UIManager uimgr) {
-		this.children = new ArrayList<ComponentUI>();
+		this.children = new ArrayList<ComponentUI>(1);
 		for (Component child: component.getChildren()) {
 			ComponentUI ui = uimgr.get(child, parent);
 			child.bind(ui);

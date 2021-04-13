@@ -29,9 +29,9 @@ public class HTTP11Request {
 		}
 		
 		this.target = url.getPath();
-		if (url.getFragment()!=null) {
+		/*if (url.getFragment()!=null) {
 			target+='#'+url.getFragment();
-		}
+		}*/
 		if (url.getQuery()!=null) {
 			target+='?'+url.getQuery();
 		}

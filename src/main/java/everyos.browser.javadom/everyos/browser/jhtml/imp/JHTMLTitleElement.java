@@ -4,9 +4,9 @@ import everyos.browser.javadom.intf.Text;
 import everyos.browser.jhtml.intf.HTMLTitleElement;
 import everyos.browser.jhtml.parser.ElementFactory;
 
-public class JHTMLHTMLTitleElement extends JHTMLHTMLElement implements HTMLTitleElement {
+public class JHTMLTitleElement extends JHTMLElement implements HTMLTitleElement {
 
-	public JHTMLHTMLTitleElement(ElementFactory factory) {
+	public JHTMLTitleElement(ElementFactory factory) {
 		super(factory);
 	}
 

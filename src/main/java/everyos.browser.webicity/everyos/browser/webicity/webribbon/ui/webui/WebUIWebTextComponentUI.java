@@ -30,9 +30,11 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 		this.position = sizepos.pointer();
 		this.lines = StringWrapHelper.calculateString(text, r, sizepos, false);
 		
-		setUIBox(viewport->viewport.intersects(new Rectangle(
+		Rectangle bounds = new Rectangle(
 			sizepos.pointer.x, sizepos.pointer.y,
-			sizepos.size.width, sizepos.pointer.y+lines.size()*r.getFontHeight()+r.getFontPaddingHeight())));
+			sizepos.size.width, sizepos.pointer.y+lines.size()*r.getFontHeight()+r.getFontPaddingHeight());
+		
+		setUIBox(viewport->viewport.intersects(bounds));
 	}
 	
 	@Override

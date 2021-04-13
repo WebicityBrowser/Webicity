@@ -1,4 +1,4 @@
-package everyos.browser.webicity.net.protocol.http;
+package everyos.browser.webicity.net.protocol.http.http11;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,7 +6,7 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
-import everyos.browser.webicity.net.protocol.http.http11.HTTP11Response;
+import everyos.browser.jinfra.IOPendingException;
 
 public class HTTP11Parser {
 	public static HTTP11Response parseFrom(InputStream stream) throws IOException {

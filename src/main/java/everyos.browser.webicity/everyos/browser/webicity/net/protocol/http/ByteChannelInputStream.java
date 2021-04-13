@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 
+import everyos.browser.jinfra.IOPendingException;
 import tlschannel.NeedsReadException;
 
 public class ByteChannelInputStream extends InputStream {
@@ -22,7 +23,7 @@ public class ByteChannelInputStream extends InputStream {
 		if (available==-1) return -1;
 		byte[] bytes = new byte[1];
 		read(bytes, 0, 1);
-		return bytes[0];
+		return bytes[0]&0xFF;
 	}
 	
 	@Override

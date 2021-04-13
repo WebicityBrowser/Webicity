@@ -13,6 +13,7 @@ public class EcmaParser {
 		completions = new ArrayList<>();
 		this.content = content;
 		
+		@SuppressWarnings("unused")
 		String punctuators = "{ ( ) [ ] . ... ; , < > <= >= == != === !== + - * % ** ++ -- << >> >>> & | ^ ! ~ && || ?? ? : = += -= *= %= **= <<= >>= >>>= &= |= ^= =>";
 		
 		EcmaGrammar goal = new EcmaScriptGrammar().parent(new EcmaGrammarCompletion());

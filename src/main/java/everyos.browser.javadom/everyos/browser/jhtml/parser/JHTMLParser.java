@@ -11,13 +11,14 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import everyos.browser.javadom.imp.JDComment;
-import everyos.browser.javadom.imp.JDDocument;
+import everyos.browser.javadom.imp.JDDocumentBuilder;
 import everyos.browser.javadom.imp.JDText;
 import everyos.browser.javadom.intf.Document;
 import everyos.browser.javadom.intf.Element;
 import everyos.browser.javadom.intf.Node;
 import everyos.browser.javadom.intf.Text;
-import everyos.browser.webicity.net.protocol.http.IOPendingException;
+import everyos.browser.jhtml.intf.HTMLStyleElement;
+import everyos.browser.jinfra.IOPendingException;
 
 //TODO: Do not fire mutation events
 
@@ -38,19 +39,24 @@ public final class JHTMLParser {
 	private InsertionState istate = InsertionState.INITIAL;
 	private InsertionState ostate = null;
 	private TokenizeState state = TokenizeState.DATA;
-	private Document document = new JDDocument();
+	private Document document;
 	private Stack<Element> elements = new Stack<Element>();
 	private Element head;
 	private boolean fostering = false;
 	private PushbackReader reader;
-	TokenizeState returnState = null;
-	Token token = null;
-	StringBuilder tmp_buf = new StringBuilder();
-	boolean eof = false;
+	private TokenizeState returnState = null;
+	private Token token = null;
+	private StringBuilder tmp_buf = new StringBuilder();
+	private boolean eof = false;
+	private String lastName;
 	
 	
 	public JHTMLParser(InputStream stream) throws UnsupportedEncodingException {
-		this.reader = new PushbackReader(new InputStreamReader(new BufferedInputStream(stream), "UTF-8"), 7);
+		this.reader = new PushbackReader(new InputStreamReader(new BufferedInputStream(stream), "UTF-8"), 32);
+		this.document = new JDDocumentBuilder()
+			.setType(Document.HTML)
+			.setContentType("text/html")
+			.build();
 	}
 	
 	public Document getDocument() {
@@ -259,12 +265,13 @@ public final class JHTMLParser {
 					}
 					break;
 				case RAWTEXT_END_TAG_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1&&token instanceof TagToken) {
+					if (("\t\n\f ").indexOf(ch)!=-1&&isAppropriateEndTagToken(token)) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
-					} else if (ch=='/'&&token instanceof TagToken) {
+					} else if (ch=='/'&&isAppropriateEndTagToken(token)) {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
-					} else if (ch=='>'&&token instanceof TagToken) {
+					} else if (ch=='>'&&isAppropriateEndTagToken(token)) {
 						state = TokenizeState.DATA;
+						emit(token);
 					} else if (Character.isAlphabetic(ch)) {
 						((TagToken) token).getNameBuilder().appendCodePoint(Character.toLowerCase(ch));
 						tmp_buf.appendCodePoint(ch);
@@ -303,11 +310,11 @@ public final class JHTMLParser {
 					}
 					break;
 				case SCRIPT_DATA_END_TAG_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1&&token instanceof TagToken) {
+					if (("\t\n\f ").indexOf(ch)!=-1&&isAppropriateEndTagToken(token)) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
-					} else if (ch=='/'&&token instanceof TagToken) {
+					} else if (ch=='/'&&isAppropriateEndTagToken(token)) {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
-					} else if (ch=='>'&&token instanceof TagToken) {
+					} else if (ch=='>'&&isAppropriateEndTagToken(token)) {
 						state = TokenizeState.DATA;
 						emit(token);
 						//TODO: Kind of not finished
@@ -417,11 +424,11 @@ public final class JHTMLParser {
 					}
 					break;
 				case SCRIPT_DATA_ESCAPED_END_TAG_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1&&token instanceof TagToken) {
+					if (("\t\n\f ").indexOf(ch)!=-1&&isAppropriateEndTagToken(token)) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
-					} else if (ch=='/'&&token instanceof TagToken) {
+					} else if (ch=='/'&&isAppropriateEndTagToken(token)) {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
-					} else if (ch=='>'&&token instanceof TagToken) {
+					} else if (ch=='>'&&isAppropriateEndTagToken(token)) {
 						state = TokenizeState.DATA;
 					} else if (Character.isAlphabetic(ch)) {
 						((TagToken) token).getNameBuilder().append(Character.toLowerCase(ch));
@@ -860,9 +867,14 @@ public final class JHTMLParser {
 					
 				//TODO: 56 onwards
 					
+				//72
 				case CHARACTER_REFERENCE:
 					reader.unread(ch);
 					state = returnState;
+					break;
+					
+				case NAMED_CHARACTER_REFERENCE:
+					
 					break;
 					
 				default:
@@ -881,10 +893,11 @@ public final class JHTMLParser {
 		}
 		return new String(b);
 	}*/
-	
+
 	private boolean consumeIfEquals(PushbackReader stream, String s) {
 		char[] b = new char[s.length()];
 		try {
+			//TODO: Handle IOPending
 			stream.read(b, 0, s.length());
 			if (new String(b).equals(s)) return true;
 			stream.unread(b);
@@ -905,6 +918,9 @@ public final class JHTMLParser {
 		String name = null;
 		if (token instanceof TagToken) {
 			name = ((TagToken) token).getNameBuilder().toString();
+			if (isStartTag(token)) {
+				this.lastName = name;
+			}
 		}
 		switch(cstate) {
 			case INITIAL:
@@ -964,11 +980,11 @@ public final class JHTMLParser {
 					emit(InsertionState.IN_BODY, token);
 				} else if (isStartTag(token)&&tagIs(name, "base", "basefont", "bgsound", "link")) {
 					insertElement((TagToken) token, HTML_NAMESPACE);
-					elements.pop();
+					pop();
 					//TODO: "Acknowledge" the element
 				} else if (isStartTag(token) && name.equals("meta")) {
 					insertElement((TagToken) token, HTML_NAMESPACE);
-					elements.pop();
+					pop();
 					//TODO: "Acknowledge" the element
 					//TODO: Encoding games
 				} else if (isStartTag(token) && name.equals("title")) {
@@ -985,12 +1001,12 @@ public final class JHTMLParser {
 					ostate = istate;
 					istate = InsertionState.TEXT;
 				} else if (isEndTag(token) && name.equals("head")) {
-					elements.pop();
+					pop();
 					istate = InsertionState.AFTER_HEAD;
 				} else if (isEndTag(token) && !tagIs(name,  "body", "html", "br")) { /*TODO: Template*/ 
 				} else if (isStartTag(token) && name.equals("head") || isEndTag(token)) {
 				} else {
-					if (!elements.isEmpty()) elements.pop();
+					if (!elements.isEmpty()) pop();
 					istate = InsertionState.AFTER_HEAD;
 					emit(token);
 				}
@@ -1017,7 +1033,7 @@ public final class JHTMLParser {
 				} else if (isStartTag(token) && tagIs(name, "base", "basefont", "bgsound", "link", "meta", "noframes", "script", "style", "template", "title")) {
 					elements.push(head);
 					emit(InsertionState.IN_HEAD, token);
-					while (elements.pop()!=head); //TODO: Am I supposed to remove only head? Or all elements afterwards?
+					while (pop()!=head); //TODO: Am I supposed to remove only head? Or all elements afterwards?
 				} else if (isEndTag(token) && name.equals("template")) {
 					emit(InsertionState.IN_HEAD, token);
 				} else if ((isStartTag(token)&&name.equals("head")) || (isEndTag(token)&&!tagIs(name, "body", "html", "br"))) {
@@ -1067,7 +1083,7 @@ public final class JHTMLParser {
 					try {
 						Element top = elements.peek();
 						if (elementIs(top, HTML_NAMESPACE, "h1", "h2", "h3", "h4", "h5", "h6")) {
-							elements.pop();
+							pop();
 						}
 					} catch (EmptyStackException e) {}
 					
@@ -1087,14 +1103,14 @@ public final class JHTMLParser {
 					Stack<Element> s = new Stack<>();
 					while (!elements.isEmpty()) {
 						//System.out.println(elements.size());
-						s.add(elements.pop());
+						s.add(pop());
 						if (s.peek().getTagName().equals(name)) break;
 						if (elements.isEmpty()) {
 							while(!s.isEmpty()) elements.push(s.pop());
 							break;
 						}
 					}
-					//while(!elements.pop().tagName.equals(name)) {}
+					//while(!pop().tagName.equals(name)) {}
 					
 					//TODO: Many things in between
 				} else if (isStartTag(token) && name.equals("a")) {
@@ -1107,7 +1123,7 @@ public final class JHTMLParser {
 					
 					Stack<Element> s = new Stack<>();
 					while (!elements.isEmpty()) {
-						s.add(elements.pop());
+						s.add(pop());
 						if (s.peek().getTagName().equals(name)) break;
 						if (elements.isEmpty()) {
 							while(!s.isEmpty()) elements.push(s.pop());
@@ -1125,7 +1141,7 @@ public final class JHTMLParser {
 						Element el = elements.get(pos);
 						if (elementIs(el, HTML_NAMESPACE, name)) {
 							generateEmpliedEndTags(name);
-							while (!elements.pop().equals(el));
+							while (!pop().equals(el));
 							break;
 						} else if (isSpecial(el.getNamespaceURI(), el.getTagName())) {
 							break;
@@ -1139,11 +1155,11 @@ public final class JHTMLParser {
 				if (token instanceof CharToken) {
 					insertCharacter(((CharToken) token).getCharacter());
 				} else if (isEndTag(token) && name.equals("script")) {
-					Element e = elements.isEmpty()?null:elements.pop();
+					Element e = elements.isEmpty()?null:pop();
 					//TODO
 					istate = ostate;
 				} else if (isEndTag(token)) {
-					elements.pop();
+					pop();
 					istate = ostate;
 				}
 				break;
@@ -1275,5 +1291,18 @@ public final class JHTMLParser {
 	
 	private void generateEmpliedEndTags(String excluded) {
 		//TODO
+	}
+	
+	private boolean isAppropriateEndTagToken(Token token) {
+		if (!isEndTag(token)) return false;
+		return ((TagToken) token).getNameBuilder().toString().equals(lastName);
+	}
+	
+	private Element pop() {
+		Element e = elements.pop();
+		if (e instanceof HTMLStyleElement) {
+			((HTMLStyleElement) e).update();
+		}
+		return e;
 	}
 }

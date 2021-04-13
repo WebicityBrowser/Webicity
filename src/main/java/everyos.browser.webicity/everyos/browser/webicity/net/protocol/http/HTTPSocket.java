@@ -19,6 +19,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import everyos.browser.webicity.net.URL;
+import everyos.browser.webicity.net.protocol.http.http11.HTTP11Parser;
 import everyos.browser.webicity.net.protocol.http.http11.HTTP11Request;
 import everyos.browser.webicity.net.protocol.http.http11.HTTP11Response;
 import tlschannel.ClientTlsChannel;

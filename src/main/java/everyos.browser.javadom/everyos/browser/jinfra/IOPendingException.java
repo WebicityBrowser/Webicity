@@ -1,4 +1,4 @@
-package everyos.browser.webicity.net.protocol.http;
+package everyos.browser.jinfra;
 
 import java.io.IOException;
 

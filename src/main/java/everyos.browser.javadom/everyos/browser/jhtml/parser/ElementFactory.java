@@ -2,8 +2,8 @@ package everyos.browser.jhtml.parser;
 
 import everyos.browser.javadom.intf.Document;
 import everyos.browser.javadom.intf.Element;
-import everyos.browser.jhtml.imp.JHTMLHTMLElement;
-import everyos.browser.jhtml.imp.JHTMLHTMLTitleElement;
+import everyos.browser.jhtml.imp.JHTMLElement;
+import everyos.browser.jhtml.imp.JHTMLTitleElement;
 
 public class ElementFactory {
 	private Document document;
@@ -56,10 +56,10 @@ public class ElementFactory {
 	public Element createElement(String namespace, String localName) {
 		switch(localName) {
 			case "title":
-				return new JHTMLHTMLTitleElement(this);
+				return new JHTMLTitleElement(this);
 		
 			default:
-				return new JHTMLHTMLElement(this);
+				return new JHTMLElement(this);
 		}
 	}
 }

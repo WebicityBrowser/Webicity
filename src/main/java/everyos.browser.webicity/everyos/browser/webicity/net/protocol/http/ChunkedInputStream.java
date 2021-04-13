@@ -3,6 +3,8 @@ package everyos.browser.webicity.net.protocol.http;
 import java.io.IOException;
 import java.io.InputStream;
 
+import everyos.browser.jinfra.IOPendingException;
+
 public class ChunkedInputStream extends InputStream {
 	private int next = 0;
 	private boolean ended = false;

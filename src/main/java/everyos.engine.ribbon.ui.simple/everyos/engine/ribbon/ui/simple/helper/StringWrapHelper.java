@@ -7,7 +7,7 @@ import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 
 public class StringWrapHelper {
 	public static ArrayList<String> calculateString(String text, Renderer r, SizePosGroup sizepos) {
-		ArrayList<String> lines = new ArrayList<String>();
+		ArrayList<String> lines = new ArrayList<String>(1);
 		
 		StringBuilder line = new StringBuilder();
 		StringBuilder word = new StringBuilder();

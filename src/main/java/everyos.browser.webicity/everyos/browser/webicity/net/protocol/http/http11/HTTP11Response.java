@@ -1,7 +1,9 @@
 package everyos.browser.webicity.net.protocol.http.http11;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 import everyos.browser.webicity.net.protocol.http.ChunkedInputStream;
 import everyos.browser.webicity.net.protocol.http.LimitedInputStream;
@@ -19,6 +21,14 @@ public class HTTP11Response {
 		this.status = status;
 		this.headers = headers;
 		this.stream = wrapStream(stream);
+		
+		if (headers.getOrDefault("content-encoding", "identity").equals("gzip")) {
+			try {
+				this.stream = new GZIPInputStream(stream);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		System.out.println(status);
 		headers.forEach((n, v)->System.out.println(n+": "+v));

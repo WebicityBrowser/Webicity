@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import everyos.browser.jinfra.IOPendingException;
 import everyos.browser.webicity.WebicityFrame;
-import everyos.browser.webicity.net.protocol.http.IOPendingException;
 import everyos.browser.webicity.renderer.Renderer;
 
 public class PlainTextRenderer implements Renderer {
