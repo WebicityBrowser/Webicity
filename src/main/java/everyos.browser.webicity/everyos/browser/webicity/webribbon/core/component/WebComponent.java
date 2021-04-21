@@ -16,6 +16,7 @@ public class WebComponent implements UIEventTarget { //TODO: Code will be moved 
 	private Node node;
 	private List<WebComponent> children;
 	private HTMLRenderer renderer;
+	private WebComponent[] childrenArray;
 	
 	public WebComponent(HTMLRenderer renderer, Node node) {
 		this.renderer = renderer;
@@ -32,7 +33,10 @@ public class WebComponent implements UIEventTarget { //TODO: Code will be moved 
 				if (c!=null) children.add(c);
 			}
 		}
-		return this.children.toArray(new WebComponent[this.children.size()]);
+		if (this.childrenArray == null) {
+			this.childrenArray = this.children.toArray(new WebComponent[this.children.size()]);
+		}
+		return this.childrenArray;
 	}
 
 	public Node getNode() {

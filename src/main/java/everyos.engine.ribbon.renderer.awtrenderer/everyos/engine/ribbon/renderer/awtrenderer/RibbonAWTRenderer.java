@@ -6,7 +6,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.renderer.guirenderer.event.MouseListener;
@@ -17,8 +16,6 @@ import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 
 public class RibbonAWTRenderer implements Renderer {
 	private Graphics g;
-	private BufferedImage image;
-	private Graphics parent;
 	private int x = -1;
 	private int y = -1;
 	private int l = -1;
@@ -31,17 +28,6 @@ public class RibbonAWTRenderer implements Renderer {
 	public RibbonAWTRenderer(Graphics g, GUIState state) {
 		this.g = g;
 		this.state = state;
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	}
-	
-	public RibbonAWTRenderer(Graphics parent, GUIState state, int x, int y, int l, int h) {
-		this.image = new BufferedImage(l, h, BufferedImage.TYPE_INT_ARGB);
-		this.g = image.getGraphics();
-		this.state = state;
-		this.parent = parent;
-		this.x = x; this.y = y;
-		this.l = l; this.h = h;
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	}
@@ -99,21 +85,7 @@ public class RibbonAWTRenderer implements Renderer {
 	}
 
 	@Override
-	public Renderer getBufferedSubcontext(int x, int y, int width, int height) {
-		RibbonAWTRenderer r = new RibbonAWTRenderer(g, state, x, y, width, height);
-		r.onPaint((c, ex, ey, el, eh, listener)->{
-			this.paintMouseListener(c, ex, ey, el, eh, listener);
-		});
-		return r;
-	}
-
-	@Override
-	public void draw() {
-		if (this.image!=null) {
-			parent.drawImage(image, x, y, l, h, null);
-			image.flush(); //TODO: Make sure this is suitable
-		}
-	}
+	public void draw() {}
 
 	@Override
 	public int getFontHeight() {

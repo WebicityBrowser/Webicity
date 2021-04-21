@@ -11,7 +11,6 @@ public interface Renderer {
 
 	//Painting
 	public Renderer getSubcontext(int x, int y, int l, int h);
-	public Renderer getBufferedSubcontext(int x, int y, int width, int height);
 	public void drawFilledRect(int x, int y, int width, int height);
 	public void drawEllipse(int x, int y, int l, int h);
 	public void drawLine(int x, int y, int l, int h);

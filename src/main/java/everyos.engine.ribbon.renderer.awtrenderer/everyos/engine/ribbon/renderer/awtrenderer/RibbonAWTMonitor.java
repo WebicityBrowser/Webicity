@@ -10,7 +10,7 @@ public class RibbonAWTMonitor {
 		this.screen = screen;
 	}
 	public RibbonAWTMonitor(int id) throws NoMonitorAvailableException {
-		if (id>0) throw new java.lang.IllegalArgumentException();
+		if (id<0) throw new java.lang.IllegalArgumentException();
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] devices = env.getScreenDevices();
 		if (id>=devices.length) throw new NoMonitorAvailableException();

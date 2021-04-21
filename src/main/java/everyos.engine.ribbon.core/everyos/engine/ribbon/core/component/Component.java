@@ -11,12 +11,9 @@ import everyos.engine.ribbon.renderer.guirenderer.event.UIEventTarget;
 public class Component implements UIEventTarget {
 	public Component parent;
 	protected ArrayList<Component> children;
-	protected ArrayList<ComponentUI> boundObservers;
+	protected ArrayList<ComponentUI> boundObservers; //TODO:
 	protected HashMap<String, Object> tags;
 	protected HashMap<Class<? extends ComponentUI>, ArrayList<UIDirectiveWrapper>> directives;
-	
-	@Deprecated public Component attribute(String attr, Object o) { return this; }
-	@Deprecated public Component attribute(String attr, Runnable o) { return this; }
 	
 	public Component(Component parent) {
 		children = new ArrayList<Component>();
@@ -167,6 +164,11 @@ public class Component implements UIEventTarget {
 		boundObservers.add(ui);
 		for (UIDirectiveWrapper dir: getDirectives(ui.getClass())) ui.directive(dir.getDirective());
 	}
+	
+	public void unbind(ComponentUI ui) {
+		System.out.println(boundObservers.contains(ui));
+		boundObservers.remove(ui);
+	}
 
 	public Component[] query(Function<Component, Boolean> query) {
 		ArrayList<Component> components = new ArrayList<>();
@@ -190,5 +192,10 @@ public class Component implements UIEventTarget {
 
 	private boolean equals(Object a, Object b) {
 		return a==null?false:a.equals(b);
+	}
+
+	//TODO: Should not exists
+	public void unbindAll() {
+		boundObservers.clear();
 	}
 }

@@ -12,7 +12,6 @@ import everyos.browser.webicitybrowser.ui.Window;
 import everyos.browser.webicitybrowser.ui.event.WindowMutationEventListener;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTMonitor.NoMonitorAvailableException;
 import everyos.engine.ribbon.renderer.guirenderer.directive.BackgroundDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.ForegroundDirective;
 import everyos.engine.ribbon.renderer.guirenderer.directive.PositionDirective;
@@ -37,7 +36,7 @@ public class WindowGUI {
 	public void start() {
 		try {
 			this.windowGrip = RibbonWindow.create();
-		} catch (NoMonitorAvailableException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		
@@ -117,7 +116,7 @@ public class WindowGUI {
 			0, Styling.ELEMENT_PADDING)));
 		maximizeButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		maximizeButton.text("+");
-		addButtonBehavior(maximizeButton, ()->{});
+		addButtonBehavior(maximizeButton, ()->windowGrip.restore());
 		
 		windowDecor.addChild(maximizeButton);
 		

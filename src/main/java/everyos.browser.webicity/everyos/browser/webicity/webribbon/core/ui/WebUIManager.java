@@ -8,12 +8,16 @@ public class WebUIManager extends HashMap<Class<? extends WebComponent>, WebComp
 	private static final long serialVersionUID = 5772884045812272682L;
 
 	public WebComponentUI get(WebComponent c, WebComponentUI parent) {
-		Class<?> cz = c.getClass();
-		while (cz!=null&&get(cz)==null) {
-			cz=cz.getSuperclass();
-		}
-		if(cz==null) return null;
-		if (!WebComponent.class.isAssignableFrom(cz)) return null;
-		return get(cz).create(c, parent);
+		WebComponentUIFactory factory = this.computeIfAbsent(c.getClass(), key->{
+			Class<?> cz = key;
+			while (cz!=null&&get(cz)==null) {
+				cz=cz.getSuperclass();
+			}
+			if(cz==null) return null;
+			if (!WebComponent.class.isAssignableFrom(cz)) return null;
+			return get(cz);
+		});
+		if (factory==null) return null;
+		return factory.create(c, parent);
 	}
 }

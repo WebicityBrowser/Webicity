@@ -8,21 +8,20 @@ import everyos.browser.webicity.webribbon.core.component.WebStyleComponent;
 import everyos.browser.webicity.webribbon.core.component.WebTextComponent;
 import everyos.browser.webicity.webribbon.core.component.WebTitleComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
-import everyos.browser.webicity.webribbon.ui.webui.helper.WebReflectiveFactory;
 
 public class WebUIWebUIManager {
 	private WebUIWebUIManager() {};
 	
 	public static WebUIManager createUI() {
 		WebUIManager wuim = new WebUIManager();
-		wuim.put(WebComponent.class, new WebReflectiveFactory(WebUIWebComponentUI.class));
-		wuim.put(WebTextComponent.class, new WebReflectiveFactory(WebUIWebTextComponentUI.class));
-		wuim.put(WebBreakComponent.class, new WebReflectiveFactory(WebUIWebBreakComponentUI.class));
-		wuim.put(WebAnchorComponent.class, new WebReflectiveFactory(WebUIWebAnchorComponentUI.class));
+		wuim.put(WebComponent.class, (c, p)->new WebUIWebComponentUI(c,p));
+		wuim.put(WebTextComponent.class, (c, p)->new WebUIWebTextComponentUI(c,p));
+		wuim.put(WebBreakComponent.class, (c, p)->new WebUIWebBreakComponentUI(c,p));
+		wuim.put(WebAnchorComponent.class, (c, p)->new WebUIWebAnchorComponentUI(c,p));
 		
-		wuim.put(WebTitleComponent.class, new WebReflectiveFactory(WebUIWebIgnoredComponentUI.class));
-		wuim.put(WebScriptComponent.class, new WebReflectiveFactory(WebUIWebIgnoredComponentUI.class));
-		wuim.put(WebStyleComponent.class, new WebReflectiveFactory(WebUIWebIgnoredComponentUI.class));
+		wuim.put(WebTitleComponent.class, (c, p)->new WebUIWebIgnoredComponentUI(c,p));
+		wuim.put(WebScriptComponent.class, (c, p)->new WebUIWebIgnoredComponentUI(c,p));
+		wuim.put(WebStyleComponent.class, (c, p)->new WebUIWebIgnoredComponentUI(c,p));
 		
 		return wuim;
 	}

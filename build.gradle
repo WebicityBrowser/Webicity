@@ -1,12 +1,30 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'application'
     id 'java'
 }
 
+switch (OperatingSystem.current()) {
+	case OperatingSystem.LINUX:
+		def osArch = System.getProperty("os.arch")
+		project.ext.lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
+			? "arm64"
+			: "natives-linux"
+		project.ext.skijaNatives = "skija-linux"
+		break
+	case OperatingSystem.WINDOWS:
+		project.ext.lwjglNatives = "natives-windows"
+		project.ext.skijaNatives = "skija-windows"
+		break
+}
+
 repositories {
-    jcenter()
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    maven {
+    	url 'https://jitpack.io'
+    	url "https://packages.jetbrains.team/maven/p/skija/maven"
+	}
 }
 
 dependencies {
@@ -14,6 +32,21 @@ dependencies {
 	//implementation 'net.java.dev.jna:jna:5.5.0'
 	implementation 'com.github.marianobarrios:tls-channel:0.4.0'
 	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	
+	implementation platform("org.lwjgl:lwjgl-bom:3.2.3")
+
+	implementation "org.lwjgl:lwjgl"
+	implementation "org.lwjgl:lwjgl-glfw"
+	implementation "org.lwjgl:lwjgl-openal"
+	implementation "org.lwjgl:lwjgl-opengl"
+	implementation "org.lwjgl:lwjgl-stb"
+	runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+	
+	implementation "org.jetbrains.skija:${skijaNatives}:0.90.6"
 }
 
 apply plugin: 'java'
@@ -30,6 +63,7 @@ sourceSets {
 				'src/main/java/everyos.browser.webicitybrowser',
 				'src/main/java/everyos.engine.ribbon.core',
 				'src/main/java/everyos.engine.ribbon.renderer.awtrenderer',
+				'src/main/java/everyos.engine.ribbon.renderer.skijarenderer',
 				'src/main/java/everyos.engine.ribbon.ui.simple'
 			]
 		}

@@ -5,9 +5,11 @@ import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
+import java.awt.Image;
 import java.awt.Panel;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -24,6 +26,7 @@ import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
 import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
+import everyos.engine.ribbon.renderer.skijarenderer.ListenerRect;
 
 public class RibbonAWTWindow {
 	private Frame window;
@@ -46,8 +49,8 @@ public class RibbonAWTWindow {
 			private Object oldSize;
 			
 			@Override public void paint(Graphics g) {
-				Renderer _r = new RibbonAWTRenderer(g, new GUIState()); //TODO
-				Renderer r = _r.getBufferedSubcontext(0, 0, panel.getWidth(), panel.getHeight());
+				Image image = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				Renderer r = new RibbonAWTRenderer(image.getGraphics(), new GUIState());
 				if (!window.getSize().equals(oldSize)) ui.invalidateLocal();
 				if (!ui.getValidated()) {
 					oldSize = window.getSize();
@@ -60,13 +63,13 @@ public class RibbonAWTWindow {
 					//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 				}
 				ArrayList<ListenerRect> newMouseBindings = new ArrayList<>(mouseBindings.size());
-				_r.onPaint((c, x, y, l, h, listener)->{
+				r.onPaint((c, x, y, l, h, listener)->{
 					newMouseBindings.add(new ListenerRect(new Rectangle(x, y, l, h), c, listener));
 				});
 				mouseBindings = newMouseBindings;
 				//long time = System.currentTimeMillis();
 				ui.paint(r);
-				r.draw();
+				g.drawImage(image, 0, 0, panel.getWidth(), panel.getHeight(), null);
 				//System.out.println("PAINT: "+(System.currentTimeMillis()-time));
 			}
 			@Override public void update(Graphics g) {

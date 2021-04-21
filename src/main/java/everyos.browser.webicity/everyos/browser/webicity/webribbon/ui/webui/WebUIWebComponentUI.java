@@ -1,7 +1,5 @@
 package everyos.browser.webicity.webribbon.ui.webui;
 
-import java.util.ArrayList;
-
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
@@ -15,9 +13,9 @@ import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
 
 public class WebUIWebComponentUI implements WebComponentUI {
 	private SizePosGroup bounds;
-	private WebComponent component;
-	private WebComponentUI parent;
-	private ArrayList<WebComponentUI> children;
+	private final WebComponent component;
+	private final WebComponentUI parent;
+	private WebComponentUI[] children;
 	private UIBox uibox = vp->true;
 
 	public WebUIWebComponentUI(WebComponent component, WebComponentUI parent) {
@@ -112,6 +110,8 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	}
 	
 	protected void paintChildren(Renderer r, Rectangle viewport) {
+		//Shuks, the culling code is still not working properly?
+		
 		Rectangle vp = viewport.clone();
 		if (this.bounds!=null) {
 			r = r.getSubcontext(
@@ -180,14 +180,15 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	}
 	
 	protected WebComponentUI[] calcChildren(UIContext context) {
-		this.children = new ArrayList<WebComponentUI>();
-		for (WebComponent child: component.getChildren()) {
-			WebComponentUI ui = context.getManager().get(child, this);
-			children.add(ui);
+		if (children!=null) return children;
+		WebComponent[] childrenComponents = component.getChildren();
+		this.children = new WebComponentUI[childrenComponents.length];
+		for (int i=0; i<childrenComponents.length; i++) {
+			children[i] = context.getManager().get(childrenComponents[i], this);
 		}
-		return children.toArray(new WebComponentUI[children.size()]);
+		return children;
 	}
 	protected WebComponentUI[] getChildren() {
-		return children.toArray(new WebComponentUI[children.size()]);
+		return children;
 	}
 }

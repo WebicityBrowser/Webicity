@@ -3,22 +3,22 @@ package everyos.browser.webicitybrowser.gui;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTMonitor;
-import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTMonitor.NoMonitorAvailableException;
-import everyos.engine.ribbon.renderer.awtrenderer.RibbonAWTWindow;
 import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
+import everyos.engine.ribbon.renderer.skijarenderer.RibbonSkijaMonitor;
+import everyos.engine.ribbon.renderer.skijarenderer.RibbonSkijaMonitor.NoMonitorAvailableException;
+import everyos.engine.ribbon.renderer.skijarenderer.RibbonSkijaWindow;
 
 public class RibbonWindow {
 	public static WindowGrip create() throws NoMonitorAvailableException {
-		RibbonAWTMonitor monitor = new RibbonAWTMonitor(0);
+		RibbonSkijaMonitor monitor = new RibbonSkijaMonitor(0);
 		
-		RibbonAWTWindow window = monitor.createWindow();
+		RibbonSkijaWindow window = monitor.createWindow();
 		
 		window.setTitle("Webicity Browser");
 		window.setIcon("webicity.png");
 		window.setMinSize(new Location(0, 600, 0, 400));
-		window.setDecorated(false);
+		//window.setDecorated(false);
 	
 		UIManager mgr = WebicityUIManager.createUI();
 		
@@ -35,11 +35,11 @@ public class RibbonWindow {
 	}
 	
 	public static class WindowGrip {
-		private RibbonAWTWindow window;
+		private RibbonSkijaWindow window;
 		private Component displayPane;
 
-		public WindowGrip(RibbonAWTWindow window, Component displayPane) {
-			this.window = window;
+		public WindowGrip(RibbonSkijaWindow window, Component displayPane) {
+			this.window = window;	
 			this.displayPane = displayPane;
 		}
 		
@@ -53,6 +53,10 @@ public class RibbonWindow {
 		
 		public void minimize() {
 			window.minimize();
+		}
+		
+		public void restore() {
+			window.restore();
 		}
 	}
 }

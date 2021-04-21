@@ -6,11 +6,34 @@ import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.core.rendering.Renderer;
 
 public class StringWrapHelper {
-	public static ArrayList<String> calculateString(String text, Renderer r, SizePosGroup sizepos, boolean ew) {
-		ArrayList<String> lines = new ArrayList<String>();
+	/*public static List<String> calculateString(String text, Renderer r, SizePosGroup sizepos, boolean wrapAnywhere) {
+		List<String> lines = new ArrayList<String>(1);
 		
-		StringBuilder line = new StringBuilder(20);
-		StringBuilder word = new StringBuilder();
+		StringBuilder line = new StringBuilder();
+		
+		boolean ignoreWhitespace = true;
+		
+		for (int i = 0; i<text.length(); i++) {
+			char ch = text.charAt(i);
+			if (ch=='\n'||ch=='\r'||ch=='\f'||ch=='\t') {
+				lines.add(line.toString());
+				line = new StringBuilder();
+			}
+			if (text.charAt(i)==' ') {
+				if (!ignoreWhitespace) {
+					ignoreWhitespace = true;
+				}
+			}
+		}
+		
+		return lines;
+	}*/
+	
+	public static ArrayList<String> calculateString(String text, Renderer r, SizePosGroup sizepos, boolean wrapAnywhere) {
+		ArrayList<String> lines = new ArrayList<String>(1);
+		
+		StringBuilder line = new StringBuilder(1);
+		StringBuilder word = new StringBuilder(1);
 		boolean isNewLine = true;
 		boolean isNewLineNLTriggered = true;
 		boolean startsOnNL = true;
@@ -18,6 +41,7 @@ public class StringWrapHelper {
 		int wordLength = 0;
 		
 		int i = 0;
+		//System.out.println("ln: "+text.length());
 		while (i<text.length()) {
 			int ch = text.codePointAt(i++);
 			
@@ -32,7 +56,7 @@ public class StringWrapHelper {
 			
 			sizepos.minIncrease(r.getFontHeight());
 			
-			if (sizepos.pointer.x+wordLength+r.charWidth(ch)>sizepos.preferredWidth&&(ew||ch==' ')) {
+			if (sizepos.pointer.x+wordLength+r.charWidth(ch)>sizepos.preferredWidth&&(wrapAnywhere||ch==' ')) {
 				if (startsOnNL) {
 					line.append(word);
 					word = new StringBuilder();

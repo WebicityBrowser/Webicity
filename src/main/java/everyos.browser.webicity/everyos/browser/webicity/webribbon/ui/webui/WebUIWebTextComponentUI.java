@@ -1,6 +1,6 @@
 package everyos.browser.webicity.webribbon.ui.webui;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import everyos.browser.javadom.intf.Text;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
@@ -13,7 +13,7 @@ import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
 
 public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
-	private ArrayList<String> lines;
+	private List<String> lines;
 	private Position position;
 	
 	public WebUIWebTextComponentUI(WebComponent component, WebComponentUI parent) {
@@ -28,7 +28,13 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 		
 		//setRenderingData(r);
 		this.position = sizepos.pointer();
+		long time = System.currentTimeMillis();
 		this.lines = StringWrapHelper.calculateString(text, r, sizepos, false);
+		long fin = System.currentTimeMillis()-time;
+		if (fin>100) {
+			System.out.println(fin);
+			System.out.println(text);
+		}
 		
 		Rectangle bounds = new Rectangle(
 			sizepos.pointer.x, sizepos.pointer.y,
