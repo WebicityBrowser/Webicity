@@ -1,8 +1,8 @@
 package everyos.engine.ribbon.renderer.skijarenderer;
 
-import everyos.engine.ribbon.renderer.guirenderer.event.MouseListener;
-import everyos.engine.ribbon.renderer.guirenderer.event.UIEventTarget;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
+import everyos.engine.ribbon.core.event.MouseListener;
+import everyos.engine.ribbon.core.event.UIEventTarget;
+import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class ListenerRect {
 	private Rectangle bounds;

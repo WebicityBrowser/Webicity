@@ -1,6 +1,6 @@
 package everyos.browser.webicity.webribbon.gui;
 
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.Rectangle;
 
 public interface UIBox {
 	boolean intersectsWith(Rectangle viewport);

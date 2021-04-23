@@ -3,7 +3,7 @@ package everyos.engine.ribbon.ui.simple.helper;
 import java.util.ArrayList;
 
 import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public class StringWrapHelper {
 	public static ArrayList<String> calculateString(String text, Renderer r, SizePosGroup sizepos) {
@@ -18,13 +18,13 @@ public class StringWrapHelper {
 		
 		int i = 0;
 		while (i<text.length()) {
-			if (sizepos.y>sizepos.maxSize.height && sizepos.maxSize.height!=-1) break;
+			if (sizepos.getCurrentPointer().getY()>sizepos.getMaxSize().getHeight() && sizepos.getMaxSize().getHeight()!=-1) break;
 			
 			int ch = text.codePointAt(i);
-			sizepos.minIncrease(r.getFontHeight());
+			sizepos.setMinLineHeight(r.getFontHeight());
 			
 			if (ch=='\n') {
-				sizepos.x+=wordLength;
+				sizepos.move(wordLength, true);
 				line.append(word);
 				word = new StringBuilder();
 				wordLength = 0;
@@ -38,7 +38,7 @@ public class StringWrapHelper {
 			}
 			
 			if (ch!='\n') {
-				if (sizepos.x+wordLength+r.charWidth(ch)>+sizepos.maxSize.width) {
+				if (sizepos.getCurrentPointer().getX()+wordLength+r.charWidth(ch)>+sizepos.getMaxSize().getWidth()) {
 					if (startsOnNL) {
 						line.append(word);
 						word = new StringBuilder();
@@ -59,7 +59,7 @@ public class StringWrapHelper {
 			}
 			
 			if (!Character.isLetterOrDigit(ch)) {
-				sizepos.x+=wordLength;
+				sizepos.move(wordLength, true);
 				line.append(word);
 				word = new StringBuilder();
 				wordLength = 0;

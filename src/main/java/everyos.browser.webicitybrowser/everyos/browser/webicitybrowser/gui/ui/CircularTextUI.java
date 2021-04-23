@@ -3,9 +3,9 @@ package everyos.browser.webicitybrowser.gui.ui;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
@@ -20,15 +20,9 @@ public class CircularTextUI extends SimpleBlockComponentUI {
 	@Override
 	protected void renderUI(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
 		this.text = this.<CircularText>getComponent().getText();
-		
-		/*r.setFont(
-			(String) data.attributes.getOrDefault("font", "Arial"), 
-			FontStyle.PLAIN,
-			(int) data.attributes.getOrDefault("font-size", 16));*/
 		this.strwidth = StringWrapHelper.stringWidth(r, text);
-		sizepos.x+=strwidth+r.getFontPaddingHeight();
-		sizepos.minIncrease(r.getFontHeight());
-		sizepos.normalize();
+		sizepos.move(strwidth+r.getFontPaddingHeight(), true);
+		sizepos.setMinLineHeight(r.getFontHeight());
 		
 		//super.calcInternalSize(r, sizepos, data);
 	}
@@ -38,15 +32,11 @@ public class CircularTextUI extends SimpleBlockComponentUI {
 		paintMouse(r);
 		
 		r.useBackground();
-		r.drawEllipse(0, 0, bounds.height, bounds.height);
-		r.drawEllipse(bounds.width-bounds.height, 0, bounds.height, bounds.height);
-		r.drawFilledRect(bounds.height/2, 0, bounds.width-bounds.height, bounds.height);
+		r.drawEllipse(0, 0, bounds.getHeight(), bounds.getHeight());
+		r.drawEllipse(bounds.getWidth()-bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
+		r.drawFilledRect(bounds.getHeight()/2, 0, bounds.getWidth()-bounds.getHeight(), bounds.getHeight());
 		
-		/*r.setFont(
-			(String) data.attributes.getOrDefault("font", "Arial"), 
-			FontStyle.PLAIN,
-			(int) data.attributes.getOrDefault("font-size", 16));*/
 		r.useForeground();
-		r.drawText(bounds.width/2-strwidth/2, bounds.height/2-r.getFontHeight()/2, text);
+		r.drawText(bounds.getWidth()/2-strwidth/2, bounds.getHeight()/2-r.getFontHeight()/2, text);
 	}
 }

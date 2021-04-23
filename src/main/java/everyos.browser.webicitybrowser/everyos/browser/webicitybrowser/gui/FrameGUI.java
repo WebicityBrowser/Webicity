@@ -7,8 +7,8 @@ import everyos.browser.webicitybrowser.ui.Frame;
 import everyos.browser.webicitybrowser.ui.event.FrameMutationEventListener;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
+import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.core.shape.Location;
 
 public class FrameGUI {
 	private Frame frame;
@@ -17,7 +17,7 @@ public class FrameGUI {
 
 	public FrameGUI(Frame frame) {
 		this.frame = frame;
-		this.outerPane = new BlockComponent(null);
+		this.outerPane = new BlockComponent();
 	}
 	
 	public void start() {

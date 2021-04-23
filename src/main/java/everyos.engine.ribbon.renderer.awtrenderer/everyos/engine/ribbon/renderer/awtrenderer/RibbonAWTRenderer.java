@@ -7,12 +7,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
+import everyos.engine.ribbon.core.event.MouseListener;
+import everyos.engine.ribbon.core.event.UIEventTarget;
+import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.FontStyle;
+import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.renderer.guirenderer.event.MouseListener;
-import everyos.engine.ribbon.renderer.guirenderer.event.UIEventTarget;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.FontStyle;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 
 public class RibbonAWTRenderer implements Renderer {
 	private Graphics g;

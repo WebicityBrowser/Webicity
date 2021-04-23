@@ -1,14 +1,16 @@
 package everyos.browser.webicity.webribbon.ui.webui.helper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.core.rendering.Renderer;
 
 public class StringWrapHelper {
-	/*public static List<String> calculateString(String text, Renderer r, SizePosGroup sizepos, boolean wrapAnywhere) {
-		List<String> lines = new ArrayList<String>(1);
+	public static List<String> calculateString(String text, Renderer r, SizePosGroup sizepos, boolean forceInline) {
+		if (text.isBlank()) return List.of();
 		
+		List<String> lines = new ArrayList<String>(1);
 		StringBuilder line = new StringBuilder();
 		
 		boolean ignoreWhitespace = true;
@@ -16,79 +18,68 @@ public class StringWrapHelper {
 		for (int i = 0; i<text.length(); i++) {
 			char ch = text.charAt(i);
 			if (ch=='\n'||ch=='\r'||ch=='\f'||ch=='\t') {
-				lines.add(line.toString());
-				line = new StringBuilder();
-			}
-			if (text.charAt(i)==' ') {
+				//line = nextLine(lines, line, r, sizepos);
+				// Newlines are ignored
+			} else if (Character.isWhitespace(ch)) {
 				if (!ignoreWhitespace) {
 					ignoreWhitespace = true;
+					if (sizepos.move(r.charWidth(' '), forceInline)) {
+						line.append(' ');
+					} else {
+						line = nextLine(lines, line, r, sizepos);
+					}
 				}
-			}
-		}
-		
-		return lines;
-	}*/
-	
-	public static ArrayList<String> calculateString(String text, Renderer r, SizePosGroup sizepos, boolean wrapAnywhere) {
-		ArrayList<String> lines = new ArrayList<String>(1);
-		
-		StringBuilder line = new StringBuilder(1);
-		StringBuilder word = new StringBuilder(1);
-		boolean isNewLine = true;
-		boolean isNewLineNLTriggered = true;
-		boolean startsOnNL = true;
-		boolean is = true;
-		int wordLength = 0;
-		
-		int i = 0;
-		//System.out.println("ln: "+text.length());
-		while (i<text.length()) {
-			int ch = text.codePointAt(i++);
-			
-			//Yea...
-			//Ignore any code after this referencing \n
-			if (ch=='\n'||ch=='\r'||ch=='\f'||ch=='\t') ch = ' ';
-			if (ch == ' ') {
-				if (is) {
-					continue;
-				} else is = true;
-			} else is = false;
-			
-			sizepos.minIncrease(r.getFontHeight());
-			
-			if (sizepos.pointer.x+wordLength+r.charWidth(ch)>sizepos.preferredWidth&&(wrapAnywhere||ch==' ')) {
-				if (startsOnNL) {
+			} else {
+				sizepos.setMinLineHeight(r.getFontHeight()+r.getFontPaddingHeight());
+				String word = nextWord(text, i);
+				i+=word.length()-1;
+				ignoreWhitespace = false;
+				if (sizepos.move(fastStringWidth(r, text), forceInline)) {
 					line.append(word);
-					word = new StringBuilder();
-					wordLength = 0;
+				} else {
+					if (sizepos.getCurrentPointer().getX()!=0) {
+						line = nextLine(lines, line, r, sizepos);
+					}
+					//TODO: Support automatic hyphens
+					for (int j = 0; j<word.length(); j++) {
+						char ch2 = text.charAt(j);
+						if (sizepos.move(r.charWidth(ch2), false)) {
+							line.append(ch2);
+						} else {
+							line = nextLine(lines, line, r, sizepos);
+							line.append(ch2);
+						}
+					}
 				}
-				lines.add(line.toString());
-				line = new StringBuilder();
-				sizepos.nextLine();
-				
-				isNewLine = true;
-				startsOnNL = true;
-			}
-			if (isNewLineNLTriggered||!isNewLine||ch!=' ') {
-				word.appendCodePoint(ch);
-				wordLength+=r.charWidth(ch);
-				isNewLine = false;
-				isNewLineNLTriggered = false;
-			}
-			
-			if (!Character.isLetterOrDigit(ch)) {
-				sizepos.pointer.x+=wordLength;
-				line.append(word);
-				word = new StringBuilder();
-				wordLength = 0;
-				startsOnNL = false;
 			}
 		}
-		sizepos.pointer.x+=wordLength;
-		line.append(word);
-		lines.add(line.toString());
+		
+		if (!line.toString().isEmpty()) {
+			lines.add(line.toString());
+		}
 		
 		return lines;
+	}
+	
+	private static String nextWord(String text, int offset) {
+		StringBuilder word = new StringBuilder(8);
+		
+		for (int i = offset; i<text.length(); i++) {
+			char ch = text.charAt(i);
+			if (ch=='\n'||ch=='\r'||ch=='\f'||ch=='\t'||Character.isWhitespace(ch)) {
+				break;
+			}
+			word.append(ch);
+		}
+		
+		return word.toString();
+	}
+
+	private static StringBuilder nextLine(List<String> lines, StringBuilder line, Renderer r, SizePosGroup sizepos) {
+		lines.add(line.toString());
+		sizepos.setMinLineHeight(r.getFontHeight()+r.getFontPaddingHeight());
+		sizepos.nextLine();
+		return new StringBuilder();
 	}
 	
 	public static int stringWidth(Renderer r, String str) {
@@ -99,5 +90,11 @@ public class StringWrapHelper {
 			width=mw>width?mw:width;
 		}
 		return width;
+	}
+	
+	private static int fastStringWidth(Renderer r, String str) {
+		int mw = 0;
+		for (byte ch: str.getBytes()) mw+=r.charWidth((char) ch); 
+		return mw;
 	}
 }

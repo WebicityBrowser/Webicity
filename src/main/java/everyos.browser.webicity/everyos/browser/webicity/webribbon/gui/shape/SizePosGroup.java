@@ -1,50 +1,92 @@
 package everyos.browser.webicity.webribbon.gui.shape;
 
-import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
+import everyos.engine.ribbon.core.shape.Dimension;
+import everyos.engine.ribbon.core.shape.MutableDimension;
 
 public class SizePosGroup {
-	public Position position;
-	public Position pointer;
-	public Dimension size;
-	public int preferredWidth;
-	private int largeSize = 0;
-	private int minIncrease = 0;
+	private MutableDimension size;
+	private Dimension maxSize;
+	private int x;
+	private int y;
+	private int ny;
 
-	public SizePosGroup(Position position, Dimension size, int parentPreferred, Position pointer) {
-		this.position = position;
-		this.size = size;
-		this.pointer = pointer;
-		this.largeSize = 0;
-		this.preferredWidth = size.width!=-1?size.width:(parentPreferred-position.x);
+	public SizePosGroup(Dimension size, int x, int y, int mw, int mh) {
+		this.size = size.toMutable();
+		this.x = x;
+		this.y = y;
+		this.maxSize = new Dimension(mw, mh);
 	}
 	
-	public SizePosGroup(Position position, Dimension size, int parentPreferred) {
-		this(position, size, parentPreferred, new Position(0, 0));
+	public SizePosGroup(int width, int height, int x, int y, int mw, int mh) {
+		this(new Dimension(width, height), x, y, mw, mh);
+	}
+	
+	public SizePosGroup(int width, int height, int x, int y) {
+		this(new Dimension(width, height), x, y, width, height);
 	}
 
-	public SizePosGroup(SizePosGroup sizepos, Dimension size) {
-		this(sizepos.pointer(), size, sizepos.preferredWidth);
+	public void setMinLineHeight(int ny) {
+		if (ny>this.ny) this.ny = ny;
+		normalizeY();
+	}
+	
+	public boolean move(int x, boolean forceInline) {
+		if (!forceInline && !(maxSize.getWidth()==-1) && this.x+x>maxSize.getWidth()) {
+			//Refuse
+			return false;
+		}
+		
+		this.x += x;
+		normalizeX();
+		
+		return true;
+	}
+	
+	private void normalizeX() {	
+		if (x>size.getWidth()) {
+			size.setWidth((x<maxSize.getWidth()||maxSize.getWidth()==-1)?x:maxSize.getWidth());
+		}
+		if (x>maxSize.getWidth()&&maxSize.getWidth()!=-1) nextLine();
+	}
+	
+	private void normalizeY() {
+		if (this.y+this.ny>size.getHeight()) {
+			size.setHeight(this.y+this.ny);
+			if (maxSize.getHeight()!=-1&&size.getHeight()>maxSize.getHeight()) {
+				size.setHeight(maxSize.getHeight());
+			}
+		}
 	}
 
-	public void finished() {
-		if (size.width==-1) size.width = pointer.x>largeSize?pointer.x:largeSize;
-		if (size.height==-1) size.height = pointer.y+minIncrease;
-	}
-
-	public void minIncrease(int height) {
-		minIncrease = minIncrease>height?minIncrease:height;
-	}
 	public void nextLine() {
-		largeSize=pointer.x>largeSize?pointer.x:largeSize;
-		pointer.x = 0;
-		pointer.y += minIncrease;
-		minIncrease = 0;
+		y = y + ny;
+		x = 0;
+		ny = 0;
 	}
 
-	public Position position() {
-		return position.copy();
+	public void add(Dimension s) {
+		this.x+=s.getWidth();
+		this.setMinLineHeight(s.getHeight());
+		normalizeX();
+		normalizeY();
 	}
-	public Position pointer() {
-		return pointer.copy();
+
+	public void min(Dimension s) {
+		this.size.setWidth(this.size.getWidth()<s.getWidth()?s.getWidth():this.size.getWidth());
+		this.size.setHeight(this.size.getHeight()<s.getHeight()?s.getHeight():this.size.getHeight());
+		normalizeX();
+		normalizeY();
+	}
+	
+	public Dimension getSize() {
+		return size.freeze();
+	}
+	
+	public Dimension getMaxSize() {
+		return maxSize;
+	}
+
+	public Position getCurrentPointer() {
+		return new Position(x, y);
 	}
 }

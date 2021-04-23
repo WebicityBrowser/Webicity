@@ -2,13 +2,12 @@ package everyos.browser.webicity.webribbon.gui;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.Component;
 
 public class WebComponentWrapper extends BlockComponent {
 	private WebComponent wui;
 
-	public WebComponentWrapper(Component parent) {
-		super(parent);
+	public WebComponentWrapper() {
+		super();
 	}
 
 	public WebComponentWrapper ui(WebComponent component) {

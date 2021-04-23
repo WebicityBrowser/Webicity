@@ -1,8 +1,8 @@
 package everyos.browser.webicity.webribbon.gui.shape;
 
 public class Position {
-	public int x;
-	public int y;
+	private int x;
+	private int y;
 
 	public Position() {
 		this.x = 0;
@@ -16,5 +16,13 @@ public class Position {
 
 	public Position copy() {
 		return new Position(x, y);
+	}
+
+	public int getX() {
+		return this.x;
+	}
+
+	public int getY() {
+		return this.y;
 	}
 }

@@ -9,16 +9,16 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.shape.Dimension;
+import everyos.engine.ribbon.core.shape.Location;
+import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.renderer.awtrenderer.ListenerRect;
-import everyos.engine.ribbon.renderer.guirenderer.event.MouseEvent;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
-import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.renderer.skijarenderer.ImageUtil.Image;
 
 public class RibbonSkijaWindow {
@@ -69,7 +69,7 @@ public class RibbonSkijaWindow {
 			
 			lock.release();
 			
-			Renderer root = RibbonSkijaRenderer.of(window);
+			RibbonSkijaRenderer root = RibbonSkijaRenderer.of(window);
 			while (running&&!GLFW.glfwWindowShouldClose(window)) {
 				root = updateWindow(root);
 				GLFW.glfwSwapBuffers(window);
@@ -85,13 +85,15 @@ public class RibbonSkijaWindow {
 		}
 	}
 	
-	private Renderer updateWindow(Renderer root) {
+	private RibbonSkijaRenderer updateWindow(RibbonSkijaRenderer root) {
 		if (ui==null) return root;
+		
+		RibbonSkijaRenderer renderer = root;
 		
 		Dimension size = getSize();
 		if (oldSize==null || oldSize.getWidth()!=size.getWidth() || oldSize.getHeight()!=size.getHeight()) {
 			ui.invalidateLocal();
-			root = RibbonSkijaRenderer.of(window);
+			renderer = RibbonSkijaRenderer.of(window);
 		}
 		
 		oldSize = size;
@@ -112,13 +114,14 @@ public class RibbonSkijaWindow {
 		});
 		mouseBindings = newMouseBindings;
 		//long time = System.currentTimeMillis();
-		ui.paint(root);
-		root.draw();
+		ui.paint(renderer);
+		
+		renderer.draw();
 		//System.out.println(System.currentTimeMillis()-time);
 		
 		ui.validate();
 		
-		return root;
+		return renderer;
 	}
 
 	private Dimension getSize() {
@@ -234,8 +237,8 @@ public class RibbonSkijaWindow {
 		for (int i = mouseBindings.size()-1; i>=0; i--) {
 			ListenerRect binding = mouseBindings.get(i);
 			Rectangle bounds = binding.getBounds();
-			if (x>=bounds.x&&x<=bounds.x+bounds.width&&
-				y>=bounds.y&&y<=bounds.y+bounds.height) {
+			if (x>=bounds.getX()&&x<=bounds.getX()+bounds.getWidth()&&
+				y>=bounds.getY()&&y<=bounds.getY()+bounds.getHeight()) {
 				
 				binding.getListener().accept(
 					new MouseEvent(binding.getEventTarget(), x, y, button, action, !isDetermined));

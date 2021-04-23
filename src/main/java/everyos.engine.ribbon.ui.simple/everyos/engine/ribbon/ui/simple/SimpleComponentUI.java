@@ -3,16 +3,16 @@ package everyos.engine.ribbon.ui.simple;
 import java.util.ArrayList;
 
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.directive.BackgroundDirective;
+import everyos.engine.ribbon.core.directive.ForegroundDirective;
+import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.GUIConstants;
+import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.guirenderer.directive.BackgroundDirective;
-import everyos.engine.ribbon.renderer.guirenderer.directive.ForegroundDirective;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIConstants;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
-import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 
 
 public class SimpleComponentUI implements ComponentUI {

@@ -19,17 +19,21 @@ import org.jetbrains.skija.Typeface;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL32;
 
+import everyos.engine.ribbon.core.event.MouseListener;
+import everyos.engine.ribbon.core.event.UIEventTarget;
+import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.FontStyle;
+import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.renderer.guirenderer.event.MouseListener;
-import everyos.engine.ribbon.renderer.guirenderer.event.UIEventTarget;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.FontStyle;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
 
 public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
-	private static ColorSpace colorSpace;
+	private static ColorSpace colorSpace = ColorSpace.getSRGB();
 	private Canvas canvas;
-	private int x, y, l, h = 0;
+	private int 
+		x = 0,
+		y = 0,
+		l = 0,
+		h = 0;
 	private int color;
 	private GUIState state;
 	private ListenerPaintListener lpl;
@@ -40,6 +44,7 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	private int[] widthCache;
 	private FontMgr manager;
 	private Typeface typeface;
+	private int fontHeight;
 	
 	private boolean debugBoxes = false;
 	
@@ -153,12 +158,11 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 
 	@Override
 	public int drawText(int x, int y, String text) {
-		//System.out.println(text);
 		withMetrics();
 		beforeDraw();
 		
 		short[] glyphs = font.getStringGlyphs(text);
-        float[] widths = font.getWidths(glyphs);
+		float[] widths = font.getWidths(glyphs);
         float[] xpos = new float[glyphs.length];
         int distance = 0;
         for (int i = 0; i < xpos.length; i++) {
@@ -168,10 +172,10 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 
         try (Paint paint = new Paint()) {
 			paint.setColor(color);
-			canvas.drawTextBlob(TextBlob.makeFromPosH(glyphs, xpos, 0, font), this.x+x, this.y+y+metrics.getHeight(), paint);
+			canvas.drawTextBlob(TextBlob.makeFromPosH(glyphs, xpos, 0, font), this.x+x, this.y+y+fontHeight, paint);
         }
 		
-		return 0; //TODO
+		return distance; //TODO
 	}
 
 	@Override
@@ -204,20 +208,21 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	@Override
 	public int getFontHeight() {
 		withMetrics();
-		return (int) metrics.getHeight();
+		return fontHeight;
 	}
 	
 	private void withMetrics() {
 		if (metrics==null) {
 			metrics = font.getMetrics();
 			widthCache = new int[256];
+			fontHeight = (int) metrics.getHeight();
 		}
 	}
 
 	@Override
 	public int getFontPaddingHeight() {
 		withMetrics();
-		return (int) metrics.getDescent();
+		return (int) metrics.getDescent()+1;
 	}
 
 	@Override
@@ -285,7 +290,7 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 			foreground.getBlue(); // Equivalent to foreground.getBlue() << 0
 	}
 
-	public static Renderer of(long window) {
+	public static RibbonSkijaRenderer of(long window) {
 		int[] width = new int[1];
 		int[] height = new int[1];
 		GLFW.glfwGetFramebufferSize(window, width, height);
@@ -317,9 +322,5 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 				context.close();
 			}
 		};
-	}
-	
-	static {
-		colorSpace = ColorSpace.getSRGB();
 	}
 }

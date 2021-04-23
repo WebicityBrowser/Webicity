@@ -3,11 +3,11 @@ package everyos.browser.webicitybrowser.gui.behavior;
 import java.util.function.Supplier;
 
 import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.renderer.guirenderer.directive.BackgroundDirective;
-import everyos.engine.ribbon.renderer.guirenderer.directive.ExternalMouseListenerDirective;
-import everyos.engine.ribbon.renderer.guirenderer.directive.MouseListenerDirective;
-import everyos.engine.ribbon.renderer.guirenderer.event.MouseEvent;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
+import everyos.engine.ribbon.core.directive.BackgroundDirective;
+import everyos.engine.ribbon.core.directive.ExternalMouseListenerDirective;
+import everyos.engine.ribbon.core.directive.MouseListenerDirective;
+import everyos.engine.ribbon.core.event.MouseEvent;
+import everyos.engine.ribbon.core.graphics.Color;
 
 public final class ActionButtonBehavior {
 	private ActionButtonBehavior() {}

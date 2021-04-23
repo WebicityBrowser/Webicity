@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.component.TextBoxComponent;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
 public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
@@ -33,14 +33,14 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 		r.useForeground();
 		for (int i=0; i<lines.size(); i++) {
 			int py = i*r.getFontHeight();
-			if (py>bounds.height) break;
+			if (py>bounds.getHeight()) break;
 			
 			int width = StringWrapHelper.stringWidth(r, lines.get(i));
 			int x = 0;
 			if (align.equals("right")) {
-				x = bounds.width-width;
+				x = bounds.getWidth()-width;
 			} else if (align.equals("center")) {
-				x = bounds.width/2-width/2;
+				x = bounds.getWidth()/2-width/2;
 			}
 			
 			r.drawText(x, py, lines.get(i));

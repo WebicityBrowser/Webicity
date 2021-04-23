@@ -2,13 +2,13 @@ package everyos.browser.webicitybrowser.gui.component;
 
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.renderer.guirenderer.directive.FontSizeDirective;
+import everyos.engine.ribbon.core.directive.FontSizeDirective;
 
 public class URLBar extends BlockComponent {
 	private String text = "";
 	
 	public URLBar(Component parent) {
-		super(parent);
+		super();
 		
 		this
 			.directive(FontSizeDirective.of(14));

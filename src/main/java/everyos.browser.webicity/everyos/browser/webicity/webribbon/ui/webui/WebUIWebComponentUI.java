@@ -5,14 +5,14 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
+import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.renderer.guirenderer.event.UIEvent;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;
 
 public class WebUIWebComponentUI implements WebComponentUI {
-	private SizePosGroup bounds;
+	private Rectangle bounds;
 	private final WebComponent component;
 	private final WebComponentUI parent;
 	private WebComponentUI[] children;
@@ -46,24 +46,40 @@ public class WebUIWebComponentUI implements WebComponentUI {
 		} else if (display.equals("block")) {
 			//renderChildren(r, sizepos);
 			
-			if (sizepos.pointer.x!=0) sizepos.nextLine();
-			SizePosGroup blockBounds = new SizePosGroup(sizepos, new Dimension(-1, -1));
-			this.bounds = blockBounds;
+			if (sizepos.getCurrentPointer().getX()!=0) sizepos.nextLine();
+			//SizePosGroup blockBounds = new SizePosGroup(sizepos, new Dimension(-1, -1));
+			SizePosGroup blockBounds = new SizePosGroup(
+				sizepos.getSize().getWidth(), 0,
+				0, 0,
+				-1, -1);
 			renderUI(r, blockBounds, context);
-			blockBounds.finished();
-			sizepos.minIncrease(blockBounds.size.height);
-			sizepos.pointer.x+=blockBounds.size.width;
+			
+			this.bounds = new Rectangle(
+				sizepos.getCurrentPointer().getX(),
+				sizepos.getCurrentPointer().getY(),
+				blockBounds.getSize().getWidth(),
+				blockBounds.getSize().getHeight());
+			
+			sizepos.setMinLineHeight(blockBounds.getSize().getHeight());
+			sizepos.move(blockBounds.getSize().getWidth(), true);
 			sizepos.nextLine();
 		} else if (display.equals("inline-block")) {
-			SizePosGroup blockBounds = new SizePosGroup(sizepos, new Dimension(sizepos.size.width-sizepos.pointer.x, -1));
-			this.bounds = blockBounds;
+			//SizePosGroup blockBounds = new SizePosGroup(sizepos, new Dimension(sizepos.size.getWidth()-sizepos.pointer.x, -1));
+			SizePosGroup blockBounds = new SizePosGroup(
+				//sizepos.getCurrentPointer().x, sizepos.getCurrentPointer().y,
+				0, 0,
+				-1, -1);
 			renderUI(r, blockBounds, context);
-			blockBounds.finished();
-			if (sizepos.position.x!=0&&blockBounds.size.width+sizepos.pointer.x>sizepos.size.width) {
+			/*if (sizepos.getCurrentPointer().x!=0&&blockBounds.getSize().getWidth()+sizepos.getCurrentPointer().x>sizepos.getSize().getWidth()) {
 				sizepos.nextLine();
 				blockBounds.position = sizepos.position();
-			}
-			sizepos.minIncrease(blockBounds.size.height);
+			}*/
+			this.bounds = new Rectangle(
+					sizepos.getCurrentPointer().getX(),
+					sizepos.getCurrentPointer().getY(),
+					blockBounds.getSize().getWidth(),
+					blockBounds.getSize().getHeight());
+			sizepos.setMinLineHeight(blockBounds.getSize().getHeight());
 		} else if (display.equals("contents")) {
 			renderChildren(r, sizepos, context);
 		}
@@ -109,31 +125,33 @@ public class WebUIWebComponentUI implements WebComponentUI {
 		paintChildren(r, viewport);
 	}
 	
-	protected void paintChildren(Renderer r, Rectangle viewport) {
+	protected void paintChildren(Renderer r_, Rectangle viewport) {
 		//Shuks, the culling code is still not working properly?
-		
-		Rectangle vp = viewport.clone();
+		Renderer r = r_;
+		RectangleBuilder vpBuilder = new RectangleBuilder(viewport);
 		if (this.bounds!=null) {
 			r = r.getSubcontext(
-				bounds.position.x,
-				bounds.position.y,
-				bounds.size.width,
-				bounds.size.height);
+				bounds.getX(),
+				bounds.getY(),
+				bounds.getWidth(),
+				bounds.getHeight());
 			
 			//AABB based culling
-			vp = new Rectangle( //The viewport is the area in which subcomponents *could* be drawn
+			vpBuilder = new RectangleBuilder( //The viewport is the area in which subcomponents *could* be drawn
 				0, 0, // Child components actually use the parent's location as the origin
-				bounds.size.width, bounds.size.height);
+				bounds.getWidth(), bounds.getHeight());
 			
 			// The new viewport should fit within the old viewport
-			if (bounds.position.x+vp.width>viewport.width) {
-				vp.width = viewport.width - bounds.position.x;
+			if (bounds.getX()+vpBuilder.getWidth()>viewport.getWidth()) {
+				vpBuilder.setWidth(viewport.getWidth() - bounds.getX());
 			}
-			if (bounds.position.y+vp.height>viewport.height) {
-				vp.height = viewport.height - bounds.position.y;
+			if (bounds.getY()+vpBuilder.getHeight()>viewport.getHeight()) {
+				vpBuilder.setHeight(viewport.getHeight() - bounds.getY());
 			}
 		}
+		Rectangle vp = vpBuilder.build();
 		for (WebComponentUI c: getChildren()) {
+			r.useBackground();
 			if (c.getUIBox().intersectsWith(vp)) {
 				c.paint(r, vp);
 			}

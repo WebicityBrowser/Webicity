@@ -1,7 +1,7 @@
 package everyos.browser.webicity.webribbon.gui.input;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class MouseBinding {
 	public int type;
@@ -18,7 +18,7 @@ public class MouseBinding {
 	
 	public boolean aabb(int x, int y) {
 		return
-			x>=bounds.x&&x<=bounds.x+bounds.width&&
-			y>=bounds.y&&y<=bounds.y+bounds.height;
+			x>=bounds.getX()&&x<=bounds.getX()+bounds.getWidth()&&
+			y>=bounds.getY()&&y<=bounds.getY()+bounds.getHeight();
 	}
 }

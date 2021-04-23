@@ -5,7 +5,7 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class WebUIWebIgnoredComponentUI extends WebUIWebComponentUI {
 	public WebUIWebIgnoredComponentUI(WebComponent component, WebComponentUI parent) {

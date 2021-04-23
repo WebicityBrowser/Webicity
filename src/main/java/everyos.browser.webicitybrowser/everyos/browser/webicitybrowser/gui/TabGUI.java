@@ -10,10 +10,10 @@ import everyos.browser.webicitybrowser.ui.Tab;
 import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.renderer.guirenderer.directive.BackgroundDirective;
-import everyos.engine.ribbon.renderer.guirenderer.directive.PositionDirective;
-import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
+import everyos.engine.ribbon.core.directive.BackgroundDirective;
+import everyos.engine.ribbon.core.directive.PositionDirective;
+import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.core.shape.Location;
 
 public class TabGUI {
 	private Tab tab;
@@ -68,7 +68,7 @@ public class TabGUI {
 	};
 	
 	private void createTabPane() {
-		this.tabPane = new BlockComponent(null);
+		this.tabPane = new BlockComponent();
 		
 		Component tabDecor = createTabDecorations();
 		int decorHeight = Styling.BUTTON_WIDTH+(int)(Styling.ELEMENT_PADDING*1.5);
@@ -86,7 +86,7 @@ public class TabGUI {
 	private Component createTabDecorations() {
 		int horizontalDrop = (int) (Styling.ELEMENT_PADDING*.5);
 		
-		Component tabDecor = new BlockComponent(null);
+		Component tabDecor = new BlockComponent();
 		tabDecor.directive(BackgroundDirective.of(Styling.BACKGROUND_PRIMARY));
 		
 		// Add the tab action buttons

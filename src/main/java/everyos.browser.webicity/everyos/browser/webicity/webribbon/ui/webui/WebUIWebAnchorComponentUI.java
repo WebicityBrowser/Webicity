@@ -5,11 +5,11 @@ import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
+import everyos.engine.ribbon.core.event.MouseEvent;
+import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.renderer.guirenderer.event.MouseEvent;
-import everyos.engine.ribbon.renderer.guirenderer.event.UIEvent;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class WebUIWebAnchorComponentUI extends WebUIWebComponentUI {
 	public WebUIWebAnchorComponentUI(WebComponent component, WebComponentUI parent) {

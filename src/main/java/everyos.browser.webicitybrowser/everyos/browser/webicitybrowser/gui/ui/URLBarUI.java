@@ -3,9 +3,9 @@ package everyos.browser.webicitybrowser.gui.ui;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
@@ -24,9 +24,8 @@ public class URLBarUI extends SimpleBlockComponentUI {
 			FontStyle.PLAIN,
 			(int) data.attributes.getOrDefault("font-size", 16));*/
 		int width = StringWrapHelper.stringWidth(r, text);
-		sizepos.x+=width+10;
-		sizepos.minIncrease(r.getFontHeight());
-		sizepos.normalize();
+		sizepos.move(width+10, true);
+		sizepos.setMinLineHeight(r.getFontHeight());
 		
 		//super.renderUI(r, sizepos, mgrui);
 	}
@@ -35,15 +34,15 @@ public class URLBarUI extends SimpleBlockComponentUI {
 	protected void paintUI(Renderer r) {
 		
 		r.useBackground();
-		r.drawEllipse(0, 0, bounds.height, bounds.height);
-		r.drawEllipse(bounds.width-bounds.height, 0, bounds.height, bounds.height);
-		r.drawFilledRect(bounds.height/2, 0, bounds.width-bounds.height, bounds.height);
+		r.drawEllipse(0, 0, bounds.getHeight(), bounds.getHeight());
+		r.drawEllipse(bounds.getWidth()-bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
+		r.drawFilledRect(bounds.getHeight()/2, 0, bounds.getWidth()-bounds.getHeight(), bounds.getHeight());
 		
 		/*r.setFont(
 			(String) data.attributes.getOrDefault("font", "Arial"), 
 			FontStyle.PLAIN,
 			(int) data.attributes.getOrDefault("font-size", 16));*/
 		r.useForeground();
-		r.drawText(bounds.height, bounds.height/2-r.getFontHeight()/2, text);
+		r.drawText(bounds.getHeight(), bounds.getHeight()/2-r.getFontHeight()/2, text);
 	}
 }

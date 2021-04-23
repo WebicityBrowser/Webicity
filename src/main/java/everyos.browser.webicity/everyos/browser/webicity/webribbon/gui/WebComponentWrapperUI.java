@@ -3,16 +3,14 @@ package everyos.browser.webicity.webribbon.gui;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
-import everyos.browser.webicity.webribbon.gui.shape.Position;
 import everyos.browser.webicity.webribbon.ui.webui.WebUIWebUIManager;
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Dimension;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
-import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 
 public class WebComponentWrapperUI extends SimpleBlockComponentUI {
@@ -35,11 +33,10 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 			this.ui = wuim.get(wui, null);
 		}
 		if (wui!=null) {
+			Rectangle bounds = getBounds();
 			everyos.browser.webicity.webribbon.gui.shape.SizePosGroup spg = new everyos.browser.webicity.webribbon.gui.shape.SizePosGroup(
-				new Position(),
-				new Dimension(sizepos.size.width, sizepos.size.height),
-				sizepos.size.width);
-			this.viewport = new Rectangle(0, 0, spg.size.width, spg.size.height);
+				bounds.getWidth(), bounds.getHeight(), 0, 0);
+			this.viewport = new Rectangle(0, 0, spg.getSize().getWidth(), spg.getSize().getHeight());
 			ui.render(r, spg, new UIContextImp(wuim));
 		}
 	}

@@ -1,6 +1,6 @@
 package everyos.browser.webicitybrowser.gui;
 
-import everyos.engine.ribbon.renderer.guirenderer.graphics.Color;
+import everyos.engine.ribbon.core.graphics.Color;
 
 public final class Styling {
 	public static final Color BACKGROUND_PRIMARY = new Color(0, 119, 131);

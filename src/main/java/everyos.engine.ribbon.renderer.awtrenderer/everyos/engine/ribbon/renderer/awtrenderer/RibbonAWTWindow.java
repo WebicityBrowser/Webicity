@@ -17,15 +17,15 @@ import javax.imageio.ImageIO;
 import javax.swing.event.MouseInputAdapter;
 
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.event.MouseEvent;
+import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.shape.Location;
+import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.guirenderer.event.MouseEvent;
-import everyos.engine.ribbon.renderer.guirenderer.graphics.GUIState;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
-import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
 import everyos.engine.ribbon.renderer.skijarenderer.ListenerRect;
 
 public class RibbonAWTWindow {
@@ -122,8 +122,8 @@ public class RibbonAWTWindow {
 				for (int i = mouseBindings.size()-1; i>=0; i--) {
 					ListenerRect binding = mouseBindings.get(i);
 					Rectangle bounds = binding.getBounds();
-					if (e.getX()>=bounds.x&&e.getX()<=bounds.x+bounds.width&&
-						e.getY()>=bounds.y&&e.getY()<=bounds.y+bounds.height) {
+					if (e.getX()>=bounds.getX()&&e.getX()<=bounds.getX()+bounds.getWidth()&&
+						e.getY()>=bounds.getY()&&e.getY()<=bounds.getY()+bounds.getHeight()) {
 						
 						binding.getListener().accept(
 							new MouseEvent(binding.getEventTarget(), e.getX(), e.getY(), e.getButton(), action, !isDetermined));

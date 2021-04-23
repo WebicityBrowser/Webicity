@@ -1,7 +1,7 @@
 package everyos.engine.ribbon.core.ui;
 
 import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.renderer.guirenderer.shape.SizePosGroup;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public interface ComponentUI {
 	public void directive(UIDirective directive);

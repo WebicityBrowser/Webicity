@@ -3,9 +3,9 @@ package everyos.browser.webicity.webribbon.core.ui;
 import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
+import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.renderer.guirenderer.event.UIEvent;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.Rectangle;
 
 public interface WebComponentUI {
 	void invalidate();

@@ -4,23 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Function;
 
+import everyos.engine.ribbon.core.event.UIEventTarget;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
-import everyos.engine.ribbon.renderer.guirenderer.event.UIEventTarget;
 
 public class Component implements UIEventTarget {
-	public Component parent;
-	protected ArrayList<Component> children;
-	protected ArrayList<ComponentUI> boundObservers; //TODO:
-	protected HashMap<String, Object> tags;
-	protected HashMap<Class<? extends ComponentUI>, ArrayList<UIDirectiveWrapper>> directives;
+	private Component parent;
+	private ArrayList<Component> children;
+	private ArrayList<ComponentUI> boundObservers; //TODO:
+	private HashMap<Class<? extends ComponentUI>, ArrayList<UIDirectiveWrapper>> directives;
 	
-	public Component(Component parent) {
+	public Component() {
 		children = new ArrayList<Component>();
-		tags = new HashMap<>();
 		boundObservers = new ArrayList<>();
 		directives = new HashMap<>();
-		if (parent!=null) this.setParent(parent);
 	}
 	
 	/**
@@ -143,14 +140,6 @@ public class Component implements UIEventTarget {
 		}
 	}
 	
-	public Component tag(String name, Object o) {
-		tags.put(name, o);
-		return this;
-	}
-	public Object getTag(String name) {
-		return tags.get(name);
-	}
-	
 	@SuppressWarnings("unchecked")
 	public <T> T casted(Class<T> cls) {
 		return (T) this;
@@ -166,7 +155,6 @@ public class Component implements UIEventTarget {
 	}
 	
 	public void unbind(ComponentUI ui) {
-		System.out.println(boundObservers.contains(ui));
 		boundObservers.remove(ui);
 	}
 
@@ -183,15 +171,6 @@ public class Component implements UIEventTarget {
 		}
 		
 		return matches.toArray(new Component[matches.size()]);
-	}
-	public Component getComponentByID(String id) {
-		Component[] cl = query(c->equals(c.getTag("id"), id));
-		if (cl.length==0) return null;
-		return cl[0];
-	}
-
-	private boolean equals(Object a, Object b) {
-		return a==null?false:a.equals(b);
 	}
 
 	//TODO: Should not exists

@@ -5,8 +5,8 @@ import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.gui.WebComponentWrapper;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.renderer.guirenderer.directive.SizeDirective;
-import everyos.engine.ribbon.renderer.guirenderer.shape.Location;
+import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.core.shape.Location;
 
 public class HTMLRendererGUI {
 	private HTMLRenderer renderer;
@@ -17,9 +17,9 @@ public class HTMLRendererGUI {
 	}
 	
 	public void start() {
-		this.displayPane = new BlockComponent(null);
+		this.displayPane = new BlockComponent();
 		renderer.addReadyHook(()->{
-			WebComponentWrapper innerPane = new WebComponentWrapper(null);
+			WebComponentWrapper innerPane = new WebComponentWrapper();
 			innerPane.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
 			innerPane.ui(new WebComponent(renderer, renderer.getDocument()));
 			displayPane.children(new Component[] {innerPane});
