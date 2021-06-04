@@ -9,7 +9,7 @@ import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.net.protocol.http.http11.HTTP11Request;
 
 public class HTTPRequest implements Request {
-	protected URL url;
+	private URL url;
 	private HTTP11Request request;
 
 	public HTTPRequest(URL url) {

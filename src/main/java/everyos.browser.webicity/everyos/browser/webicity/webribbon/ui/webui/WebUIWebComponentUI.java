@@ -75,10 +75,10 @@ public class WebUIWebComponentUI implements WebComponentUI {
 				blockBounds.position = sizepos.position();
 			}*/
 			this.bounds = new Rectangle(
-					sizepos.getCurrentPointer().getX(),
-					sizepos.getCurrentPointer().getY(),
-					blockBounds.getSize().getWidth(),
-					blockBounds.getSize().getHeight());
+				sizepos.getCurrentPointer().getX(),
+				sizepos.getCurrentPointer().getY(),
+				blockBounds.getSize().getWidth(),
+				blockBounds.getSize().getHeight());
 			sizepos.setMinLineHeight(blockBounds.getSize().getHeight());
 		} else if (display.equals("contents")) {
 			renderChildren(r, sizepos, context);

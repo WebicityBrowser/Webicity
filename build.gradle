@@ -57,12 +57,10 @@ sourceSets {
 	main {
 		java {
 			srcDirs = [
-				'src/main/java/everyos.engine.doublej',
 				'src/main/java/everyos.browser.javadom',
 				'src/main/java/everyos.browser.webicity',
 				'src/main/java/everyos.browser.webicitybrowser',
 				'src/main/java/everyos.engine.ribbon.core',
-				'src/main/java/everyos.engine.ribbon.renderer.awtrenderer',
 				'src/main/java/everyos.engine.ribbon.renderer.skijarenderer',
 				'src/main/java/everyos.engine.ribbon.ui.simple'
 			]

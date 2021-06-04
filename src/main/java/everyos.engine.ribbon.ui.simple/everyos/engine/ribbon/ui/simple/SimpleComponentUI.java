@@ -20,8 +20,8 @@ public class SimpleComponentUI implements ComponentUI {
 	private ArrayList<ComponentUI> children;
 	private ComponentUI parent;
 	private boolean invalidated = true;
-	protected Color background; //TODO: Getter instead
-	protected Color foreground;
+	private Color background;
+	private Color foreground;
 	
 	public SimpleComponentUI(Component component, ComponentUI parent) {
 		this.component = component;
@@ -95,6 +95,14 @@ public class SimpleComponentUI implements ComponentUI {
 		return parent;
 	}
 	
+	protected Color getBackground() {
+		return background;
+	}
+	
+	protected Color getForeground() {
+		return foreground;
+	}
+	
 	@Override
 	public void invalidate() {
 		ComponentUI cui = this;
@@ -126,6 +134,7 @@ public class SimpleComponentUI implements ComponentUI {
 			cui = cui.getParent();
 		}
 	}
+	
 	@Override
 	public void repaintLocal() {}
 	

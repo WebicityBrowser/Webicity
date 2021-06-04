@@ -19,13 +19,13 @@ import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;
 
 public class SimpleBlockComponentUI extends SimpleComponentUI {
-	protected Rectangle bounds;
-	protected Location position;
-	protected Location size;
-	protected Offset offset;
+	private Rectangle bounds;
+	private Location position;
+	private Location size;
+	private Offset offset;
 	
-	protected MouseListener mouseListener;
-	protected MouseListener externalMouseListener;
+	private MouseListener mouseListener;
+	private MouseListener externalMouseListener;
 	
 	public SimpleBlockComponentUI(Component c, ComponentUI parent) {
 		super(c, parent);
@@ -95,8 +95,8 @@ public class SimpleBlockComponentUI extends SimpleComponentUI {
 	@Override
 	public void paint(Renderer r) {
 		Renderer r2 = r.getSubcontext(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
-		if (background!=null) r2.setBackground(background);
-		if (foreground!=null) r2.setForeground(foreground);
+		if (getBackground()!=null) r2.setBackground(getBackground());
+		if (getForeground()!=null) r2.setForeground(getForeground());
 		paintUI(r2);
 	}
 	

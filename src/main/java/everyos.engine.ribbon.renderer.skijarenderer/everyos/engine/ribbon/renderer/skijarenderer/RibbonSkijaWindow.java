@@ -18,7 +18,6 @@ import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.awtrenderer.ListenerRect;
 import everyos.engine.ribbon.renderer.skijarenderer.ImageUtil.Image;
 
 public class RibbonSkijaWindow {
@@ -30,6 +29,7 @@ public class RibbonSkijaWindow {
 	private long window;
 	private boolean running = true;
 	private Dimension oldSize;
+	private boolean maximized;
 
 	public RibbonSkijaWindow(int id) {
 		
@@ -162,8 +162,14 @@ public class RibbonSkijaWindow {
 	public void minimize() {
 		GLFW.glfwIconifyWindow(window);
 	}
+	
 	public void restore() {
-		GLFW.glfwMaximizeWindow(window);
+		if (maximized) {
+			GLFW.glfwRestoreWindow(window);
+		} else {
+			GLFW.glfwMaximizeWindow(window);
+		}
+		maximized = !maximized;
 	}
 	
 	public void setVisible(boolean visible) {

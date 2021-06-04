@@ -33,14 +33,14 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 		r.useForeground();
 		for (int i=0; i<lines.size(); i++) {
 			int py = i*r.getFontHeight();
-			if (py>bounds.getHeight()) break;
+			if (py>getBounds().getHeight()) break;
 			
 			int width = StringWrapHelper.stringWidth(r, lines.get(i));
 			int x = 0;
 			if (align.equals("right")) {
-				x = bounds.getWidth()-width;
+				x = getBounds().getWidth()-width;
 			} else if (align.equals("center")) {
-				x = bounds.getWidth()/2-width/2;
+				x = getBounds().getWidth()/2-width/2;
 			}
 			
 			r.drawText(x, py, lines.get(i));

@@ -10,7 +10,9 @@ public class SimpleBreakComponentUI extends SimpleComponentUI {
 	public SimpleBreakComponentUI(Component c, ComponentUI parent) {
 		super(c, parent);
 	}
-	@Override protected void renderUI(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
+	
+	@Override
+	protected void renderUI(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
 		sizepos.nextLine();
 		super.renderUI(r, sizepos, uimgr);
 	}

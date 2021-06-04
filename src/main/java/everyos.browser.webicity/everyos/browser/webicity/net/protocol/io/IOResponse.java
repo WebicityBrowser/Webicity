@@ -7,14 +7,15 @@ import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
 
-public class IOResponse extends Response {
+public class IOResponse implements Response {
 	protected InputStream stream;
 
 	public IOResponse(InputStream stream) {
 		this.stream = stream;
 	}
 
-	@Override public int getStatus() {
+	@Override
+	public int getStatus() {
 		return 200;
 	}
 
@@ -23,7 +24,8 @@ public class IOResponse extends Response {
 		return stream;
 	}
 
-	@Override public Renderer getProbableRenderer() {
+	@Override
+	public Renderer getProbableRenderer() {
 		//return new PlainTextRenderer();
 		return new HTMLRenderer();
 	}

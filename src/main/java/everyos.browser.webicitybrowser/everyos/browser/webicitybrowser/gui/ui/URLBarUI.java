@@ -3,6 +3,7 @@ package everyos.browser.webicitybrowser.gui.ui;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
@@ -32,6 +33,7 @@ public class URLBarUI extends SimpleBlockComponentUI {
 
 	@Override
 	protected void paintUI(Renderer r) {
+		Rectangle bounds = getBounds();
 		
 		r.useBackground();
 		r.drawEllipse(0, 0, bounds.getHeight(), bounds.getHeight());
