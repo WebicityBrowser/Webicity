@@ -43,23 +43,28 @@ public class JDEvent implements Event {
 		setIsTrusted(true);
 	}
 	
-	@Override public String getType() {
+	@Override
+	public String getType() {
 		return type;
 	}
 
-	@Override public EventTarget getTarget() {
+	@Override
+	public EventTarget getTarget() {
 		return target;
 	}
 
-	@Override public EventTarget getSrcElement() {
+	@Override
+	public EventTarget getSrcElement() {
 		return target;
 	}
 	
-	@Override public EventTarget getCurrentTarget() {
+	@Override
+	public EventTarget getCurrentTarget() {
 		return currentTarget;
 	}
 
-	@Override public List<EventTarget> composedPath() {
+	@Override
+	public List<EventTarget> composedPath() {
 		//I have no idea what this actually does, will have to look
 		List<EventTarget> composedPath = new ArrayList<>();
 		if (path.isEmpty()) return composedPath;
@@ -120,59 +125,74 @@ public class JDEvent implements Event {
 		return composedPath;
 	}
 
-	@Override public short getEventPhase() {
+	@Override
+	public short getEventPhase() {
 		return eventPhase;
 	}
 
-	@Override public void stopPropogation() {
+	@Override
+	public void stopPropogation() {
 		this.stopPropogation = true;
 	}
 
-	@Override public boolean getCancelBubble() {
+	@Override
+	public boolean getCancelBubble() {
 		return this.stopPropogation;
 	}
 
-	@Override public void setCancelBubble(boolean v) {
+	@Override
+	public void setCancelBubble(boolean v) {
 		this.stopPropogation = v;
 	}
 	
-	@Override public void stopImmediatePropogation() {
+	@Override
+	public void stopImmediatePropogation() {
 		this.stopPropogation = true;
 		this.stopImmediatePropogation = true;
 	}
 
-	@Override public boolean getBubbles() {
+	@Override
+	public boolean getBubbles() {
 		return this.bubbles;
 	}
 
-	@Override public boolean getCancelable() {
+	@Override
+	public boolean getCancelable() {
 		return this.cancelable;
 	}
-	@Override public boolean getReturnValue() {
+	@Override
+	public boolean getReturnValue() {
 		return !this.canceled;
 	}
-	@Override public void setReturnValue(boolean v) {
-		if (v==false) {
+	@Override
+	public void setReturnValue(boolean v) {
+		if (!v) {
 			this.canceled = true;
 		}
 	}
-	@Override public void preventDefault() {
+	@Override
+	public void preventDefault() {
 		this.canceled = true;
 	}
-	@Override public boolean getDefaultPrevented() {
+	@Override
+	public boolean getDefaultPrevented() {
 		return this.canceled;
 	}
-	@Override public boolean getComposed() {
+	@Override
+	public boolean getComposed() {
 		return this.composed;
 	}
 
-	@Override public boolean getIsTrusted() {
+	@Override
+	public boolean getIsTrusted() {
 		return this.isTrusted;
 	}
-	@Override public double getTimeStamp() {
+	@Override
+	public double getTimeStamp() {
 		return this.timeStamp;
 	}
-	@Override public void initEvent(String type, boolean bubbles, boolean cancelable) {
+	@Override
+	public void initEvent(String type, boolean bubbles, boolean cancelable) {
 		if (getDispatch()) return;
 		
 		initialize(type, bubbles, cancelable);

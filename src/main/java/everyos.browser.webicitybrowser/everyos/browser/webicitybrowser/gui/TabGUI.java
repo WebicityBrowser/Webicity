@@ -22,7 +22,6 @@ public class TabGUI {
 	private boolean selected;
 	private URLBar urlBar;
 	private TabEventListener mutationListener;
-	private FrameGUI frame;
 
 	public TabGUI(Tab tab) {
 		this.tab = tab;
@@ -39,7 +38,7 @@ public class TabGUI {
 	}
 
 	public void cleanup() {
-		
+		tab.removeTabMutationListener(mutationListener);
 	}
 	
 	public Component getTabButton() {
@@ -75,7 +74,7 @@ public class TabGUI {
 		tabDecor.directive(SizeDirective.of(new Location(1, 0, 0, decorHeight)));
 		tabPane.addChild(tabDecor);
 		
-		this.frame = new FrameGUI(tab.getFrame());
+		FrameGUI frame = new FrameGUI(tab.getFrame());
 		frame.start();
 		Component frameComponent = frame.getDisplayPane();
 		frameComponent.directive(SizeDirective.of(new Location(1, 0, 1, -decorHeight)));

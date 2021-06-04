@@ -11,7 +11,6 @@ import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
 public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
-	private String text = "";
 	private ArrayList<String> lines;
 	private String align = "left";
 	
@@ -21,7 +20,7 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 	
 	@Override
 	protected void renderUI(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-		text = this.<TextBoxComponent>getComponent().getText();
+		String text = this.<TextBoxComponent>getComponent().getText();
 		
 		lines = StringWrapHelper.calculateString(text, r, sizepos);
 		super.renderUI(r, sizepos, uimgr);

@@ -22,7 +22,6 @@ import everyos.engine.ribbon.core.shape.Location;
 
 public class WindowGUI {
 	private Window window;
-	private Component pane;
 	private RibbonWindow windowGrip;
 	private WindowEventListener mutationListener;
 	private List<TabGUI> tabs = new ArrayList<>();
@@ -42,7 +41,7 @@ public class WindowGUI {
 			throw new RuntimeException(e);
 		}
 		
-		this.pane = windowGrip.getDisplayPane();
+		Component pane = windowGrip.getDisplayPane();
 		configureWindow(pane);
 		
 		mutationListener = new WindowEventListener();

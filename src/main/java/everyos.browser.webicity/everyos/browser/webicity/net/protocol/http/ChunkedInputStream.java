@@ -22,7 +22,7 @@ public class ChunkedInputStream extends InputStream {
 		byte[] bytes = new byte[1];
 		if (read(bytes, 0, 1)==0) {
 			throw new IOException("Not enough bytes were available!");
-		};
+		}
 		return bytes[0];
 	}
 	
@@ -48,7 +48,7 @@ public class ChunkedInputStream extends InputStream {
 			}
 			safeRead();
 			//TODO: Support chunk extensions
-			if (size.toString().equals("")||Integer.parseInt(size.toString(), 16)==0) {
+			if (size.length()==0||Integer.parseInt(size.toString(), 16)==0) {
 				ended = true;
 				b[0] = -1;
 				return -1;

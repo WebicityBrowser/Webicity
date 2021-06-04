@@ -14,13 +14,9 @@ public class Rectangle implements Cloneable {
 	}
 
 	public boolean intersects(Rectangle r2) {
-		if (r2.x+r2.width<x || x+width<r2.x) {
-			return false;
-		}
-		if (r2.y+r2.height<y || y+height<r2.y) {
-			return false;
-		}
-		return true;
+		return !(
+			(r2.x+r2.width<x || x+width<r2.x) ||
+			(r2.y+r2.height<y || y+height<r2.y));
 	}
 	
 	@Override

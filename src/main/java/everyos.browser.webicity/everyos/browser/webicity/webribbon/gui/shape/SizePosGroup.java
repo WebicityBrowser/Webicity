@@ -31,7 +31,7 @@ public class SizePosGroup {
 	}
 	
 	public boolean move(int x, boolean forceInline) {
-		if (!forceInline && !(maxSize.getWidth()==-1) && this.x+x>maxSize.getWidth()) {
+		if (!forceInline && maxSize.getWidth()!=-1 && this.x+x>maxSize.getWidth()) {
 			//Refuse
 			return false;
 		}

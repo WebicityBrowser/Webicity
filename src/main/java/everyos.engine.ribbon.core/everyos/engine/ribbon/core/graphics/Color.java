@@ -1,16 +1,6 @@
 package everyos.engine.ribbon.core.graphics;
 
 public class Color {
-	protected int color;
-
-	public Color(int a, int r, int g, int b) {
-		color = (a<<24)+(r<<16)+(g<<8)+b;
-	}
-	
-	public Color(int r, int g, int b) {
-		this(255, r, g, b);
-	}
-	
 	public static final Color BLACK = new Color(0, 0, 0);
 	public static final Color WHITE = new Color(255, 255, 255);
 	public static final Color DARK_GRAY = new Color(102, 102, 102);
@@ -20,6 +10,18 @@ public class Color {
 	
 	public static final Color DARK_GREY = DARK_GRAY;
 	public static final Color LIGHT_GREY = LIGHT_GRAY;
+	
+	
+	////
+	private int color;
+
+	public Color(int a, int r, int g, int b) {
+		color = (a<<24)+(r<<16)+(g<<8)+b;
+	}
+	
+	public Color(int r, int g, int b) {
+		this(255, r, g, b);
+	}
 
 	public int getAlpha() {
 		return color>>24;
