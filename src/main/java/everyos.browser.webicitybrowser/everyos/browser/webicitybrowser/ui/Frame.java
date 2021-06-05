@@ -52,14 +52,14 @@ public class Frame {
 		}
 		history.push(url);
 		this.frame = createFrame(url);
-		mutationEventDispatcher.fire(l->l.onNavigate(new NavigateEvent(url)));
+		mutationEventDispatcher.fire(l->l.onNavigate(()->url));
 	}
 	
 	public void reload() {
 		if (frame==null) return;
 		URL url = frame.getURL();
 		this.frame = createFrame(url);
-		mutationEventDispatcher.fire(l->l.onNavigate(new NavigateEvent(url)));
+		mutationEventDispatcher.fire(l->l.onNavigate(()->url));
 	}
 	
 	public void back() {

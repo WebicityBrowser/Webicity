@@ -6,7 +6,7 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
-import everyos.browser.jinfra.IOPendingException;
+import everyos.browser.webicity.net.protocol.http.IOPendingException;
 
 public class HTTP11Parser {
 	public static HTTP11Response parseFrom(InputStream stream) throws IOException {

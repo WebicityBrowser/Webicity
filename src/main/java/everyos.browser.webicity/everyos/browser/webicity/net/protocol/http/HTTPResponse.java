@@ -18,7 +18,8 @@ public class HTTPResponse implements Response {
 		socket.setBlocking(false);
 	}
 
-	@Override public Renderer getProbableRenderer() {
+	@Override
+	public Renderer getProbableRenderer() {
 		String type = response.getContentType();
 		if (type.indexOf(';')!=-1) type = type.substring(0, type.indexOf(';'));
 		switch(type) {//TODO: Move this to a registry
@@ -29,11 +30,13 @@ public class HTTPResponse implements Response {
 		}
 	}
 
-	@Override public int getStatus() {
+	@Override
+	public int getStatus() {
 		return response.getStatusCode();
 	}
 
-	@Override public InputStream getConnection() throws UnsupportedEncodingException {
+	@Override
+	public InputStream getConnection() throws UnsupportedEncodingException {
 		return response.getInputStream();
 	}
 }

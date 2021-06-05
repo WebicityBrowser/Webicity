@@ -2,11 +2,10 @@ package everyos.browser.webicity;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.concurrent.ExecutorService;
 
 import everyos.browser.jhtml.browsing.BrowsingContext;
-import everyos.browser.webicity.concurrency.ThreadQueue;
 import everyos.browser.webicity.event.FrameCallback;
-import everyos.browser.webicity.event.NavigateEvent;
 import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.renderer.Renderer;
@@ -16,12 +15,12 @@ public class WebicityFrame {
 	private final URL url;
 	private final FrameCallback callback;
 	private final WebicityEngine engine;
-	private ThreadQueue tasks;
+	private ExecutorService tasks;
 	private Renderer renderer;
 	@SuppressWarnings("unused")
 	private BrowsingContext context;
 
-	public WebicityFrame(WebicityEngine engine, FrameCallback callback, URL url, ThreadQueue queue) {
+	public WebicityFrame(WebicityEngine engine, FrameCallback callback, URL url, ExecutorService queue) {
 		this.engine = engine;
 		this.callback = callback;
 		this.tasks = queue;
@@ -38,7 +37,7 @@ public class WebicityFrame {
 
 	private void navigate(URL url) {
 		//TODO: WhatWG specifies how navigation should be done
-		tasks.queue(()->{
+		tasks.execute(()->{
 			try {
 				Response response = engine.getDefaultRequest(url).send();
 				// Note that we are on the wrong thread here, but that is actually a good thing, I think
@@ -56,7 +55,7 @@ public class WebicityFrame {
 		return engine;
 	}
 	
-	public ThreadQueue getTasks() {
+	public ExecutorService getTasks() {
 		return tasks;
 	}
 
@@ -74,7 +73,8 @@ public class WebicityFrame {
 	//TODO: Specify target
 	public void browse(String href) {
 		try {
-			callback.onNavigate(new NavigateEvent(new URL(url, href)));
+			URL url = new URL(this.url, href);
+			callback.onNavigate(()->url);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

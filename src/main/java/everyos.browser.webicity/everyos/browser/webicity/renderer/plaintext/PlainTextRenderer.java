@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import everyos.browser.jinfra.IOPendingException;
 import everyos.browser.webicity.WebicityFrame;
+import everyos.browser.webicity.net.protocol.http.IOPendingException;
 import everyos.browser.webicity.renderer.Renderer;
 
 public class PlainTextRenderer implements Renderer {
@@ -23,7 +23,7 @@ public class PlainTextRenderer implements Renderer {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 		StringBuilder builder = new StringBuilder();
 		
-		while (!frame.getTasks().hasQuit()) {
+		while (!frame.getTasks().isShutdown()) {
 			final int read;
 			try {
 				read = reader.read();

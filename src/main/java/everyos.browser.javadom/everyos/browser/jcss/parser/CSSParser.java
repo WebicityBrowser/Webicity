@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import everyos.browser.jinfra.NIOReader;
+import everyos.browser.webicity.net.protocol.http.NIOReader;
 
 public class CSSParser {
 	public CSSToken[] createFromString(String input) {

@@ -1,11 +1,13 @@
 package everyos.engine.ribbon.core.component;
 
+import everyos.engine.ribbon.core.graphics.InvalidationLevel;
+
 public class TextBoxComponent extends BlockComponent {
 	private String text = "";
 
 	public TextBoxComponent text(String text) {
 		this.text = text;
-		invalidate();
+		invalidate(InvalidationLevel.RENDER);
 		return this;
 	}
 	public String getText() {

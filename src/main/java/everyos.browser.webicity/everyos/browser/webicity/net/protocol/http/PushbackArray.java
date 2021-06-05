@@ -1,4 +1,4 @@
-package everyos.browser.jinfra;
+package everyos.browser.webicity.net.protocol.http;
 
 public class PushbackArray implements Cloneable {
 	private int[] buffer;

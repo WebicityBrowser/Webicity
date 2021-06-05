@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import everyos.browser.webicity.concurrency.ThreadQueue;
 import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
@@ -16,11 +15,9 @@ import everyos.browser.webicity.net.protocol.io.AboutProtocol;
 import everyos.browser.webicity.net.protocol.io.FileProtocol;
 
 public abstract class WebicityEngine {
-	protected HashMap<String, Protocol> protocols = new HashMap<>();
-	protected ArrayList<Object> locks = new ArrayList<>();
-	protected ExecutorService threads = Executors.newWorkStealingPool();
-			//Executors.newCachedThreadPool();
-	protected boolean stopped = false;
+	private HashMap<String, Protocol> protocols = new HashMap<>();
+	private ArrayList<ExecutorService> threads = new ArrayList<>();
+	private boolean stopped = false;
 	
 	public abstract Response processRequest(Request request) throws IOException;
 	
@@ -43,35 +40,24 @@ public abstract class WebicityEngine {
 
 	public void registerProtocol(String string, Protocol protocol) {
 		protocols.put(string, protocol);
-	};
+	}
 	
-	public ThreadQueue createThreadQueue() {
-		ThreadQueue tasks = new ThreadQueue(this);
-		threads.execute(()->{
-			if (this.stopped) return;
-			tasks.run();
-		});
-		
-		return tasks;
+	public ExecutorService createThreadQueue() {
+		ExecutorService thread = Executors.newSingleThreadExecutor();
+		threads.add(thread);
+		return thread;
 	}
 	
 	public void quit() {
-		// TODO: This does not seem to work if you close the program while it is processing
-		threads.shutdown();
-		locks.forEach(l->{
-			synchronized(l) { l.notifyAll(); }	
-		});
-		locks.clear();
+		// TODO: This does not work until all running tasks have stopped
+		// Should a timeout be added?
+		for (ExecutorService thread: threads) {
+			thread.shutdown();
+		}
 		stopped = true;
 	}
+	
 	public boolean hasQuit() {
 		return stopped;
-	}
-
-	public void addActive(ArrayList<Runnable> queue) {
-		locks.add(queue);
-	}
-	public void removeActive(ArrayList<Runnable> queue) {
-		locks.remove(queue);
 	}
 }

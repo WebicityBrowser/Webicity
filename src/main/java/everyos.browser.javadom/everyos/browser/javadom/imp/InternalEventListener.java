@@ -25,7 +25,8 @@ public class InternalEventListener {
 		return callback;
 	}
 	
-	@Override public boolean equals(Object object) {
+	@Override
+	public boolean equals(Object object) {
 		if (!(object instanceof InternalEventListener)) {
 			return false;
 		}
@@ -36,7 +37,8 @@ public class InternalEventListener {
 			listener.getCallback().equals(getCallback()) &&
 			listener.getCapture() == getCapture();
 	}
-	@Override public int hashCode() {
+	@Override
+	public int hashCode() {
 		return Objects.hash(getType(), getCallback(), getCapture());
 	}
 	

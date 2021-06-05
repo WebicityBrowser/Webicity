@@ -15,7 +15,15 @@ public class ListenerRect {
 		this.target = target;
 	}
 	
-	public Rectangle getBounds() { return bounds; }
-	public MouseListener getListener() { return listener; }
-	public UIEventTarget getEventTarget() { return target; };
+	public Rectangle getBounds() {
+		return bounds;
+	}
+	
+	public MouseListener getListener() {
+		return listener;
+	}
+	
+	public UIEventTarget getEventTarget() {
+		return target;
+	}
 }

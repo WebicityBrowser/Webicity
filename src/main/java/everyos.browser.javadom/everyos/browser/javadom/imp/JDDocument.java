@@ -42,7 +42,9 @@ public class JDDocument extends JDNode implements Document {
 
 	@Override
 	public String getTitle() {
-		if (title != null) return title;
+		if (title != null) {
+			return title;
+		}
 		HTMLElement html = getElement(this, "html");
 		HTMLElement head = getElement(html, "head");
 		if (head!=null) {
@@ -56,7 +58,9 @@ public class JDDocument extends JDNode implements Document {
 	}
 	
 	private HTMLElement getElement(Node parent, String name) {
-		if (parent==null) return null;
+		if (parent==null) {
+			return null;
+		}
 		for (Node child: parent.getChildNodes()) {
 			if (child instanceof HTMLElement && ((HTMLElement) child).getTagName().equals(name)) {
 				return (HTMLElement) child;

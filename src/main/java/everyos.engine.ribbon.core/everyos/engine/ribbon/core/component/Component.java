@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 import everyos.engine.ribbon.core.event.UIEventTarget;
+import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 
@@ -21,10 +22,10 @@ public class Component implements UIEventTarget {
 	}
 	
 	/**
-	 * 
+	 * Send an instruction to the L&F
 	 * @param uicls A class representing which type of ComponentUIs should receive this directive
 	 * @param directive The directive to be sent
-	 * @return Chainable self
+	 * @return Chain-able self
 	 */
 	@SuppressWarnings("unchecked")
 	public Component directive(Class<? extends ComponentUI> uicls, UIDirectiveWrapper directive) {
@@ -37,7 +38,7 @@ public class Component implements UIEventTarget {
 		for (ComponentUI ui: boundObservers.toArray(new ComponentUI[boundObservers.size()])) {
 			if (uicls.isAssignableFrom(ui.getClass()))
 			ui.directive(directive.getDirective());
-			ui.hint(directive.getPipelineHint());
+			ui.invalidate(directive.getPipelineHint());
 		}
 		return this;
 	}
@@ -106,7 +107,7 @@ public class Component implements UIEventTarget {
 		if (this.parent!=null) this.parent.delete(this);
 		this.parent = parent;
 		parent.children.add(pos, this);
-		parent.invalidate();
+		parent.invalidate(InvalidationLevel.RENDER);
 	}
 
 	public void delete() {
@@ -115,7 +116,7 @@ public class Component implements UIEventTarget {
 	public void delete(Component component) {
 		children.remove(component);
 		component.parent = null;
-		invalidate();
+		invalidate(InvalidationLevel.RENDER);
 	}
 
 	public Component children(Component[] children) {
@@ -127,16 +128,16 @@ public class Component implements UIEventTarget {
 		return children.toArray(new Component[children.size()]);
 	}
 	
-	public void invalidate() {
+	public void invalidate(InvalidationLevel level) {
 		Component c = this;
 		while (c!=null) {
-			c.invalidateLocal();
+			c.invalidateLocal(level);
 			c = c.parent;
 		}
 	}
-	protected void invalidateLocal() {
+	protected void invalidateLocal(InvalidationLevel level) {
 		for (ComponentUI ui: boundObservers.toArray(new ComponentUI[boundObservers.size()])) {
-			ui.invalidate();
+			ui.invalidate(level);
 		}
 	}
 	

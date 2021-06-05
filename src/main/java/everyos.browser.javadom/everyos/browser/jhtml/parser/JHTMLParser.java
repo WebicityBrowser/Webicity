@@ -18,7 +18,7 @@ import everyos.browser.javadom.intf.Element;
 import everyos.browser.javadom.intf.Node;
 import everyos.browser.javadom.intf.Text;
 import everyos.browser.jhtml.intf.HTMLStyleElement;
-import everyos.browser.jinfra.IOPendingException;
+import everyos.browser.webicity.net.protocol.http.IOPendingException;
 
 //TODO: Do not fire mutation events
 

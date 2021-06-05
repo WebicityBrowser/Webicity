@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 
-import everyos.browser.jinfra.IOPendingException;
 import tlschannel.NeedsReadException;
 
 public class ByteChannelInputStream extends InputStream {
@@ -73,9 +72,7 @@ public class ByteChannelInputStream extends InputStream {
 		if (available==0) {
 			byteBuffer.clear();
 			try {
-				//System.out.println("A");
 				available = byteChannel.read(byteBuffer);
-				//System.out.println("B");
 			} catch (NeedsReadException e) {
 				available = 0;
 			}

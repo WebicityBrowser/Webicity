@@ -6,8 +6,8 @@ import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.directive.BackgroundDirective;
 import everyos.engine.ribbon.core.directive.ForegroundDirective;
 import everyos.engine.ribbon.core.graphics.Color;
-import everyos.engine.ribbon.core.graphics.GUIConstants;
 import everyos.engine.ribbon.core.graphics.GUIState;
+import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
@@ -19,7 +19,7 @@ public class SimpleComponentUI implements ComponentUI {
 	private Component component;
 	private ArrayList<ComponentUI> children;
 	private ComponentUI parent;
-	private boolean invalidated = true;
+	private InvalidationLevel invalidated = InvalidationLevel.IGNORE;
 	private Color background;
 	private Color foreground;
 	
@@ -39,7 +39,7 @@ public class SimpleComponentUI implements ComponentUI {
 		for (ComponentUI child: calcChildren(uimgr)) {
 			GUIState state = r.getState().clone();
 			child.render(r, sizepos, uimgr);
-			child.validate();
+			child.validateTo(InvalidationLevel.PAINT);
 			r.restoreState(state);
 		}
 	}
@@ -104,43 +104,29 @@ public class SimpleComponentUI implements ComponentUI {
 	}
 	
 	@Override
-	public void invalidate() {
+	public void invalidate(InvalidationLevel level) {
 		ComponentUI cui = this;
 		while (cui!=null) {
-			if (!cui.getValidated()) return;
-			cui.invalidateLocal();
+			if (!cui.getValidated(level)) return;
+			cui.invalidateLocal(level);
 			cui = cui.getParent();
 		}
 	}
 	
 	@Override
-	public void invalidateLocal() {
-		this.invalidated = true;
-	}
-	@Override
-	public void validate() {
-		this.invalidated = false;
-	}
-	
-	@Override
-	public boolean getValidated() {
-		return !this.invalidated;
-	}
-	
-	protected void repaint() {
-		ComponentUI cui = this;
-		while (cui!=null) {
-			cui.repaintLocal();
-			cui = cui.getParent();
+	public void invalidateLocal(InvalidationLevel level) {
+		if (this.invalidated.lessThan(level)) {
+			this.invalidated = level;
 		}
 	}
 	
 	@Override
-	public void repaintLocal() {}
+	public void validateTo(InvalidationLevel level) {
+		this.invalidated = level;
+	}
 	
 	@Override
-	public void hint(int hint) {
-		if (hint==GUIConstants.RENDER) invalidate();
-		if (hint==GUIConstants.PAINT) repaint();
+	public boolean getValidated(InvalidationLevel reference) {
+		return reference.lessThan(this.invalidated);
 	}
 }

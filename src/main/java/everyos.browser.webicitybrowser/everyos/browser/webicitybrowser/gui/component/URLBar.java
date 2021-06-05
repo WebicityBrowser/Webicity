@@ -3,6 +3,7 @@ package everyos.browser.webicitybrowser.gui.component;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.directive.FontSizeDirective;
+import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 
 public class URLBar extends BlockComponent {
 	private String text = "";
@@ -16,7 +17,7 @@ public class URLBar extends BlockComponent {
 
 	public URLBar text(String text) {
 		this.text = text;
-		invalidate();
+		invalidate(InvalidationLevel.PAINT);
 		return this;
 	}
 	public String getText() {

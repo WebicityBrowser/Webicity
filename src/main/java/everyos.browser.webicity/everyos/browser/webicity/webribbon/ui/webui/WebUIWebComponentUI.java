@@ -178,11 +178,6 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	public boolean getValidated() {
 		return false;
 	}
-
-	@Override
-	public void repaintLocal() {
-		
-	}
 	
 	@Override
 	public void processEvent(UIEvent ev) {

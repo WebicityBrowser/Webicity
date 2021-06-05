@@ -17,6 +17,4 @@ public class RibbonSkijaMonitor {
 	public static class NoMonitorAvailableException extends Exception {
 		private static final long serialVersionUID = -3568179825324762957L;
 	}
-	
-	
 }

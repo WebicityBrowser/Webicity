@@ -86,7 +86,9 @@ public class StringWrapHelper {
 		int width = 0;
 		for (String spl: str.split("\n")) {
 			int mw = 0;
-			for (byte ch: spl.getBytes()) mw+=r.charWidth((char) ch); 
+			for (byte ch: spl.getBytes()) {
+				mw+=r.charWidth((char) ch); 
+			}
 			width=mw>width?mw:width;
 		}
 		return width;
@@ -94,7 +96,9 @@ public class StringWrapHelper {
 	
 	private static int fastStringWidth(Renderer r, String str) {
 		int mw = 0;
-		for (byte ch: str.getBytes()) mw+=r.charWidth((char) ch); 
+		for (byte ch: str.getBytes()) {
+			mw+=r.charWidth((char) ch); 
+		}
 		return mw;
 	}
 }

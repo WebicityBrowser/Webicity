@@ -35,11 +35,11 @@ public class JDEvent implements Event {
 	private boolean initialized;
 	
 	public JDEvent(String type, EventInit eventInitDict) {
-		innerEventCreationSteps(Time.now(), eventInitDict);
+		innerEventCreationSteps(TimeUtil.now(), eventInitDict);
 		setType(type);
 	}
 	public JDEvent() {
-		this(null, null);
+		this("", null);
 		setIsTrusted(true);
 	}
 	
@@ -67,7 +67,9 @@ public class JDEvent implements Event {
 	public List<EventTarget> composedPath() {
 		//I have no idea what this actually does, will have to look
 		List<EventTarget> composedPath = new ArrayList<>();
-		if (path.isEmpty()) return composedPath;
+		if (path.isEmpty()) {
+			return composedPath;
+		}
 		EventTarget currentTarget = this.currentTarget;
 		composedPath.add(currentTarget);
 		int currentTargetIndex = 0;
@@ -160,24 +162,29 @@ public class JDEvent implements Event {
 	public boolean getCancelable() {
 		return this.cancelable;
 	}
+	
 	@Override
 	public boolean getReturnValue() {
 		return !this.canceled;
 	}
+	
 	@Override
 	public void setReturnValue(boolean v) {
 		if (!v) {
 			this.canceled = true;
 		}
 	}
+	
 	@Override
 	public void preventDefault() {
 		this.canceled = true;
 	}
+	
 	@Override
 	public boolean getDefaultPrevented() {
 		return this.canceled;
 	}
+	
 	@Override
 	public boolean getComposed() {
 		return this.composed;
@@ -187,10 +194,12 @@ public class JDEvent implements Event {
 	public boolean getIsTrusted() {
 		return this.isTrusted;
 	}
+	
 	@Override
 	public double getTimeStamp() {
 		return this.timeStamp;
 	}
+	
 	@Override
 	public void initEvent(String type, boolean bubbles, boolean cancelable) {
 		if (getDispatch()) return;
@@ -209,6 +218,8 @@ public class JDEvent implements Event {
 		this.bubbles = bubbles;
 		this.cancelable = cancelable;
 	}
+	
+	////
 	protected boolean getDispatch() {
 		return this.dispatch;
 	}

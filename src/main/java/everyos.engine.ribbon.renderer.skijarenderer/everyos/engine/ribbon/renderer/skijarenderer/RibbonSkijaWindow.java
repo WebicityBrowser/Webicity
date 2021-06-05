@@ -10,6 +10,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.MouseEvent;
+import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Location;
@@ -92,20 +93,20 @@ public class RibbonSkijaWindow {
 		
 		Dimension size = getSize();
 		if (oldSize==null || oldSize.getWidth()!=size.getWidth() || oldSize.getHeight()!=size.getHeight()) {
-			ui.invalidateLocal();
+			ui.invalidateLocal(InvalidationLevel.RENDER);
 			renderer = RibbonSkijaRenderer.of(window);
 		}
 		
 		oldSize = size;
 		
-		if (!ui.getValidated()) {
+		if (!ui.getValidated(InvalidationLevel.RENDER)) {
 			//long time = System.currentTimeMillis();
 			//TODO: Fix the memory leak
 			ui.render(root, new SizePosGroup(
 				size.getWidth(), size.getHeight(), 
 				0, 0, 
 				size.getWidth(), size.getHeight()), uimanager);
-			ui.validate();
+			ui.validateTo(InvalidationLevel.PAINT);
 			//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 		}
 		ArrayList<ListenerRect> newMouseBindings = new ArrayList<>(mouseBindings.size());
@@ -119,7 +120,7 @@ public class RibbonSkijaWindow {
 		renderer.draw();
 		//System.out.println(System.currentTimeMillis()-time);
 		
-		ui.validate();
+		ui.validateTo(InvalidationLevel.IGNORE);
 		
 		return renderer;
 	}
@@ -135,20 +136,13 @@ public class RibbonSkijaWindow {
 	public void bind(Component component, UIManager uimanager) {
 		this.ui = uimanager.get(component, new ComponentUI() {
 			@Override public void directive(UIDirective directive) {}
-			@Override public void invalidate() {}
 			@Override public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr) {}
 			@Override public void paint(Renderer r) {}
 			@Override public ComponentUI getParent() { return null; }
-			@Override public void validate() {}
-			@Override public boolean getValidated() { return true; }
-			@Override public void hint(int hint) {}
-			
-			@Override public void invalidateLocal() {
-				
-			}
-			@Override public void repaintLocal() {
-				
-			}
+			@Override public void invalidate(InvalidationLevel level) {}
+			@Override public void validateTo(InvalidationLevel level) {}
+			@Override public boolean getValidated(InvalidationLevel level) { return true; }		
+			@Override public void invalidateLocal(InvalidationLevel level) {}
 		});
 		component.bind(ui);
 		

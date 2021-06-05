@@ -8,8 +8,6 @@ import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
 public interface WebComponentUI {
-	void invalidate();
-	
 	//TODO: Also pass a stack
 	void render(Renderer r, SizePosGroup sizepos, UIContext context);
 	void paint(Renderer r, Rectangle viewport);
@@ -17,11 +15,11 @@ public interface WebComponentUI {
 	
 	WebComponentUI getParent();
 	
+	void invalidate();
 	void invalidateLocal();
 	void validate();
 	boolean getValidated();
 	
-	void repaintLocal();
 	UIBox getUIBox();
 
 	void processEvent(UIEvent ev);

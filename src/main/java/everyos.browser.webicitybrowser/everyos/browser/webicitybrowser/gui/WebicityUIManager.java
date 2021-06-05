@@ -8,14 +8,13 @@ import everyos.browser.webicitybrowser.gui.ui.CircularTextUI;
 import everyos.browser.webicitybrowser.gui.ui.URLBarUI;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.SimpleUIManager;
-import everyos.engine.ribbon.ui.simple.helper.ReflectiveFactory;
 
 public class WebicityUIManager {
 	public static UIManager createUI() {
 		UIManager ui = SimpleUIManager.createUI();
-		ui.put(CircularText.class, new ReflectiveFactory(CircularTextUI.class));
-		ui.put(URLBar.class, new ReflectiveFactory(URLBarUI.class));
-		ui.put(WebComponentWrapper.class, new ReflectiveFactory(WebComponentWrapperUI.class));
+		ui.put(CircularText.class, (c, p)->new CircularTextUI(c, p));
+		ui.put(URLBar.class, (c, p)->new URLBarUI(c, p));
+		ui.put(WebComponentWrapper.class, (c, p)->new WebComponentWrapperUI(c, p));
 		
 		return ui;
 	}

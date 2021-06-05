@@ -15,11 +15,14 @@ public class JDEventTarget implements EventTarget {
 	
 	//TODO: Might be tricky to automatically create the wrapping for EventListener, we will have to tell
 	//our WebIDL handling library how to do this.
-	@Override public void addEventListener(String type, EventListener callback, AddEventListenerOptions options) {
+	@Override
+	public void addEventListener(String type, EventListener callback, AddEventListenerOptions options) {
 		addEventListener(new InternalEventListener(type, callback,
 			options.getCapture(), options.getPassive(), options.getOnce()));
 	}
-	@Override public void addEventListener(String type, EventListener callback, boolean options) {
+	
+	@Override
+	public void addEventListener(String type, EventListener callback, boolean options) {
 		addEventListener(type, callback, new JDAddEventListenerOptions() {
 			
 		}); //TODO
