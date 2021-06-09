@@ -22,7 +22,9 @@ public class HTTPRequest implements Request {
 		request.setUserAgent("Webicity/0.1.0 (WebRibbon/0.1.0); Firefox/86.0 UA styling preferred");
 		//headers.put("User-Agent", "Webicity");
 		request.acceptEncoding("identity", 1);
-		request.acceptEncoding("*", 0);
+		//request.acceptEncoding("*", 0);
+		//request.acceptEncoding("gzip", .5);
+		//request.acceptEncoding("br", .5);
 		//headers.put("Upgrade-Insecure-Requests", "1");
 		request.acceptLanugage("en-US", -1);
 		request.acceptLanugage("en", .9);

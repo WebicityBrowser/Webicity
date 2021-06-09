@@ -37,11 +37,12 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 		}
 		
 		Rectangle bounds = new Rectangle(
-			position.getX(), position.getX(),
+			position.getX(), position.getY(),
 			sizepos.getSize().getWidth()-position.getX(),
 			sizepos.getCurrentPointer().getY()+lines.size()*r.getFontHeight()+r.getFontPaddingHeight()-position.getY());
 		//TODO: The bounding box is not quite right
 		
+		//setUIBox(viewport->viewport.intersects(bounds));
 		setUIBox(viewport->viewport.intersects(bounds));
 	}
 	
@@ -52,7 +53,6 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 			int py = i*r.getFontHeight();
 			int width = r.drawText(i==0?position.getX():0, position.getY()+py, lines.get(i));
 			r.paintMouseListener(getComponent(), position.getX(), position.getY()+py, width, r.getFontHeight(), e->{
-				if (e.isExternal()) return;
 				processEvent(e);
 			});
 		}

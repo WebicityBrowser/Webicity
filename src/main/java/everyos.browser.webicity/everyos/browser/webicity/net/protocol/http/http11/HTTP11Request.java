@@ -13,6 +13,11 @@ public class HTTP11Request {
 	public HTTP11Request() {
 		//headers.put("Transfer-Encoding", "identity");
 		headers.put("Upgrade-Insecure-Requests", "1");
+		
+		headers.put("Sec-Fetch-Dest", "document");
+		headers.put("Sec-Fetch-Mode", "navigate");
+		headers.put("Sec-Fetch-Site", "cross-site");
+		headers.put("Sec-Fetch-User", "?1");
 	}
 
 	public void setRequestType(REQUEST_TYPE type) {
@@ -29,6 +34,9 @@ public class HTTP11Request {
 		}
 		
 		this.target = url.getPath();
+		if (this.target.isEmpty()) {
+			this.target = "/";
+		}
 		/*if (url.getFragment()!=null) {
 			target+='#'+url.getFragment();
 		}*/
@@ -46,7 +54,7 @@ public class HTTP11Request {
 		}
 		accept+=type;
 		if (preference!=-1) {
-			accept+=";q="+String.valueOf(preference).replace("0.", ".");
+			//accept+=";q="+String.valueOf(preference).replace("0.", ".");
 		}
 		for (String parameter: parameters) {
 			accept+=";"+parameter;
@@ -67,7 +75,7 @@ public class HTTP11Request {
 	};
 	
 	public void acceptLanugage(String type, double preference) {
-		addAccept("Accept-Language", type, preference);
+		//addAccept("Accept-Language", type, preference);
 	};
 	
 	public void setAuthorization(String type, String credentials) {
@@ -95,7 +103,11 @@ public class HTTP11Request {
 	@Override
 	public String toString() {
 		StringBuilder req = new StringBuilder(type+' '+target+" HTTP/1.1");
-		headers.forEach((k, v)->req.append("\r\n"+k+": "+v));
+		headers.forEach((k, v)->{
+			req.append("\r\n"+k+": "+v);
+		});
+		
+		System.out.println(req.toString());
 		
 		return req.toString()+"\r\n\r\n";
 	}

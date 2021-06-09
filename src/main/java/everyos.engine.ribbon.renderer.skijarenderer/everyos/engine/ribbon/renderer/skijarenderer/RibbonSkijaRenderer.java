@@ -34,6 +34,8 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 		y = 0,
 		l = 0,
 		h = 0;
+	private int
+		scrollY = 0;
 	private int color;
 	private GUIState state;
 	private ListenerPaintListener lpl;
@@ -49,15 +51,15 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	private boolean debugBoxes = false;
 	
 	private RibbonSkijaRenderer(int x, int y, int l, int h) {
-		if (x<0) x = 0;
-		if (y<0) y = 0;
+		/*if (x<0) x = 0;
+		if (y<0) y = 0;*/
 		if (l<0) l = 0;
 		if (h<0) h = 0;
 		this.x = x; this.y = y;
 		this.l = l; this.h = h;
 	}
 	
-	public RibbonSkijaRenderer(RibbonSkijaRenderer parentRenderer, GUIState state, int x, int y, int l, int h) {
+	private RibbonSkijaRenderer(RibbonSkijaRenderer parentRenderer, GUIState state, int x, int y, int l, int h) {
 		//TODO: Anti-aliasing
 		this(x, y, l, h);
 		
@@ -99,6 +101,7 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	}
 	
 	private void setClip(int x, int y, int l, int h) {
+		if (y<this.y) y = this.y;
 		if (l>this.l) l = this.l;
 		if (h>this.h) h = this.h;
 		if (parentRenderer == null) {
@@ -118,7 +121,10 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 
 	@Override
 	public Renderer getSubcontext(int x, int y, int l, int h) {
-		RibbonSkijaRenderer r = new RibbonSkijaRenderer(this, state.clone(), this.x+x, this.y+y, l, h);
+		RibbonSkijaRenderer r = new RibbonSkijaRenderer(
+			this, state.clone(),
+			this.x+x, this.y+y-this.scrollY,
+			l, h);
 		r.onPaint((c, ex, ey, el, eh, listener)->{
 			this._paintMouseListener(c, x+ex, y+ey, el, eh, listener);
 		});
@@ -129,7 +135,7 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	public void drawFilledRect(int x, int y, int l, int h) {
 		beforeDraw();
 		if (l<1 || h<1) return;
-		Rect rect = Rect.makeXYWH(this.x+x, this.y+y, l, h);
+		Rect rect = Rect.makeXYWH(this.x+x, this.y+y-this.scrollY, l, h);
 		
 		try (Paint paint = new Paint()) {
 			paint.setColor(color);
@@ -140,7 +146,7 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	@Override
 	public void drawEllipse(int x, int y, int l, int h) {
 		beforeDraw();
-		RRect ellipse = RRect.makeOvalXYWH(this.x+x, this.y+y, l, h);
+		RRect ellipse = RRect.makeOvalXYWH(this.x+x, this.y+y-this.scrollY, l, h);
 		try (Paint paint = new Paint()) {
 			paint.setColor(color);
 			canvas.drawRRect(ellipse, paint);
@@ -152,7 +158,7 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 		beforeDraw();
 		try (Paint paint = new Paint()) {
 			paint.setColor(color);
-			canvas.drawLine(this.x+x, this.y+y, this.x+x+l, this.y+y+h, paint);
+			canvas.drawLine(this.x+x, this.y+y-this.scrollY, this.x+x+l, this.y+y+h-this.scrollY, paint);
 		}
 	}
 
@@ -172,7 +178,7 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 
         try (Paint paint = new Paint()) {
 			paint.setColor(color);
-			canvas.drawTextBlob(TextBlob.makeFromPosH(glyphs, xpos, 0, font), this.x+x, this.y+y+fontHeight, paint);
+			canvas.drawTextBlob(TextBlob.makeFromPosH(glyphs, xpos, 0, font), this.x+x, this.y+y+fontHeight-this.scrollY, paint);
         }
 		
 		return distance; //TODO
@@ -243,17 +249,31 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	public void setFont(String name, FontStyle style, int size) {
 		
 	}
+	
+	@Override
+	public void setScrollY(int scrollY) {
+		this.scrollY = scrollY;
+	}
+
+	@Override
+	public int getScrollY() {
+		return this.scrollY;
+	}
 
 	@Override
 	public void onPaint(ListenerPaintListener l) {
 		this.lpl = l;
 	}
+	
 	@Override
 	public void paintMouseListener(UIEventTarget c, int x, int y, int l, int h, MouseListener listener) {
 		_paintMouseListener(c, x, y, l, h, listener);
 	}
 	
 	private void _paintMouseListener(UIEventTarget c, int x, int y, int l, int h, MouseListener listener) {
+		//TODO: Solve why this does not work properly with scroll
+		y -= this.scrollY;
+		
 		if (this.x==-1) {
 			if (lpl!=null) lpl.onPaint(c, x, y, l, h, listener);
 			return;
@@ -267,6 +287,7 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 		if (y2>this.h) y2=this.h;
 		l = x2-x;
 		h = y2-y;
+		
 		if (lpl!=null) lpl.onPaint(c, x, y, l, h, listener);
 	}
 	

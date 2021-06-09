@@ -29,7 +29,7 @@ public class WebUIWebAnchorComponentUI extends WebUIWebComponentUI {
 	
 	@Override
 	public void processEvent(UIEvent event) {
-		if (event instanceof MouseEvent) {
+		if (event instanceof MouseEvent && !((MouseEvent) event).isExternal()) {
 			MouseEvent ev = (MouseEvent) event;
 			if (ev.getAction()==MouseEvent.PRESS && ev.getButton()==MouseEvent.LEFT_BUTTON) {
 				//TODO: Resolve url properly

@@ -13,12 +13,16 @@ public class MouseEvent implements UIEvent {
 	private int action;
 	private UIEventTarget target;
 	private boolean isExternal;
+	private int x;
+	private int y;
 
 	public MouseEvent(UIEventTarget target, int x, int y, int button, int action, boolean isInternal) {
 		this.button = button;
 		this.action = action;
 		this.target = target;
 		this.isExternal = !isInternal;
+		this.x = x;
+		this.y = y;
 	}
 	
 	public int getButton() {
@@ -35,5 +39,13 @@ public class MouseEvent implements UIEvent {
 	
 	public boolean isExternal() {
 		return this.isExternal;
+	}
+	
+	public int getAbsoluteX() {
+		return this.x;
+	}
+	
+	public int getAbsoluteY() {
+		return this.y;
 	}
 }

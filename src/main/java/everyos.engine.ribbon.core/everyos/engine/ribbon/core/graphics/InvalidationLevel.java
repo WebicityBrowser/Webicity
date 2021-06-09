@@ -14,6 +14,6 @@ public enum InvalidationLevel {
 	}
 
 	public boolean lessThan(InvalidationLevel invalidated) {
-		return (this.level == 0 && !(invalidated.getLevel() == 0)) || this.level > invalidated.getLevel();
+		return (this.level == 0 && invalidated.getLevel() != 0) || this.level > invalidated.getLevel();
 	}
 }

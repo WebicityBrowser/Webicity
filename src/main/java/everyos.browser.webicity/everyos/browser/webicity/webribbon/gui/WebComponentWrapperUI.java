@@ -40,6 +40,8 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 			ui.render(r, spg, new UIContextImp(wuim));
 		}
 	}
+	
+	int i=0;
 
 	@Override
 	protected void paintUI(Renderer r) {
