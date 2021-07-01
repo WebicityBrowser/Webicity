@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
+import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.browser.webicitybrowser.ui.Tab;
 import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
@@ -17,7 +18,7 @@ import everyos.engine.ribbon.core.shape.Location;
 
 public class TabGUI {
 	private Tab tab;
-	private CircularText tabButton; //TODO: This should be a TabComponent instead
+	private TabButton tabButton; //TODO: This should be a TabComponent instead
 	private Component tabPane;
 	private boolean selected;
 	private URLBar urlBar;
@@ -28,7 +29,7 @@ public class TabGUI {
 	}
 	
 	public void start() {
-		this.tabButton = new CircularText(null);
+		this.tabButton = new TabButton(null);
 		
 		createTabPane();
 		
@@ -49,7 +50,7 @@ public class TabGUI {
 		return this.tabPane;
 	}
 	
-	private void configureTabButton(CircularText tabButton) {
+	private void configureTabButton(TabButton tabButton) {
 		tabButton.text(tab.getName());
 	}
 

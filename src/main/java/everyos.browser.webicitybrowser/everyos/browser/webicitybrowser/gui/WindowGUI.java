@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
+import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.browser.webicitybrowser.gui.window.RibbonWindow;
 import everyos.browser.webicitybrowser.gui.window.SkijaWindow;
 import everyos.browser.webicitybrowser.ui.Tab;
@@ -40,13 +41,13 @@ public class WindowGUI {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		Component pane = windowGrip.getDisplayPane();
 		configureWindow(pane);
-		
+
 		mutationListener = new WindowEventListener();
 		window.addWindowMutationListener(mutationListener);
-		
+
 		for (Tab tab: window.getTabs()) {
 			mutationListener.onTabAdded(window, tab);
 		}
@@ -56,38 +57,38 @@ public class WindowGUI {
 
 	public void cleanup() {
 		windowGrip.close();
-		
+
 		window.removeWindowMutationListener(mutationListener);
 		for (TabGUI tab: tabs) {
 			tab.cleanup();
 		}
 	}
-	
+
 	private void configureWindow(Component pane) {
 		pane.directive(BackgroundDirective.of(Color.DARK_GRAY));
 		pane.directive(ForegroundDirective.of(Styling.FOREGROUND_PRIMARY));
-		
+
 		Component innerPane = new BlockComponent();
 		innerPane.directive(SizeDirective.of(new Location(1, -2, 1, -2)));
 		innerPane.directive(PositionDirective.of(new Location(0, 1, 0, 1)));
 		innerPane.directive(BackgroundDirective.of(Color.WHITE));
 		pane.addChild(innerPane);
-		
+
 		Component windowDecor = createWindowDecorations();
 		int decorHeight = Styling.BUTTON_WIDTH+(int)(Styling.ELEMENT_PADDING*1.5);
 		windowDecor.directive(SizeDirective.of(new Location(1, 0, 0, decorHeight)));
 		innerPane.addChild(windowDecor);
-		
+
 		this.tabPaneContainer = new BlockComponent();
 		tabPaneContainer.directive(SizeDirective.of(new Location(1, 0, 1, -decorHeight)));
 		tabPaneContainer.directive(PositionDirective.of(new Location(0, 0, 0, decorHeight)));
 		innerPane.addChild(tabPaneContainer);
 	}
-	
+
 	private Component createWindowDecorations() {
 		BlockComponent windowDecor = new BlockComponent();
 		windowDecor.directive(BackgroundDirective.of(Styling.BACKGROUND_PRIMARY));
-		
+
 		// Add the menu button
 		CircularText menuButton = new CircularText(null);
 		menuButton.directive(BackgroundDirective.of(Styling.BACKGROUND_SECONDARY));
@@ -97,9 +98,9 @@ public class WindowGUI {
 			0, Styling.BUTTON_WIDTH)));
 		menuButton.text(Styling.PRODUCT_NAME);
 		addButtonBehavior(menuButton, ()->{});
-		
+
 		windowDecor.addChild(menuButton);
-		
+
 		// Add the window action buttons
 		CircularText minimizeButton = new CircularText(null);
 		minimizeButton.directive(PositionDirective.of(new Location(
@@ -108,9 +109,9 @@ public class WindowGUI {
 		minimizeButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		minimizeButton.text("-");
 		addButtonBehavior(minimizeButton, ()->windowGrip.minimize());
-		
+
 		windowDecor.addChild(minimizeButton);
-		
+
 		CircularText maximizeButton = new CircularText(null);
 		maximizeButton.directive(PositionDirective.of(new Location(
 			1, -Styling.BORDER_PADDING-Styling.BUTTON_WIDTH*2-Styling.ELEMENT_PADDING,
@@ -118,41 +119,43 @@ public class WindowGUI {
 		maximizeButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		maximizeButton.text("+");
 		addButtonBehavior(maximizeButton, ()->windowGrip.restore());
-		
+
 		windowDecor.addChild(maximizeButton);
-		
+
 		CircularText closeButton = new CircularText(null);
 		closeButton.directive(PositionDirective.of(new Location(1, -Styling.BORDER_PADDING-Styling.BUTTON_WIDTH, 0, Styling.ELEMENT_PADDING)));
 		closeButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		closeButton.text("X");
 		addDangerousButtonBehavior(closeButton, ()->close());
-		
+
 		windowDecor.addChild(closeButton);
-		
+
 		// Create the tab pane
 		this.tabPane = new BlockComponent();
 		tabPane.directive(PositionDirective.of(new Location(
-			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
-			0, Styling.ELEMENT_PADDING)));
+			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*4,
+			0, 0)));
 		tabPane.directive(SizeDirective.of(new Location(
-			1, -Styling.BORDER_PADDING*2-(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*6,
-			0, Styling.BUTTON_WIDTH)));
-		
+			1, -Styling.BORDER_PADDING*2-(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*7,
+			0, Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)));
+
 		windowDecor.addChild(tabPane);
-		
+
 		// and the New Tab button...
 		CircularText newTabButton = new CircularText(null);
-		//newTabButton.directive(PositionDirective.of(new Location(1, -Styling.BORDER_PADDING-Styling.BUTTON_WIDTH, 0, Styling.ELEMENT_PADDING)));
+		newTabButton.directive(PositionDirective.of(new Location(
+				0, Styling.BORDER_PADDING+Styling.BUTTON_WIDTH*3+Styling.ELEMENT_PADDING*3,
+				0, Styling.ELEMENT_PADDING)));
 		newTabButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		newTabButton.text("+");
 		addButtonBehavior(newTabButton, ()->window.openNewTab());
-		
+
 		Component spacer = new BlockComponent();
 		spacer.directive(SizeDirective.of(new Location(0, Styling.ELEMENT_PADDING, 0, Styling.BUTTON_WIDTH)));
-		
-		tabPane.addChild(newTabButton);
-		tabPane.addChild(spacer);
-		
+
+		windowDecor.addChild(newTabButton);
+//		tabPane.addChild(spacer);
+
 		return windowDecor;
 	}
 
@@ -174,39 +177,39 @@ public class WindowGUI {
 			Styling.BACKGROUND_SECONDARY_HOVER, Styling.BACKGROUND_SECONDARY_SELECTED, Styling.BACKGROUND_SECONDARY_ACTIVE,
 			()->false);
 	}
-	
+
 	private void selectTab(TabGUI tab) {
 		if (selected!=null) {
 			selected.setSelected(false);
 		}
 		selected = tab;
 		selected.setSelected(true);
-		
+
 		Component tabPane = tab.getTabPane();
 		tabPane.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
 		tabPaneContainer.children(new Component[] {tabPane});
 	}
-	
+
 	private TabGUI createTabGUI(Tab tab) {
 		TabGUI tabGUI = new TabGUI(tab);
 		tabGUI.start();
-		
+
 		tabGUI.setSelected(false);
 		tabs.add(tabGUI);
-		
+
 		Component tabButton = tabGUI.getTabButton();
-		tabButton.directive(SizeDirective.of(new Location(0, 150, 0, Styling.BUTTON_WIDTH)));
+		tabButton.directive(SizeDirective.of(new Location(0, 150, 0, Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)));
 		addButtonBehavior(tabButton, ()->selectTab(tabGUI), ()->tabGUI.isSelected());
-		
+
 		Component spacer = new BlockComponent();
 		spacer.directive(SizeDirective.of(new Location(0, Styling.ELEMENT_PADDING, 0, Styling.BUTTON_WIDTH)));
-		
+
 		tabPane.addChild(tabButton);
 		tabPane.addChild(spacer);
-		
+
 		return tabGUI;
 	}
-	
+
 	private class WindowEventListener implements WindowMutationEventListener {
 		@Override
 		public void onTabAdded(Window window, Tab tab) {
