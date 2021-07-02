@@ -8,4 +8,6 @@ Webicity consists of multiple components:
 *  Ribbon: Provides a GUI component system, and interfaces with the preferred drawing system
 *  Ribbon web: Part of Webicity. A web-oriented GUI component system based off of Ribbon.
 
-![image](https://user-images.githubusercontent.com/15697938/114628333-b0c13400-9c84-11eb-8771-482f2431ff16.png)
+Thanks to @Minecraftian14 for helping!
+
+![image](https://user-images.githubusercontent.com/15697938/124223786-69538280-dad2-11eb-91cd-047294711844.png)
