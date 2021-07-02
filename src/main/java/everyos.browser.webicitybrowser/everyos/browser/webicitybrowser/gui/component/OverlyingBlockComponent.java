@@ -9,7 +9,6 @@ import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 public class OverlyingBlockComponent extends BlockComponent {
     private final Component contentView;
 
-    private float incremental = 0.01f;
     private boolean isInvisible = true;
 
     public OverlyingBlockComponent(Component contentView) {
@@ -32,19 +31,11 @@ public class OverlyingBlockComponent extends BlockComponent {
         return super.directive(directive);
     }
 
-    public void makeVisible() {
-        isInvisible = false;
-    }
-
-    public void makeInvisible() {
-        isInvisible = true;
+    public void setInvisible(boolean isInvisible) {
+        this.isInvisible = isInvisible;
     }
 
     public boolean isInvisible() {
         return isInvisible;
-    }
-
-    public float getIncremental() {
-        return incremental;
     }
 }

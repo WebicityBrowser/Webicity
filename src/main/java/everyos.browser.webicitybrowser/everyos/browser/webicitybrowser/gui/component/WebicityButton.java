@@ -26,9 +26,7 @@ public class WebicityButton extends BlockComponent {
     }
 
     public void toggleMenu() {
-        if (dropMenu.isInvisible())
-            dropMenu.makeVisible();
-        else dropMenu.makeInvisible();
+        dropMenu.setInvisible(!dropMenu.isInvisible());
     }
 
 }

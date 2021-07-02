@@ -19,8 +19,6 @@ public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
     private Component contentPane;
     private ComponentUI contentPaneUI;
 
-    private float progress = 0;
-
     public OverlyingBlockComponentUI(Component c, ComponentUI parent) {
         super(c, parent);
     }
@@ -41,41 +39,17 @@ public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
         return new ComponentUI[]{contentPaneUI};
     }
 
-
-    @Override
-    protected void renderUI(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-//        sizepos.min(new Dimension(150, (int) (100 * progress)));
-        super.renderUI(r, sizepos, uimgr);
-    }
-
-    //    @Override
-//    protected void renderUI(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-//
-////        sizepos.move(strwidth+r.getFontPaddingHeight(), true);
-////        sizepos.setMinLineHeight(r.getFontHeight());
-//
-//        //super.calcInternalSize(r, sizepos, data);
-//    }
-
     @Override
     protected void paintUI(Renderer r) {
-        if (component.isInvisible()) {
-            if (progress > 0)
-                progress -= component.getIncremental();
-        } else {
-            if (progress < 1)
-                progress += component.getIncremental();
-        }
-
         paintMouse(r);
 
-        if (progress < 0.1) return;
+        if(component.isInvisible()) return;
 
         Rectangle bounds = getBounds();
 
         r.useBackground();
         int w = bounds.getWidth();
-        int h = (int) (bounds.getHeight() * progress);
+        int h = bounds.getHeight();
         int d = Styling.BUTTON_WIDTH;
         int l2 = d / 2;
         int ws = w - d;
@@ -92,7 +66,7 @@ public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
 
         r.useForeground();
 
-//        contentPaneUI.paint(r);
+        contentPaneUI.paint(r);
     }
 
 
