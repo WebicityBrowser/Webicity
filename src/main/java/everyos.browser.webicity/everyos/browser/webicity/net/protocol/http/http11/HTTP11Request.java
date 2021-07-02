@@ -54,7 +54,11 @@ public class HTTP11Request {
 		}
 		accept+=type;
 		if (preference!=-1) {
-			//accept+=";q="+String.valueOf(preference).replace("0.", ".");
+			if (preference == 0) {
+				accept+=";q=0";
+			} else {
+				accept+=";q="+String.valueOf(preference).replace("0.", ".");
+			}
 		}
 		for (String parameter: parameters) {
 			accept+=";"+parameter;

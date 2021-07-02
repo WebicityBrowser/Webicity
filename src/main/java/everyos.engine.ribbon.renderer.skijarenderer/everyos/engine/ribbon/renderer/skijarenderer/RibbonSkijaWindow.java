@@ -6,7 +6,6 @@ import java.util.concurrent.Semaphore;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import everyos.engine.ribbon.core.component.Component;

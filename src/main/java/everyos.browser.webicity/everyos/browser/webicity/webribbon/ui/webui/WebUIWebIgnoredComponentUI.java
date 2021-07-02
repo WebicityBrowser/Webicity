@@ -2,6 +2,7 @@ package everyos.browser.webicity.webribbon.ui.webui;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
+import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.core.rendering.Renderer;
@@ -13,10 +14,13 @@ public class WebUIWebIgnoredComponentUI extends WebUIWebComponentUI {
 	}
 	
 	@Override
-	public void render(Renderer r, SizePosGroup sizepos, UIContext context) {
-		setUIBox(viewport->false);
-	}
+	public void render(Renderer r, SizePosGroup sizepos, UIContext context) {}
 	
 	@Override
 	public void paint(Renderer r, Rectangle viewport) {}
+	
+	@Override
+	public UIBox getUIBox() {
+		return viewport->false;
+	}
 }

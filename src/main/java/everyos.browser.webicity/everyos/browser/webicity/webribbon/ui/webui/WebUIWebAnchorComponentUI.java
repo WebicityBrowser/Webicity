@@ -5,6 +5,7 @@ import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
+import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.Color;
@@ -12,19 +13,17 @@ import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class WebUIWebAnchorComponentUI extends WebUIWebComponentUI {
+	private AnchorAppearence appearence;
+
 	public WebUIWebAnchorComponentUI(WebComponent component, WebComponentUI parent) {
 		super(component, parent);
+		
+		this.appearence = new AnchorAppearence();
 	}
 	
 	@Override
-	public void render(Renderer r, SizePosGroup sizepos, UIContext context) {
-		renderUI(r, sizepos, context); //TODO: Styling instead
-	}
-	
-	@Override
-	public void paintUI(Renderer r, Rectangle viewport) {
-		r.setForeground(Color.BLUE);
-		paintChildren(r, viewport);
+	public Appearence getAppearence() {
+		return this.appearence;
 	}
 	
 	@Override
@@ -38,5 +37,17 @@ public class WebUIWebAnchorComponentUI extends WebUIWebComponentUI {
 			}
 		}
 		super.processEvent(event);
+	}
+	
+	private class AnchorAppearence implements Appearence {
+		@Override
+		public void render(Renderer r, SizePosGroup sizepos, UIContext context) {
+			
+		}
+
+		@Override
+		public void paint(Renderer r, Rectangle viewport) {
+			r.setForeground(Color.BLUE);
+		}
 	}
 }

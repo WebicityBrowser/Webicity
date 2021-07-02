@@ -4,6 +4,7 @@ import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
@@ -15,10 +16,10 @@ public interface WebComponentUI {
 	
 	WebComponentUI getParent();
 	
-	void invalidate();
-	void invalidateLocal();
-	void validate();
-	boolean getValidated();
+	void invalidate(InvalidationLevel level);
+	void invalidateLocal(InvalidationLevel level);
+	void validateTo(InvalidationLevel level);
+	boolean getValidated(InvalidationLevel level);
 	
 	UIBox getUIBox();
 

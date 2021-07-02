@@ -1,6 +1,7 @@
 package everyos.engine.ribbon.ui.simple;
 
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.component.LabelComponent;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
@@ -19,9 +20,11 @@ public class SimpleLabelComponentUI extends SimpleComponentUI {
 	
 	@Override
 	public void renderUI(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
+		this.text = this.<LabelComponent>getComponent().getText();
+		
 		this.position = sizepos.getCurrentPointer();
 		int width = StringWrapHelper.stringWidth(r, text);
-		this.height = text.split("\n").length*r.getFontHeight();
+		this.height = (text.split("\n").length-1)*r.getFontHeight();
 		sizepos.setMinLineHeight(height);
 		sizepos.move(width, true);
 		super.renderUI(r, sizepos, uimgr);

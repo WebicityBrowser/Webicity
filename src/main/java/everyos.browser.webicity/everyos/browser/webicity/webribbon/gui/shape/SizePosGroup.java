@@ -31,33 +31,18 @@ public class SizePosGroup {
 	}
 	
 	public boolean move(int x, boolean forceInline) {
-		if (!forceInline && maxSize.getWidth()!=-1 && this.x+x>maxSize.getWidth()) {
+		if (!forceInline && ((maxSize.getWidth()!=-1 && this.x+x>maxSize.getWidth()) || (size.getWidth()!=-1 && this.x+x>size.getWidth()))) {
 			//Refuse
 			return false;
 		}
 		
 		this.x += x;
-		normalizeX();
+		
+		normalizeX(forceInline);
 		
 		return true;
 	}
 	
-	private void normalizeX() {	
-		if (x>size.getWidth()) {
-			size.setWidth((x<maxSize.getWidth()||maxSize.getWidth()==-1)?x:maxSize.getWidth());
-		}
-		if (x>maxSize.getWidth()&&maxSize.getWidth()!=-1) nextLine();
-	}
-	
-	private void normalizeY() {
-		if (this.y+this.ny>size.getHeight()) {
-			size.setHeight(this.y+this.ny);
-			if (maxSize.getHeight()!=-1&&size.getHeight()>maxSize.getHeight()) {
-				size.setHeight(maxSize.getHeight());
-			}
-		}
-	}
-
 	public void nextLine() {
 		y = y + ny;
 		x = 0;
@@ -67,14 +52,14 @@ public class SizePosGroup {
 	public void add(Dimension s) {
 		this.x+=s.getWidth();
 		this.setMinLineHeight(s.getHeight());
-		normalizeX();
+		normalizeX(true);
 		normalizeY();
 	}
 
 	public void min(Dimension s) {
 		this.size.setWidth(this.size.getWidth()<s.getWidth()?s.getWidth():this.size.getWidth());
 		this.size.setHeight(this.size.getHeight()<s.getHeight()?s.getHeight():this.size.getHeight());
-		normalizeX();
+		normalizeX(true);
 		normalizeY();
 	}
 	
@@ -88,5 +73,23 @@ public class SizePosGroup {
 
 	public Position getCurrentPointer() {
 		return new Position(x, y);
+	}
+	
+	private void normalizeX(boolean forceInline) {	
+		if (x>size.getWidth() || (maxSize.getWidth()!=-1 && x>maxSize.getWidth())) {
+			size.setWidth((x<maxSize.getWidth()||maxSize.getWidth()==-1)?x:maxSize.getWidth());
+		}
+		if (((x>size.getWidth()&&size.getWidth()!=-1) || (x>maxSize.getWidth()&&maxSize.getWidth()!=-1)) && !forceInline) {
+			nextLine();
+		}
+	}
+	
+	private void normalizeY() {
+		if (this.y+this.ny>size.getHeight()) {
+			size.setHeight(this.y+this.ny);
+			if (maxSize.getHeight()!=-1&&size.getHeight()>maxSize.getHeight()) {
+				size.setHeight(maxSize.getHeight());
+			}
+		}
 	}
 }

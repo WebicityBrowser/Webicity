@@ -20,10 +20,9 @@ public class HTTPRequest implements Request {
 		
 		// We include Firefox/70.0 in our UA string because some sites are not served properly without it
 		request.setUserAgent("Webicity/0.1.0 (WebRibbon/0.1.0); Firefox/86.0 UA styling preferred");
-		//headers.put("User-Agent", "Webicity");
-		request.acceptEncoding("identity", 1);
+		request.acceptEncoding("identity", -1);
 		//request.acceptEncoding("*", 0);
-		//request.acceptEncoding("gzip", .5);
+		//request.acceptEncoding("gzip", -1); //TODO: Fix gzip
 		//request.acceptEncoding("br", .5);
 		//headers.put("Upgrade-Insecure-Requests", "1");
 		request.acceptLanugage("en-US", -1);
