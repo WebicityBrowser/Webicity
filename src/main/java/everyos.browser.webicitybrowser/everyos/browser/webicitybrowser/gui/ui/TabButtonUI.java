@@ -1,5 +1,6 @@
 package everyos.browser.webicitybrowser.gui.ui;
 
+import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.engine.ribbon.core.component.Component;
@@ -21,11 +22,16 @@ public class TabButtonUI extends SimpleBlockComponentUI {
 	
 	@Override
 	protected void renderUI(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-		this.text = this.<TabButton>getComponent().getText();
-		this.strwidth = StringWrapHelper.stringWidth(r, text);
-		sizepos.move(strwidth+r.getFontPaddingHeight(), true);
+		super.renderUI(r, sizepos, uimgr);
+
+		// Width in which we expect the text to be fit in.
+		int expectedWidth = getBounds().getWidth() - Styling.BUTTON_WIDTH - 2 * Styling.ELEMENT_PADDING;
+
+		this.text = StringWrapHelper.trim(r, this.<TabButton>getComponent().getText(), expectedWidth);
+
+		sizepos.move(strwidth + r.getFontPaddingHeight(), true);
 		sizepos.setMinLineHeight(r.getFontHeight());
-		
+
 		//super.calcInternalSize(r, sizepos, data);
 	}
 
@@ -34,15 +40,17 @@ public class TabButtonUI extends SimpleBlockComponentUI {
 		paintMouse(r);
 
 		Rectangle bounds = getBounds();
-		
+
 		r.useBackground();
 		r.drawEllipse(0, 0, bounds.getHeight(), bounds.getHeight());
-		r.drawEllipse(bounds.getWidth()-bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
-		r.drawFilledRect(bounds.getHeight()/2, 0, bounds.getWidth()-bounds.getHeight(), bounds.getHeight());
-		r.drawFilledRect(0,0, bounds.getWidth(), bounds.getHeight()/2);
+		r.drawEllipse(bounds.getWidth() - bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
+		r.drawFilledRect(bounds.getHeight() / 2, 0, bounds.getWidth() - bounds.getHeight(), bounds.getHeight());
+		r.drawFilledRect(0, 0, bounds.getWidth(), bounds.getHeight() / 2);
 
 		r.useForeground();
-		r.drawText(bounds.getWidth()/2-strwidth/2, bounds.getHeight()/2-r.getFontHeight()/2, text);
+//		r.drawText(Styling.ELEMENT_PADDING, (bounds.getHeight()-r.getFontHeight()) / 2 - r.getFontHeight() / 2, text);
+		r.drawText(Styling.ELEMENT_PADDING, Styling.ELEMENT_PADDING, text);
 
+		super.paintChildren(r);
 	}
 }

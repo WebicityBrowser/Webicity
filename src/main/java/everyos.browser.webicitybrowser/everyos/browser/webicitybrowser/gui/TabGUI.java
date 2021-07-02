@@ -42,7 +42,7 @@ public class TabGUI {
 		tab.removeTabMutationListener(mutationListener);
 	}
 	
-	public Component getTabButton() {
+	public TabButton getTabButton() {
 		return this.tabButton;
 	}
 	
