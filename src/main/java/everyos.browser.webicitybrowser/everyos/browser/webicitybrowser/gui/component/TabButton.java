@@ -17,13 +17,12 @@ public class TabButton extends BlockComponent {
 		super();
 
 		closeButton = new CircularText(null);
-		closeButton.directive(PositionDirective.of(new Location(1, -Styling.BUTTON_WIDTH - Styling.ELEMENT_PADDING / 2, 0, Styling.ELEMENT_PADDING / 2)));
+		closeButton.directive(PositionDirective.of(new Location(0, Styling.ELEMENT_PADDING / 2, 0, Styling.ELEMENT_PADDING / 2)));
 		closeButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		closeButton.text("X");
 		addChild(closeButton);
 
-		this
-				.directive(FontSizeDirective.of(14));
+		this.directive(FontSizeDirective.of(14));
 	}
 
 	public Component text(String text) {

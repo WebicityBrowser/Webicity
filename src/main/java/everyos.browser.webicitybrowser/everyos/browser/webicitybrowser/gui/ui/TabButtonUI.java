@@ -48,8 +48,7 @@ public class TabButtonUI extends SimpleBlockComponentUI {
 		r.drawFilledRect(0, 0, bounds.getWidth(), bounds.getHeight() / 2);
 
 		r.useForeground();
-//		r.drawText(Styling.ELEMENT_PADDING, (bounds.getHeight()-r.getFontHeight()) / 2 - r.getFontHeight() / 2, text);
-		r.drawText(Styling.ELEMENT_PADDING, Styling.ELEMENT_PADDING, text);
+		r.drawText(Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING, Styling.ELEMENT_PADDING, text);
 
 		super.paintChildren(r);
 	}
