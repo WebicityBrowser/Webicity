@@ -2,6 +2,8 @@ package everyos.engine.ribbon.ui.simple.helper;
 
 import java.util.ArrayList;
 
+import everyos.browser.webicitybrowser.gui.Styling;
+import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 
@@ -72,14 +74,33 @@ public class StringWrapHelper {
 		
 		return lines;
 	}
-	
+
 	public static int stringWidth(Renderer r, String str) {
 		int width = 0;
-		for (String spl: str.split("\n")) {
+		for (String spl : str.split("\n")) {
 			int mw = 0;
-			for (byte ch: spl.getBytes()) mw+=r.charWidth((char) ch); 
-			width=mw>width?mw:width;
+			for (byte ch : spl.getBytes()) mw += r.charWidth((char) ch);
+			width = mw > width ? mw : width;
 		}
 		return width;
+	}
+
+	public static String trim(Renderer r, String text, int fixedWidth) {
+		int curWidth = stringWidth(r, text);
+
+		// If it's already a small string, return it as it is.
+		if (curWidth <= fixedWidth) return text;
+
+		// Else keep trimming it by one character to fit it under fixedWidth
+		while (curWidth > fixedWidth && text.length() > 0) {
+			text = text.substring(0, text.length() - 1);
+			curWidth = StringWrapHelper.stringWidth(r, text);
+		}
+
+		// If the text is still sufficiently long, replace last three char with ...
+		if (text.length() > 8)
+			text = text.substring(0, text.length() - 3) + "...";
+
+		return text;
 	}
 }

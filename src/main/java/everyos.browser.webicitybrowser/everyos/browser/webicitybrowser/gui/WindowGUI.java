@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
+import everyos.browser.webicitybrowser.gui.component.WebicityButton;
 import everyos.browser.webicitybrowser.gui.window.RibbonWindow;
 import everyos.browser.webicitybrowser.gui.window.SkijaWindow;
 import everyos.browser.webicitybrowser.ui.Tab;
@@ -90,14 +91,14 @@ public class WindowGUI {
 		windowDecor.directive(BackgroundDirective.of(Styling.BACKGROUND_PRIMARY));
 
 		// Add the menu button
-		CircularText menuButton = new CircularText(null);
+		WebicityButton menuButton = new WebicityButton(windowGrip.getDisplayPane());
 		menuButton.directive(BackgroundDirective.of(Styling.BACKGROUND_SECONDARY));
-		menuButton.directive(PositionDirective.of(new Location(0, Styling.BORDER_PADDING, 0, Styling.ELEMENT_PADDING)));
+//		menuButton.directive(PositionDirective.of(new Location(0, Styling.BORDER_PADDING, 0, Styling.ELEMENT_PADDING)));
+		menuButton.directive(PositionDirective.of(new Location(0, 0, 0, 0)));
 		menuButton.directive(SizeDirective.of(new Location(
-			0, (Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3-Styling.ELEMENT_PADDING,
-			0, Styling.BUTTON_WIDTH)));
-		menuButton.text(Styling.PRODUCT_NAME);
-		addButtonBehavior(menuButton, ()->{});
+				0, Styling.BUTTON_WIDTH * 3 + Styling.ELEMENT_PADDING * 2 + Styling.BORDER_PADDING,
+				0, Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING)));
+		addButtonBehavior(menuButton, menuButton::toggleMenu);
 
 		windowDecor.addChild(menuButton);
 
@@ -197,9 +198,11 @@ public class WindowGUI {
 		tabGUI.setSelected(false);
 		tabs.add(tabGUI);
 
-		Component tabButton = tabGUI.getTabButton();
+		TabButton tabButton = tabGUI.getTabButton();
 		tabButton.directive(SizeDirective.of(new Location(0, 150, 0, Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)));
 		addButtonBehavior(tabButton, ()->selectTab(tabGUI), ()->tabGUI.isSelected());
+		// TODO: How do we remove/close tabs?
+		addButtonBehavior(tabButton.getCloseButton(), ()->tab.close(), ()->tabGUI.isSelected());
 
 		Component spacer = new BlockComponent();
 		spacer.directive(SizeDirective.of(new Location(0, Styling.ELEMENT_PADDING, 0, Styling.BUTTON_WIDTH)));
