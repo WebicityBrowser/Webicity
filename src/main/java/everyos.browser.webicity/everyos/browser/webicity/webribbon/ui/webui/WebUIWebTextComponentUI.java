@@ -41,18 +41,6 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 	
 	private class TextAppearence implements Appearence {
 		@Override
-		public void paint(Renderer r, Rectangle viewport) {
-			r.useForeground();
-			for (int i=0; i<lines.size(); i++) {
-				int py = i*r.getFontHeight();
-				int width = r.drawText(i==0?position.getX():0, position.getY()+py, lines.get(i));
-				r.paintMouseListener(getComponent(), position.getX(), position.getY()+py, width, r.getFontHeight(), e->{
-					processEvent(e);
-				});
-			}
-		}
-		
-		@Override
 		public void render(Renderer r, SizePosGroup sizepos, UIContext context) {
 			String text = ((Text) getComponent().getNode()).getWholeText();
 			//TODO: http://finance.yahoo.com/news/study-reveals-city-worst-traffic-223420982.html cuts off first letter (at parser level)
@@ -65,6 +53,18 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 				sizepos.getSize().getWidth()-position.getX(),
 				sizepos.getCurrentPointer().getY()+lines.size()*r.getFontHeight()+r.getFontPaddingHeight()-position.getY());
 			//TODO: The bounding box is not quite right
+		}
+		
+		@Override
+		public void paint(Renderer r, Rectangle viewport) {
+			r.useForeground();
+			for (int i=0; i<lines.size(); i++) {
+				int py = i*r.getFontHeight();
+				int width = r.drawText(i==0?position.getX():0, position.getY()+py, lines.get(i));
+				r.paintMouseListener(getComponent(), position.getX(), position.getY()+py, width, r.getFontHeight(), e->{
+					processEvent(e);
+				});
+			}
 		}
 	}
 }

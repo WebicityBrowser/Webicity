@@ -120,7 +120,7 @@ public class Component implements UIEventTarget {
 	}
 
 	public Component children(Component[] children) {
-		this.children = new ArrayList<Component>(children.length);/*Arrays.asList(children));*/
+		this.children = new ArrayList<Component>(children.length);
 		for (Component child: children) child.setParent(this);
 		return this;
 	}
@@ -174,7 +174,7 @@ public class Component implements UIEventTarget {
 		return matches.toArray(new Component[matches.size()]);
 	}
 
-	//TODO: Should not exists
+	//TODO: Should not exist
 	public void unbindAll() {
 		boundObservers.clear();
 	}

@@ -50,6 +50,7 @@ public class RibbonSkijaWindow {
 	public void bind(Component component, UIManager uimanager) {
 		this.rootComponentUI = uimanager.get(component, null);
 		component.bind(rootComponentUI);
+		System.out.println(rootComponentUI);
 		
 		this.uiManager = uimanager;
 	}
@@ -212,6 +213,7 @@ public class RibbonSkijaWindow {
 				
 				binding.getListener().accept(
 					new MouseEvent(binding.getEventTarget(), x, y, button, action, !isDetermined));
+				
 				isDetermined = true;
 				
 				//TODO: Accept should return a boolean value to indicate if we should break

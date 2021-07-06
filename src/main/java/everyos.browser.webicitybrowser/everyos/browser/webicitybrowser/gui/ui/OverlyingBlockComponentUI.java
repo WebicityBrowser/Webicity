@@ -4,14 +4,10 @@ import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.component.OverlyingBlockComponent;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
-
-import java.util.ArrayList;
 
 public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
 
@@ -23,7 +19,9 @@ public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
         super(c, parent);
     }
 
-    @Override
+    //TODO: Fix merge conflicts
+    
+    /*@Override
     protected ComponentUI[] calcChildren(UIManager uimgr) {
         component = getComponent();
         if (component.getChildren().length < 1) return new ComponentUI[0];
@@ -67,7 +65,7 @@ public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
         r.useForeground();
 
         contentPaneUI.paint(r);
-    }
+    }*/
 
 
 

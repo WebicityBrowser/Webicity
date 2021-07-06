@@ -14,7 +14,7 @@ import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;
+import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;	
 
 public class InlineBlockLayout implements Layout {
 	private WebComponent component;
@@ -51,7 +51,6 @@ public class InlineBlockLayout implements Layout {
 		//TODO: Make SizePosGroup#compareTo a thing
 		if (maxBlockSize.getHeight()<temporaryPageBounds.getSize().getHeight() && maxBlockSize.getHeight()!=-1) {
 			if (maxBlockSize.getWidth()!=-1) {
-				System.out.println("B");
 				temporaryPageBounds = new SizePosGroup(
 					sizepos.getSize().getWidth()-10, 0,
 					0, 0,
@@ -73,10 +72,6 @@ public class InlineBlockLayout implements Layout {
 
 	@Override
 	public void paint(Renderer r, Rectangle viewport, Appearence appearence) {
-		GUIState state = r.getState();
-		r.restoreState(state.clone());
-		Renderer childR = r.getSubcontext(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight());
-		paintInnerPart(childR, viewport, appearence);
 		
 		//if (this.pageSize!=null) {
 			scrollBar.paint(r, new Rectangle(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight()));
@@ -86,6 +81,12 @@ public class InlineBlockLayout implements Layout {
 			if (e.isExternal()) return;
 			processEvent(e);
 		});
+		
+		GUIState state = r.getState();
+		r.restoreState(state.clone());
+		Renderer childR = r.getSubcontext(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight());
+		
+		paintInnerPart(childR, viewport, appearence);
 		
 		r.restoreState(state);
 	}

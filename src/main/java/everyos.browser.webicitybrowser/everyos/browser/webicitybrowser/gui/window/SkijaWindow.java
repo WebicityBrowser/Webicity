@@ -52,7 +52,7 @@ public class SkijaWindow implements RibbonWindow {
 	
 		UIManager mgr = WebicityUIManager.createUI();
 		
-		BlockComponent component = new BlockComponent();	
+		BlockComponent component = new BlockComponent();
 		component.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
 		window.bind(component, mgr);
 		window.setVisible(true);

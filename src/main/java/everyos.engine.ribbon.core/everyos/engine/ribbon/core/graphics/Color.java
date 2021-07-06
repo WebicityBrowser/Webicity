@@ -24,7 +24,7 @@ public class Color {
 	}
 
 	public int getAlpha() {
-		return color>>24;
+		return (color>>24)&0xFF;
 	}
 	
 	public int getRed() {
@@ -37,5 +37,10 @@ public class Color {
 	
 	public int getBlue() {
 		return color&255;
+	}
+	
+	@Override
+	public String toString() {
+		return "Color [a="+getAlpha()+", r="+getRed()+", g="+getGreen()+", b="+getBlue()+"]";
 	}
 }
