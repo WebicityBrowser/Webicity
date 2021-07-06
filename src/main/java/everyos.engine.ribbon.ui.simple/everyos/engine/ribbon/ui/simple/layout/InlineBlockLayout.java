@@ -177,7 +177,7 @@ public class InlineBlockLayout implements Layout {
 		r.restoreState(state);
 	}
 	
-	private void paintChildren(Renderer r) {
+	public void paintChildren(Renderer r) {
 		r.useBackground();
 		GUIState state = r.getState();
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
