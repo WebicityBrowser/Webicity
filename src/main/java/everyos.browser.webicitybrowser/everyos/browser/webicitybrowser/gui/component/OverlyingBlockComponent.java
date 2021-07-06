@@ -7,13 +7,13 @@ import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 
 public class OverlyingBlockComponent extends BlockComponent {
-    private final Component contentView;
+    public final Component contentView;
 
     private boolean isInvisible = true;
 
     public OverlyingBlockComponent(Component contentView) {
         this.contentView = contentView;
-        super.addChild(contentView);
+//        super.addChild(contentView);
     }
 
     @Override

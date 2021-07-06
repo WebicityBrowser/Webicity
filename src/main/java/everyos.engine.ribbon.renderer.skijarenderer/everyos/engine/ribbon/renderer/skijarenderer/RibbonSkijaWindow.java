@@ -3,6 +3,7 @@ package everyos.engine.ribbon.renderer.skijarenderer;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
+import everyos.browser.webicitybrowser.util.TimeSystem;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
@@ -102,8 +103,10 @@ public class RibbonSkijaWindow {
 	
 	private void runLoop() {
 		RibbonSkijaRenderer root = RibbonSkijaRenderer.of(window);
+		TimeSystem.reset();
 		while (running&&!GLFW.glfwWindowShouldClose(window)) {
 			if (GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_ICONIFIED) == GLFW.GLFW_FALSE) {
+				TimeSystem.step();
 				root = updateWindow(root);
 			}
 			GLFW.glfwSwapBuffers(window);

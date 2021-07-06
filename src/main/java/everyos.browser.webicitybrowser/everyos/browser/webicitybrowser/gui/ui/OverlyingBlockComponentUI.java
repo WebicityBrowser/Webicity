@@ -1,72 +1,97 @@
 package everyos.browser.webicitybrowser.gui.ui;
 
+import everyos.browser.javadom.imp.TimeUtil;
 import everyos.browser.webicitybrowser.gui.Styling;
+import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.OverlyingBlockComponent;
+import everyos.browser.webicitybrowser.util.TimeSystem;
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.directive.PositionDirective;
+import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.shape.Dimension;
+import everyos.engine.ribbon.core.shape.Location;
 import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
+import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
+import everyos.engine.ribbon.ui.simple.appearence.Appearence;
+import everyos.engine.ribbon.ui.simple.helper.ComputedChildrenHelper;
+import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
 public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
 
+    private Appearence appearence;
     private OverlyingBlockComponent component;
-    private Component contentPane;
     private ComponentUI contentPaneUI;
+
 
     public OverlyingBlockComponentUI(Component c, ComponentUI parent) {
         super(c, parent);
-    }
-
-    //TODO: Fix merge conflicts
-    
-    /*@Override
-    protected ComponentUI[] calcChildren(UIManager uimgr) {
-        component = getComponent();
-        if (component.getChildren().length < 1) return new ComponentUI[0];
-        contentPane = component.getChildren()[0];
-        contentPane.unbindAll();
-        contentPaneUI = uimgr.get(contentPane, getParent());
-        contentPane.bind(contentPaneUI);
-        return new ComponentUI[]{contentPaneUI};
+        component = (OverlyingBlockComponent) c;
+        this.appearence = new OverlyingBlockComponentUIAppearence();
     }
 
     @Override
-    protected ComponentUI[] getChildren() {
-        return new ComponentUI[]{contentPaneUI};
+    public Appearence getAppearence() {
+        return appearence;
     }
 
-    @Override
-    protected void paintUI(Renderer r) {
-        paintMouse(r);
+    private class OverlyingBlockComponentUIAppearence implements Appearence {
 
-        if(component.isInvisible()) return;
+        private Dimension bounds;
 
-        Rectangle bounds = getBounds();
+        @Override
+        public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
+//            sizepos.move(strwidth+r.getFontPaddingHeight(), true);
+//            sizepos.setMinLineHeight(r.getFontHeight());
 
-        r.useBackground();
-        int w = bounds.getWidth();
-        int h = bounds.getHeight();
-        int d = Styling.BUTTON_WIDTH;
-        int l2 = d / 2;
-        int ws = w - d;
-        int hs = h - d;
-        r.drawEllipse(0, 0, d, d);
-        r.drawEllipse(ws, 0, d, d);
-        r.drawEllipse(ws, hs, d, d);
-        r.drawEllipse(0, hs, d, d);
-        r.drawFilledRect(l2, 0, ws, d);
-        r.drawFilledRect(ws, l2, d, hs);
-        r.drawFilledRect(l2, hs, ws, d);
-        r.drawFilledRect(0, l2, d, hs);
-        r.drawFilledRect(d, d, w - 2 * d, h - 2 * d);
+            this.bounds = sizepos.getSize();
 
-        r.useForeground();
+            contentPaneUI = uimgr.get(component.contentView, OverlyingBlockComponentUI.this);
+            contentPaneUI.render(r, sizepos, uimgr);
+//            contentPaneUI.directive(SizeDirective.of(new Location(1, 0, 1, 0)).getDirective());
+        }
 
-        contentPaneUI.paint(r);
-    }*/
+        private float progress = 0;
 
+        @Override
+        public void paint(Renderer r) {
+            if (component.isInvisible()) {
+                if (progress > 0) progress -= TimeSystem.getDeltaSeconds();
+                else return;
+            } else {
+                if (progress < 1)
+                    progress += TimeSystem.getDeltaSeconds();
+            }
 
+            r.useBackground();
+            int w = bounds.getWidth();
+            int h = bounds.getHeight();
+
+            int ha = (int) (h * progress);
+
+            r = r.getSubcontext(0, 0, w, ha);
+
+            r.fillRoundRect(0, ha-h, w, h, Styling.BUTTON_WIDTH*3);
+
+            r.useForeground();
+
+            contentPaneUI.paint(r);
+        }
+
+        @Override
+        public void directive(UIDirective directive) {
+
+        }
+
+        @Override
+        public void processEvent(UIEvent e) {
+
+        }
+    }
 
 }
