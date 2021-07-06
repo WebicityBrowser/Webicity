@@ -9,6 +9,9 @@ import everyos.engine.ribbon.core.graphics.GUIState;
 public interface Renderer {
 	// This will be an abstraction for implementation-dependent rendering code
 
+	// Transformations
+	void translate(int dx, int dy);
+
 	// Painting
 	Renderer getSubcontext(int x, int y, int l, int h);
 	void drawFilledRect(int x, int y, int width, int height);

@@ -120,6 +120,11 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	}
 
 	@Override
+	public void translate(int dx, int dy) {
+		this.x+=dx; this.y+=dy;
+	}
+
+	@Override
 	public Renderer getSubcontext(int x, int y, int l, int h) {
 		RibbonSkijaRenderer r = new RibbonSkijaRenderer(
 			this, state.clone(),

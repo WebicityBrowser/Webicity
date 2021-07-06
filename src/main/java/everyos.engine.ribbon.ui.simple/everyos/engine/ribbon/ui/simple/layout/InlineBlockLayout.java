@@ -34,7 +34,8 @@ public class InlineBlockLayout implements Layout {
 	private Offset offset;
 	private MouseListener mouseListener;
 	private MouseListener externalMouseListener;
-	
+	private boolean considerChildren = true;
+
 	public InlineBlockLayout(Component component, ComponentUI ui) {
 		this.component = component;
 		this.ui = ui;
@@ -148,12 +149,14 @@ public class InlineBlockLayout implements Layout {
 	
 	private void renderInnerPart(Renderer r, SizePosGroup sizepos, UIManager uimgr, Appearence appearence) {
 		appearence.render(r, sizepos, uimgr);
-		renderChildren(r, sizepos, uimgr);
+
+		if (considerChildren)
+			renderChildren(r, sizepos, uimgr);
 	}
-	
-	private void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-		this.computedChildrenHelper = new ComputedChildrenHelper(this.component, c->uimgr.get(c, ui));
-		
+
+	public void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
+		this.computedChildrenHelper = new ComputedChildrenHelper(this.component, c -> uimgr.get(c, ui));
+
 		GUIState state = r.getState().clone();
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
 			c.render(r, sizepos, uimgr);
@@ -167,8 +170,10 @@ public class InlineBlockLayout implements Layout {
 		r.useBackground();
 		
 		appearence.paint(r);
-		paintChildren(r);
-		
+
+		if (considerChildren)
+			paintChildren(r);
+
 		r.restoreState(state);
 	}
 	
@@ -187,5 +192,9 @@ public class InlineBlockLayout implements Layout {
 			processEvent(e);
 			appearence.processEvent(e);
 		});
+	}
+
+	public void setConsiderChildren(boolean considerChildren) {
+		this.considerChildren = considerChildren;
 	}
 }

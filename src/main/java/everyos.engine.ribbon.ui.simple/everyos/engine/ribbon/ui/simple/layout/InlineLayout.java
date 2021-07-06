@@ -14,23 +14,33 @@ public class InlineLayout implements Layout {
 	private Component component;
 	private ComponentUI ui;
 	private ComputedChildrenHelper computedChildrenHelper;
+	private boolean considerChildren = true;
 
 	public InlineLayout(Component component, ComponentUI ui) {
 		this.component = component;
 		this.ui = ui;
 	}
 
+	public void setConsiderChildren(boolean considerChildren) {
+		this.considerChildren = considerChildren;
+	}
+
 	@Override
 	public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr, Appearence appearence) {
 		appearence.render(r, sizepos, uimgr);
-		renderChildren(r, sizepos, uimgr);
-		
+
+		// We don't check consideration in renderChildren so that implementor can create a custom system for the same.
+		if (considerChildren)
+			renderChildren(r, sizepos, uimgr);
 	}
 
 	@Override
 	public void paint(Renderer r, Appearence appearence) {
 		appearence.paint(r);
-		paintChildren(r);
+
+		// We don't check consideration in paintChildren so that implementor can create a custom system for the same.
+		if (considerChildren)
+			paintChildren(r);
 	}
 
 	@Override
@@ -45,15 +55,15 @@ public class InlineLayout implements Layout {
 		
 	}
 
-	private void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
+	public void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
 		this.computedChildrenHelper = new ComputedChildrenHelper(this.component, c->uimgr.get(c, ui));
 		
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
 			c.render(r, sizepos, uimgr);
 		}
 	}
-	
-	private void paintChildren(Renderer r) {
+
+	public void paintChildren(Renderer r) {
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
 			r.useBackground();
 			c.paint(r);

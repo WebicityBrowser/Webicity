@@ -13,7 +13,7 @@ public class OverlyingBlockComponent extends BlockComponent {
 
     public OverlyingBlockComponent(Component contentView) {
         this.contentView = contentView;
-//        super.addChild(contentView);
+        super.addChild(contentView);
     }
 
     @Override

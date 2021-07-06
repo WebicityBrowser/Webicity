@@ -21,18 +21,21 @@ import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.ComputedChildrenHelper;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
+import everyos.engine.ribbon.ui.simple.layout.InlineBlockLayout;
+import everyos.engine.ribbon.ui.simple.layout.InlineLayout;
 
 public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
 
     private Appearence appearence;
     private OverlyingBlockComponent component;
-    private ComponentUI contentPaneUI;
-
+    private InlineBlockLayout layout;
 
     public OverlyingBlockComponentUI(Component c, ComponentUI parent) {
         super(c, parent);
         component = (OverlyingBlockComponent) c;
         this.appearence = new OverlyingBlockComponentUIAppearence();
+        layout = (InlineBlockLayout) getLayout();
+        layout.setConsiderChildren(false);
     }
 
     @Override
@@ -50,9 +53,10 @@ public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
 //            sizepos.setMinLineHeight(r.getFontHeight());
 
             this.bounds = sizepos.getSize();
+            layout.renderChildren(r, sizepos, uimgr);
 
-            contentPaneUI = uimgr.get(component.contentView, OverlyingBlockComponentUI.this);
-            contentPaneUI.render(r, sizepos, uimgr);
+//            contentPaneUI = uimgr.get(component.contentView, OverlyingBlockComponentUI.this);
+//            contentPaneUI.render(r, sizepos, uimgr);
 //            contentPaneUI.directive(SizeDirective.of(new Location(1, 0, 1, 0)).getDirective());
         }
 
@@ -75,12 +79,14 @@ public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
             int ha = (int) (h * progress);
 
             r = r.getSubcontext(0, 0, w, ha);
+            r.translate(0, ha - h);
 
-            r.fillRoundRect(0, ha-h, w, h, Styling.BUTTON_WIDTH*3);
+            r.fillRoundRect(0, 0, w, h, Styling.BUTTON_WIDTH * 3);
 
             r.useForeground();
 
-            contentPaneUI.paint(r);
+            layout.paintChildren(r);
+//            contentPaneUI.paint(r);
         }
 
         @Override
