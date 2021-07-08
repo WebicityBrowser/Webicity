@@ -16,9 +16,14 @@ public class WebicityButton extends BlockComponent {
         super();
         this.directive(FontSizeDirective.of(14));
 
+        dropMenu = new OverlyingBlockComponent();
+
         CircularText content = new CircularText(null);
         content.text("Hello");
-        dropMenu = new OverlyingBlockComponent(content);
+        content.directive(PositionDirective.of(new Location(0, 0, 0, 0)));
+        content.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
+        dropMenu.addChild(content);
+
         dropMenu.directive(PositionDirective.of(new Location(0, 0, 0, Styling.ELEMENT_PADDING + Styling.BUTTON_WIDTH)));
         dropMenu.directive(SizeDirective.of(new Location(0, 150, 0, 100)));
         parent.addChild(dropMenu);
