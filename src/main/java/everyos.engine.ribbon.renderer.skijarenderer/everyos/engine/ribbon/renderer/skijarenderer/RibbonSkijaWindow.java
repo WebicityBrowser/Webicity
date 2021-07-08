@@ -111,7 +111,7 @@ public class RibbonSkijaWindow {
 	
 	private void runLoop() {
 		RibbonSkijaRenderer root = RibbonSkijaRenderer.of(window);
-		TimeSystem.reset();
+//		TimeSystem.reset();
 		while (running&&!GLFW.glfwWindowShouldClose(window)) {
 			//long time = System.currentTimeMillis();
 			if (GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_ICONIFIED) == GLFW.GLFW_FALSE) {

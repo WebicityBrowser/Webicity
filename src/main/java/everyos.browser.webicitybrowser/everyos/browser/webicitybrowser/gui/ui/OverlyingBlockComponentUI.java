@@ -23,10 +23,10 @@ public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
 
     public OverlyingBlockComponentUI(Component c, ComponentUI parent) {
         super(c, parent);
-        component = (OverlyingBlockComponent) c;
+        component = getComponent().casted(OverlyingBlockComponent.class);
         this.appearence = new OverlyingBlockComponentUIAppearence();
         layout = (InlineBlockLayout) getLayout();
-        layout.setConsiderChildren(false);
+        layout.setAutoManageChildren(false);
     }
 
     @Override
@@ -37,47 +37,39 @@ public class OverlyingBlockComponentUI extends SimpleBlockComponentUI {
     private class OverlyingBlockComponentUIAppearence implements Appearence {
 
         private Dimension bounds;
+        private float _progress = 0;
 
         @Override
         public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-//            sizepos.move(strwidth+r.getFontPaddingHeight(), true);
-//            sizepos.setMinLineHeight(r.getFontHeight());
-
+            // TODO: Fix component's bounds shadowing other under it buttons even when invisible due to which they cant receive mouse actions.
             this.bounds = sizepos.getSize();
             layout.renderChildren(r, sizepos, uimgr);
-
-//            contentPaneUI = uimgr.get(component.contentView, OverlyingBlockComponentUI.this);
-//            contentPaneUI.render(r, sizepos, uimgr);
-//            contentPaneUI.directive(SizeDirective.of(new Location(1, 0, 1, 0)).getDirective());
         }
-
-        private float progress = 0;
 
         @Override
         public void paint(Renderer r) {
             if (component.isInvisible()) {
-                if (progress > 0) progress -= TimeSystem.getDeltaSeconds();
+                if (_progress > 0) _progress -= TimeSystem.getDeltaSeconds();
                 else return;
             } else {
-                if (progress < 1)
-                    progress += TimeSystem.getDeltaSeconds();
+                if (_progress < 1)
+                    _progress += TimeSystem.getDeltaSeconds();
             }
 
             r.useBackground();
-            int w = bounds.getWidth();
-            int h = bounds.getHeight();
+            int width = bounds.getWidth();
+            int height = bounds.getHeight();
 
-            int ha = (int) (h * progress);
+            int heightAnimated = (int) (height * _progress);
 
-            r = r.getSubcontext(0, 0, w, ha);
-            r.translate(0, ha - h);
+            r = r.getSubcontext(0, 0, width, heightAnimated);
+            r.translate(0, heightAnimated - height);
 
-            r.fillRoundRect(0, 0, w, h, Styling.BUTTON_WIDTH * 3);
+            r.fillRoundRect(0, 0, width, height, Styling.BUTTON_WIDTH * 3);
 
             r.useForeground();
 
             layout.paintChildren(r);
-//            contentPaneUI.paint(r);
         }
 
         @Override
