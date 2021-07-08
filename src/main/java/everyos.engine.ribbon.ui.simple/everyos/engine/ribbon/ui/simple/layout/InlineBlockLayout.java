@@ -34,7 +34,7 @@ public class InlineBlockLayout implements Layout {
 	private Offset offset;
 	private MouseListener mouseListener;
 	private MouseListener externalMouseListener;
-	private boolean considerChildren = true;
+	private boolean autoManageChildren = true;
 
 	public InlineBlockLayout(Component component, ComponentUI ui) {
 		this.component = component;
@@ -150,7 +150,7 @@ public class InlineBlockLayout implements Layout {
 	private void renderInnerPart(Renderer r, SizePosGroup sizepos, UIManager uimgr, Appearence appearence) {
 		appearence.render(r, sizepos, uimgr);
 
-		if (considerChildren)
+		if (autoManageChildren)
 			renderChildren(r, sizepos, uimgr);
 	}
 
@@ -171,7 +171,7 @@ public class InlineBlockLayout implements Layout {
 		
 		appearence.paint(r);
 
-		if (considerChildren)
+		if (autoManageChildren)
 			paintChildren(r);
 
 		r.restoreState(state);
@@ -194,7 +194,7 @@ public class InlineBlockLayout implements Layout {
 		});
 	}
 
-	public void setConsiderChildren(boolean considerChildren) {
-		this.considerChildren = considerChildren;
+	public void setAutoManageChildren(boolean considerChildren) {
+		this.autoManageChildren = considerChildren;
 	}
 }
