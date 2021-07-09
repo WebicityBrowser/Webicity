@@ -3,15 +3,22 @@ package everyos.engine.ribbon.renderer.skijarenderer;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-import everyos.browser.webicitybrowser.util.TimeSystem;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
+import everyos.browser.webicitybrowser.util.TimeSystem;
 import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.event.CharEvent;
+import everyos.engine.ribbon.core.event.EventListener;
+import everyos.engine.ribbon.core.event.Key;
+import everyos.engine.ribbon.core.event.KeyboardEvent;
 import everyos.engine.ribbon.core.event.MouseEvent;
+import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.event.UIEventTarget;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
+import everyos.engine.ribbon.core.rendering.Renderer.ListenerPaintListener;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Location;
 import everyos.engine.ribbon.core.shape.Rectangle;
@@ -27,6 +34,7 @@ public class RibbonSkijaWindow {
 	private ComponentUI rootComponentUI;
 	private ArrayList<ListenerRect> mouseBindings;
 	private Dimension oldSize;
+	private ArrayList<EventListener<UIEvent>> generalEventBindings;
 
 	public RibbonSkijaWindow(int id) {
 		this.mouseBindings = new ArrayList<>();
@@ -36,6 +44,7 @@ public class RibbonSkijaWindow {
 		new Thread(()->{
 			createWindow(id);
 			createMouseBindings();
+			createKeyboardBindings();
 			lock.release();
 			runLoop();
 			GLFW.glfwDestroyWindow(window);
@@ -51,7 +60,6 @@ public class RibbonSkijaWindow {
 	public void bind(Component component, UIManager uimanager) {
 		this.rootComponentUI = uimanager.get(component, null);
 		component.bind(rootComponentUI);
-		System.out.println(rootComponentUI);
 		
 		this.uiManager = uimanager;
 	}
@@ -105,12 +113,14 @@ public class RibbonSkijaWindow {
 		RibbonSkijaRenderer root = RibbonSkijaRenderer.of(window);
 		TimeSystem.reset();
 		while (running&&!GLFW.glfwWindowShouldClose(window)) {
+			//long time = System.currentTimeMillis();
 			if (GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_ICONIFIED) == GLFW.GLFW_FALSE) {
 				TimeSystem.step();
 				root = updateWindow(root);
 			}
 			GLFW.glfwSwapBuffers(window);
 			GLFW.glfwPollEvents();
+			//System.out.println(System.currentTimeMillis()-time);
 		}
 	}
 	
@@ -142,12 +152,22 @@ public class RibbonSkijaWindow {
 			//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 		}
 		
-		// We paint mouse boxes while painting graphics.
+		// We paint event listeners while painting graphics.
 		ArrayList<ListenerRect> newMouseBindings = new ArrayList<>(mouseBindings.size());
-		root.onPaint((c, x, y, l, h, listener)->{
-			newMouseBindings.add(new ListenerRect(new Rectangle(x, y, l, h), c, listener));
+		ArrayList<EventListener<UIEvent>> newGeneralEventBindings = new ArrayList<>(mouseBindings.size());
+		root.onPaint(new ListenerPaintListener() {
+			@Override
+			public void onPaint(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
+				newMouseBindings.add(new ListenerRect(new Rectangle(x, y, l, h), c, listener));
+			}
+
+			@Override
+			public void onPaint(EventListener<UIEvent> listener) {
+				newGeneralEventBindings.add(listener);
+			}
 		});
 		mouseBindings = newMouseBindings;
+		generalEventBindings = newGeneralEventBindings;
 		
 		// Paint and display the UI.
 		// The target time is 16ms for paint per frame, max
@@ -205,30 +225,49 @@ public class RibbonSkijaWindow {
 		return action;
 	}
 	
-	private void emitEvent(int x, int y, int button, int action) {
+	private void emitMouseEvent(int x, int y, int button, int action) {
 		boolean isDetermined = false;
+		
+		MouseEventBuilder mouseEventBuilder = new MouseEventBuilder();
+		mouseEventBuilder.setAbsoluteCords(x, y);
+		mouseEventBuilder.setButton(button);
+		mouseEventBuilder.setAction(action);
 		
 		for (int i = mouseBindings.size()-1; i>=0; i--) {
 			ListenerRect binding = mouseBindings.get(i);
 			Rectangle bounds = binding.getBounds();
+			
+			mouseEventBuilder.setEventTarget(binding.getEventTarget());
+			mouseEventBuilder.setRelativeCords(x-bounds.getX(), y-bounds.getY());
+			
 			if (x>=bounds.getX()&&x<=bounds.getX()+bounds.getWidth()&&
 				y>=bounds.getY()&&y<=bounds.getY()+bounds.getHeight()) {
 				
-				binding.getListener().accept(
-					new MouseEvent(binding.getEventTarget(), x, y, button, action, !isDetermined));
-				
+				mouseEventBuilder.setInternal(!isDetermined);
 				isDetermined = true;
-				
-				//TODO: Accept should return a boolean value to indicate if we should break
-				//This way, our listener can do precision aabb calculations
-				
-				//Additionally, we will probably want normalized X and Y values in the future
-				//We can probably achieve this with an offset determined by the renderer,
-				//where 0,0 is the window's top left corner
 			} else {
-				binding.getListener().accept(
-					new MouseEvent(binding.getEventTarget(), x, y, button, action, false));
+				mouseEventBuilder.setInternal(false);
 			}
+			
+			//TODO: Accept should return a boolean value to indicate if we should break
+			//This way, our listener can do precision aabb calculations
+			
+			//Additionally, we will probably want normalized X and Y values in the future
+			//We can probably achieve this with an offset determined by the renderer,
+			//where 0,0 is the window's top left corner
+			binding.getListener().accept(mouseEventBuilder.build());
+		}
+	}
+	
+	private void emitCharEvent(CharEvent e) {
+		for (EventListener<UIEvent> binding: generalEventBindings) {
+			binding.accept(e);
+		}
+	}
+	
+	private void emitKeyboardEvent(KeyboardEvent e) {
+		for (EventListener<UIEvent> binding: generalEventBindings) {
+			binding.accept(e);
 		}
 	}
 
@@ -239,17 +278,49 @@ public class RibbonSkijaWindow {
 			
 			double[] x = new double[1], y = new double[1];
 			GLFW.glfwGetCursorPos(window, x, y);
-			emitEvent((int) x[0], (int) y[0], button, action);
+			emitMouseEvent((int) x[0], (int) y[0], button, action);
 		});
 		
 		GLFW.glfwSetCursorPosCallback(window, ($, x, y)->{
 			if (GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT)==GLFW.GLFW_PRESS) {
-				emitEvent((int) x, (int) y, GLFW.GLFW_MOUSE_BUTTON_LEFT, MouseEvent.DRAG);
+				emitMouseEvent((int) x, (int) y, GLFW.GLFW_MOUSE_BUTTON_LEFT, MouseEvent.DRAG);
 			} else if (GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_RIGHT)==GLFW.GLFW_PRESS) {
-				emitEvent((int) x, (int) y, GLFW.GLFW_MOUSE_BUTTON_RIGHT, MouseEvent.DRAG);
+				emitMouseEvent((int) x, (int) y, GLFW.GLFW_MOUSE_BUTTON_RIGHT, MouseEvent.DRAG);
 			} else {
-				emitEvent((int) x, (int) y, 0, MouseEvent.MOVE);
+				emitMouseEvent((int) x, (int) y, 0, MouseEvent.MOVE);
 			}
+		});
+	}
+	
+	private void createKeyboardBindings() {
+		GLFW.glfwSetCharCallback(window, ($, cp)->{
+			String ch = new String(new int[] {cp}, 0, 1);
+			CharEvent e = ()->ch;
+			emitCharEvent(e);
+		});
+		
+		GLFW.glfwSetKeyCallback(window, ($, kc, $1, action, $2) -> {
+			Key key = KeyLookup.query(kc);
+			KeyboardEvent e = new KeyboardEvent() {
+
+				@Override
+				public Key getKey() {
+					return key;
+				}
+
+				@Override
+				public int getAction() {
+					if (action == GLFW.GLFW_RELEASE) {
+						return KeyboardEvent.KEY_RELEASE;
+					} else if (action == GLFW.GLFW_PRESS) {
+						return KeyboardEvent.KEY_PRESS;
+					} else if (action == GLFW.GLFW_REPEAT) {
+						return KeyboardEvent.KEY_HOLD;
+					}
+					return -1;
+				}
+			};
+			emitKeyboardEvent(e);
 		});
 	}
 

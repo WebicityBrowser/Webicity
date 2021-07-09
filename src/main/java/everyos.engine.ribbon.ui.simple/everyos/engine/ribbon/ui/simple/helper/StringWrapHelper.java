@@ -2,8 +2,6 @@ package everyos.engine.ribbon.ui.simple.helper;
 
 import java.util.ArrayList;
 
-import everyos.browser.webicitybrowser.gui.Styling;
-import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 

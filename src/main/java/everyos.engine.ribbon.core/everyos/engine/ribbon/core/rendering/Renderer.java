@@ -1,6 +1,8 @@
 package everyos.engine.ribbon.core.rendering;
 
-import everyos.engine.ribbon.core.event.MouseListener;
+import everyos.engine.ribbon.core.event.EventListener;
+import everyos.engine.ribbon.core.event.MouseEvent;
+import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.event.UIEventTarget;
 import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.graphics.FontStyle;
@@ -35,7 +37,8 @@ public interface Renderer {
 	// User interaction
 	void onPaint(ListenerPaintListener listener);
 	// TODO: We should be able to support non-rectangular shapes
-	void paintMouseListener(UIEventTarget c, int x, int y, int l, int w, MouseListener listener);
+	void paintMouseListener(UIEventTarget c, int x, int y, int l, int w, EventListener<MouseEvent> listener);
+	void paintListener(EventListener<UIEvent> listener);
 	
 	// State management
 	GUIState getState();
@@ -45,7 +48,8 @@ public interface Renderer {
 	
 	// Allows for hooking into our renderer
 	public static interface ListenerPaintListener {
-		void onPaint(UIEventTarget c, int x, int y, int l, int h, MouseListener listener);
+		void onPaint(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener);
+		void onPaint(EventListener<UIEvent> listener);
 	}
 
 	// Other drawing methods with a default implementation

@@ -6,7 +6,6 @@ import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.directive.FontSizeDirective;
 import everyos.engine.ribbon.core.directive.PositionDirective;
 import everyos.engine.ribbon.core.directive.SizeDirective;
-import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.shape.Location;
 
 public class WebicityButton extends BlockComponent {

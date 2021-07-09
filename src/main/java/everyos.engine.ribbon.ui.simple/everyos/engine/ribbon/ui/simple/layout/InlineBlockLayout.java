@@ -6,7 +6,7 @@ import everyos.engine.ribbon.core.directive.MouseListenerDirective;
 import everyos.engine.ribbon.core.directive.PositionDirective;
 import everyos.engine.ribbon.core.directive.SizeDirective;
 import everyos.engine.ribbon.core.event.MouseEvent;
-import everyos.engine.ribbon.core.event.MouseListener;
+import everyos.engine.ribbon.core.event.EventListener;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
@@ -32,8 +32,8 @@ public class InlineBlockLayout implements Layout {
 	private Location position;
 	private Location size;
 	private Offset offset;
-	private MouseListener mouseListener;
-	private MouseListener externalMouseListener;
+	private EventListener<MouseEvent> mouseListener;
+	private EventListener<MouseEvent> externalMouseListener;
 	private boolean considerChildren = true;
 
 	public InlineBlockLayout(Component component, ComponentUI ui) {

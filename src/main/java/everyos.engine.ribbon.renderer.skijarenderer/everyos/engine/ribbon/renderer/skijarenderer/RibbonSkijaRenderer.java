@@ -19,7 +19,9 @@ import org.jetbrains.skija.Typeface;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL32;
 
-import everyos.engine.ribbon.core.event.MouseListener;
+import everyos.engine.ribbon.core.event.EventListener;
+import everyos.engine.ribbon.core.event.MouseEvent;
+import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.event.UIEventTarget;
 import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.graphics.FontStyle;
@@ -130,8 +132,16 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 			this, state.clone(),
 			this.x+x, this.y+y-this.scrollY,
 			l, h);
-		r.onPaint((c, ex, ey, el, eh, listener)->{
-			this._paintMouseListener(c, x+ex, y+ey, el, eh, listener);
+		r.onPaint(new ListenerPaintListener() {
+			@Override
+			public void onPaint(UIEventTarget c, int ex, int ey, int el, int eh, EventListener<MouseEvent> listener) {
+				_paintMouseListener(c, x+ex, y+ey, el, eh, listener);
+			}
+
+			@Override
+			public void onPaint(EventListener<UIEvent> listener) {
+				paintListener(listener);
+			}
 		});
 		return r;
 	}
@@ -271,16 +281,18 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	}
 	
 	@Override
-	public void paintMouseListener(UIEventTarget c, int x, int y, int l, int h, MouseListener listener) {
+	public void paintMouseListener(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
 		_paintMouseListener(c, x, y, l, h, listener);
 	}
 	
-	private void _paintMouseListener(UIEventTarget c, int x, int y, int l, int h, MouseListener listener) {
+	private void _paintMouseListener(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
 		//TODO: Solve why this does not work properly with scroll
 		y -= this.scrollY;
 		
 		if (this.x==-1) {
-			if (lpl!=null) lpl.onPaint(c, x, y, l, h, listener);
+			if (lpl!=null) {
+				lpl.onPaint(c, x, y, l, h, listener);
+			}
 			return;
 		}
 		
@@ -293,7 +305,16 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 		l = x2-x;
 		h = y2-y;
 		
-		if (lpl!=null) lpl.onPaint(c, x, y, l, h, listener);
+		if (lpl!=null) {
+			lpl.onPaint(c, x, y, l, h, listener);
+		}
+	}
+	
+	@Override
+	public void paintListener(EventListener<UIEvent> listener) {
+		if (lpl!=null) {
+			lpl.onPaint(listener);
+		}
 	}
 	
 	@Override

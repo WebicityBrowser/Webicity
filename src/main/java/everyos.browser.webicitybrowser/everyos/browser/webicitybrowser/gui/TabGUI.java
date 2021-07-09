@@ -1,5 +1,6 @@
 package everyos.browser.webicitybrowser.gui;
 
+import java.net.MalformedURLException;
 import java.util.function.Supplier;
 
 import everyos.browser.webicity.net.URL;
@@ -127,6 +128,15 @@ public class TabGUI {
 			1, -Styling.BORDER_PADDING*2-(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
 			0, Styling.BUTTON_WIDTH)));
 		urlBar.text("about:blank");
+		urlBar.setAction(url->{
+			try {
+				URL finURL = new URL(url);
+				tab.setURL(finURL);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		});
+		addButtonBehavior(urlBar, ()->{});
 		
 		tabDecor.addChild(urlBar);
 		
