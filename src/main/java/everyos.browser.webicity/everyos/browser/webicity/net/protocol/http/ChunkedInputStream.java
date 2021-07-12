@@ -34,7 +34,7 @@ public class ChunkedInputStream extends InputStream {
 			StringBuilder size = new StringBuilder(4);
 			int chi;
 			for (;;) {
-				chi = safeRead();
+				chi = stream.read();
 				if (chi=='\r') {
 					break;
 				}
@@ -44,7 +44,7 @@ public class ChunkedInputStream extends InputStream {
 				}
 				size.append((char) chi);
 			}
-			safeRead();
+			stream.read();
 			//TODO: Support chunk extensions
 			if (size.length()==0||Integer.parseInt(size.toString(), 16)==0) {
 				ended = true;
@@ -73,20 +73,5 @@ public class ChunkedInputStream extends InputStream {
 	public void close() throws IOException {
 		stream.close();
 		super.close();
-	}
-	
-	private int safeRead() throws IOException {
-		while (true) {
-			try {
-				//TODO: Thanks, I hate it
-				return stream.read();
-			} catch (IOPendingException e) {
-				try {
-					Thread.sleep(15);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
 	}
 }

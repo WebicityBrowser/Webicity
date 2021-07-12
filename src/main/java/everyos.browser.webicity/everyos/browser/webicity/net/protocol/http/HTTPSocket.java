@@ -73,7 +73,7 @@ public class HTTPSocket {
 		}
 		
 		OutputStream outputStream = new ByteChannelOutputStream(finalChannel);
-		InputStream inputStream = new TimeoutInputStream(new ByteChannelInputStream(finalChannel, 8192), 10000);
+		InputStream inputStream = new ByteChannelInputStream(finalChannel, 8192);
 		
 		return new HTTPSocket(sockChannel, inputStream, outputStream);
 	}

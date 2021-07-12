@@ -5,16 +5,19 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 
+import everyos.browser.webicity.concurrency.jroutine.JRoutine;
 import tlschannel.NeedsReadException;
 
 public class ByteChannelInputStream extends InputStream {
 	private int available;
 	private ByteChannel byteChannel;
 	private ByteBuffer byteBuffer;
+	private int timeout;
 
 	public ByteChannelInputStream(ByteChannel byteChannel, int size) {
 		this.byteChannel = byteChannel;
 		this.byteBuffer = ByteBuffer.allocate(size);
+		this.timeout = 10000;
 	}
 
 	@Override
@@ -31,20 +34,18 @@ public class ByteChannelInputStream extends InputStream {
 		
 		int i=0;
 		while (i<len) {
-			if (available==0) {
+			long lastSuccess = System.currentTimeMillis();
+			while (available==0) {
 				updateAvailable();
+				if (available == 0) {
+					throwExceptionIfTimedOut(lastSuccess);
+					JRoutine.getJRoutine().yield();
+				}
 			}
+			
 			if (available==-1) {
 				b[i] = -1;
 				if (i>1) return i-1;
-				return i;
-			} else if (available==0){
-				if (i==0) {
-					// This can break very easily, however, it is the best easy solution I could come up with at the time.
-					// InputReaders tend to believe that the stream they wrap is blocking
-					// Since it is not, we basically have to throw an exception, in hopes that we have enough data the next read attempt
-					throw new IOPendingException();
-				}
 				return i;
 			}
 			
@@ -68,6 +69,10 @@ public class ByteChannelInputStream extends InputStream {
 		byteChannel.close();
 	}
 
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+	
 	private void updateAvailable() throws IOException {
 		if (available==0) {
 			byteBuffer.clear();
@@ -77,6 +82,12 @@ public class ByteChannelInputStream extends InputStream {
 				available = 0;
 			}
 			byteBuffer.flip();
+		}
+	}
+	
+	private void throwExceptionIfTimedOut(long lastSuccess) throws IOException {
+		if (System.currentTimeMillis()-lastSuccess>=timeout) {
+			throw new IOException("Socket timed out");
 		}
 	}
 }

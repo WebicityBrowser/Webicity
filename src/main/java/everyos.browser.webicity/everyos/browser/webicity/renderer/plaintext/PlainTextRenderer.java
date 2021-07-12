@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import everyos.browser.webicity.WebicityFrame;
-import everyos.browser.webicity.net.protocol.http.IOPendingException;
 import everyos.browser.webicity.renderer.Renderer;
 
 public class PlainTextRenderer implements Renderer {
@@ -24,16 +23,7 @@ public class PlainTextRenderer implements Renderer {
 		StringBuilder builder = new StringBuilder();
 		
 		while (!frame.getTasks().isShutdown()) {
-			final int read;
-			try {
-				read = reader.read();
-			} catch (IOPendingException e) {
-				try {
-					Thread.sleep(15);
-				} catch (InterruptedException e1) {}
-				continue;
-			}
-			
+			final int read = reader.read();
 			if (read==-1) break;
 			
 			builder.append(read);

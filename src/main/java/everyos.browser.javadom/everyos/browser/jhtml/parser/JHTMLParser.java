@@ -18,7 +18,6 @@ import everyos.browser.javadom.intf.Element;
 import everyos.browser.javadom.intf.Node;
 import everyos.browser.javadom.intf.Text;
 import everyos.browser.jhtml.intf.HTMLStyleElement;
-import everyos.browser.webicity.net.protocol.http.IOPendingException;
 
 //TODO: Do not fire mutation events
 
@@ -66,27 +65,18 @@ public final class JHTMLParser {
 	public boolean parse() throws IOException {
 		while(!eof) {
 			parseChunk();
-			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 		return eof;
 	}
 	
-	//TODO: Debug why parsing yahoo is totally broken
+	//TODO: Debug why parsing WhatWG HTML Spec is totally broken
 	public void parseChunk() throws IOException {
 		while (!eof) {
-			int ich;
-			try {
-				ich = reader.read();
-			} catch(IOPendingException e) {
-				return;
-			}
+			int ich = reader.read();
 			
 			eof = eof|ich==-1;
 			int ch = eof?'\0':ich;
+			
 			switch (state) {
 				case DATA:
 					if (ch=='&') {
@@ -883,34 +873,25 @@ public final class JHTMLParser {
 		}
 	}
 
-	/*private String peek(PushbackInputStream stream, int i) {
+	/*private String peek(PushbackInputStream stream, int i) throws IOException {
 		char[] b = new char[i];
-		try {
-			stream.read(b, 0, i);
-			stream.unread(b);
-		} catch (IOException e) {
-			return "";
-		}
+		stream.read(b, 0, i);
+		stream.unread(b);
 		return new String(b);
 	}*/
 
-	private boolean consumeIfEquals(PushbackReader stream, String s) {
+	private boolean consumeIfEquals(PushbackReader stream, String s) throws IOException {
 		char[] b = new char[s.length()];
-		try {
-			//TODO: Handle IOPending
-			stream.read(b, 0, s.length());
-			if (new String(b).equals(s)) return true;
-			stream.unread(b);
-		} catch (IOException e) {e.printStackTrace();}
+		stream.read(b, 0, s.length());
+		if (new String(b).equals(s)) return true;
+		stream.unread(b);
 		return false;
 	}
-	private boolean consumeIfEqualsCI(PushbackReader stream, String s) {
+	private boolean consumeIfEqualsCI(PushbackReader stream, String s) throws IOException {
 		char[] b = new char[s.length()];
-		try {
-			stream.read(b, 0, s.length());
-			if (new String(b).toLowerCase().equals(s.toLowerCase())) return true;
-			stream.unread(b);
-		} catch (IOException e) {e.printStackTrace();}
+		stream.read(b, 0, s.length());
+		if (new String(b).toLowerCase().equals(s.toLowerCase())) return true;
+		stream.unread(b);
 		return false;
 	}
 

@@ -6,8 +6,6 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
-import everyos.browser.webicity.net.protocol.http.IOPendingException;
-
 public class HTTP11Parser {
 	public static HTTP11Response parseFrom(InputStream stream) throws IOException {
 		int status = 0;
@@ -21,12 +19,7 @@ public class HTTP11Parser {
 		
 		try {
 			while (state!=null) {
-				int chi;
-				try {
-					chi = stream.read();
-				} catch (IOPendingException e) {
-					continue;
-				}
+				int chi = stream.read();
 				if (chi==-1) break;
 				char ch = (char) chi;
 				switch(state) {

@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.util.concurrent.ExecutorService;
 
 import everyos.browser.jhtml.browsing.BrowsingContext;
+import everyos.browser.webicity.concurrency.jroutine.JRoutine;
+import everyos.browser.webicity.concurrency.jroutine.JRoutineHelper;
 import everyos.browser.webicity.event.FrameCallback;
 import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
@@ -38,16 +40,17 @@ public class WebicityFrame {
 	private void navigate(URL url) {
 		//TODO: WhatWG specifies how navigation should be done
 		tasks.execute(()->{
-			try {
-				Response response = engine.getDefaultRequest(url).send();
-				// Note that we are on the wrong thread here, but that is actually a good thing, I think
-				Renderer renderer = response.getProbableRenderer();
-				this.renderer = renderer;
-				callback.onRendererCreated(renderer);
-				renderer.execute(this, response.getConnection());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			JRoutineHelper.finish(JRoutine.create(()->{
+				try {
+					Response response = engine.getDefaultRequest(url).send();
+					Renderer renderer = response.getProbableRenderer();
+					this.renderer = renderer;
+					callback.onRendererCreated(renderer);
+					renderer.execute(this, response.getConnection());
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}));
 		});
 	}
 	
