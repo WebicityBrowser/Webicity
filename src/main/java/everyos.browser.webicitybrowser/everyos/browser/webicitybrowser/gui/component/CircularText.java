@@ -1,27 +1,20 @@
 package everyos.browser.webicitybrowser.gui.component;
 
+import everyos.browser.webicitybrowser.gui.appearence.HorizontalBean;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.directive.FontSizeDirective;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
+import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 
-public class CircularText extends BlockComponent {
-	private String text;
+public class CircularText extends TextButton {
 
-	public CircularText(Component parent) {
-		super();
-		
-		this
-			.directive(FontSizeDirective.of(14));
+	public CircularText(String text) {
+		super(text, new HorizontalBean());
 	}
 
-	public Component text(String text) {
-		this.text = text;
-		invalidate(InvalidationLevel.RENDER);
-		return this;
+	public CircularText() {
+		this("");
 	}
-	
-	public String getText() {
-		return this.text;
-	}
+
 }

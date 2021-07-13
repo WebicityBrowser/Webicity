@@ -55,7 +55,6 @@ public class TextButtonUI extends SimpleBlockComponentUI {
 
         @Override
         public void paint(Renderer r) {
-            r.setBackground(Color.BLACK);
             background.paint(r);
 
             r.useForeground();
