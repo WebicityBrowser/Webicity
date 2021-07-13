@@ -48,8 +48,9 @@ public final class JHTMLParser {
 	private StringBuilder tmp_buf = new StringBuilder();
 	private boolean eof = false;
 	private String lastName;
+	private UnicodeHelper unicodeHelper = new UnicodeHelper();
 	
-	
+			
 	public JHTMLParser(InputStream stream) throws UnsupportedEncodingException {
 		this.reader = new PushbackReader(new InputStreamReader(new BufferedInputStream(stream), "UTF-8"), 32);
 		this.document = new JDDocumentBuilder()
@@ -859,12 +860,54 @@ public final class JHTMLParser {
 					
 				//72
 				case CHARACTER_REFERENCE:
-					reader.unread(ch);
-					state = returnState;
+					tmp_buf = new StringBuilder("&");
+					if (Character.isAlphabetic(ch) || Character.isDigit(ch)) {
+						reader.unread(ch);
+						state = TokenizeState.NAMED_CHARACTER_REFERENCE;
+					} else if (ch=='#') {
+						tmp_buf.appendCodePoint(ch);
+						state = TokenizeState.NUMERIC_CHARACTER_REFERENCE;
+					} else {
+						flushCodePointsConsumedAsACharacterReference();
+						reader.unread(ch);
+						state = returnState;
+					}
 					break;
 					
 				case NAMED_CHARACTER_REFERENCE:
+					reader.unread(ch);
 					
+					String foundRef = null;
+					int longest = 0;
+					for (String ref: unicodeHelper.getEntityNames()) {
+						if (ref.length()>longest) {
+							if (ref.equals('&'+new String(peek(reader, ref.length()-1)))) {
+								longest = ref.length();
+								foundRef = ref;
+							}
+						}
+					}
+					
+					if (foundRef!=null) {
+						//TODO: Not codepoint safe
+						reader.read(new char[foundRef.length()-1]);
+						
+						tmp_buf = new StringBuilder();
+						for (int ch2: unicodeHelper.getCodePointsForNamedEntity(foundRef)) {
+							tmp_buf.appendCodePoint(ch2);
+						}
+						flushCodePointsConsumedAsACharacterReference();
+						state = returnState;
+					} else {
+						flushCodePointsConsumedAsACharacterReference();
+						state = returnState;//TokenizeState.AMBIGUOUS_AMPERSAND;
+					}
+					
+					break;
+					
+				case NUMERIC_CHARACTER_REFERENCE:
+					//TODO
+					state = returnState;
 					break;
 					
 				default:
@@ -873,14 +916,33 @@ public final class JHTMLParser {
 		}
 	}
 
-	/*private String peek(PushbackInputStream stream, int i) throws IOException {
-		char[] b = new char[i];
-		stream.read(b, 0, i);
-		stream.unread(b);
-		return new String(b);
-	}*/
+	private void flushCodePointsConsumedAsACharacterReference() {
+		if (isConsumedAsPartOfAnAttribute()) {
+			//TODO
+		} else {
+			for (int i=0; i<tmp_buf.length(); i++) {
+				emit(new CharToken(tmp_buf.codePointAt(i)));
+			}
+		}
+		
+		//TODO
+	}
+	
+	private boolean isConsumedAsPartOfAnAttribute() {
+		return 
+			returnState == TokenizeState.ATTRIBUTE_VALUE_DQ ||
+			returnState == TokenizeState.ATTRIBUTE_VALUE_SQ ||
+			returnState == TokenizeState.ATTRIBUTE_VALUE_UQ;
+	}
 
+	private char[] peek(PushbackReader stream, int len) throws IOException {
+		char[] b = new char[len];
+		stream.read(b, 0, len);
+		stream.unread(b);
+		return b;
+	}
 	private boolean consumeIfEquals(PushbackReader stream, String s) throws IOException {
+		// TODO: Not codepoint safe
 		char[] b = new char[s.length()];
 		stream.read(b, 0, s.length());
 		if (new String(b).equals(s)) return true;
@@ -909,7 +971,7 @@ public final class JHTMLParser {
 				} else if (token instanceof CommentToken) {
 					insertComment((CommentToken) token, document);
 				} else if (token instanceof DoctypeToken) {
-					//TODO:
+					//TODO
 				} else {
 					//TODO:
 					istate = InsertionState.BEFORE_HTML;
@@ -955,7 +1017,7 @@ public final class JHTMLParser {
 				if (isWhitespace(token)) {
 					insertCharacter(((CharToken)token).getCharacter());
 				} else if (token instanceof CommentToken) {
-					//TODO
+					insertComment((CommentToken) token);
 				} else if (token instanceof DoctypeToken) {
 				} else if (isStartTag(token) && name.equals("html")) {
 					emit(InsertionState.IN_BODY, token);
@@ -984,7 +1046,8 @@ public final class JHTMLParser {
 				} else if (isEndTag(token) && name.equals("head")) {
 					pop();
 					istate = InsertionState.AFTER_HEAD;
-				} else if (isEndTag(token) && !tagIs(name,  "body", "html", "br")) { /*TODO: Template*/ 
+				} else if (isEndTag(token) && !tagIs(name,  "body", "html", "br")) {
+					/*TODO: Template*/ 
 				} else if (isStartTag(token) && name.equals("head") || isEndTag(token)) {
 				} else {
 					if (!elements.isEmpty()) pop();
@@ -995,12 +1058,11 @@ public final class JHTMLParser {
 				
 			//TODO: In head noscript
 				
-			//TODO: Actually care
 			case AFTER_HEAD:
 				if (token instanceof CharToken && ("\t\n\f\r ").indexOf(((CharToken) token).getCharacter())!=-1) {
 					insertCharacter(((CharToken) token).getCharacter());
 				} else if (token instanceof CommentToken) {
-					//TODO:
+					insertComment((CommentToken) token);
 				} else if (token instanceof DoctypeToken) {
 				} else if (isStartTag(token) && name.equals("html")) {
 					emit(InsertionState.IN_BODY, token);
@@ -1032,12 +1094,14 @@ public final class JHTMLParser {
 					if (data=='\0') break;
 					insertCharacter(data);
 				} else if (token instanceof CommentToken) {
-					//TODO
+					insertComment((CommentToken) token);
 				} else if (token instanceof DoctypeToken) {
 				} else if (isStartTag(token) && name.equals("html")) {
+					// TODO
 				} else if ((isStartTag(token) && tagIs(name, "base", "basefont", "bgsound", "link", 
 						"meta", "noframes", "script", "style", /*"template",*/ "title"))
 						/*|| (isEndTag(token) && name.equals("template"))*/) {
+					//TODO
 					emit(InsertionState.IN_HEAD, token);
 				} else if (isStartTag(token) && name.equals("body")) {
 					//TODO
@@ -1145,6 +1209,11 @@ public final class JHTMLParser {
 				}
 				break;
 		}
+	}
+
+	private void insertComment(CommentToken token2) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void emit(Token token) {
