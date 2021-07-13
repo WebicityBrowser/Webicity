@@ -12,7 +12,7 @@ public class WebicityUIManager {
 		UIManager ui = SimpleUIManager.createUI();
 		ui.put(TextButton.class, TextButtonUI::new);
 		ui.put(CircularText.class, TextButtonUI::new);
-		ui.put(WebicityButton.class, WebicityButtonUI::new);
+		ui.put(WebicityButton.class, TextButtonUI::new);
 		ui.put(OverlyingBlockComponent.class, OverlyingBlockComponentUI::new);
 		ui.put(TabButton.class, TabButtonUI::new);
 		ui.put(URLBar.class, URLBarUI::new);
