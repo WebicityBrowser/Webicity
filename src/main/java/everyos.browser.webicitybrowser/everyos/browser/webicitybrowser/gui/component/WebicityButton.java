@@ -18,8 +18,7 @@ public class WebicityButton extends BlockComponent {
 
         dropMenu = new OverlyingBlockComponent();
 
-        CircularText content = new CircularText(null);
-        content.text("Hello");
+        TextButton content = new TextButton("Some crazy text");
         content.directive(PositionDirective.of(new Location(0, 0, 0, 0)));
         content.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
         dropMenu.addChild(content);

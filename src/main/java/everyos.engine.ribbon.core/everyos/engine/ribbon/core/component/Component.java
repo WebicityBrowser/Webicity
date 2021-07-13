@@ -14,13 +14,13 @@ public class Component implements UIEventTarget {
 	private ArrayList<Component> children;
 	private ArrayList<ComponentUI> boundObservers; //TODO:
 	private HashMap<Class<? extends ComponentUI>, ArrayList<UIDirectiveWrapper>> directives;
-	
+
 	public Component() {
 		children = new ArrayList<Component>();
 		boundObservers = new ArrayList<>();
 		directives = new HashMap<>();
 	}
-	
+
 	/**
 	 * Send an instruction to the L&F
 	 * @param uicls A class representing which type of ComponentUIs should receive this directive
@@ -42,7 +42,7 @@ public class Component implements UIEventTarget {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Sends a UIDirective to all applicable UIs
 	 * @param directive The directive to be sent
@@ -54,7 +54,7 @@ public class Component implements UIEventTarget {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Get all UI directives this component holds, applicable to a given class
 	 * @param cls The class to get applicable UI directives of
@@ -69,7 +69,7 @@ public class Component implements UIEventTarget {
 					matches.add(a);
 				});
 			}
-			
+
 			//Interfaces are not returned by .getSuperclass, so we have this primitive code that needs fixed
 			for (Class<?> c: clz.getInterfaces()) {
 				if (ComponentUI.class.isAssignableFrom(c)&&directives.containsKey(c)) {
@@ -82,7 +82,7 @@ public class Component implements UIEventTarget {
 		}
 		return matches.toArray(new UIDirectiveWrapper[matches.size()]);
 	}
-	
+
 	public void addChild(Component component) {
 		component.setParent(this);
 	}
@@ -97,7 +97,7 @@ public class Component implements UIEventTarget {
 	public void setParent(Component parent) {
 		setParent(parent, parent.children.size());
 	}
-	
+
 	/**
 	 * Change this component's parent
 	 * @param parent The new parent
@@ -127,7 +127,7 @@ public class Component implements UIEventTarget {
 	public Component[] getChildren() {
 		return children.toArray(new Component[children.size()]);
 	}
-	
+
 	public void invalidate(InvalidationLevel level) {
 		Component c = this;
 		while (c!=null) {
@@ -140,12 +140,17 @@ public class Component implements UIEventTarget {
 			ui.invalidate(level);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <T> T casted(Class<T> cls) {
 		return (T) this;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public <T> T casted() {
+		return (T) this;
+	}
+
 	/**
 	 * Binds a ComponentUI to this component, allowing it to receive events from this component
 	 * @param ui The ComponentUI to be bound
@@ -154,7 +159,7 @@ public class Component implements UIEventTarget {
 		boundObservers.add(ui);
 		for (UIDirectiveWrapper dir: getDirectives(ui.getClass())) ui.directive(dir.getDirective());
 	}
-	
+
 	public void unbind(ComponentUI ui) {
 		boundObservers.remove(ui);
 	}
@@ -163,14 +168,14 @@ public class Component implements UIEventTarget {
 		ArrayList<Component> components = new ArrayList<>();
 		ArrayList<Component> matches = new ArrayList<>();
 		components.add(this);
-		
+
 		while(components.size()>0) {
 			Component cur = components.get(0);
 			if (query.apply(cur)) matches.add(cur);
 			for (Component child: cur.getChildren()) components.add(child);
 			components.remove(0);
 		}
-		
+
 		return matches.toArray(new Component[matches.size()]);
 	}
 

@@ -62,7 +62,6 @@ public class CircularTextUI extends SimpleBlockComponentUI {
 		@Override
 		public void processEvent(UIEvent e) {
 			// TODO Auto-generated method stub
-			
 		}
 	}
 }
