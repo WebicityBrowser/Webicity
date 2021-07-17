@@ -16,6 +16,7 @@ public class JHTMLStyleElement extends JHTMLElement implements HTMLStyleElement 
 		return getAssociatedCSSStyleSheet();
 	}
 
+	//TODO: This isn't an IDL method, so should we still have it?
 	@Override
 	public void update() {
 		removeTheCSSStyleSheetInQuestion();
