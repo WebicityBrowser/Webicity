@@ -1140,6 +1140,10 @@ public final class JHTMLParser {
 					break;
 			}
 		}
+		
+		while (!elements.isEmpty()) {
+			pop();
+		}
 	}
 
 	private void flushCodePointsConsumedAsACharacterReference() {

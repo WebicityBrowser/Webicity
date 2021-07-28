@@ -7,14 +7,18 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 public class JCSSTokenizer {
-	public CSSToken[] createFromString(String input) throws IOException {
+	public CSSToken[] createFromString(String input) {
 		//TODO: Switch to a proper input stream
 		input = input
 			.replace("/r/n", "/n")
 			.replace("/f",   "/n")
 			.replace("/r",   "/n");
 		
-		return createFromStream(new StringReader(input));
+		try {
+			return createFromStream(new StringReader(input));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public CSSToken[] createFromStream(Reader reader_) throws IOException {
@@ -39,6 +43,7 @@ public class JCSSTokenizer {
 	private static CSSToken consumeAToken(PushbackReader reader) throws IOException {
 		// TODO: Consume comments
 		int ch = reader.read();
+		
 		if (Character.isWhitespace(ch)) {
 			while (Character.isWhitespace(peek(reader, 1)[0])) {
 				reader.read();

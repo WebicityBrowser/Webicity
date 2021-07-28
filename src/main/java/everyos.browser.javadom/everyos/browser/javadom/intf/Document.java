@@ -1,5 +1,8 @@
 package everyos.browser.javadom.intf;
 
+import java.util.List;
+
+import everyos.browser.jcss.intf.CSSStyleSheet;
 import everyos.browser.jhtml.browsing.BrowsingContext;
 import everyos.browser.jhtml.browsing.Origin;
 import everyos.browser.jhtml.intf.Window;
@@ -13,10 +16,11 @@ public interface Document extends Node {
 	String getTitle();
 	
 	//TODO: Unofficial methods, move elsewhere
-	// These also create an unwanted dependency on jhtml
+	// These also create an unwanted dependency on jhtml and jcss
 	Origin getOrigin();
 	URL getURLAsURL();
 	BrowsingContext getTopLevelContext();
+	List<CSSStyleSheet> getDocumentOrShadowRootCSSStyleSheets();
 	
 	//TODO: This method definitely should not exist
 	Window getRelevantGlobalObject();

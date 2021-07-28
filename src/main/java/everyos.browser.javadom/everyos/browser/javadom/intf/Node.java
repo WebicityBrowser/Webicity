@@ -11,4 +11,6 @@ public interface Node {
 	short getNodeType();
 	String getNodeName();
 	String getBaseURL();
+	
+	String getChildTextContent();
 }

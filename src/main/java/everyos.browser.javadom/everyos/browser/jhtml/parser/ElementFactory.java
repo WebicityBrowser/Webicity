@@ -3,6 +3,7 @@ package everyos.browser.jhtml.parser;
 import everyos.browser.javadom.intf.Document;
 import everyos.browser.javadom.intf.Element;
 import everyos.browser.jhtml.imp.JHTMLElement;
+import everyos.browser.jhtml.imp.JHTMLStyleElement;
 import everyos.browser.jhtml.imp.JHTMLTitleElement;
 
 public class ElementFactory {
@@ -57,6 +58,9 @@ public class ElementFactory {
 		switch(localName) {
 			case "title":
 				return new JHTMLTitleElement(this);
+				
+			case "style":
+				return new JHTMLStyleElement(this);
 		
 			default:
 				return new JHTMLElement(this);

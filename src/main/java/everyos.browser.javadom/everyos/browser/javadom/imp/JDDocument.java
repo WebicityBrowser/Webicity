@@ -1,7 +1,11 @@
 package everyos.browser.javadom.imp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import everyos.browser.javadom.intf.Document;
 import everyos.browser.javadom.intf.Node;
+import everyos.browser.jcss.intf.CSSStyleSheet;
 import everyos.browser.jhtml.browsing.BrowsingContext;
 import everyos.browser.jhtml.browsing.Origin;
 import everyos.browser.jhtml.intf.HTMLElement;
@@ -17,6 +21,7 @@ public class JDDocument extends JDNode implements Document {
 	private String title;
 	
 	private Window window;
+	private List<CSSStyleSheet> cssStylesheets = new ArrayList<>();
 
 	public JDDocument(JDDocumentBuilder documentFactory) {
 		super(null);
@@ -89,5 +94,10 @@ public class JDDocument extends JDNode implements Document {
 	@Override
 	public Window getRelevantGlobalObject() {
 		return null;
+	}
+
+	@Override
+	public List<CSSStyleSheet> getDocumentOrShadowRootCSSStyleSheets() {
+		return cssStylesheets;
 	}
 }

@@ -35,7 +35,7 @@ public class ByteChannelInputStream extends InputStream {
 		int i=0;
 		while (i<len) {
 			long lastSuccess = System.currentTimeMillis();
-			while (available==0) {
+			while (available == 0) {
 				updateAvailable();
 				if (available == 0) {
 					throwExceptionIfTimedOut(lastSuccess);

@@ -6,6 +6,7 @@ import java.util.List;
 import everyos.browser.javadom.intf.Document;
 import everyos.browser.javadom.intf.Node;
 import everyos.browser.javadom.intf.NodeList;
+import everyos.browser.javadom.intf.Text;
 
 //TODO: I skipped all of the spec before this
 public class JDNode extends JDEventTarget implements Node {
@@ -70,6 +71,17 @@ public class JDNode extends JDEventTarget implements Node {
 	public Node getNextSibling() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public String getChildTextContent() {
+		StringBuilder all = new StringBuilder();
+		for (Node child: getChildNodes()) {
+			if (child instanceof Text) {
+				all.append(((Text) child).getWholeText());
+			}
+		}
+		return all.toString();
 	}
 
 	protected void setNodeDocument(JDDocument nodeDocument) {
