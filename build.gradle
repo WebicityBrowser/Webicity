@@ -30,8 +30,10 @@ repositories {
 dependencies {
 	implementation 'com.google.code.gson:gson:2.8.6'
 	//implementation 'net.java.dev.jna:jna:5.5.0'
-	implementation 'com.github.marianobarrios:tls-channel:0.3.2' // Version 0.4.0 has a bug
+	implementation 'com.github.marianobarrios:tls-channel:0.4.0'
 	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	
+	//implementation 'com.github.taucher2003:t2003-logger-impl:1.0.1'
 	
 	implementation platform("org.lwjgl:lwjgl-bom:3.2.3")
 

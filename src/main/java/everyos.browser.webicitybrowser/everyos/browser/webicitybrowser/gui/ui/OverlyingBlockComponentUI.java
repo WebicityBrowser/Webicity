@@ -2,7 +2,6 @@ package everyos.browser.webicitybrowser.gui.ui;
 
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.component.OverlyingBlockComponent;
-import everyos.browser.webicitybrowser.util.TimeSystem;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.rendering.Renderer;
@@ -11,6 +10,7 @@ import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.core.ui.UIManager;
+import everyos.engine.ribbon.core.util.TimeSystem;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.layout.InlineBlockLayout;

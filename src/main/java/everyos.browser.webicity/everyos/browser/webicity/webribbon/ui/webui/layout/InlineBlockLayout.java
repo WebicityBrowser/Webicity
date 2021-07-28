@@ -126,19 +126,37 @@ public class InlineBlockLayout implements Layout {
 		r.setScrollY(curScrollY);
 		
 		//AABB based culling
-		RectangleBuilder vpBuilder = new RectangleBuilder( //The viewport is the area in which subcomponents *could* be drawn
-			0, curScrollY, // Child components actually use the parent's location as the origin
+		
+		RectangleBuilder vpBuilder = new RectangleBuilder(
+			position.getX(), position.getY(),
 			outerSize.getWidth(), outerSize.getHeight());
 		
-		// The new viewport should fit within the old viewport			
-		if (position.getX()+vpBuilder.getWidth()>viewport.getWidth()) {
-			vpBuilder.setWidth(viewport.getWidth() - position.getX());
+		// Perform an intersect
+		if (vpBuilder.getX() < viewport.getX()) {
+			vpBuilder.setWidth(vpBuilder.getWidth()-(viewport.getX()-vpBuilder.getX()));
+			vpBuilder.setX(viewport.getX());
 		}
-		//TODO: Cut things outside top of outerSize
-		if ((position.getY()-viewport.getY())+vpBuilder.getHeight()>viewport.getHeight()) {
-			// TODO: This logic can be confusing, so I should make it easier to understand.
-			vpBuilder.setHeight(viewport.getHeight() - (position.getY()-viewport.getY()));
+		if (vpBuilder.getY() < viewport.getY()) {
+			vpBuilder.setHeight(vpBuilder.getHeight()-(viewport.getY()-vpBuilder.getY()));
+			vpBuilder.setY(viewport.getY());
 		}
+		
+		int offX = vpBuilder.getX()-viewport.getX();
+		if (offX + vpBuilder.getWidth() > viewport.getWidth()) {
+			vpBuilder.setWidth(viewport.getWidth() - offX);
+		}
+		
+		int offY = vpBuilder.getY()-viewport.getY();
+		if (offY + vpBuilder.getHeight() > viewport.getHeight()) {
+			vpBuilder.setHeight(viewport.getHeight() - offY);
+		}
+		
+		// Origin should be 0, 0
+		vpBuilder.setX(vpBuilder.getX()-position.getX());
+		vpBuilder.setY(vpBuilder.getY()-position.getY());
+		
+		// And scroll
+		vpBuilder.setY(vpBuilder.getY()+curScrollY);
 		
 		Rectangle vp = vpBuilder.build();
 		for (WebComponentUI c: computedChildrenHelper.getChildren()) {

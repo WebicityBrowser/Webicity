@@ -49,9 +49,9 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 			lines = new StringWrapHelper().calculateString(text, r, sizepos, false);
 			
 			bounds = new Rectangle(
-				position.getX(), position.getY(),
-				sizepos.getSize().getWidth()-position.getX(),
-				sizepos.getCurrentPointer().getY()+lines.size()*r.getFontHeight()+r.getFontPaddingHeight()-position.getY());
+				/*position.getX()*/0, position.getY(),
+				sizepos.getSize().getWidth() /*- position.getX()*/,
+				sizepos.getCurrentPointer().getY()-position.getY()+r.getFontHeight()+r.getFontPaddingHeight());
 			//TODO: The bounding box is not quite right
 		}
 		

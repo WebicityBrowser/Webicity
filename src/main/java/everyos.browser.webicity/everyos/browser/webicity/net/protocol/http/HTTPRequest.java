@@ -46,10 +46,9 @@ public class HTTPRequest implements Request {
 	public Response send() throws UnknownHostException, IOException {
 		HTTPSocket socket = HTTPSocket.openSocket(url, true);
 		
-		//socket.setBlocking(false);
 		socket.sendRequest(request);
+		socket.setBlocking(false);
 		//TODO: Catch SSLHandshakeException and prompt user to disable TLS
-		//TODO: Socket timeout
 		
 		return new HTTPResponse(socket);
 	}
