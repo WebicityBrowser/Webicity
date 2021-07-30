@@ -11,6 +11,7 @@ public class MouseEventBuilder {
 	private boolean isExternal;
 	private int absX, absY;
 	private int relX, relY;
+	private int scrX, scrY;
 
 	public void setAbsoluteCords(int x, int y) {
 		this.absX = x;
@@ -20,6 +21,11 @@ public class MouseEventBuilder {
 	public void setRelativeCords(int x, int y) {
 		this.relX = x;
 		this.relY = y;
+	}
+	
+	public void setScreenCords(int x, int y) {
+		this.scrX = x;
+		this.scrY = y;
 	}
 
 	public void setButton(int button) {
@@ -72,6 +78,16 @@ public class MouseEventBuilder {
 			@Override
 			public int getRelativeY() {
 				return relY;
+			}
+
+			@Override
+			public int getScreenX() {
+				return scrX;
+			}
+
+			@Override
+			public int getScreenY() {
+				return scrY;
 			}
 		};
 	}

@@ -20,6 +20,7 @@ import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.Renderer.ListenerPaintListener;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Location;
+import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
@@ -107,11 +108,22 @@ public class RibbonSkijaWindow {
 		//TODO
 	}
 	
+	public void setPosition(int x, int y) {
+		GLFW.glfwSetWindowPos(window, x, y);
+	}
+	
+	public Position getPosition() {
+		int[] x = new int[1];
+		int[] y = new int[1];
+		GLFW.glfwGetWindowPos(window, x, y);
+		
+		return new Position(x[0], y[0]);
+	}
+	
 	/////
 	
 	private void runLoop() {
 		RibbonSkijaRenderer root = RibbonSkijaRenderer.of(window);
-//		TimeSystem.reset();
 		while (running&&!GLFW.glfwWindowShouldClose(window)) {
 			//long time = System.currentTimeMillis();
 			if (GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_ICONIFIED) == GLFW.GLFW_FALSE) {
@@ -227,9 +239,11 @@ public class RibbonSkijaWindow {
 	
 	private void emitMouseEvent(int x, int y, int button, int action) {
 		boolean isDetermined = false;
+		Position pos = getPosition();
 		
 		MouseEventBuilder mouseEventBuilder = new MouseEventBuilder();
 		mouseEventBuilder.setAbsoluteCords(x, y);
+		mouseEventBuilder.setScreenCords(x+pos.getX(), y+pos.getY());
 		mouseEventBuilder.setButton(button);
 		mouseEventBuilder.setAction(action);
 		

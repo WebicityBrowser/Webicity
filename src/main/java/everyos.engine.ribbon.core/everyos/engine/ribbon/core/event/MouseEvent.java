@@ -17,4 +17,6 @@ public interface MouseEvent extends UIEvent {
 	int getAbsoluteY();
 	int getRelativeX();
 	int getRelativeY();
+	int getScreenX();
+	int getScreenY();
 }

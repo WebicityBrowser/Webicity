@@ -17,11 +17,16 @@ import everyos.browser.webicitybrowser.ui.event.WindowMutationEventListener;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.directive.BackgroundDirective;
+import everyos.engine.ribbon.core.directive.ExternalMouseListenerDirective;
 import everyos.engine.ribbon.core.directive.ForegroundDirective;
+import everyos.engine.ribbon.core.directive.MouseListenerDirective;
 import everyos.engine.ribbon.core.directive.PositionDirective;
 import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.core.event.EventListener;
+import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.shape.Location;
+import everyos.engine.ribbon.core.shape.Position;
 
 public class WindowGUI {
 	private Window window;
@@ -154,8 +159,39 @@ public class WindowGUI {
 		addButtonBehavior(newTabButton, ()->window.openNewTab());
 
 		windowDecor.addChild(newTabButton);
+		
+		addDragBehavior(windowDecor);
+		addDragBehavior(tabPane);
 
 		return windowDecor;
+	}
+
+	private void addDragBehavior(Component windowDecor) {
+		EventListener<MouseEvent> mouseListener = new EventListener<>() {
+			boolean isSelected = false;
+			private Position position;
+			private int startX;
+			private int startY;
+			
+			@Override
+			public void accept(MouseEvent e) {
+				if (e.getAction() == MouseEvent.PRESS && e.getButton() == MouseEvent.LEFT_BUTTON && !e.isExternal()) {
+					isSelected = true;
+					this.position = windowGrip.getPosition();
+					this.startX = e.getScreenX();
+					this.startY = e.getScreenY();
+				} else if (e.getAction() == MouseEvent.RELEASE && e.getButton() == MouseEvent.LEFT_BUTTON) {
+					isSelected = false;
+				} else if (e.getAction() == MouseEvent.DRAG && isSelected) {
+					windowGrip.setPosition(
+						e.getScreenX()-startX+position.getX(),
+						e.getScreenY()-startY+position.getY());
+				}
+			}
+		};
+		
+		windowDecor.directive(MouseListenerDirective.of(mouseListener));
+		windowDecor.directive(ExternalMouseListenerDirective.of(mouseListener));
 	}
 
 	private void close() {
