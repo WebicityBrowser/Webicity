@@ -1,4 +1,4 @@
-package everyos.browser.webicitybrowser.gui;
+package everyos.browser.webicitybrowser.gui.binding;
 
 import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;

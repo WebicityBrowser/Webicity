@@ -9,6 +9,7 @@ public class SizePosGroup {
 	private int x;
 	private int y;
 	private int ny;
+	private Marker marker = new Marker(null);
 
 	public SizePosGroup(Dimension size, int x, int y, int mw, int mh) {
 		this.size = size.toMutable();
@@ -26,8 +27,14 @@ public class SizePosGroup {
 	}
 
 	public void setMinLineHeight(int ny) {
-		if (ny>this.ny) this.ny = ny;
+		if (ny>this.ny) {
+			this.ny = ny;
+		}
 		normalizeY();
+	}
+	
+	public int getMinLineHeight() {
+		return this.ny;
 	}
 	
 	public boolean move(int x, boolean forceInline) {
@@ -43,22 +50,26 @@ public class SizePosGroup {
 		return true;
 	}
 	
+	public void moveY(int y) {
+		this.y += y;
+		this.ny -= y;
+		normalizeY();
+	}
+	
 	public void nextLine() {
 		y = y + ny;
 		x = 0;
 		ny = 0;
-	}
-
-	public void add(Dimension s) {
-		this.x+=s.getWidth();
-		this.setMinLineHeight(s.getHeight());
-		normalizeX(true);
-		normalizeY();
+		
+		marker.mergeX(x, x);
+		marker.mergeY(y, y);
 	}
 
 	public void min(Dimension s) {
 		this.size.setWidth(this.size.getWidth()<s.getWidth()?s.getWidth():this.size.getWidth());
 		this.size.setHeight(this.size.getHeight()<s.getHeight()?s.getHeight():this.size.getHeight());
+		marker.mergeX(0, size.getWidth());
+		marker.mergeY(0, size.getHeight());
 		normalizeX(true);
 		normalizeY();
 	}
@@ -76,6 +87,7 @@ public class SizePosGroup {
 	}
 	
 	private void normalizeX(boolean forceInline) {	
+		marker.mergeX(x, x);
 		if (x>size.getWidth() || (maxSize.getWidth()!=-1 && x>maxSize.getWidth())) {
 			size.setWidth((x<maxSize.getWidth()||maxSize.getWidth()==-1)?x:maxSize.getWidth());
 		}
@@ -85,11 +97,23 @@ public class SizePosGroup {
 	}
 	
 	private void normalizeY() {
+		marker.mergeY(y, y+this.ny);
+		
 		if (this.y+this.ny>size.getHeight()) {
 			size.setHeight(this.y+this.ny);
 			if (maxSize.getHeight()!=-1&&size.getHeight()>maxSize.getHeight()) {
 				size.setHeight(maxSize.getHeight());
 			}
 		}
+	}
+
+	public void setMarker(Marker marker) {
+		this.marker = marker;
+		marker.mergeX(x, x);
+		marker.mergeY(y, y);
+	}
+
+	public Marker getMarker() {
+		return this.marker;
 	}
 }

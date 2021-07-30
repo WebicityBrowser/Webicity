@@ -49,7 +49,12 @@ public class ScrollBar {
 				if (this.curScrollY>maxScrollY) {
 					this.curScrollY = maxScrollY;
 				}
+			} else if (ev.getAction()==MouseEvent.MOVE && !ev.isExternal()) {
+				scrollColor = Styling.BACKGROUND_SECONDARY_HOVER;
+			} else if (ev.getAction()==MouseEvent.MOVE) {
+				scrollColor = Styling.BACKGROUND_SECONDARY;
 			}
+			
 			//invalidate();
 		}
 	}

@@ -17,6 +17,7 @@ public class BlockAppearence implements Appearence {
 
 	@Override
 	public void paint(Renderer r) {
+		r.useBackground();
 		r.drawFilledRect(0, 0, size.getWidth(), size.getHeight());
 	}
 

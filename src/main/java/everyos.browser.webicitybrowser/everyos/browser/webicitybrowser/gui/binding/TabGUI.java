@@ -1,9 +1,12 @@
-package everyos.browser.webicitybrowser.gui;
+package everyos.browser.webicitybrowser.gui.binding;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.util.function.Supplier;
 
 import everyos.browser.webicity.net.URL;
+import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
@@ -30,7 +33,7 @@ public class TabGUI {
 	}
 	
 	public void start() {
-		this.tabButton = new TabButton(null);
+		this.tabButton = new TabButton();
 		
 		createTabPane();
 		
@@ -91,7 +94,7 @@ public class TabGUI {
 		tabDecor.directive(BackgroundDirective.of(Styling.BACKGROUND_PRIMARY));
 		
 		// Add the tab action buttons
-		CircularText backButton = new CircularText(null);
+		CircularText backButton = new CircularText();
 		backButton.directive(PositionDirective.of(new Location(0, Styling.BORDER_PADDING, 0, horizontalDrop)));
 		backButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		backButton.text("<");
@@ -99,7 +102,7 @@ public class TabGUI {
 		
 		tabDecor.addChild(backButton);
 		
-		CircularText forwardButton = new CircularText(null);
+		CircularText forwardButton = new CircularText();
 		forwardButton.directive(PositionDirective.of(new Location(
 			0, Styling.BORDER_PADDING+Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING,
 			0, horizontalDrop)));
@@ -109,7 +112,7 @@ public class TabGUI {
 		
 		tabDecor.addChild(forwardButton);
 		
-		CircularText reloadButton = new CircularText(null);
+		CircularText reloadButton = new CircularText();
 		reloadButton.directive(PositionDirective.of(new Location(
 			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*2,
 			0, horizontalDrop)));
@@ -133,7 +136,13 @@ public class TabGUI {
 				URL finURL = new URL(url);
 				tab.setURL(finURL);
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				try {
+					URL finURL = URL.ofSafe("https://www.google.com/search?q="+URLEncoder.encode(url, "UTF-8"));
+					//TODO: Preferred search engine
+					tab.setURL(finURL);
+				} catch (UnsupportedEncodingException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		addButtonBehavior(urlBar, ()->{});
@@ -162,6 +171,11 @@ public class TabGUI {
 		@Override
 		public void onTitleChange(String name) {
 			configureTabButton(tabButton);
+		}
+		
+		@Override
+		public void onClose() {
+			tabButton.delete();
 		}
 	}
 }

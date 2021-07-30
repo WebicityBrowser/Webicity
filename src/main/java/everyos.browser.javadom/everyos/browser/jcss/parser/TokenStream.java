@@ -9,10 +9,16 @@ public class TokenStream {
 	}
 	
 	public CSSToken read() {
+		if (i>=tokens.length) {
+			return new EOFToken();
+		}
 		return tokens[i++];
 	}
 	
 	public CSSToken peek() {
+		if (i>=tokens.length) {
+			return new EOFToken();
+		}
 		return tokens[i];
 	}
 	

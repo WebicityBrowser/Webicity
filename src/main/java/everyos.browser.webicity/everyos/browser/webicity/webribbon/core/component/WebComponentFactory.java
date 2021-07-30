@@ -27,6 +27,11 @@ public final class WebComponentFactory {
 					return new WebStyleComponent(renderer, e);
 				case "script":
 					return new WebScriptComponent(renderer, e);
+				case "div":
+				case "p":
+				case "li":
+				case "nav":
+					return new WebDivComponent(renderer, e);
 				default:
 					return new WebComponent(renderer, e);
 			}

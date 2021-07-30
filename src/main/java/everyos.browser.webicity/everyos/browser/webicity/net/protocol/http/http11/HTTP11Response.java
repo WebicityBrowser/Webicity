@@ -67,4 +67,8 @@ public class HTTP11Response {
 			return stream;
 		}
 	}
+
+	public String getHeader(String name) {
+		return headers.get(name.toLowerCase());
+	}
 }

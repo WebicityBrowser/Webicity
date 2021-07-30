@@ -5,7 +5,6 @@ import java.util.List;
 import everyos.browser.javadom.intf.Text;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
-import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.Position;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
@@ -18,25 +17,16 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 	private List<String> lines;
 	private Position position;
 	private TextAppearence appearence;
-	public Rectangle bounds;
 	
 	public WebUIWebTextComponentUI(WebComponent component, WebComponentUI parent) {
 		super(component, parent);
 		
-		//TODO: Inline Layout
 		this.appearence = new TextAppearence();
 	}
 	
 	@Override
 	protected Appearence getAppearence() {
 		return this.appearence;
-	}
-	
-	@Override
-	public UIBox getUIBox() {
-		//TODO: Handle via inline layout
-		//TODO: This code does not work great
-		return viewport->true;//viewport.intersects(bounds);
 	}
 	
 	private class TextAppearence implements Appearence {
@@ -47,19 +37,13 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 
 			position = sizepos.getCurrentPointer();
 			lines = new StringWrapHelper().calculateString(text, r, sizepos, false);
-			
-			bounds = new Rectangle(
-				/*position.getX()*/0, position.getY(),
-				sizepos.getSize().getWidth() /*- position.getX()*/,
-				sizepos.getCurrentPointer().getY()-position.getY()+r.getFontHeight()+r.getFontPaddingHeight());
-			//TODO: The bounding box is not quite right
 		}
 		
 		@Override
 		public void paint(Renderer r, Rectangle viewport) {
 			r.useForeground();
 			for (int i=0; i<lines.size(); i++) {
-				int py = i*r.getFontHeight();
+				int py = i*(r.getFontHeight()+r.getFontPaddingHeight());
 				int width = r.drawText(i==0?position.getX():0, position.getY()+py, lines.get(i));
 				r.paintMouseListener(getComponent(), position.getX(), position.getY()+py, width, r.getFontHeight(), e->{
 					processEvent(e);

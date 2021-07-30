@@ -1,4 +1,4 @@
-package everyos.browser.webicitybrowser.gui;
+package everyos.browser.webicitybrowser.gui.binding;
 
 import java.util.ArrayList;
 import java.util.List;

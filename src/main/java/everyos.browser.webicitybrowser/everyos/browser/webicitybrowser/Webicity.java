@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import everyos.browser.webicity.net.URL;
-import everyos.browser.webicitybrowser.gui.InstanceGUI;
+import everyos.browser.webicitybrowser.gui.binding.InstanceGUI;
 
 public class Webicity {
 	public static void main(String[] args) {
@@ -32,11 +32,11 @@ public class Webicity {
 		if (args.length==0) {
 			try {
 				//TODO: Configuration
-				//instance.open(new URL("https://www.yahoo.com/"));
+				instance.open(new URL("https://www.yahoo.com/"));
 				//instance.open(new URL("https://www.whatismybrowser.com/"));
 				//instance.open(new URL("https://www.example.com/"));
 				//instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
-				instance.open(new URL("https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state"));
+				//instance.open(new URL("https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state"));
 				//instance.open(new URL("https://www.target.com/"));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();

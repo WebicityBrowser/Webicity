@@ -31,7 +31,6 @@ public class HTMLRendererGUI {
 	}
 
 	public Component getDisplayPane() {
-		// TODO Auto-generated method stub
 		return displayPane;
 	}
 }

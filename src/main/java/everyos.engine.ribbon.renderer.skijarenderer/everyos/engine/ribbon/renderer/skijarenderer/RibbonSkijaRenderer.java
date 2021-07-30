@@ -123,7 +123,7 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 
 	@Override
 	public void translate(int dx, int dy) {
-		this.x+=dx; this.y+=dy;
+		this.scrollY -= dy;
 	}
 
 	@Override

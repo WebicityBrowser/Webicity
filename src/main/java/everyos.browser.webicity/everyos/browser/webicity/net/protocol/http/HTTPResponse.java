@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.protocol.http.http11.HTTP11Response;
 import everyos.browser.webicity.renderer.Renderer;
@@ -20,6 +21,10 @@ public class HTTPResponse implements Response {
 
 	@Override
 	public Renderer getProbableRenderer() {
+		if (response.getStatusCode() == 301) {
+			return new RedirectRenderer(response.getHeader("location"));
+		}
+		
 		String type = response.getContentType();
 		if (type.indexOf(';')!=-1) type = type.substring(0, type.indexOf(';'));
 		switch(type) {//TODO: Move this to a registry
@@ -38,5 +43,28 @@ public class HTTPResponse implements Response {
 	@Override
 	public InputStream getConnection() throws UnsupportedEncodingException {
 		return response.getInputStream();
+	}
+	
+	private static class RedirectRenderer implements Renderer {
+		private String url;
+
+		public RedirectRenderer(String url) {
+			this.url = url;
+		}
+
+		@Override
+		public void execute(WebicityFrame frame, InputStream stream) throws IOException {
+			frame.browse(url);
+		}
+
+		@Override
+		public String getTitle() {
+			return "Redirecting you...";
+		}
+
+		@Override
+		public void addReadyHook(Runnable hook) {
+			
+		}
 	}
 }

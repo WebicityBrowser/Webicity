@@ -10,9 +10,10 @@ import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.net.protocol.Protocol;
-import everyos.browser.webicity.net.protocol.http.HTTPProtocol;
-import everyos.browser.webicity.net.protocol.io.AboutProtocol;
-import everyos.browser.webicity.net.protocol.io.FileProtocol;
+import everyos.browser.webicity.net.protocol.http.HTTPRequest;
+import everyos.browser.webicity.net.protocol.io.AboutRequest;
+import everyos.browser.webicity.net.protocol.io.FileRequest;
+import everyos.browser.webicity.net.protocol.io.WebicityRequest;
 
 public abstract class WebicityEngine {
 	private HashMap<String, Protocol> protocols = new HashMap<>();
@@ -30,12 +31,14 @@ public abstract class WebicityEngine {
 	}
 
 	public void registerDefaultProtocols() {
-		Protocol httpProtocol = new HTTPProtocol();
+		Protocol httpProtocol = HTTPRequest::new;
 		registerProtocol("http", httpProtocol);
 		registerProtocol("https", httpProtocol);
 		
-		registerProtocol("about", new AboutProtocol());
-		registerProtocol("file", new FileProtocol());
+		registerProtocol("about", AboutRequest::new);
+		registerProtocol("file", FileRequest::new);
+		
+		registerProtocol("webicity", WebicityRequest::new);
 	}
 
 	public void registerProtocol(String string, Protocol protocol) {

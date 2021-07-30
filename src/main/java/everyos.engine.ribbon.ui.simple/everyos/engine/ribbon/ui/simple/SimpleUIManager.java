@@ -10,11 +10,11 @@ import everyos.engine.ribbon.core.ui.UIManager;
 public class SimpleUIManager {
 	public static UIManager createUI() {
 		UIManager manager = new UIManager();
-		manager.put(Component.class, (c, p)->new SimpleComponentUI(c, p));
-		manager.put(BlockComponent.class, (c, p)->new SimpleBlockComponentUI(c, p));
-		manager.put(LabelComponent.class, (c, p)->new SimpleLabelComponentUI(c, p));
-		manager.put(TextBoxComponent.class, (c, p)->new SimpleTextBoxComponentUI(c, p));
-		manager.put(BreakComponent.class, (c, p)->new SimpleBreakComponentUI(c, p)	);
+		manager.put(Component.class, SimpleComponentUI::new);
+		manager.put(BlockComponent.class, SimpleBlockComponentUI::new);
+		manager.put(LabelComponent.class, SimpleLabelComponentUI::new);
+		manager.put(TextBoxComponent.class, SimpleTextBoxComponentUI::new);
+		manager.put(BreakComponent.class, SimpleBreakComponentUI::new);
 		return manager;
 	}
 }

@@ -8,7 +8,7 @@ import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 public class CircularText extends BlockComponent {
 	private String text;
 
-	public CircularText(Component parent) {
+	public CircularText() {
 		super();
 		
 		this

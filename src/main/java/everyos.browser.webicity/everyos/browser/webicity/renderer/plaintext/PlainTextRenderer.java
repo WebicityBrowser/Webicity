@@ -40,7 +40,6 @@ public class PlainTextRenderer implements Renderer {
 
 	@Override
 	public void addReadyHook(Runnable hook) {
-		// TODO Auto-generated method stub
 		
 	}
 }

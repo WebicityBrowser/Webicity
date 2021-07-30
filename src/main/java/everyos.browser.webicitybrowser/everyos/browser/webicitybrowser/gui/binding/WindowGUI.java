@@ -1,9 +1,10 @@
-package everyos.browser.webicitybrowser.gui;
+package everyos.browser.webicitybrowser.gui.binding;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
@@ -52,7 +53,9 @@ public class WindowGUI {
 		for (Tab tab: window.getTabs()) {
 			mutationListener.onTabAdded(window, tab);
 		}
-		if (tabs.size()>0) selectTab(tabs.get(0));
+		if (tabs.size()>0) {
+			selectTab(tabs.get(0));
+		}
 	}
 
 
@@ -93,7 +96,6 @@ public class WindowGUI {
 		// Add the menu button
 		WebicityButton menuButton = new WebicityButton(windowGrip.getDisplayPane());
 		menuButton.directive(BackgroundDirective.of(Styling.BACKGROUND_SECONDARY));
-//		menuButton.directive(PositionDirective.of(new Location(0, Styling.BORDER_PADDING, 0, Styling.ELEMENT_PADDING)));
 		menuButton.directive(PositionDirective.of(new Location(0, 0, 0, 0)));
 		menuButton.directive(SizeDirective.of(new Location(
 				0, Styling.BUTTON_WIDTH * 3 + Styling.ELEMENT_PADDING * 2 + Styling.BORDER_PADDING,
@@ -103,7 +105,7 @@ public class WindowGUI {
 		windowDecor.addChild(menuButton);
 
 		// Add the window action buttons
-		CircularText minimizeButton = new CircularText(null);
+		CircularText minimizeButton = new CircularText();
 		minimizeButton.directive(PositionDirective.of(new Location(
 			1, -Styling.BORDER_PADDING-Styling.BUTTON_WIDTH*3-Styling.ELEMENT_PADDING*2,
 			0, Styling.ELEMENT_PADDING)));
@@ -113,7 +115,7 @@ public class WindowGUI {
 
 		windowDecor.addChild(minimizeButton);
 
-		CircularText maximizeButton = new CircularText(null);
+		CircularText maximizeButton = new CircularText();
 		maximizeButton.directive(PositionDirective.of(new Location(
 			1, -Styling.BORDER_PADDING-Styling.BUTTON_WIDTH*2-Styling.ELEMENT_PADDING,
 			0, Styling.ELEMENT_PADDING)));
@@ -123,7 +125,7 @@ public class WindowGUI {
 
 		windowDecor.addChild(maximizeButton);
 
-		CircularText closeButton = new CircularText(null);
+		CircularText closeButton = new CircularText();
 		closeButton.directive(PositionDirective.of(new Location(1, -Styling.BORDER_PADDING-Styling.BUTTON_WIDTH, 0, Styling.ELEMENT_PADDING)));
 		closeButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		closeButton.text("X");
@@ -143,7 +145,7 @@ public class WindowGUI {
 		windowDecor.addChild(tabPane);
 
 		// and the New Tab button...
-		CircularText newTabButton = new CircularText(null);
+		CircularText newTabButton = new CircularText();
 		newTabButton.directive(PositionDirective.of(new Location(
 				0, Styling.BORDER_PADDING+Styling.BUTTON_WIDTH*3+Styling.ELEMENT_PADDING*3,
 				0, Styling.ELEMENT_PADDING)));
@@ -151,11 +153,7 @@ public class WindowGUI {
 		newTabButton.text("+");
 		addButtonBehavior(newTabButton, ()->window.openNewTab());
 
-		Component spacer = new BlockComponent();
-		spacer.directive(SizeDirective.of(new Location(0, Styling.ELEMENT_PADDING, 0, Styling.BUTTON_WIDTH)));
-
 		windowDecor.addChild(newTabButton);
-//		tabPane.addChild(spacer);
 
 		return windowDecor;
 	}
@@ -201,16 +199,27 @@ public class WindowGUI {
 		TabButton tabButton = tabGUI.getTabButton();
 		tabButton.directive(SizeDirective.of(new Location(0, 150, 0, Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)));
 		addButtonBehavior(tabButton, ()->selectTab(tabGUI), ()->tabGUI.isSelected());
-		// TODO: How do we remove/close tabs?
-		addButtonBehavior(tabButton.getCloseButton(), ()->tab.close(), ()->tabGUI.isSelected());
+		addButtonBehavior(tabButton.getCloseButton(), ()->closeTab(tab, tabGUI), ()->tabGUI.isSelected());
 
-		Component spacer = new BlockComponent();
+		Component spacer = tabButton.getSpacer();
 		spacer.directive(SizeDirective.of(new Location(0, Styling.ELEMENT_PADDING, 0, Styling.BUTTON_WIDTH)));
 
 		tabPane.addChild(tabButton);
 		tabPane.addChild(spacer);
 
 		return tabGUI;
+	}
+
+	private void closeTab(Tab tab, TabGUI tabGUI) {
+		tab.close();
+		tabs.remove(tabGUI);
+		if (selected == tabGUI) {
+			if (tabs.size() == 0) {
+				close();
+			} else {
+				selectTab(tabs.get(0));
+			}
+		}
 	}
 
 	private class WindowEventListener implements WindowMutationEventListener {

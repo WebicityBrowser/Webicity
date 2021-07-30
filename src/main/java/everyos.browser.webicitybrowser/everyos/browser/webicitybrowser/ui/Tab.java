@@ -27,6 +27,8 @@ public class Tab implements Closeable {
 	@Override
 	public void close() {
 		frame.removeFrameMutationListener(frameMutationListener);
+		frame.close();
+		mutationEventDispatcher.fire(l->l.onClose());
 	}
 
 	public String getName() {

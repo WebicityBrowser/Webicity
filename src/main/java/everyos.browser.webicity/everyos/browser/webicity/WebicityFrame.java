@@ -72,6 +72,10 @@ public class WebicityFrame {
 		}
 		return null;
 	}
+	
+	public void quit() {
+		tasks.shutdown();
+	}
 
 	//TODO: Specify target
 	public void browse(String href) {

@@ -87,6 +87,9 @@ public class Frame {
 	}
 	
 	private WebicityFrame createFrame(URL url) {
+		if (frame != null) {
+			frame.quit();
+		}
 		WebicityFrame frame = new WebicityFrame(instance.getEngine(), new FrameCallbackImp(), url, instance.getEngine().createThreadQueue());
 		
 		return frame;
@@ -103,5 +106,9 @@ public class Frame {
 		public void onRendererCreated(Renderer r) {
 			mutationEventDispatcher.fire(l->l.onRendererCreated(r));
 		}
+	}
+
+	public void close() {
+		frame.quit();
 	}
 }

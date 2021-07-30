@@ -63,9 +63,11 @@ public class InlineBlockLayout implements Layout {
 		}
 		
 		this.pageSize = temporaryPageBounds.getSize();
-		
-		sizepos.setMinLineHeight(temporaryPageBounds.getSize().getHeight());
-		sizepos.move(temporaryPageBounds.getSize().getWidth(), true);
+
+		sizepos.move(pageSize.getWidth(), true);
+		sizepos.setMinLineHeight(pageSize.getHeight());
+		sizepos.moveY(pageSize.getHeight()-temporaryPageBounds.getMinLineHeight());
+		//TODO: This logic seems a bit broken
 		
 		scrollBar.render(position, outerSize, pageSize);
 	}
@@ -78,7 +80,7 @@ public class InlineBlockLayout implements Layout {
 		//}
 		
 		r.paintMouseListener(component, position.getX(), position.getY(), outerSize.getWidth()+10, outerSize.getHeight(), e->{
-			if (e.isExternal()) return;
+			//if (e.isExternal()) return;
 			processEvent(e);
 		});
 		

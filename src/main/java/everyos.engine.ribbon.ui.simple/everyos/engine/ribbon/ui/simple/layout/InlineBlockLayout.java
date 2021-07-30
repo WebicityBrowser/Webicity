@@ -5,8 +5,8 @@ import everyos.engine.ribbon.core.directive.ExternalMouseListenerDirective;
 import everyos.engine.ribbon.core.directive.MouseListenerDirective;
 import everyos.engine.ribbon.core.directive.PositionDirective;
 import everyos.engine.ribbon.core.directive.SizeDirective;
-import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.EventListener;
+import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
@@ -60,7 +60,11 @@ public class InlineBlockLayout implements Layout {
 				sizepos.getMaxSize().getWidth()==-1?
 					-1:
 					sizepos.getMaxSize().getWidth()-sizepos.getCurrentPointer().getX(),
-			bounds.getHeight());
+			bounds.getHeight()!=-1?
+				bounds.getHeight():
+				sizepos.getMaxSize().getHeight()==-1?
+					-1:
+					sizepos.getMaxSize().getHeight()-sizepos.getCurrentPointer().getY());
 		
 		// Use our current guess of the approximate bounds to help render the component
 		this.bounds = bounds.build();
@@ -72,11 +76,18 @@ public class InlineBlockLayout implements Layout {
 		// Note that, even in a container with an infinite max width, we
 		// use as little space as possible.
 		//group.normalize();
-		if (bounds.getWidth() == -1) {
-			bounds.setWidth(group.getMaxSize().getWidth());
-		}
-		if (bounds.getHeight() == -1) {
-			bounds.setHeight(group.getMaxSize().getHeight());
+		group.nextLine();
+		if (bounds.getWidth() == -1 || bounds.getHeight() == -1) {
+			if (bounds.getWidth() == -1) {
+				bounds.setWidth(group.getSize().getWidth());
+			}
+			if (bounds.getHeight() == -1) {
+				bounds.setHeight(group.getSize().getHeight());
+			}
+		
+			//TODO: This causes O(n^2), we should try to get rid of it
+			group = new SizePosGroup(bounds.getWidth(), bounds.getHeight(), 0, 0, bounds.getWidth(), bounds.getHeight());
+			renderInnerPart(r, group, uimgr, appearence);
 		}
 		
 		// Offset the element, if desired
@@ -124,6 +135,10 @@ public class InlineBlockLayout implements Layout {
 		}
 	}
 	
+	protected Rectangle getBounds() {
+		return this.bounds;
+	}
+	
 	private RectangleBuilder calculatePreferredBounds(SizePosGroup sizepos) {
 		Position pos = sizepos.getCurrentPointer();
 		RectangleBuilder builder = new RectangleBuilder(pos.getX(), pos.getY(), -1, -1);
@@ -151,8 +166,9 @@ public class InlineBlockLayout implements Layout {
 	private void renderInnerPart(Renderer r, SizePosGroup sizepos, UIManager uimgr, Appearence appearence) {
 		appearence.render(r, sizepos, uimgr);
 
-		if (autoManageChildren)
+		if (autoManageChildren) {
 			renderChildren(r, sizepos, uimgr);
+		}
 	}
 
 	public void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
@@ -165,7 +181,7 @@ public class InlineBlockLayout implements Layout {
 		}
 	}
 	
-	private void paintInnerPart(Renderer r, Appearence appearence) {
+	protected void paintInnerPart(Renderer r, Appearence appearence) {
 		GUIState state = r.getState().clone();
 		
 		r.useBackground();
@@ -188,7 +204,7 @@ public class InlineBlockLayout implements Layout {
 		}
 	}
 	
-	private void paintMouse(Renderer r, Appearence appearence) {
+	protected void paintMouse(Renderer r, Appearence appearence) {
 		r.paintMouseListener(component, 0, 0, bounds.getWidth(), bounds.getHeight(), e->{
 			processEvent(e);
 			appearence.processEvent(e);

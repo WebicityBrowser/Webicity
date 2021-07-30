@@ -2,10 +2,13 @@ package everyos.browser.webicity.webribbon.ui.webui;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
+import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
+import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.browser.webicity.webribbon.ui.webui.layout.InlineBlockLayout;
 import everyos.browser.webicity.webribbon.ui.webui.layout.Layout;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
+import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.Dimension;
 
 public class WebUIWebWindowUI extends WebUIWebComponentUI {
@@ -30,7 +33,6 @@ public class WebUIWebWindowUI extends WebUIWebComponentUI {
 	}
 	
 	private class WindowLayout extends InlineBlockLayout {
-
 		public WindowLayout(WebComponent component, WebComponentUI ui) {
 			super(component, ui);
 		}
@@ -38,6 +40,13 @@ public class WebUIWebWindowUI extends WebUIWebComponentUI {
 		@Override
 		public Dimension getMaxBlockSize(SizePosGroup sizepos) {
 			return windowSize;
+		}
+		
+		@Override
+		public void render(Renderer r, SizePosGroup sizepos, UIContext context, Appearence appearence) {
+			if (sizepos.getCurrentPointer().getX()!=0) sizepos.nextLine();
+			super.render(r, sizepos, context, appearence);
+			if (sizepos.getCurrentPointer().getX()!=0) sizepos.nextLine();
 		}
 	}
 }

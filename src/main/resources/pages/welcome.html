@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Welcome to Webicity!</title>
+		<link href="webicity.png" rel="icon"/>
+		<!--TODO: Do not rely on external font-->
+		<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+		
+		<style>
+			#welcome {
+				font-size: 60px;
+				font-family: 'Nanum Gothic', sans-serif;
+				vertical-align: middle;
+				color: #00B298;
+			}
+			
+			#message {
+				font-size: 20px;
+				font-family: 'Nanum Gothic', sans-serif;
+				text-align: center;
+				padding: 16px;
+			}
+			
+			#banner {
+				text-align: center;
+			}
+			
+			.centered {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+			
+			#logo {
+				 vertical-align: middle;
+				 padding-right: 16px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class = "centered">
+			<div id="banner">
+				<img src="webicity.png" alt="Webicity Logo" length="128" height="128" id="logo"></img>
+				<span id="welcome">Webicity</span><br/>
+			</div>
+			<div id="message">
+				An open source browser written in Java because<br/>
+				I felt like it.
+			</div>
+		</div>
+	</body>
+</html>

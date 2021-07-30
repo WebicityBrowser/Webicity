@@ -37,7 +37,7 @@ public class SimpleLabelComponentUI extends SimpleComponentUI {
 			
 			this.position = sizepos.getCurrentPointer();
 			int width = StringWrapHelper.stringWidth(r, text);
-			this.height = (text.split("\n").length-1)*r.getFontHeight();
+			this.height = r.getFontHeight()+r.getFontPaddingHeight();
 			sizepos.setMinLineHeight(height);
 			sizepos.move(width, true);
 		}
@@ -45,7 +45,7 @@ public class SimpleLabelComponentUI extends SimpleComponentUI {
 		@Override
 		public void paint(Renderer r) {
 			r.useForeground();
-			r.drawText(position.getX(), position.getY()+height, text);
+			r.drawText(position.getX(), position.getY(), text);
 		}
 
 		@Override

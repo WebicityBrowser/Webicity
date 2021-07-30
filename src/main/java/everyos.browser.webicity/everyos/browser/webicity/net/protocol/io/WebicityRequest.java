@@ -1,7 +1,5 @@
 package everyos.browser.webicity.net.protocol.io;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -9,15 +7,15 @@ import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
 
-public class FileRequest implements Request {
+public class WebicityRequest implements Request {
 	private URL url;
 
-	public FileRequest(URL url) {
+	public WebicityRequest(URL url) {
 		this.url = url;
 	}
 
-	public static FileRequest create(URL url) {
-		return new FileRequest(url);
+	public static WebicityRequest create(URL url) {
+		return new WebicityRequest(url);
 	}
 
 	@Override
@@ -27,6 +25,8 @@ public class FileRequest implements Request {
 
 	@Override
 	public Response send() throws IOException {
-		return new IOResponse(new FileInputStream(new File(Optional.of(url.getPath()).orElse("/"))));
+		String path = Optional.of(url.getHost()).orElse("/");
+		String extension = path.indexOf('.')!=-1?"":".html";
+		return new IOResponse(ClassLoader.getSystemClassLoader().getResourceAsStream("pages/"+path+extension));
 	}
 }

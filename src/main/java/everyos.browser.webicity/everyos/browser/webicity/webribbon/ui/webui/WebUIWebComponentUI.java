@@ -7,7 +7,7 @@ import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.DefaultAppearence;
-import everyos.browser.webicity.webribbon.ui.webui.layout.BlockLayout;
+import everyos.browser.webicity.webribbon.ui.webui.layout.InlineLayout;
 import everyos.browser.webicity.webribbon.ui.webui.layout.Layout;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
@@ -24,7 +24,7 @@ public class WebUIWebComponentUI implements WebComponentUI {
 		this.component = component;
 		this.parent = parent;
 		
-		this.layout = new BlockLayout(component, this);
+		this.layout = new InlineLayout(component, this);
 		this.appearence = new DefaultAppearence();
 	}
 	
