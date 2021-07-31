@@ -23,9 +23,7 @@ public class ComputedChildrenHelper {
 			int slot = found[0];
 			if (containsUIFor(child, computedChildren, found)) {
 				for (int i = slot; i < found[0]; i++) {
-					ComponentUI deleted = computedChildren.get(i);
-					deleted.getComponent().unbind(deleted);
-					computedChildren.remove(i);
+					remove(computedChildren, i);
 				}
 				found[0] = slot;
 			} else {
@@ -34,7 +32,15 @@ public class ComputedChildrenHelper {
 				computedChildren.add(slot, ui);
 			}
 		}
-		// TODO: Remove remaining things
+		for (int i = found[0]+1; i<computedChildren.size(); i++) {
+			remove(computedChildren, i);
+		}
+	}
+
+	private void remove(List<ComponentUI> children, int i) {
+		ComponentUI deleted = children.get(i);
+		deleted.getComponent().unbind(deleted);
+		children.remove(i);
 	}
 
 	private boolean containsUIFor(Component target, List<ComponentUI> source, int[] index) {

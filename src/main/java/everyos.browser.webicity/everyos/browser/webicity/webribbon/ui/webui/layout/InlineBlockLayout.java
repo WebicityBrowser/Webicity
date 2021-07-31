@@ -31,6 +31,7 @@ public class InlineBlockLayout implements Layout {
 		this.component = component;
 		this.ui = ui;
 		this.scrollBar = new ScrollBar();
+		this.computedChildrenHelper = new ComputedChildrenHelper(this.component);
 	}
 	
 	@Override
@@ -110,7 +111,7 @@ public class InlineBlockLayout implements Layout {
 	}
 	
 	private void renderChildren(Renderer r, SizePosGroup sizepos, UIContext context) {
-		this.computedChildrenHelper = new ComputedChildrenHelper(this.component, c->context.getManager().get(c, ui));
+		this.computedChildrenHelper.recompute(c->context.getManager().get(c, ui));
 		
 		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
 			c.render(r, sizepos, context);

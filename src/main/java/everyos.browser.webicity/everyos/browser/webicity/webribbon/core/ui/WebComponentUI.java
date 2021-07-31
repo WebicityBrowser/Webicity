@@ -1,5 +1,6 @@
 package everyos.browser.webicity.webribbon.core.ui;
 
+import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.UIContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
@@ -24,4 +25,5 @@ public interface WebComponentUI {
 	UIBox getUIBox();
 
 	void processEvent(UIEvent ev);
+	WebComponent getComponent();
 }

@@ -76,7 +76,8 @@ public class WebUIWebComponentUI implements WebComponentUI {
 		}
 	}
 	
-	protected WebComponent getComponent() {
+	@Override
+	public WebComponent getComponent() {
 		return this.component;
 	}
 	
