@@ -28,8 +28,10 @@ import everyos.engine.ribbon.core.graphics.FontStyle;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
 
-public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
-	private static ColorSpace colorSpace = ColorSpace.getSRGB();
+public class RibbonSkijaRenderer implements Renderer {
+	private static final ColorSpace colorSpace = ColorSpace.getSRGB();
+	private static final DirectContext context = DirectContext.makeGL();
+	
 	private Canvas canvas;
 	private int 
 		x = 0,
@@ -42,7 +44,6 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 	private GUIState state;
 	private ListenerPaintListener lpl;
 	private FontMetrics metrics;
-	private DirectContext context;
 	private RibbonSkijaRenderer parentRenderer;
 	private Font font;
 	private int[] widthCache;
@@ -73,11 +74,10 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 		this.widthCache = parentRenderer.widthCache;
 	}
 	
-	public RibbonSkijaRenderer(DirectContext context, Canvas canvas, GUIState state, int x, int y, int l, int h) {
+	public RibbonSkijaRenderer(Canvas canvas, GUIState state, int x, int y, int l, int h) {
 		this(x, y, l, h);
 		this.state = state;
 		this.canvas = canvas;
-		this.context = context;
 		this.manager = FontMgr.getDefault();
 		this.typeface = manager.matchFamilyStyle("Times New Roman", org.jetbrains.skija.FontStyle.NORMAL);
 		this.font = new Font(typeface, 12);
@@ -326,9 +326,6 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 		this.state = state;
 	}
 	
-	@Override
-	public void close() {}
-	
 	private int toColor(Color foreground) {	
 		return
 			(0xFF << 24) +
@@ -341,8 +338,6 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 		int[] width = new int[1];
 		int[] height = new int[1];
 		GLFW.glfwGetFramebufferSize(window, width, height);
-		
-		DirectContext context = DirectContext.makeGL();
 
 		int fbId = GL32.glGetInteger(GL32.GL_FRAMEBUFFER_BINDING); // GL_FRAMEBUFFER_BINDING
 		BackendRenderTarget renderTarget = BackendRenderTarget.makeGL(
@@ -361,13 +356,6 @@ public class RibbonSkijaRenderer implements Renderer, AutoCloseable {
 			colorSpace);
 				
 		Canvas canvas = surface.getCanvas();
-		return new RibbonSkijaRenderer(context, canvas, new GUIState(), 0, 0, width[0], height[0]) {
-			@Override
-			public void close() {
-				surface.close();
-				renderTarget.close();
-				context.close();
-			}
-		};
+		return new RibbonSkijaRenderer(canvas, new GUIState(), 0, 0, width[0], height[0]);
 	}
 }

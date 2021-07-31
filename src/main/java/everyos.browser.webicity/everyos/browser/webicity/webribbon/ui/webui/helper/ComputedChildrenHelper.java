@@ -23,7 +23,7 @@ public class ComputedChildrenHelper {
 			int slot = found[0];
 			if (containsUIFor(child, computedChildren, found)) {
 				for (int i = slot; i < found[0]; i++) {
-					computedChildren.remove(i);
+					computedChildren.remove(slot);
 				}
 				found[0] = slot;
 			} else {

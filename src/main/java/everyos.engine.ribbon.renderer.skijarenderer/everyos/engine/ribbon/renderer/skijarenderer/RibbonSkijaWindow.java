@@ -145,6 +145,7 @@ public class RibbonSkijaWindow {
 		Dimension size = getSize();
 		if (oldSize==null || oldSize.getWidth()!=size.getWidth() || oldSize.getHeight()!=size.getHeight()) {
 			rootComponentUI.invalidateLocal(InvalidationLevel.RENDER);
+			System.out.println("Create");
 			renderer = RibbonSkijaRenderer.of(window);
 			oldSize = size;
 		}
