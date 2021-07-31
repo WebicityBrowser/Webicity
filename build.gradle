@@ -1,6 +1,7 @@
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
+	id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'application'
     id 'java'
 }
@@ -28,10 +29,10 @@ repositories {
 }
 
 dependencies {
-	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation 'com.google.code.gson:gson:2.8.7'
 	//implementation 'net.java.dev.jna:jna:5.5.0'
 	implementation 'com.github.marianobarrios:tls-channel:0.4.0'
-	implementation 'ch.qos.logback:logback-classic:1.2.3'
+	implementation 'ch.qos.logback:logback-classic:1.2.5'
 	
 	//implementation 'com.github.taucher2003:t2003-logger-impl:1.0.1'
 	
@@ -48,7 +49,7 @@ dependencies {
 	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 	
-	implementation "org.jetbrains.skija:${skijaNatives}:0.90.6"
+	implementation "org.jetbrains.skija:${skijaNatives}:0.92.22"
 }
 
 apply plugin: 'java'
@@ -71,3 +72,11 @@ sourceSets {
 }
 
 mainClassName = "everyos.browser.webicitybrowser.Webicity"
+
+jar {
+	manifest {
+		attributes(
+			"Main-Class": mainClassName
+		)
+	}
+}

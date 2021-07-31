@@ -18,6 +18,7 @@ public class InlineLayout implements Layout {
 	public InlineLayout(Component component, ComponentUI ui) {
 		this.component = component;
 		this.ui = ui;
+		this.computedChildrenHelper = new ComputedChildrenHelper(this.component);
 	}
 
 	@Override
@@ -46,8 +47,7 @@ public class InlineLayout implements Layout {
 	}
 
 	private void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-		this.computedChildrenHelper = new ComputedChildrenHelper(this.component, c->uimgr.get(c, ui));
-
+		this.computedChildrenHelper.recompute(c->uimgr.get(c, ui));
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
 			c.render(r, sizepos, uimgr);
 		}

@@ -88,7 +88,8 @@ public class SimpleComponentUI implements ComponentUI {
 		}
 	}
 	
-	protected Component getComponent() {
+	@Override
+	public Component getComponent() {
 		return this.component;
 	}
 	

@@ -8,6 +8,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.gui.binding.InstanceGUI;
+import everyos.browser.webicitybrowser.gui.window.SkijaWindow;
 
 public class Webicity {
 	public static void main(String[] args) {
@@ -43,6 +44,13 @@ public class Webicity {
 			}
 		}
 		instance.start();
-		new InstanceGUI(instance).start();
+		
+		new InstanceGUI(instance, ()->{
+			try {
+				return SkijaWindow.create();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}).start();
 	}
 }

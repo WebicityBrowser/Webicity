@@ -1,5 +1,6 @@
 package everyos.engine.ribbon.core.ui;
 
+import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.Renderer;
@@ -13,6 +14,7 @@ public interface ComponentUI {
 	
 	void directive(UIDirective directive);
 	ComponentUI getParent();
+	Component getComponent();
 	
 	void invalidate(InvalidationLevel level);
 	boolean getValidated(InvalidationLevel reference);

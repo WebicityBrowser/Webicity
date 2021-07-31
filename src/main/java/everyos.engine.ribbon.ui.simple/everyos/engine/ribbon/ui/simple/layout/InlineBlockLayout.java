@@ -40,6 +40,7 @@ public class InlineBlockLayout implements Layout {
 	public InlineBlockLayout(Component component, ComponentUI ui) {
 		this.component = component;
 		this.ui = ui;
+		this.computedChildrenHelper = new ComputedChildrenHelper(this.component);
 	}
 
 	public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr, Appearence appearence) {
@@ -172,8 +173,8 @@ public class InlineBlockLayout implements Layout {
 	}
 
 	public void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-		this.computedChildrenHelper = new ComputedChildrenHelper(this.component, c -> uimgr.get(c, ui));
-
+		computedChildrenHelper.recompute(c -> uimgr.get(c, ui));
+		
 		GUIState state = r.getState().clone();
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
 			c.render(r, sizepos, uimgr);

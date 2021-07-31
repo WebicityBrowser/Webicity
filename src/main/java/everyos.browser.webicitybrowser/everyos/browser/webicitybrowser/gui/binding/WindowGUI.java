@@ -10,7 +10,6 @@ import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.browser.webicitybrowser.gui.component.WebicityButton;
 import everyos.browser.webicitybrowser.gui.window.RibbonWindow;
-import everyos.browser.webicitybrowser.gui.window.SkijaWindow;
 import everyos.browser.webicitybrowser.ui.Tab;
 import everyos.browser.webicitybrowser.ui.Window;
 import everyos.browser.webicitybrowser.ui.event.WindowMutationEventListener;
@@ -29,26 +28,20 @@ import everyos.engine.ribbon.core.shape.Location;
 import everyos.engine.ribbon.core.shape.Position;
 
 public class WindowGUI {
-	private Window window;
-	private RibbonWindow windowGrip;
+	private final Window window;
+	private final RibbonWindow windowGrip;
 	private WindowEventListener mutationListener;
 	private List<TabGUI> tabs = new ArrayList<>();
 	private TabGUI selected;
 	private Component tabPane;
 	private Component tabPaneContainer;
 
-	public WindowGUI(Window window) {
+	public WindowGUI(Window window, RibbonWindow windowGrip) {
 		this.window = window;
+		this.windowGrip = windowGrip;
 	}
 
 	public void start() {
-		try {
-			//TODO: Pass as constructor argument
-			this.windowGrip = SkijaWindow.create();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
 		Component pane = windowGrip.getDisplayPane();
 		configureWindow(pane);
 
