@@ -19,6 +19,7 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	private Appearence appearence;
 	private WebComponent component;
 	private WebComponentUI parent;
+	private InvalidationLevel invalidated = InvalidationLevel.IGNORE;
 	
 	public WebUIWebComponentUI(WebComponent component, WebComponentUI parent) {
 		this.component = component;
@@ -45,22 +46,29 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	
 	@Override
 	public void invalidate(InvalidationLevel level) {
-		
+		WebComponentUI cui = this;
+		while (cui!=null) {
+			if (!cui.getValidated(level)) return;
+			cui.invalidateLocal(level);
+			cui = cui.getParent();
+		}
 	}
 	
 	@Override
 	public void invalidateLocal(InvalidationLevel level) {
-		
+		if (this.invalidated.lessThan(level)) {
+			this.invalidated = level;
+		}
 	}
 	
 	@Override
 	public void validateTo(InvalidationLevel level) {
-		
+		this.invalidated = level;
 	}
 	
 	@Override
-	public boolean getValidated(InvalidationLevel level) {
-		return false;
+	public boolean getValidated(InvalidationLevel reference) {
+		return reference.lessThan(this.invalidated);
 	}
 	
 	@Override

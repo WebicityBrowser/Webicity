@@ -37,8 +37,8 @@ public class SimpleComponentUI implements ComponentUI {
 	
 	@Override
 	public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-		validateTo(InvalidationLevel.PAINT);
 		getLayout().render(r, sizepos, uimgr, getAppearence());
+		validateTo(InvalidationLevel.PAINT);
 	}
 	
 	@Override
@@ -46,6 +46,7 @@ public class SimpleComponentUI implements ComponentUI {
 		if (background!=null) r.setBackground(background);
 		if (foreground!=null) r.setForeground(foreground);
 		getLayout().paint(r, getAppearence());
+		validateTo(InvalidationLevel.IGNORE);
 	}
 	
 	@Override
@@ -77,7 +78,7 @@ public class SimpleComponentUI implements ComponentUI {
 	
 	@Override
 	public boolean getValidated(InvalidationLevel reference) {
-		return reference.lessThan(this.invalidated);
+		return this.invalidated.lessThan(reference);
 	}
 	
 	@Override

@@ -30,7 +30,7 @@ public class InlineBlockLayout implements Layout {
 	public InlineBlockLayout(WebComponent component, WebComponentUI ui) {
 		this.component = component;
 		this.ui = ui;
-		this.scrollBar = new ScrollBar();
+		this.scrollBar = new ScrollBar(ui);
 		this.computedChildrenHelper = new ComputedChildrenHelper(this.component);
 	}
 	

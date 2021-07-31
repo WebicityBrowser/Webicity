@@ -36,6 +36,7 @@ public class RibbonSkijaWindow {
 	private ArrayList<ListenerRect> mouseBindings;
 	private Dimension oldSize;
 	private ArrayList<EventListener<UIEvent>> generalEventBindings;
+	private boolean nextFrameRequiresRedraw = false;
 
 	public RibbonSkijaWindow(int id) {
 		this.mouseBindings = new ArrayList<>();
@@ -145,7 +146,6 @@ public class RibbonSkijaWindow {
 		Dimension size = getSize();
 		if (oldSize==null || oldSize.getWidth()!=size.getWidth() || oldSize.getHeight()!=size.getHeight()) {
 			rootComponentUI.invalidateLocal(InvalidationLevel.RENDER);
-			System.out.println("Create");
 			renderer = RibbonSkijaRenderer.of(window);
 			oldSize = size;
 		}
@@ -165,34 +165,33 @@ public class RibbonSkijaWindow {
 			//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 		}
 		
-		// We paint event listeners while painting graphics.
-		ArrayList<ListenerRect> newMouseBindings = new ArrayList<>(mouseBindings.size());
-		ArrayList<EventListener<UIEvent>> newGeneralEventBindings = new ArrayList<>(mouseBindings.size());
-		root.onPaint(new ListenerPaintListener() {
-			@Override
-			public void onPaint(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
-				newMouseBindings.add(new ListenerRect(new Rectangle(x, y, l, h), c, listener));
-			}
-
-			@Override
-			public void onPaint(EventListener<UIEvent> listener) {
-				newGeneralEventBindings.add(listener);
-			}
-		});
-		mouseBindings = newMouseBindings;
-		generalEventBindings = newGeneralEventBindings;
-		
-		// Paint and display the UI.
-		// The target time is 16ms for paint per frame, max
-		//long time = System.currentTimeMillis();
-		rootComponentUI.paint(renderer);
-		renderer.draw();
-		//System.out.println(System.currentTimeMillis()-time);
-		
-		// Signifies that we don't need to paint unless we are further invalidated
-		// Note that, due to a double buffering bug,
-		// we ignore this validation level at the time being
-		rootComponentUI.validateTo(InvalidationLevel.IGNORE);
+		if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
+			nextFrameRequiresRedraw = !rootComponentUI.getValidated(InvalidationLevel.PAINT);
+			
+			// We paint event listeners while painting graphics.
+			ArrayList<ListenerRect> newMouseBindings = new ArrayList<>(mouseBindings.size());
+			ArrayList<EventListener<UIEvent>> newGeneralEventBindings = new ArrayList<>(mouseBindings.size());
+			root.onPaint(new ListenerPaintListener() {
+				@Override
+				public void onPaint(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
+					newMouseBindings.add(new ListenerRect(new Rectangle(x, y, l, h), c, listener));
+				}
+	
+				@Override
+				public void onPaint(EventListener<UIEvent> listener) {
+					newGeneralEventBindings.add(listener);
+				}
+			});
+			mouseBindings = newMouseBindings;
+			generalEventBindings = newGeneralEventBindings;
+			
+			// Paint and display the UI.
+			// The target time is 16ms for paint per frame, max
+			//long time = System.currentTimeMillis();
+			rootComponentUI.paint(renderer);
+			renderer.draw();
+			//System.out.println(System.currentTimeMillis()-time);
+		}
 		
 		return renderer;
 	}

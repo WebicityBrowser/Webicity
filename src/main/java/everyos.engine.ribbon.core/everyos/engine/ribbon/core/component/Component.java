@@ -107,7 +107,7 @@ public class Component implements UIEventTarget {
 		if (this.parent!=null) this.parent.delete(this);
 		this.parent = parent;
 		parent.children.add(pos, this);
-		parent.invalidate(InvalidationLevel.RENDER);
+		invalidate(InvalidationLevel.RENDER);
 	}
 
 	public void delete() {

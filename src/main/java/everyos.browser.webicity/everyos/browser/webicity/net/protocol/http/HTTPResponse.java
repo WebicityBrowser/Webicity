@@ -21,7 +21,7 @@ public class HTTPResponse implements Response {
 
 	@Override
 	public Renderer getProbableRenderer() {
-		if (response.getStatusCode() == 301) {
+		if (response.getStatusCode() >= 300 && response.getStatusCode() < 400) {
 			return new RedirectRenderer(response.getHeader("location"));
 		}
 		

@@ -7,6 +7,7 @@ import everyos.engine.ribbon.core.event.Key;
 import everyos.engine.ribbon.core.event.KeyboardEvent;
 import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
@@ -133,7 +134,11 @@ public class URLBarUI extends SimpleBlockComponentUI {
 				} else if (ev.getKey() == Key.ENTER && ev.getAction() == KeyboardEvent.KEY_RELEASE) {
 					getComponent().casted(URLBar.class).getAction().accept(text);
 				}
+			} else {
+				return;
 			}
+			
+			invalidate(InvalidationLevel.PAINT);
 		}
 	}
 }

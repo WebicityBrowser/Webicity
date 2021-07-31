@@ -1,16 +1,20 @@
 package everyos.browser.webicity.webribbon.ui.webui.psuedo;
 
+import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.shape.Position;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.graphics.GUIState;
+import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class ScrollBar {
+	private WebComponentUI ui;
+	
 	private Color scrollColor = Styling.BACKGROUND_SECONDARY;
 	private int curScrollY = 0;
 	private int startScrollY;
@@ -19,6 +23,10 @@ public class ScrollBar {
 	private Dimension outerSize;
 	private Dimension pageSize;
 	private Position position;
+	
+	public ScrollBar(WebComponentUI ui) {
+		this.ui = ui;
+	}
 	
 	public void render(Position position, Dimension outerSize, Dimension pageSize) {
 		this.outerSize = outerSize;
@@ -31,6 +39,21 @@ public class ScrollBar {
 		
 		if (event instanceof MouseEvent) {
 			MouseEvent ev = (MouseEvent) event;
+			
+			if (ev.getAction() == MouseEvent.MOVE) {
+				Color oldScrollColor = scrollColor;
+				if (ev.getAction()==MouseEvent.MOVE && !ev.isExternal()) {
+					scrollColor = Styling.BACKGROUND_SECONDARY_HOVER;
+				} else if (ev.getAction()==MouseEvent.MOVE) {
+					scrollColor = Styling.BACKGROUND_SECONDARY;
+				}
+				if (oldScrollColor != scrollColor) {
+					ui.invalidate(InvalidationLevel.PAINT);
+				}
+				
+				return;
+			}
+			
 			if (ev.getAction()==MouseEvent.PRESS && ev.getButton()==MouseEvent.LEFT_BUTTON && !ev.isExternal()) {
 				scrollColor = Styling.BACKGROUND_SECONDARY_SELECTED;
 				this.startScrollY = this.curScrollY;
@@ -40,7 +63,7 @@ public class ScrollBar {
 			} else if (ev.getAction()==MouseEvent.DRAG && scrollColor == Styling.BACKGROUND_SECONDARY_SELECTED) {
 				this.curScrollY = this.startScrollY + (int) (
 					(float) (ev.getAbsoluteY()-this.startPosY)/
-					(float) (outerSize.getHeight())*
+					(float) (outerSize.getHeight()) *
 					pageSize.getHeight()
 					);
 				if (this.curScrollY<0) {
@@ -49,13 +72,11 @@ public class ScrollBar {
 				if (this.curScrollY>maxScrollY) {
 					this.curScrollY = maxScrollY;
 				}
-			} else if (ev.getAction()==MouseEvent.MOVE && !ev.isExternal()) {
-				scrollColor = Styling.BACKGROUND_SECONDARY_HOVER;
-			} else if (ev.getAction()==MouseEvent.MOVE) {
-				scrollColor = Styling.BACKGROUND_SECONDARY;
+			} else {
+				return;
 			}
 			
-			//invalidate();
+			ui.invalidate(InvalidationLevel.PAINT);
 		}
 	}
 	

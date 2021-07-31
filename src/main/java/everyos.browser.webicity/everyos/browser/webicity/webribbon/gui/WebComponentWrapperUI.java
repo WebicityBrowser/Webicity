@@ -65,6 +65,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 			this.webComponent = getComponent().casted(WebComponentWrapper.class).getUI();
 			if (webComponent!=oldWebComponent) {
 				this.documentUI = new WebUIWebWindowUI(webComponent, null);
+				//documentUI.onInvalidation((level) -> invalidate(level));
 			}
 			if (webComponent!=null) {
 				Dimension bounds = sizepos.getSize();

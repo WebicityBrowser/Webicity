@@ -172,7 +172,7 @@ public class InlineBlockLayout implements Layout {
 		}
 	}
 
-	public void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
+	private void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
 		computedChildrenHelper.recompute(c -> uimgr.get(c, ui));
 		
 		GUIState state = r.getState().clone();
@@ -195,7 +195,7 @@ public class InlineBlockLayout implements Layout {
 		r.restoreState(state);
 	}
 	
-	public void paintChildren(Renderer r) {
+	private void paintChildren(Renderer r) {
 		r.useBackground();
 		GUIState state = r.getState();
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
