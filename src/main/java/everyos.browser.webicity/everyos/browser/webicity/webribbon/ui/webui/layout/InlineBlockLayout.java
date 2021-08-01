@@ -21,11 +21,10 @@ public class InlineBlockLayout implements Layout {
 	private WebComponentUI ui;
 	private Dimension outerSize;
 	private Dimension pageSize;
-	//TODO: Do I need to store the position?
-	
 	private ComputedChildrenHelper computedChildrenHelper;
 	private Position position;
 	private ScrollBar scrollBar;
+	private boolean requiresMouseTarget = false;
 	
 	public InlineBlockLayout(WebComponent component, WebComponentUI ui) {
 		this.component = component;
@@ -61,6 +60,8 @@ public class InlineBlockLayout implements Layout {
 				
 				this.outerSize = new Dimension(maxBlockSize.getWidth()-10, maxBlockSize.getHeight());
 			}
+			
+			requiresMouseTarget = true;
 		}
 		
 		this.pageSize = temporaryPageBounds.getSize();
@@ -68,7 +69,6 @@ public class InlineBlockLayout implements Layout {
 		sizepos.move(pageSize.getWidth(), true);
 		sizepos.setMinLineHeight(pageSize.getHeight());
 		sizepos.moveY(pageSize.getHeight()-temporaryPageBounds.getMinLineHeight());
-		//TODO: This logic seems a bit broken
 		
 		scrollBar.render(position, outerSize, pageSize);
 	}
@@ -76,14 +76,13 @@ public class InlineBlockLayout implements Layout {
 	@Override
 	public void paint(Renderer r, Rectangle viewport, Appearence appearence) {
 		
-		//if (this.pageSize!=null) {
-			scrollBar.paint(r, new Rectangle(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight()));
-		//}
+		scrollBar.paint(r, new Rectangle(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight()));
 		
-		r.paintMouseListener(component, position.getX(), position.getY(), outerSize.getWidth()+10, outerSize.getHeight(), e->{
-			//if (e.isExternal()) return;
-			processEvent(e);
-		});
+		if (requiresMouseTarget) {
+			r.paintMouseListener(component, position.getX(), position.getY(), outerSize.getWidth()+10, outerSize.getHeight(), e->{
+				processEvent(e);
+			});
+		}
 		
 		GUIState state = r.getState();
 		r.restoreState(state.clone());

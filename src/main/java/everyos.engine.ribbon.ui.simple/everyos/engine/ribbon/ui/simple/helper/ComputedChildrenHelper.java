@@ -10,6 +10,7 @@ import everyos.engine.ribbon.core.ui.ComponentUI;
 public class ComputedChildrenHelper {
 	private List<ComponentUI> computedChildren;
 	private Component component;
+	private ComponentUI[] computedChildrenAsArray;
 	
 	public ComputedChildrenHelper(Component component) {
 		this.computedChildren = new LinkedList<>();
@@ -35,6 +36,8 @@ public class ComputedChildrenHelper {
 		for (int i = found[0]+1; i<computedChildren.size(); i++) {
 			remove(computedChildren, i);
 		}
+		
+		this.computedChildrenAsArray = computedChildren.toArray(new ComponentUI[computedChildren.size()]);
 	}
 
 	private void remove(List<ComponentUI> children, int i) {
@@ -54,6 +57,6 @@ public class ComputedChildrenHelper {
 	}
 
 	public ComponentUI[] getChildren() {
-		return computedChildren.toArray(new ComponentUI[computedChildren.size()]);
+		return computedChildrenAsArray;
 	}
 }

@@ -10,6 +10,7 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 public class ComputedChildrenHelper {
 	private List<WebComponentUI> computedChildren;
 	private WebComponent component;
+	private WebComponentUI[] computedChildrenAsArray;
 	
 	public ComputedChildrenHelper(WebComponent component) {
 		this.computedChildren = new LinkedList<>();
@@ -34,6 +35,8 @@ public class ComputedChildrenHelper {
 		for (int i = found[0]+1; i<computedChildren.size(); i++) {
 			computedChildren.remove(i);
 		}
+		
+		this.computedChildrenAsArray = computedChildren.toArray(new WebComponentUI[computedChildren.size()]);
 	}
 
 	private boolean containsUIFor(WebComponent target, List<WebComponentUI> source, int[] index) {
@@ -47,6 +50,6 @@ public class ComputedChildrenHelper {
 	}
 
 	public WebComponentUI[] getChildren() {
-		return computedChildren.toArray(new WebComponentUI[computedChildren.size()]);
+		return computedChildrenAsArray;
 	}
 }
