@@ -30,7 +30,7 @@ import everyos.engine.ribbon.core.rendering.Renderer;
 
 public class RibbonSkijaRenderer implements Renderer {
 	private static final ColorSpace colorSpace = ColorSpace.getSRGB();
-	private static final DirectContext context = DirectContext.makeGL();
+	private DirectContext context;
 	
 	private Canvas canvas;
 	private int 
@@ -53,18 +53,19 @@ public class RibbonSkijaRenderer implements Renderer {
 	
 	private boolean debugBoxes = false;
 	
-	private RibbonSkijaRenderer(int x, int y, int l, int h) {
+	private RibbonSkijaRenderer(int x, int y, int l, int h, DirectContext context) {
 		/*if (x<0) x = 0;
 		if (y<0) y = 0;*/
 		if (l<0) l = 0;
 		if (h<0) h = 0;
 		this.x = x; this.y = y;
 		this.l = l; this.h = h;
+		this.context = context;
 	}
 	
-	private RibbonSkijaRenderer(RibbonSkijaRenderer parentRenderer, GUIState state, int x, int y, int l, int h) {
+	private RibbonSkijaRenderer(RibbonSkijaRenderer parentRenderer, GUIState state, int x, int y, int l, int h, DirectContext context) {
 		//TODO: Anti-aliasing
-		this(x, y, l, h);
+		this(x, y, l, h, context);
 		
 		this.state = state;
 		this.parentRenderer = parentRenderer;
@@ -74,8 +75,8 @@ public class RibbonSkijaRenderer implements Renderer {
 		this.widthCache = parentRenderer.widthCache;
 	}
 	
-	public RibbonSkijaRenderer(Canvas canvas, GUIState state, int x, int y, int l, int h) {
-		this(x, y, l, h);
+	public RibbonSkijaRenderer(Canvas canvas, GUIState state, int x, int y, int l, int h, DirectContext context) {
+		this(x, y, l, h, context);
 		this.state = state;
 		this.canvas = canvas;
 		this.manager = FontMgr.getDefault();
@@ -131,7 +132,7 @@ public class RibbonSkijaRenderer implements Renderer {
 		RibbonSkijaRenderer r = new RibbonSkijaRenderer(
 			this, state.clone(),
 			this.x+x, this.y+y-this.scrollY,
-			l, h);
+			l, h, context);
 		r.onPaint(new ListenerPaintListener() {
 			@Override
 			public void onPaint(UIEventTarget c, int ex, int ey, int el, int eh, EventListener<MouseEvent> listener) {
@@ -334,7 +335,7 @@ public class RibbonSkijaRenderer implements Renderer {
 			foreground.getBlue(); // Equivalent to foreground.getBlue() << 0
 	}
 
-	public static RibbonSkijaRenderer of(long window) {
+	public static RibbonSkijaRenderer of(long window, DirectContext context) {
 		int[] width = new int[1];
 		int[] height = new int[1];
 		GLFW.glfwGetFramebufferSize(window, width, height);
@@ -356,6 +357,6 @@ public class RibbonSkijaRenderer implements Renderer {
 			colorSpace);
 				
 		Canvas canvas = surface.getCanvas();
-		return new RibbonSkijaRenderer(canvas, new GUIState(), 0, 0, width[0], height[0]);
+		return new RibbonSkijaRenderer(canvas, new GUIState(), 0, 0, width[0], height[0], context);
 	}
 }

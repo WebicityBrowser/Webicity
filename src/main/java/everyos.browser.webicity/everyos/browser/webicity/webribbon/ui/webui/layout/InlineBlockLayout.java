@@ -1,6 +1,7 @@
 package everyos.browser.webicity.webribbon.ui.webui.layout;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
+import everyos.browser.webicity.webribbon.core.ui.Pallete;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.UIContext;
@@ -25,6 +26,7 @@ public class InlineBlockLayout implements Layout {
 	private Position position;
 	private ScrollBar scrollBar;
 	private boolean requiresMouseTarget = false;
+	private Pallete pallete;
 	
 	public InlineBlockLayout(WebComponent component, WebComponentUI ui) {
 		this.component = component;
@@ -35,6 +37,8 @@ public class InlineBlockLayout implements Layout {
 	
 	@Override
 	public void render(Renderer r, SizePosGroup sizepos, UIContext context, Appearence appearence) {
+		this.pallete = context.getPallete(); //TODO
+		
 		this.position = sizepos.getCurrentPointer();
 		
 		Dimension maxBlockSize = getMaxBlockSize(sizepos);
@@ -76,7 +80,7 @@ public class InlineBlockLayout implements Layout {
 	@Override
 	public void paint(Renderer r, Rectangle viewport, Appearence appearence) {
 		
-		scrollBar.paint(r, new Rectangle(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight()));
+		scrollBar.paint(r, new Rectangle(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight()), pallete);
 		
 		if (requiresMouseTarget) {
 			r.paintMouseListener(component, position.getX(), position.getY(), outerSize.getWidth()+10, outerSize.getHeight(), e->{

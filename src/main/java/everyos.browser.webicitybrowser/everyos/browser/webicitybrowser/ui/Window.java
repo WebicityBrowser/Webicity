@@ -15,9 +15,11 @@ public class Window implements Closeable {
 	private final WebicityInstance instance;
 	private final List<Tab> tabs = new ArrayList<>();
 	private EventDispatcher<WindowMutationEventListener> mutationEventDispatcher = new EventDispatcher<>();
+	private boolean isPrivateWindow;
 	
-	public Window(WebicityInstance instance) {
+	public Window(WebicityInstance instance, boolean isPrivateWindow) {
 		this.instance = instance;
+		this.isPrivateWindow = isPrivateWindow;
 	}
 	
 	public void openTab(URL url) {
@@ -43,6 +45,14 @@ public class Window implements Closeable {
 
 	public void start() {
 		
+	}
+	
+	public WebicityInstance getApplicationInstance() {
+		return instance;
+	}
+	
+	public boolean isPrivateWindow() {
+		return this.isPrivateWindow;
 	}
 	
 	@Override

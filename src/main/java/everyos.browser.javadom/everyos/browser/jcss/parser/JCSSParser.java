@@ -116,7 +116,7 @@ public class JCSSParser {
 		}
 	}
 
-	private Object consumeASimpleBlock(TokenStream stream) {
+	private SimpleBlock consumeASimpleBlock(TokenStream stream) {
 		stream.unread();
 		CSSToken startToken = stream.read();
 		

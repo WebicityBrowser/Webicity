@@ -50,6 +50,11 @@ public class SkijaWindow implements RibbonWindow {
 		window.setPosition(x, y);
 	}
 	
+	@Override
+	public void onReady(Runnable r) {
+		window.onReady(r);
+	}
+	
 	public static SkijaWindow create() {
 		RibbonSkijaMonitor monitor;
 		try {
@@ -59,18 +64,20 @@ public class SkijaWindow implements RibbonWindow {
 		}
 		
 		RibbonSkijaWindow window = monitor.createWindow();
-		
-		window.setTitle("Webicity Browser");
-		window.setIcon("webicity.png");
-		window.setMinSize(new Location(0, 600, 0, 400));
-		//window.setDecorated(false);
-	
-		UIManager mgr = WebicityUIManager.createUI();
-		
 		BlockComponent component = new BlockComponent();
-		component.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
-		window.bind(component, mgr);
-		window.setVisible(true);
+		
+		window.onReady(() -> {
+			window.setTitle("Webicity Browser");
+			window.setIcon("webicity.png");
+			window.setMinSize(new Location(0, 600, 0, 400));
+			//window.setDecorated(false);
+		
+			UIManager mgr = WebicityUIManager.createUI();
+			
+			component.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
+			window.bind(component, mgr);
+			window.setVisible(true);
+		});
 			
 		return new SkijaWindow(window, component);
 	}

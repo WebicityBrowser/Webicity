@@ -1,5 +1,6 @@
 package everyos.browser.webicity.webribbon.ui.webui.psuedo;
 
+import everyos.browser.webicity.webribbon.core.ui.Pallete;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.shape.Position;
 import everyos.browser.webicitybrowser.gui.Styling;
@@ -15,7 +16,6 @@ import everyos.engine.ribbon.core.shape.Rectangle;
 public class ScrollBar {
 	private WebComponentUI ui;
 	
-	private Color scrollColor = Styling.BACKGROUND_SECONDARY;
 	private int curScrollY = 0;
 	private int startScrollY;
 	private int startPosY;
@@ -23,6 +23,7 @@ public class ScrollBar {
 	private Dimension outerSize;
 	private Dimension pageSize;
 	private Position position;
+	private Mode mode;
 	
 	public ScrollBar(WebComponentUI ui) {
 		this.ui = ui;
@@ -41,13 +42,13 @@ public class ScrollBar {
 			MouseEvent ev = (MouseEvent) event;
 			
 			if (ev.getAction() == MouseEvent.MOVE) {
-				Color oldScrollColor = scrollColor;
+				Mode oldMode = mode;
 				if (ev.getAction()==MouseEvent.MOVE && !ev.isExternal()) {
-					scrollColor = Styling.BACKGROUND_SECONDARY_HOVER;
+					mode = Mode.HOVER;
 				} else if (ev.getAction()==MouseEvent.MOVE) {
-					scrollColor = Styling.BACKGROUND_SECONDARY;
+					mode = Mode.NORMAL;
 				}
-				if (oldScrollColor != scrollColor) {
+				if (oldMode != mode) {
 					ui.invalidate(InvalidationLevel.PAINT);
 				}
 				
@@ -55,12 +56,12 @@ public class ScrollBar {
 			}
 			
 			if (ev.getAction()==MouseEvent.PRESS && ev.getButton()==MouseEvent.LEFT_BUTTON && !ev.isExternal()) {
-				scrollColor = Styling.BACKGROUND_SECONDARY_SELECTED;
+				mode = Mode.DRAG;
 				this.startScrollY = this.curScrollY;
 				this.startPosY = ev.getAbsoluteY();
 			} else if (ev.getAction()==MouseEvent.RELEASE && ev.getButton()==MouseEvent.LEFT_BUTTON) {
-				scrollColor = Styling.BACKGROUND_SECONDARY;
-			} else if (ev.getAction()==MouseEvent.DRAG && scrollColor == Styling.BACKGROUND_SECONDARY_SELECTED) {
+				mode = Mode.NORMAL;
+			} else if (ev.getAction()==MouseEvent.DRAG && mode == Mode.DRAG) {
 				this.curScrollY = this.startScrollY + (int) (
 					(float) (ev.getAbsoluteY()-this.startPosY)/
 					(float) (outerSize.getHeight()) *
@@ -88,8 +89,13 @@ public class ScrollBar {
 		return this.curScrollY;
 	}
 
-	public void paint(Renderer r, Rectangle viewport) {
+	public void paint(Renderer r, Rectangle viewport, Pallete pallete) {
 		if (getMaxScrollY()>0) {
+			Color scrollColor =
+				mode == Mode.DRAG ? pallete.getAccentSelect() :
+				mode == Mode.HOVER ? pallete.getAccentHover() :
+				pallete.getAccent();
+			
 			GUIState state = r.getState();
 			r.restoreState(state.clone());
 			
@@ -112,5 +118,9 @@ public class ScrollBar {
 			
 			r.restoreState(state);
 		}
+	}
+	
+	private enum Mode {
+		NORMAL, HOVER, DRAG
 	}
 }

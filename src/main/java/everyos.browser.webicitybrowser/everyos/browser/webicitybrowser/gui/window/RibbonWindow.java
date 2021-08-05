@@ -10,4 +10,6 @@ public interface RibbonWindow {
 	void restore();
 	Position getPosition();
 	void setPosition(int x, int y);
+	
+	void onReady(Runnable r);
 }

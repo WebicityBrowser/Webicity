@@ -16,10 +16,10 @@ public class WebicityInstance {
 	private final WebicityEngine engine;
 	private WindowMutationListener windowMutationListener;
 	
-	public WebicityInstance() {
+	public WebicityInstance(boolean firstWindowIsPrivate) {
 		this.windowMutationListener = new WindowMutationListener();
 		this.engine = createEngine();
-		createWindow();
+		createWindow(firstWindowIsPrivate);
 	}
 
 	public void open(URL url) {
@@ -52,8 +52,8 @@ public class WebicityInstance {
 		return new WebicityEngineImp();
 	}
 
-	private Window createWindow() {
-		Window window = new Window(this);
+	public Window createWindow(boolean isPrivate) {
+		Window window = new Window(this, isPrivate);
 		windows.add(window);
 		window.addWindowMutationListener(windowMutationListener);
 		mutationEventDispatcher.fire(l->l.onWindowAdded(window));

@@ -1,6 +1,7 @@
 package everyos.browser.webicity.webribbon.gui;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
+import everyos.browser.webicity.webribbon.core.ui.Pallete;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 import everyos.browser.webicity.webribbon.ui.webui.WebUIWebUIManager;
 import everyos.browser.webicity.webribbon.ui.webui.WebUIWebWindowUI;
@@ -46,6 +47,11 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		@Override
 		public void addTopLevelUIBox(UIBox box) {
 			// TODO: Implement this when needed
+		}
+
+		@Override
+		public Pallete getPallete() {
+			return getComponent().casted(WebComponentWrapper.class).getPallete();
 		}
 	}
 	

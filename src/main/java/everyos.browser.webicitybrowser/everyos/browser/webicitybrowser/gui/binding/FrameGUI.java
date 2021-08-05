@@ -2,6 +2,7 @@ package everyos.browser.webicitybrowser.gui.binding;
 
 import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
+import everyos.browser.webicitybrowser.gui.Colors;
 import everyos.browser.webicitybrowser.gui.renderer.HTMLRendererGUI;
 import everyos.browser.webicitybrowser.ui.Frame;
 import everyos.browser.webicitybrowser.ui.event.FrameMutationEventListener;
@@ -14,13 +15,16 @@ public class FrameGUI {
 	private Frame frame;
 	private Component outerPane;
 	private FrameMutationListener mutationListener;
+	private Colors colors;
 
 	public FrameGUI(Frame frame) {
 		this.frame = frame;
 		this.outerPane = new BlockComponent();
 	}
 	
-	public void start() {
+	public void start(Colors colors) {
+		this.colors = colors;
+		
 		this.mutationListener = new FrameMutationListener();
 		frame.addFrameMutationListener(mutationListener);
 		
@@ -41,7 +45,7 @@ public class FrameGUI {
 			if (r==null) return;
 			if (r.getClass() == HTMLRenderer.class) {
 				//TODO: Store "cleanup" to runnable for later
-				HTMLRendererGUI rendererGUI = new HTMLRendererGUI((HTMLRenderer) r);
+				HTMLRendererGUI rendererGUI = new HTMLRendererGUI((HTMLRenderer) r, colors);
 				rendererGUI.start();
 				outerPane.children(new Component[] {
 					fullsize(rendererGUI.getDisplayPane())

@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.util.function.Supplier;
 
 import everyos.browser.webicity.net.URL;
+import everyos.browser.webicitybrowser.gui.Colors;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
@@ -27,12 +28,14 @@ public class TabGUI {
 	private boolean selected;
 	private URLBar urlBar;
 	private TabEventListener mutationListener;
+	private Colors colors;
 
 	public TabGUI(Tab tab) {
 		this.tab = tab;
 	}
 	
-	public void start() {
+	public void start(Colors colors) {
+		this.colors = colors;
 		this.tabButton = new TabButton();
 		
 		createTabPane();
@@ -61,9 +64,9 @@ public class TabGUI {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 		if (selected) {
-			tabButton.directive(BackgroundDirective.of(Styling.BACKGROUND_SECONDARY_ACTIVE));
+			tabButton.directive(BackgroundDirective.of(colors.getBackgroundSecondaryActive()));
 		} else {
-			tabButton.directive(BackgroundDirective.of(Styling.BACKGROUND_SECONDARY));
+			tabButton.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
 		}
 	}
 	
@@ -80,7 +83,7 @@ public class TabGUI {
 		tabPane.addChild(tabDecor);
 		
 		FrameGUI frame = new FrameGUI(tab.getFrame());
-		frame.start();
+		frame.start(colors);
 		Component frameComponent = frame.getDisplayPane();
 		frameComponent.directive(SizeDirective.of(new Location(1, 0, 1, -decorHeight)));
 		frameComponent.directive(PositionDirective.of(new Location(0, 0, 0, decorHeight)));
@@ -91,7 +94,7 @@ public class TabGUI {
 		int horizontalDrop = (int) (Styling.ELEMENT_PADDING*.5);
 		
 		Component tabDecor = new BlockComponent();
-		tabDecor.directive(BackgroundDirective.of(Styling.BACKGROUND_PRIMARY));
+		tabDecor.directive(BackgroundDirective.of(colors.getBackgroundPrimary()));
 		
 		// Add the tab action buttons
 		CircularText backButton = new CircularText();
@@ -123,7 +126,7 @@ public class TabGUI {
 		tabDecor.addChild(reloadButton);
 		
 		this.urlBar = new URLBar(null);
-		urlBar.directive(BackgroundDirective.of(Styling.BACKGROUND_SECONDARY));
+		urlBar.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
 		urlBar.directive(PositionDirective.of(new Location(
 			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
 			0, horizontalDrop)));
@@ -156,8 +159,8 @@ public class TabGUI {
 		addButtonBehavior(button, handler, ()->false);
 	}
 	private void addButtonBehavior(Component button, Runnable handler, Supplier<Boolean> activeChecker) {
-		ActionButtonBehavior.configure(button, handler, Styling.BACKGROUND_SECONDARY,
-			Styling.BACKGROUND_SECONDARY_HOVER, Styling.BACKGROUND_SECONDARY_SELECTED, Styling.BACKGROUND_SECONDARY_ACTIVE,
+		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondary(),
+			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
 			activeChecker);
 	}
 	

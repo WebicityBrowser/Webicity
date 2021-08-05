@@ -1,8 +1,8 @@
 package everyos.engine.ribbon.renderer.skijarenderer;
 
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
+import org.jetbrains.skija.DirectContext;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
@@ -33,30 +33,24 @@ public class RibbonSkijaWindow {
 	private boolean running = true;
 	private UIManager uiManager;
 	private ComponentUI rootComponentUI;
-	private ArrayList<ListenerRect> mouseBindings;
+	private ArrayList<ListenerRect> mouseBindings = new ArrayList<>();
+	private ArrayList<EventListener<UIEvent>> generalEventBindings = new ArrayList<>();
 	private Dimension oldSize;
-	private ArrayList<EventListener<UIEvent>> generalEventBindings;
 	private boolean nextFrameRequiresRedraw = false;
+	private RibbonSkijaRenderer root;
+	private Runnable onReady;
+	private DirectContext context;
 
 	public RibbonSkijaWindow(int id) {
 		this.mouseBindings = new ArrayList<>();
 		
-		Semaphore lock = new Semaphore(0);
-		
-		new Thread(()->{
+		RenderingThread.run(()->{
 			createWindow(id);
 			createMouseBindings();
 			createKeyboardBindings();
-			lock.release();
-			runLoop();
-			GLFW.glfwDestroyWindow(window);
-		}, "GLEventThread").start();
-		
-		try {
-			lock.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+			onReady.run();
+			RenderingThread.run(()->runLoop());
+		});
 	}
 
 	public void bind(Component component, UIManager uimanager) {
@@ -121,20 +115,28 @@ public class RibbonSkijaWindow {
 		return new Position(x[0], y[0]);
 	}
 	
+	public void onReady(Runnable onReady) {
+		this.onReady = onReady;
+	}
+	
 	/////
 	
 	private void runLoop() {
-		RibbonSkijaRenderer root = RibbonSkijaRenderer.of(window);
-		while (running&&!GLFW.glfwWindowShouldClose(window)) {
-			//long time = System.currentTimeMillis();
-			if (GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_ICONIFIED) == GLFW.GLFW_FALSE) {
-				TimeSystem.step();
-				root = updateWindow(root);
-			}
-			GLFW.glfwSwapBuffers(window);
-			GLFW.glfwPollEvents();
-			//System.out.println(System.currentTimeMillis()-time);
+		if (GLFW.glfwWindowShouldClose(window) || !running) {
+			GLFW.glfwDestroyWindow(window);
+			return;
 		}
+		
+		//long time = System.currentTimeMillis();
+		if (GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_ICONIFIED) == GLFW.GLFW_FALSE) {
+			TimeSystem.step();
+			GLFW.glfwMakeContextCurrent(window);
+			root = updateWindow(root);
+		}
+		GLFW.glfwSwapBuffers(window);
+		//System.out.println(System.currentTimeMillis()-time);
+		
+		RenderingThread.run(()->runLoop());
 	}
 	
 	private RibbonSkijaRenderer updateWindow(RibbonSkijaRenderer root) {
@@ -146,7 +148,7 @@ public class RibbonSkijaWindow {
 		Dimension size = getSize();
 		if (oldSize==null || oldSize.getWidth()!=size.getWidth() || oldSize.getHeight()!=size.getHeight()) {
 			rootComponentUI.invalidateLocal(InvalidationLevel.RENDER);
-			renderer = RibbonSkijaRenderer.of(window);
+			renderer = RibbonSkijaRenderer.of(window, context);
 			oldSize = size;
 		}
 		
@@ -165,25 +167,25 @@ public class RibbonSkijaWindow {
 			//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 		}
 		
-		if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
+		//if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
 			nextFrameRequiresRedraw = !rootComponentUI.getValidated(InvalidationLevel.PAINT);
 			
 			// We paint event listeners while painting graphics.
-			ArrayList<ListenerRect> newMouseBindings = new ArrayList<>(mouseBindings.size());
-			ArrayList<EventListener<UIEvent>> newGeneralEventBindings = new ArrayList<>(mouseBindings.size());
+			mouseBindings.trimToSize();
+			mouseBindings.clear();
+			generalEventBindings.trimToSize();
+			generalEventBindings.clear();
 			root.onPaint(new ListenerPaintListener() {
 				@Override
 				public void onPaint(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
-					newMouseBindings.add(new ListenerRect(new Rectangle(x, y, l, h), c, listener));
+					mouseBindings.add(new ListenerRect(new Rectangle(x, y, l, h), c, listener));
 				}
 	
 				@Override
 				public void onPaint(EventListener<UIEvent> listener) {
-					newGeneralEventBindings.add(listener);
+					generalEventBindings.add(listener);
 				}
 			});
-			mouseBindings = newMouseBindings;
-			generalEventBindings = newGeneralEventBindings;
 			
 			// Paint and display the UI.
 			// The target time is 16ms for paint per frame, max
@@ -191,7 +193,7 @@ public class RibbonSkijaWindow {
 			rootComponentUI.paint(renderer);
 			renderer.draw();
 			//System.out.println(System.currentTimeMillis()-time);
-		}
+		//}
 		
 		return renderer;
 	}
@@ -345,6 +347,9 @@ public class RibbonSkijaWindow {
 		GL.createCapabilities();
 		GLFW.glfwSwapInterval(1);
 		GLFW.glfwSetWindowPos(window, 100, 100);
+		
+		context = DirectContext.makeGL();
+		root = RibbonSkijaRenderer.of(window, context);
 	}
 	
 	static {

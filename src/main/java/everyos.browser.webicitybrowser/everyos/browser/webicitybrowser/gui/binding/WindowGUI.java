@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import everyos.browser.webicitybrowser.gui.Colors;
+import everyos.browser.webicitybrowser.gui.NormalColors;
+import everyos.browser.webicitybrowser.gui.PrivateColors;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
@@ -35,6 +38,7 @@ public class WindowGUI {
 	private TabGUI selected;
 	private Component tabPane;
 	private Component tabPaneContainer;
+	private Colors colors;
 
 	public WindowGUI(Window window, RibbonWindow windowGrip) {
 		this.window = window;
@@ -42,6 +46,10 @@ public class WindowGUI {
 	}
 
 	public void start() {
+		this.colors = window.isPrivateWindow() ?
+				new PrivateColors() :
+				new NormalColors();
+		
 		Component pane = windowGrip.getDisplayPane();
 		configureWindow(pane);
 
@@ -68,7 +76,7 @@ public class WindowGUI {
 
 	private void configureWindow(Component pane) {
 		pane.directive(BackgroundDirective.of(Color.DARK_GRAY));
-		pane.directive(ForegroundDirective.of(Styling.FOREGROUND_PRIMARY));
+		pane.directive(ForegroundDirective.of(colors.getForegroundPrimary()));
 
 		Component innerPane = new BlockComponent();
 		innerPane.directive(SizeDirective.of(new Location(1, -2, 1, -2)));
@@ -89,11 +97,11 @@ public class WindowGUI {
 
 	private Component createWindowDecorations() {
 		BlockComponent windowDecor = new BlockComponent();
-		windowDecor.directive(BackgroundDirective.of(Styling.BACKGROUND_PRIMARY));
+		windowDecor.directive(BackgroundDirective.of(colors.getBackgroundPrimary()));
 
 		// Add the menu button
-		WebicityButton menuButton = new WebicityButton(windowGrip.getDisplayPane());
-		menuButton.directive(BackgroundDirective.of(Styling.BACKGROUND_SECONDARY));
+		WebicityButton menuButton = new WebicityButton(windowGrip.getDisplayPane(), window, colors);
+		menuButton.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
 		menuButton.directive(PositionDirective.of(new Location(0, 0, 0, 0)));
 		menuButton.directive(SizeDirective.of(new Location(
 				0, Styling.BUTTON_WIDTH * 3 + Styling.ELEMENT_PADDING * 2 + Styling.BORDER_PADDING,
@@ -196,13 +204,13 @@ public class WindowGUI {
 		addButtonBehavior(button, handler, ()->false);
 	}
 	private void addButtonBehavior(Component button, Runnable handler, Supplier<Boolean> activeChecker) {
-		ActionButtonBehavior.configure(button, handler, Styling.BACKGROUND_SECONDARY,
-			Styling.BACKGROUND_SECONDARY_HOVER, Styling.BACKGROUND_SECONDARY_SELECTED, Styling.BACKGROUND_SECONDARY_ACTIVE,
+		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondary(),
+			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
 			activeChecker);
 	}
 	private void addDangerousButtonBehavior(Component button, Runnable handler) {
-		ActionButtonBehavior.configure(button, handler, Styling.BACKGROUND_SECONDARY_DANGER,
-			Styling.BACKGROUND_SECONDARY_HOVER, Styling.BACKGROUND_SECONDARY_SELECTED, Styling.BACKGROUND_SECONDARY_ACTIVE,
+		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondaryDanger(),
+			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
 			()->false);
 	}
 
@@ -220,7 +228,7 @@ public class WindowGUI {
 
 	private TabGUI createTabGUI(Tab tab) {
 		TabGUI tabGUI = new TabGUI(tab);
-		tabGUI.start();
+		tabGUI.start(colors);
 
 		tabGUI.setSelected(false);
 		tabs.add(tabGUI);
