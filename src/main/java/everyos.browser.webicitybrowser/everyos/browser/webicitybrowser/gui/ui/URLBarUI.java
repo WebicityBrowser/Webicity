@@ -8,12 +8,15 @@ import everyos.engine.ribbon.core.event.KeyboardEvent;
 import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.graphics.RenderContext;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
+import everyos.engine.ribbon.core.rendering.RibbonFont;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
-import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
@@ -43,43 +46,47 @@ public class URLBarUI extends SimpleBlockComponentUI {
 
 		private int computedCursorOffset = 0;
 		private int currentCursorPosition = 0;
-		private Renderer lastRenderer;
+		private RendererData lastRenderer;
 		
 		@Override
-		public void render(Renderer r, SizePosGroup sizepos, UIManager mgrui) {
+		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
 			this.text = getComponent().casted(URLBar.class).getText();
 			
-			int width = StringWrapHelper.stringWidth(r, text);
+			RibbonFont font = rd.getState().getFont();
+			
+			int width = StringWrapHelper.stringWidth(font, text);
 			sizepos.move(width+10, true);
-			sizepos.setMinLineHeight(r.getFontHeight());
+			sizepos.setMinLineHeight(font.getHeight());
 			
 			this.bounds = sizepos.getSize();
 		}
 
 		@Override
-		public void paint(Renderer r) {
-			this.lastRenderer = r;
+		public void paint(RendererData rd, PaintContext context) {
+			this.lastRenderer = rd;
 			
-			r.useBackground();
-			r.drawEllipse(0, 0, bounds.getHeight(), bounds.getHeight());
-			r.drawEllipse(bounds.getWidth()-bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
-			r.drawFilledRect(bounds.getHeight()/2, 0, bounds.getWidth()-bounds.getHeight(), bounds.getHeight());
+			Renderer r = context.getRenderer();
 			
-			r.useForeground();
-			r.drawText(bounds.getHeight(), bounds.getHeight()/2-r.getFontHeight()/2, text);
+			rd.useBackground();
+			r.drawEllipse(rd, 0, 0, bounds.getHeight(), bounds.getHeight());
+			r.drawEllipse(rd, bounds.getWidth()-bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
+			r.drawFilledRect(rd, bounds.getHeight()/2, 0, bounds.getWidth()-bounds.getHeight(), bounds.getHeight());
 			
-			paintAnimation(r, bounds);
+			rd.useForeground();
+			r.drawText(rd, bounds.getHeight(), bounds.getHeight()/2-rd.getState().getFont().getHeight()/2, text);
+			
+			paintAnimation(r, rd, bounds);
 			
 			r.paintListener(e->processEvent(e));
 		}
 		
-		private void paintAnimation(Renderer r, Dimension bounds) {
+		private void paintAnimation(Renderer r, RendererData rd, Dimension bounds) {
 			if (active) {
 				if (System.currentTimeMillis()-lastCursorOn>1000) {
 					lastCursorOn = System.currentTimeMillis();
 				}
 				if (System.currentTimeMillis()-lastCursorOn<500) {
-					r.drawLine(bounds.getHeight() + computedCursorOffset , bounds.getHeight()/4, 0, bounds.getHeight()/2);
+					r.drawLine(rd, bounds.getHeight() + computedCursorOffset , bounds.getHeight()/4, 0, bounds.getHeight()/2);
 				}
 			}
 		}
@@ -91,6 +98,8 @@ public class URLBarUI extends SimpleBlockComponentUI {
 
 		@Override
 		public void processEvent(UIEvent e) {
+			RibbonFont font = lastRenderer.getState().getFont();
+			
 			if (e instanceof MouseEvent) {
 				MouseEvent ev = (MouseEvent) e;
 				if (ev.isExternal()) {
@@ -107,7 +116,7 @@ public class URLBarUI extends SimpleBlockComponentUI {
 					int currentMouseOffset = 0;
 					int i;
 					for (i=0; i<text.length(); i++) {
-						int charWidth = lastRenderer.charWidth(text.codePointAt(i)); //TODO: codePointAt?
+						int charWidth = font.getCharWidth(text.codePointAt(i)); //TODO: codePointAt?
 						if (currentMouseOffset + charWidth*.5 > mouseX) {
 							break;
 						}
@@ -121,14 +130,14 @@ public class URLBarUI extends SimpleBlockComponentUI {
 				String insertion = ((CharEvent) e).getChar();
 				this.text = text.substring(0, currentCursorPosition) + insertion + text.substring(currentCursorPosition);
 				currentCursorPosition++;
-				computedCursorOffset += lastRenderer.charWidth(insertion.codePointAt(0));
+				computedCursorOffset += font.getCharWidth(insertion.codePointAt(0));
 			} else if (e instanceof KeyboardEvent) {
 				KeyboardEvent ev = (KeyboardEvent) e;
 				if (ev.getKey() == Key.BACKSPACE && (ev.getAction() == KeyboardEvent.KEY_PRESS || ev.getAction() == KeyboardEvent.KEY_HOLD)) {
 					if (currentCursorPosition == 0) {
 						return;
 					}
-					computedCursorOffset -= lastRenderer.charWidth(text.codePointAt(currentCursorPosition-1));
+					computedCursorOffset -= font.getCharWidth(text.codePointAt(currentCursorPosition-1));
 					this.text = text.substring(0, currentCursorPosition-1) + text.substring(currentCursorPosition);
 					currentCursorPosition--;	
 				} else if (ev.getKey() == Key.ENTER && ev.getAction() == KeyboardEvent.KEY_RELEASE) {

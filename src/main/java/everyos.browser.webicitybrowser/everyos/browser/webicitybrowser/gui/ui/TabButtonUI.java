@@ -4,12 +4,15 @@ import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.graphics.RenderContext;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
+import everyos.engine.ribbon.core.rendering.RibbonFont;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
-import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
@@ -35,27 +38,31 @@ public class TabButtonUI extends SimpleBlockComponentUI {
 		private Dimension bounds;
 		
 		@Override
-		public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
+		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
 			this.bounds = sizepos.getSize();
 			// Width in which we expect the text to be fit in.
 			int expectedWidth = bounds.getWidth() - Styling.BUTTON_WIDTH - 2 * Styling.ELEMENT_PADDING;
 
-			this.text = StringWrapHelper.trim(r, getComponent().casted(TabButton.class).getText(), expectedWidth);
-			this.strwidth = StringWrapHelper.stringWidth(r, text);
-			sizepos.move(strwidth+r.getFontPaddingHeight(), true);
-			sizepos.setMinLineHeight(r.getFontHeight());
+			RibbonFont font = rd.getState().getFont();
+			
+			this.text = StringWrapHelper.trim(font, getComponent().casted(TabButton.class).getText(), expectedWidth);
+			this.strwidth = StringWrapHelper.stringWidth(font, text);
+			sizepos.move(strwidth+font.getPaddingHeight(), true);
+			sizepos.setMinLineHeight(font.getHeight());
 		}
 
 		@Override
-		public void paint(Renderer r) {
-			r.useBackground();
-			r.drawEllipse(0, 0, bounds.getHeight(), bounds.getHeight());
-			r.drawEllipse(bounds.getWidth() - bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
-			r.drawFilledRect(bounds.getHeight() / 2, 0, bounds.getWidth() - bounds.getHeight(), bounds.getHeight());
-			r.drawFilledRect(0, 0, bounds.getWidth(), bounds.getHeight() / 2);
+		public void paint(RendererData rd, PaintContext context) {
+			Renderer r = context.getRenderer();
+			
+			rd.useBackground();
+			r.drawEllipse(rd, 0, 0, bounds.getHeight(), bounds.getHeight());
+			r.drawEllipse(rd, bounds.getWidth() - bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
+			r.drawFilledRect(rd, bounds.getHeight() / 2, 0, bounds.getWidth() - bounds.getHeight(), bounds.getHeight());
+			r.drawFilledRect(rd, 0, 0, bounds.getWidth(), bounds.getHeight() / 2);
 
-			r.useForeground();
-			r.drawText(Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING, Styling.ELEMENT_PADDING, text);
+			rd.useForeground();
+			r.drawText(rd, Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING, Styling.ELEMENT_PADDING, text);
 
 		}
 

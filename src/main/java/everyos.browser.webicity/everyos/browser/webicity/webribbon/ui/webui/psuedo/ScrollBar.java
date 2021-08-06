@@ -2,14 +2,15 @@ package everyos.browser.webicity.webribbon.ui.webui.psuedo;
 
 import everyos.browser.webicity.webribbon.core.ui.Pallete;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
+import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.shape.Position;
-import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
@@ -89,34 +90,38 @@ public class ScrollBar {
 		return this.curScrollY;
 	}
 
-	public void paint(Renderer r, Rectangle viewport, Pallete pallete) {
+	public void paint(RendererData rd, Rectangle viewport, WebPaintContext context) {
 		if (getMaxScrollY()>0) {
+			Pallete pallete = context.getPallete();
+			
 			Color scrollColor =
 				mode == Mode.DRAG ? pallete.getAccentSelect() :
 				mode == Mode.HOVER ? pallete.getAccentHover() :
 				pallete.getAccent();
 			
-			GUIState state = r.getState();
-			r.restoreState(state.clone());
+			GUIState state = rd.getState();
+			rd.restoreState(state.clone());
 			
-			r.setForeground(scrollColor);
-			r.useForeground();
+			rd.getState().setForeground(scrollColor);
+			rd.useForeground();
 			
 			int width = 8;
 			int height = (int) (((double)outerSize.getHeight()/(double) pageSize.getHeight())*outerSize.getHeight()-width);
 			int posY = (int) (((double)this.curScrollY/(double) pageSize.getHeight())*(outerSize.getHeight()-width));
 			
+			Renderer r = context.getRenderer();
+			
 			r.drawEllipse(
-				position.getX()+outerSize.getWidth()+1, posY,
+				rd, position.getX()+outerSize.getWidth()+1, posY,
 				width, width);
 			r.drawFilledRect(
-				position.getX()+outerSize.getWidth()+1, posY+width/2,
+				rd, position.getX()+outerSize.getWidth()+1, posY+width/2,
 				width, height+width/2);
 			r.drawEllipse(
-				position.getX()+outerSize.getWidth()+1, posY+width/2+height,
+				rd, position.getX()+outerSize.getWidth()+1, posY+width/2+height,
 				width, width);
 			
-			r.restoreState(state);
+			rd.restoreState(state);
 		}
 	}
 	

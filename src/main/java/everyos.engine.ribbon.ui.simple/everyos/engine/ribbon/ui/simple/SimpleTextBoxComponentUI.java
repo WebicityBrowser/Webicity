@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.component.TextBoxComponent;
 import everyos.engine.ribbon.core.event.UIEvent;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.rendering.RendererData;
+import everyos.engine.ribbon.core.rendering.RibbonFont;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
-import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
@@ -34,22 +36,24 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 		private Dimension size;
 		
 		@Override
-		public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
+		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
 			String text = getComponent().casted(TextBoxComponent.class).getText();
 			
-			lines = StringWrapHelper.calculateString(text, r, sizepos);
+			lines = StringWrapHelper.calculateString(text, rd.getState().getFont(), sizepos);
 			
 			this.size = sizepos.getSize();
 		}
 
 		@Override
-		public void paint(Renderer r) {
-			r.useForeground();
+		public void paint(RendererData rd, PaintContext context) {
+			RibbonFont font = rd.getState().getFont();
+			
+			rd.useForeground();
 			for (int i=0; i<lines.size(); i++) {
-				int py = i*r.getFontHeight();
+				int py = i*font.getHeight();
 				if (py>size.getHeight()) break;
 				
-				int width = StringWrapHelper.stringWidth(r, lines.get(i));
+				int width = StringWrapHelper.stringWidth(font, lines.get(i));
 				int x = 0;
 				if (align.equals("right")) {
 					x = size.getWidth()-width;
@@ -57,7 +61,7 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 					x = size.getWidth()/2-width/2;
 				}
 				
-				r.drawText(x, py, lines.get(i));
+				context.getRenderer().drawText(rd, x, py, lines.get(i));
 			}
 		}
 
@@ -68,8 +72,7 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 
 		@Override
 		public void processEvent(UIEvent e) {
-			// TODO Auto-generated method stub
-			
+			// TODO
 		}
 	}
 }

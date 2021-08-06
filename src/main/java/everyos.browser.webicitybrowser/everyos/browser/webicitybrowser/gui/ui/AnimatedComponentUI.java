@@ -4,7 +4,8 @@ import everyos.browser.webicitybrowser.gui.Animation;
 import everyos.browser.webicitybrowser.gui.component.AnimatedComponent;
 import everyos.browser.webicitybrowser.gui.directive.AnimationDirective;
 import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.core.ui.ComponentUI;
@@ -45,13 +46,13 @@ public class AnimatedComponentUI extends SimpleBlockComponentUI {
 		}
 
 		@Override
-		public void paint(Renderer r, Appearence appearence) {
+		public void paint(RendererData rd, PaintContext context, Appearence appearence) {
 			if (animation != null) {
 				Rectangle bounds = getBounds();
-				Renderer r3 = r.getSubcontext(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
-				Renderer r2 = animation.step(r3, component.isVisible(), new Dimension(bounds.getWidth(), bounds.getHeight()));
-				paintMouse(r2, appearence);
-				paintInnerPart(r2, appearence);
+				RendererData r3 = rd.getSubcontext(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+				RendererData r2 = animation.step(r3, component.isVisible(), new Dimension(bounds.getWidth(), bounds.getHeight()));
+				paintMouse(r2, context, appearence);
+				paintInnerPart(r2, context, appearence);
 			}
 		}
 		

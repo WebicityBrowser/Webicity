@@ -3,12 +3,15 @@ package everyos.browser.webicitybrowser.gui.ui;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.graphics.RenderContext;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
+import everyos.engine.ribbon.core.rendering.RibbonFont;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
-import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
@@ -34,26 +37,30 @@ public class WebicityButtonUI extends SimpleBlockComponentUI {
 		private Dimension bounds;
     	
 	    @Override
-	    public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-	        this.strwidth = StringWrapHelper.stringWidth(r, Styling.PRODUCT_NAME);
-	        sizepos.move(strwidth + r.getFontPaddingHeight(), true);
-	        sizepos.setMinLineHeight(r.getFontHeight());
+	    public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
+	    	RibbonFont font = rd.getState().getFont();
+	    	
+	        this.strwidth = StringWrapHelper.stringWidth(font, Styling.PRODUCT_NAME);
+	        sizepos.move(strwidth + font.getHeight(), true);
+	        sizepos.setMinLineHeight(font.getHeight());
 	
 	       this.bounds = sizepos.getSize();
 	    }
 	
 	    @Override
-	    public void paint(Renderer r) {
-	        r.useBackground();
+	    public void paint(RendererData rd, PaintContext context) {
+	    	Renderer r = context.getRenderer();
+	    	
+	        rd.useBackground();
 	
 	        int rectWidth = bounds.getWidth() - bounds.getHeight() / 2;
 	
-	        r.drawFilledRect(0, 0, rectWidth, bounds.getHeight());
-	        r.drawEllipse(bounds.getWidth() - bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
-	        r.drawFilledRect(rectWidth, 0, bounds.getHeight()/2, bounds.getHeight()/2);
+	        r.drawFilledRect(rd, 0, 0, rectWidth, bounds.getHeight());
+	        r.drawEllipse(rd, bounds.getWidth() - bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
+	        r.drawFilledRect(rd, rectWidth, 0, bounds.getHeight()/2, bounds.getHeight()/2);
 	
-	        r.useForeground();
-	        r.drawText(bounds.getWidth() / 2 - strwidth / 2, Styling.ELEMENT_PADDING, Styling.PRODUCT_NAME);
+	        rd.useForeground();
+	        r.drawText(rd, bounds.getWidth() / 2 - strwidth / 2, Styling.ELEMENT_PADDING, Styling.PRODUCT_NAME);
 	    }
 
 		@Override

@@ -2,11 +2,12 @@ package everyos.engine.ribbon.ui.simple.layout;
 
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
-import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.ComputedChildrenHelper;
 
@@ -22,16 +23,16 @@ public class InlineLayout implements Layout {
 	}
 
 	@Override
-	public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr, Appearence appearence) {
-		appearence.render(r, sizepos, uimgr);
-		renderChildren(r, sizepos, uimgr);
+	public void render(RendererData rd, SizePosGroup sizepos, RenderContext context, Appearence appearence) {
+		appearence.render(rd, sizepos, context);
+		renderChildren(rd, sizepos, context);
 
 	}
 
 	@Override
-	public void paint(Renderer r, Appearence appearence) {
-		appearence.paint(r);
-		paintChildren(r);
+	public void paint(RendererData rd, PaintContext context, Appearence appearence) {
+		appearence.paint(rd, context);
+		paintChildren(rd, context);
 	}
 
 	@Override
@@ -46,17 +47,17 @@ public class InlineLayout implements Layout {
 
 	}
 
-	private void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-		this.computedChildrenHelper.recompute(c->uimgr.get(c, ui));
+	private void renderChildren(RendererData rd, SizePosGroup sizepos, RenderContext context) {
+		this.computedChildrenHelper.recompute(c->context.getUIManager().get(c, ui));
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
-			c.render(r, sizepos, uimgr);
+			c.render(rd, sizepos, context);
 		}
 	}
 
-	private void paintChildren(Renderer r) {
+	private void paintChildren(RendererData rd, PaintContext context) {
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
-			r.useBackground();
-			c.paint(r);
+			rd.useBackground();
+			c.paint(rd, context);
 		}
 	}
 }

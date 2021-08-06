@@ -1,7 +1,7 @@
 package everyos.browser.webicitybrowser.gui.animation;
 
 import everyos.browser.webicitybrowser.gui.Animation;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.util.TimeSystem;
 
@@ -10,7 +10,7 @@ public class SlideInAnimation implements Animation {
   	private float progress = 0;
 	
 	@Override
-	public Renderer step(Renderer r, boolean visible, Dimension bounds) {
+	public RendererData step(RendererData rd, boolean visible, Dimension bounds) {
 		if (visible) {
 			if (progress < 1) {
 				progress += TimeSystem.getDeltaMillis()/animationTime;
@@ -26,7 +26,7 @@ public class SlideInAnimation implements Animation {
 		}
 		
 		int slideHeight = (int) (bounds.getHeight() * progress);
-		Renderer r2 = r.getSubcontext(0, 0, bounds.getWidth(), slideHeight);
+		RendererData r2 = rd.getSubcontext(0, 0, bounds.getWidth(), slideHeight);
 		r2.translate(0, -(bounds.getHeight()-slideHeight));
 		
 		return r2;

@@ -16,8 +16,12 @@ import everyos.engine.ribbon.core.event.KeyboardEvent;
 import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.event.UIEventTarget;
+import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
-import everyos.engine.ribbon.core.rendering.Renderer.ListenerPaintListener;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Location;
 import everyos.engine.ribbon.core.shape.Position;
@@ -25,7 +29,6 @@ import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.core.util.TimeSystem;
 import everyos.engine.ribbon.renderer.skijarenderer.ImageUtil.Image;
 
 public class RibbonSkijaWindow {
@@ -129,7 +132,6 @@ public class RibbonSkijaWindow {
 		
 		//long time = System.currentTimeMillis();
 		if (GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_ICONIFIED) == GLFW.GLFW_FALSE) {
-			TimeSystem.step();
 			GLFW.glfwMakeContextCurrent(window);
 			root = updateWindow(root);
 		}
@@ -157,17 +159,17 @@ public class RibbonSkijaWindow {
 			//long time = System.currentTimeMillis();
 			//TODO: Fix the memory leak
 			rootComponentUI.render(
-				root,
+				createRendererData(renderer, size),
 				new SizePosGroup(
 					size.getWidth(), size.getHeight(), 
 					0, 0, 
 					size.getWidth(), size.getHeight()),
-				uiManager);
+				new DefaultRenderContext());
 			rootComponentUI.validateTo(InvalidationLevel.PAINT);
 			//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 		}
 		
-		//if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
+		if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
 			nextFrameRequiresRedraw = !rootComponentUI.getValidated(InvalidationLevel.PAINT);
 			
 			// We paint event listeners while painting graphics.
@@ -175,10 +177,11 @@ public class RibbonSkijaWindow {
 			mouseBindings.clear();
 			generalEventBindings.trimToSize();
 			generalEventBindings.clear();
+			
 			root.onPaint(new ListenerPaintListener() {
 				@Override
-				public void onPaint(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
-					mouseBindings.add(new ListenerRect(new Rectangle(x, y, l, h), c, listener));
+				public void onPaint(UIEventTarget c, int[] bounds, EventListener<MouseEvent> listener) {
+					mouseBindings.add(new ListenerRect(new Rectangle(bounds), c, listener));
 				}
 	
 				@Override
@@ -189,13 +192,22 @@ public class RibbonSkijaWindow {
 			
 			// Paint and display the UI.
 			// The target time is 16ms for paint per frame, max
-			//long time = System.currentTimeMillis();
-			rootComponentUI.paint(renderer);
+			long time = System.currentTimeMillis();
+			rootComponentUI.paint(createRendererData(renderer, size), new DefaultPaintContext());
 			renderer.draw();
-			//System.out.println(System.currentTimeMillis()-time);
-		//}
+			System.out.println(System.currentTimeMillis()-time);
+		}
 		
 		return renderer;
+	}
+
+	private RendererData createRendererData(Renderer r, Dimension size) {
+		RendererData data = new RendererData(
+			new GUIState(),
+			new int[] {0, 0, size.getWidth(), size.getHeight()},
+			new int[] {0, 0, size.getWidth(), size.getHeight()});
+		data.getState().setFont(r.getFont("Times New Roman", 100, 12));
+		return data;
 	}
 
 	private Dimension getSize() {
@@ -350,6 +362,20 @@ public class RibbonSkijaWindow {
 		
 		context = DirectContext.makeGL();
 		root = RibbonSkijaRenderer.of(window, context);
+	}
+	
+	private class DefaultRenderContext implements RenderContext {
+		@Override
+		public UIManager getUIManager() {
+			return uiManager;
+		}
+	}
+	
+	private class DefaultPaintContext implements PaintContext {
+		@Override
+		public Renderer getRenderer() {
+			return root;
+		}
 	}
 	
 	static {

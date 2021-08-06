@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RibbonFont;
 
 public class StringWrapHelper {
 	private boolean ignoreWhitespace;
 	private List<String> lines;
 	private StringBuilder line;
 	
-	public List<String> calculateString(String text, Renderer r, SizePosGroup sizepos, boolean forceInline) {
+	public List<String> calculateString(String text, RibbonFont font, SizePosGroup sizepos, boolean forceInline) {
 		if (text.isBlank()) return List.of();
 		
 		this.ignoreWhitespace = true;
@@ -21,9 +21,9 @@ public class StringWrapHelper {
 		for (int i = 0; i<text.length(); i++) {
 			char ch = text.charAt(i);
 			if (Character.isWhitespace(ch)) {
-				computeWhitespace(r, sizepos, forceInline);
+				computeWhitespace(font, sizepos, forceInline);
 			} else {
-				i+=addWord(text, r, sizepos, forceInline, i)-1;
+				i+=addWord(text, font, sizepos, forceInline, i)-1;
 			}
 		}
 		
@@ -34,12 +34,12 @@ public class StringWrapHelper {
 		return lines;
 	}
 	
-	private int addWord(String text, Renderer r, SizePosGroup sizepos, boolean forceInline, int i) {
+	private int addWord(String text, RibbonFont font, SizePosGroup sizepos, boolean forceInline, int i) {
 		// Append the next word to the string. Wrap if our text is too long.
-		sizepos.setMinLineHeight(r.getFontHeight()+r.getFontPaddingHeight());
+		sizepos.setMinLineHeight(font.getHeight()+font.getPaddingHeight());
 		String word = getLengthOfNextWord(text, i);
 		ignoreWhitespace = false;
-		if (sizepos.move(fastStringWidth(r, word), forceInline)) {
+		if (sizepos.move(fastStringWidth(font, word), forceInline)) {
 			line.append(word);
 		} else {
 			if (sizepos.getCurrentPointer().getX()!=0) {
@@ -48,12 +48,12 @@ public class StringWrapHelper {
 			//TODO: Support automatic hyphens
 			for (int j = 0; j<word.length(); j++) {
 				char ch2 = word.charAt(j);
-				if (sizepos.move(r.charWidth(ch2), false)) {
+				if (sizepos.move(font.getCharWidth(ch2), false)) {
 					line.append(ch2);
 				} else {
 					line = nextLine(lines, line, sizepos);
 					line.append(ch2);
-					sizepos.move(r.charWidth(ch2), true);
+					sizepos.move(font.getCharWidth(ch2), true);
 				}
 			}
 		}
@@ -61,13 +61,13 @@ public class StringWrapHelper {
 		return word.length();
 	}
 
-	private void computeWhitespace(Renderer r, SizePosGroup sizepos, boolean forceInline) {
+	private void computeWhitespace(RibbonFont font, SizePosGroup sizepos, boolean forceInline) {
 		// Append a space if the last character was not whitespace or a line start.
 		// If it goes offscreen, we do wrapping
 		//TODO: Ability to configure wrapping
 		if (!ignoreWhitespace) {
 			ignoreWhitespace = true;
-			if (sizepos.move(r.charWidth(' '), forceInline)) {
+			if (sizepos.move(font.getCharWidth(' '), forceInline)) {
 				line.append(' ');
 			} else {
 				line = nextLine(lines, line, sizepos);
@@ -95,21 +95,21 @@ public class StringWrapHelper {
 		return new StringBuilder();
 	}
 	
-	private static int fastStringWidth(Renderer r, String str) {
+	private static int fastStringWidth(RibbonFont font, String str) {
 		int mw = 0;
 		for (byte ch: str.getBytes()) {
-			mw+=r.charWidth((char) ch); 
+			mw+=font.getCharWidth((char) ch); 
 		}
 		
 		return mw;
 	}
 	
-	public static int stringWidth(Renderer r, String str) {
+	public static int stringWidth(RibbonFont font, String str) {
 		int width = 0;
 		for (String spl: str.split("\n")) {
 			int mw = 0;
 			for (byte ch: spl.getBytes()) {
-				mw+=r.charWidth((char) ch); 
+				mw+=font.getCharWidth((char) ch); 
 			}
 			width=mw>width?mw:width;
 		}

@@ -9,7 +9,9 @@ import everyos.engine.ribbon.core.event.EventListener;
 import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.GUIState;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Location;
 import everyos.engine.ribbon.core.shape.Offset;
@@ -18,7 +20,6 @@ import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
-import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.ComputedChildrenHelper;
 import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;
@@ -43,7 +44,7 @@ public class InlineBlockLayout implements Layout {
 		this.computedChildrenHelper = new ComputedChildrenHelper(this.component);
 	}
 
-	public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr, Appearence appearence) {
+	public void render(RendererData rd, SizePosGroup sizepos, RenderContext context, Appearence appearence) {
 		//TODO: Offset bindings
 		//TODO: Auto-wrap
 		
@@ -71,7 +72,7 @@ public class InlineBlockLayout implements Layout {
 		this.bounds = bounds.build();
 		
 		// Render our component, as well as any child components
-		renderInnerPart(r, group, uimgr, appearence);
+		renderInnerPart(rd, group, context, appearence);
 		
 		// Now that we have determined the size, we can clip our bounds
 		// Note that, even in a container with an infinite max width, we
@@ -88,7 +89,7 @@ public class InlineBlockLayout implements Layout {
 		
 			//TODO: This causes O(n^2), we should try to get rid of it
 			group = new SizePosGroup(bounds.getWidth(), bounds.getHeight(), 0, 0, bounds.getWidth(), bounds.getHeight());
-			renderInnerPart(r, group, uimgr, appearence);
+			renderInnerPart(rd, group, context, appearence);
 		}
 		
 		// Offset the element, if desired
@@ -111,10 +112,10 @@ public class InlineBlockLayout implements Layout {
 	}
 	
 	@Override
-	public void paint(Renderer r, Appearence appearence) {
-		Renderer r2 = r.getSubcontext(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
-		paintMouse(r2, appearence);
-		paintInnerPart(r2, appearence);
+	public void paint(RendererData rd, PaintContext context, Appearence appearence) {
+		RendererData r2 = rd.getSubcontext(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+		paintMouse(r2, context, appearence);
+		paintInnerPart(r2, context, appearence);
 	}
 	
 	@Override
@@ -164,49 +165,50 @@ public class InlineBlockLayout implements Layout {
 		return builder;
 	}
 	
-	private void renderInnerPart(Renderer r, SizePosGroup sizepos, UIManager uimgr, Appearence appearence) {
-		appearence.render(r, sizepos, uimgr);
+	private void renderInnerPart(RendererData rd, SizePosGroup sizepos, RenderContext context, Appearence appearence) {
+		appearence.render(rd, sizepos, context);
 
 		if (autoManageChildren) {
-			renderChildren(r, sizepos, uimgr);
+			renderChildren(rd, sizepos, context);
 		}
 	}
 
-	private void renderChildren(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-		computedChildrenHelper.recompute(c -> uimgr.get(c, ui));
+	private void renderChildren(RendererData rd, SizePosGroup sizepos, RenderContext context) {
+		computedChildrenHelper.recompute(c -> context.getUIManager().get(c, ui));
 		
-		GUIState state = r.getState().clone();
+		GUIState state = rd.getState().clone();
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
-			c.render(r, sizepos, uimgr);
-			r.restoreState(state);
+			c.render(rd, sizepos, context);
+			rd.restoreState(state);
 		}
 	}
 	
-	protected void paintInnerPart(Renderer r, Appearence appearence) {
-		GUIState state = r.getState().clone();
+	protected void paintInnerPart(RendererData rd, PaintContext context, Appearence appearence) {
+		GUIState state = rd.getState().clone();
 		
-		r.useBackground();
+		rd.useBackground();
 		
-		appearence.paint(r);
+		appearence.paint(rd, context);
 
-		if (autoManageChildren)
-			paintChildren(r);
+		if (autoManageChildren) {
+			paintChildren(rd, context);
+		}
 
-		r.restoreState(state);
+		rd.restoreState(state);
 	}
 	
-	private void paintChildren(Renderer r) {
-		r.useBackground();
-		GUIState state = r.getState();
+	private void paintChildren(RendererData rd, PaintContext context) {
+		rd.useBackground();
+		GUIState state = rd.getState();
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
-			r.restoreState(state.clone());
-			c.paint(r);
-			r.restoreState(state);
+			rd.restoreState(state.clone());
+			c.paint(rd, context);
+			rd.restoreState(state);
 		}
 	}
 	
-	protected void paintMouse(Renderer r, Appearence appearence) {
-		r.paintMouseListener(component, 0, 0, bounds.getWidth(), bounds.getHeight(), e->{
+	protected void paintMouse(RendererData r2, PaintContext context, Appearence appearence) {
+		context.getRenderer().paintMouseListener(r2, component, 0, 0, bounds.getWidth(), bounds.getHeight(), e->{
 			processEvent(e);
 			appearence.processEvent(e);
 		});

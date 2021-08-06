@@ -2,10 +2,11 @@ package everyos.browser.webicity.webribbon.ui.webui;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
-import everyos.browser.webicity.webribbon.gui.UIContext;
+import everyos.browser.webicity.webribbon.gui.WebPaintContext;
+import everyos.browser.webicity.webribbon.gui.WebRenderContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class WebUIWebBreakComponentUI extends WebUIWebComponentUI {
@@ -23,12 +24,12 @@ public class WebUIWebBreakComponentUI extends WebUIWebComponentUI {
 	
 	private class BreakAppearence implements Appearence {
 		@Override
-		public void render(Renderer r, SizePosGroup sizepos, UIContext context) {
+		public void render(RendererData rd, SizePosGroup sizepos, WebRenderContext context) {
 			sizepos.nextLine();
 		}
 
 		@Override
-		public void paint(Renderer r, Rectangle viewport) {
+		public void paint(RendererData rd, Rectangle viewport, WebPaintContext context) {
 			
 		}
 	}

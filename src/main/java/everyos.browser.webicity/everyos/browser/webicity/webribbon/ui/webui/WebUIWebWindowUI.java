@@ -4,13 +4,13 @@ import java.util.function.Consumer;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
-import everyos.browser.webicity.webribbon.gui.UIContext;
+import everyos.browser.webicity.webribbon.gui.WebRenderContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.browser.webicity.webribbon.ui.webui.layout.InlineBlockLayout;
 import everyos.browser.webicity.webribbon.ui.webui.layout.Layout;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 
 public class WebUIWebWindowUI extends WebUIWebComponentUI {
@@ -58,9 +58,9 @@ public class WebUIWebWindowUI extends WebUIWebComponentUI {
 		}
 		
 		@Override
-		public void render(Renderer r, SizePosGroup sizepos, UIContext context, Appearence appearence) {
+		public void render(RendererData rd, SizePosGroup sizepos, WebRenderContext context, Appearence appearence) {
 			if (sizepos.getCurrentPointer().getX()!=0) sizepos.nextLine();
-			super.render(r, sizepos, context, appearence);
+			super.render(rd, sizepos, context, appearence);
 			if (sizepos.getCurrentPointer().getX()!=0) sizepos.nextLine();
 		}
 	}

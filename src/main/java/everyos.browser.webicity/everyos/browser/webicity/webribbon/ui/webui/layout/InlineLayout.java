@@ -3,14 +3,15 @@ package everyos.browser.webicity.webribbon.ui.webui.layout;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
-import everyos.browser.webicity.webribbon.gui.UIContext;
+import everyos.browser.webicity.webribbon.gui.WebPaintContext;
+import everyos.browser.webicity.webribbon.gui.WebRenderContext;
 import everyos.browser.webicity.webribbon.gui.shape.Marker;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.browser.webicity.webribbon.ui.webui.helper.ComputedChildrenHelper;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.GUIState;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class InlineLayout implements Layout {
@@ -27,22 +28,22 @@ public class InlineLayout implements Layout {
 	}
 	
 	@Override
-	public void render(Renderer r, SizePosGroup sizepos, UIContext context, Appearence appearence) {
+	public void render(RendererData rd, SizePosGroup sizepos, WebRenderContext context, Appearence appearence) {
 		Marker marker = new Marker(sizepos.getMarker());
 		sizepos.setMarker(marker);
-		renderInnerPart(r, sizepos, context, appearence);
+		renderInnerPart(rd, sizepos, context, appearence);
 		sizepos.setMarker(marker.end());
 		this.bounds = marker.getHitbox();
 	}
 
 	@Override
-	public void paint(Renderer r, Rectangle viewport, Appearence appearence) {
-		GUIState state = r.getState();
-		r.restoreState(state.clone());
+	public void paint(RendererData rd, Rectangle viewport, WebPaintContext context, Appearence appearence) {
+		GUIState state = rd.getState();
+		rd.restoreState(state.clone());
 		
-		paintInnerPart(r, viewport, appearence);
+		paintInnerPart(rd, viewport, context, appearence);
 		
-		r.restoreState(state);
+		rd.restoreState(state);
 	}
 	
 	@Override
@@ -50,32 +51,32 @@ public class InlineLayout implements Layout {
 		
 	}
 	
-	private void renderInnerPart(Renderer r, SizePosGroup sizepos, UIContext context, Appearence appearence) {
-		appearence.render(r, sizepos, context);
-		renderChildren(r, sizepos, context);
+	private void renderInnerPart(RendererData rd, SizePosGroup sizepos, WebRenderContext context, Appearence appearence) {
+		appearence.render(rd, sizepos, context);
+		renderChildren(rd, sizepos, context);
 	}
 	
-	private void renderChildren(Renderer r, SizePosGroup sizepos, UIContext context) {
+	private void renderChildren(RendererData rd, SizePosGroup sizepos, WebRenderContext context) {
 		this.computedChildrenHelper.recompute(c->context.getManager().get(c, ui));
 		
 		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
-			c.render(r, sizepos, context);
+			c.render(rd, sizepos, context);
 		}
 	}
 	
-	private void paintInnerPart(Renderer r, Rectangle viewport, Appearence appearence) {
-		appearence.paint(r, viewport);
-		paintChildren(r, viewport);
+	private void paintInnerPart(RendererData rd, Rectangle viewport, WebPaintContext context, Appearence appearence) {
+		appearence.paint(rd, viewport, context);
+		paintChildren(rd, viewport, context);
 	}
 	
-	private void paintChildren(Renderer r, Rectangle viewport) {
-		r.useBackground();
-		GUIState state = r.getState();
-		r.restoreState(state.clone());
+	private void paintChildren(RendererData rd, Rectangle viewport, WebPaintContext context) {
+		rd.useBackground();
+		GUIState state = rd.getState();
+		rd.restoreState(state.clone());
 		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
 			if (c.getUIBox().intersectsWith(viewport)) {
-				c.paint(r, viewport);
-				r.restoreState(state);
+				c.paint(rd, viewport, context);
+				rd.restoreState(state);
 			}
 		}
 		//TODO: Sort by Z-index

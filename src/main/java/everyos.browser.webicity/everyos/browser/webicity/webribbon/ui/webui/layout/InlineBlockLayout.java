@@ -1,10 +1,10 @@
 package everyos.browser.webicity.webribbon.ui.webui.layout;
 
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
-import everyos.browser.webicity.webribbon.core.ui.Pallete;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
-import everyos.browser.webicity.webribbon.gui.UIContext;
+import everyos.browser.webicity.webribbon.gui.WebPaintContext;
+import everyos.browser.webicity.webribbon.gui.WebRenderContext;
 import everyos.browser.webicity.webribbon.gui.shape.Position;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
@@ -12,7 +12,7 @@ import everyos.browser.webicity.webribbon.ui.webui.helper.ComputedChildrenHelper
 import everyos.browser.webicity.webribbon.ui.webui.psuedo.ScrollBar;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.GUIState;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;	
@@ -26,7 +26,6 @@ public class InlineBlockLayout implements Layout {
 	private Position position;
 	private ScrollBar scrollBar;
 	private boolean requiresMouseTarget = false;
-	private Pallete pallete;
 	
 	public InlineBlockLayout(WebComponent component, WebComponentUI ui) {
 		this.component = component;
@@ -36,9 +35,7 @@ public class InlineBlockLayout implements Layout {
 	}
 	
 	@Override
-	public void render(Renderer r, SizePosGroup sizepos, UIContext context, Appearence appearence) {
-		this.pallete = context.getPallete(); //TODO
-		
+	public void render(RendererData rd, SizePosGroup sizepos, WebRenderContext context, Appearence appearence) {
 		this.position = sizepos.getCurrentPointer();
 		
 		Dimension maxBlockSize = getMaxBlockSize(sizepos);
@@ -48,7 +45,7 @@ public class InlineBlockLayout implements Layout {
 			0, 0,
 			-1, -1);
 		
-		renderInnerPart(r, temporaryPageBounds, context, appearence);
+		renderInnerPart(rd, temporaryPageBounds, context, appearence);
 		
 		this.outerSize = temporaryPageBounds.getSize();
 		
@@ -60,7 +57,7 @@ public class InlineBlockLayout implements Layout {
 					0, 0,
 					-1, -1);
 				
-				renderInnerPart(r, temporaryPageBounds, context, appearence);
+				renderInnerPart(rd, temporaryPageBounds, context, appearence);
 				
 				this.outerSize = new Dimension(maxBlockSize.getWidth()-10, maxBlockSize.getHeight());
 			}
@@ -78,23 +75,23 @@ public class InlineBlockLayout implements Layout {
 	}
 
 	@Override
-	public void paint(Renderer r, Rectangle viewport, Appearence appearence) {
+	public void paint(RendererData rd, Rectangle viewport, WebPaintContext context, Appearence appearence) {
 		
-		scrollBar.paint(r, new Rectangle(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight()), pallete);
+		scrollBar.paint(rd, new Rectangle(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight()), context);
 		
 		if (requiresMouseTarget) {
-			r.paintMouseListener(component, position.getX(), position.getY(), outerSize.getWidth()+10, outerSize.getHeight(), e->{
+			context.getRenderer().paintMouseListener(rd, component, position.getX(), position.getY(), outerSize.getWidth()+10, outerSize.getHeight(), e->{
 				processEvent(e);
 			});
 		}
 		
-		GUIState state = r.getState();
-		r.restoreState(state.clone());
-		Renderer childR = r.getSubcontext(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight());
+		GUIState state = rd.getState();
+		rd.restoreState(state.clone());
+		RendererData childR = rd.getSubcontext(position.getX(), position.getY(), outerSize.getWidth(), outerSize.getHeight());
 		
-		paintInnerPart(childR, viewport, appearence);
+		paintInnerPart(childR, viewport, context, appearence);
 		
-		r.restoreState(state);
+		rd.restoreState(state);
 	}
 	
 	@Override
@@ -108,70 +105,59 @@ public class InlineBlockLayout implements Layout {
 		return new Dimension(-1, -1);
 	}
 
-	private void renderInnerPart(Renderer r, SizePosGroup sizepos, UIContext context, Appearence appearence) {
-		appearence.render(r, sizepos, context);
-		renderChildren(r, sizepos, context);
+	private void renderInnerPart(RendererData rd, SizePosGroup sizepos, WebRenderContext context, Appearence appearence) {
+		appearence.render(rd, sizepos, context);
+		renderChildren(rd, sizepos, context);
 	}
 	
-	private void renderChildren(Renderer r, SizePosGroup sizepos, UIContext context) {
+	private void renderChildren(RendererData rd, SizePosGroup sizepos, WebRenderContext context) {
 		this.computedChildrenHelper.recompute(c->context.getManager().get(c, ui));
 		
 		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
-			c.render(r, sizepos, context);
+			c.render(rd, sizepos, context);
 		}
 	}
 	
-	private void paintInnerPart(Renderer r, Rectangle viewport, Appearence appearence) {
-		appearence.paint(r, viewport);
-		paintChildren(r, viewport);
+	private void paintInnerPart(RendererData rd, Rectangle viewport, WebPaintContext context, Appearence appearence) {
+		appearence.paint(rd, viewport, context);
+		paintChildren(rd, viewport, context);
 	}
 	
-	private void paintChildren(Renderer r, Rectangle viewport) {
+	private void paintChildren(RendererData rd, Rectangle viewport, WebPaintContext context) {
 		int curScrollY = scrollBar.getCurrentScrollY();
 		
-		r.setScrollY(curScrollY);
+		rd.translate(0, -curScrollY);
 		
+		Rectangle vp = intersect(viewport, curScrollY);
+		
+		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
+			rd.useBackground();
+			if (c.getUIBox().intersectsWith(vp)) {
+				c.paint(rd, vp, context);
+			}
+		}
+		//TODO: Sort by Z-index
+	}
+	
+	private Rectangle intersect(Rectangle viewport, int scroll) {
 		//AABB based culling
-		
 		RectangleBuilder vpBuilder = new RectangleBuilder(
 			position.getX(), position.getY(),
 			outerSize.getWidth(), outerSize.getHeight());
 		
 		// Perform an intersect
-		if (vpBuilder.getX() < viewport.getX()) {
-			vpBuilder.setWidth(vpBuilder.getWidth()-(viewport.getX()-vpBuilder.getX()));
-			vpBuilder.setX(viewport.getX());
-		}
-		if (vpBuilder.getY() < viewport.getY()) {
-			vpBuilder.setHeight(vpBuilder.getHeight()-(viewport.getY()-vpBuilder.getY()));
-			vpBuilder.setY(viewport.getY());
-		}
-		
-		int offX = vpBuilder.getX()-viewport.getX();
-		if (offX + vpBuilder.getWidth() > viewport.getWidth()) {
-			vpBuilder.setWidth(viewport.getWidth() - offX);
-		}
-		
-		int offY = vpBuilder.getY()-viewport.getY();
-		if (offY + vpBuilder.getHeight() > viewport.getHeight()) {
-			vpBuilder.setHeight(viewport.getHeight() - offY);
-		}
-		
+		Rectangle intersected = vpBuilder.build().intersect(viewport);
+		vpBuilder.setWidth(intersected.getWidth());
+		vpBuilder.setHeight(intersected.getHeight());
+				
 		// Origin should be 0, 0
-		vpBuilder.setX(vpBuilder.getX()-position.getX());
-		vpBuilder.setY(vpBuilder.getY()-position.getY());
+		vpBuilder.setX(intersected.getX()-position.getX());
+		vpBuilder.setY(intersected.getY()-position.getY());
 		
 		// And scroll
-		vpBuilder.setY(vpBuilder.getY()+curScrollY);
+		vpBuilder.setY(vpBuilder.getY()+scroll);
 		
-		Rectangle vp = vpBuilder.build();
-		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
-			r.useBackground();
-			if (c.getUIBox().intersectsWith(vp)) {
-				c.paint(r, vp);
-			}
-		}
-		//TODO: Sort by Z-index
+		return vpBuilder.build();
 	}
 
 	@Override

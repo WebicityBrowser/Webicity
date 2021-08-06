@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
+import everyos.engine.ribbon.core.util.TimeSystem;
+
 public class RenderingThread {
 	private static List<Runnable> tasks = new ArrayList<>();
 	private static volatile boolean mustWait = true;
@@ -30,6 +32,7 @@ public class RenderingThread {
 				for (Runnable task: curTasks) {
 					task.run();
 				}
+				TimeSystem.step();
 				GLFW.glfwPollEvents();
 			}
 		}, "GLEventThread").start();

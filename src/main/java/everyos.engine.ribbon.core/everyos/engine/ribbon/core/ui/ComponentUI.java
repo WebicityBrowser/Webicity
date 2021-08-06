@@ -3,14 +3,16 @@ package everyos.engine.ribbon.core.ui;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public interface ComponentUI {
 	//TODO: Also pass a stack
-	void render(Renderer r, SizePosGroup sizepos, UIManager uimgr);
-	void paint(Renderer r);
-	//void composite(GUIRenderer r);
+	void render(RendererData rd, SizePosGroup sizepos, RenderContext context);
+	void paint(RendererData rd, PaintContext context);
+	//void composite(RendererData rd);
 	
 	void directive(UIDirective directive);
 	ComponentUI getParent();

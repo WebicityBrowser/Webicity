@@ -8,13 +8,15 @@ import everyos.browser.webicity.webribbon.ui.webui.WebUIWebWindowUI;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.GUIState;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.graphics.RenderContext;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
-import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 
@@ -32,10 +34,10 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		return this.appearence;
 	}
 	
-	private class UIContextImp implements UIContext {
+	private class WebRenderContextImp implements WebRenderContext {
 		private WebUIManager uimanager;
 
-		public UIContextImp(WebUIManager uimgr) {
+		public WebRenderContextImp(WebUIManager uimgr) {
 			this.uimanager = uimgr;
 		}
 
@@ -49,9 +51,23 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 			// TODO: Implement this when needed
 		}
 
+	}
+	
+	private class WebPaintContextImp implements WebPaintContext {
+		private Renderer renderer;
+
+		public WebPaintContextImp(Renderer r) {
+			this.renderer = r;
+		}
+		
 		@Override
 		public Pallete getPallete() {
 			return getComponent().casted(WebComponentWrapper.class).getPallete();
+		}
+
+		@Override
+		public Renderer getRenderer() {
+			return renderer;
 		}
 	}
 	
@@ -66,7 +82,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		}
 		
 		@Override
-		public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
+		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
 			WebComponent oldWebComponent = this.webComponent;
 			this.webComponent = getComponent().casted(WebComponentWrapper.class).getUI();
 			if (webComponent!=oldWebComponent) {
@@ -81,15 +97,17 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 				
 				documentUI.setWindowSize(new Dimension(bounds.getWidth(), bounds.getHeight()));
 				
-				documentUI.render(r, spg, new UIContextImp(webUIManager));
+				documentUI.render(rd, spg, new WebRenderContextImp(webUIManager));
 			}
 		}
 
 		@Override
-		public void paint(Renderer r) {
-			r.restoreState(new GUIState());
+		public void paint(RendererData rd, PaintContext context) {
+			GUIState state = new GUIState();
+			state.setFont(context.getRenderer().getFont("Times New Roman", 100, 12));
+			rd.restoreState(state);
 			if (webComponent!=null) {
-				documentUI.paint(r, viewport);
+				documentUI.paint(rd, viewport, new WebPaintContextImp(context.getRenderer()));
 			}
 		}
 

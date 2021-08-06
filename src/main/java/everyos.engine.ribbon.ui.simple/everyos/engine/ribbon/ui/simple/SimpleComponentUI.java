@@ -6,11 +6,12 @@ import everyos.engine.ribbon.core.directive.ForegroundDirective;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
-import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.appearence.DefaultAppearence;
 import everyos.engine.ribbon.ui.simple.layout.InlineLayout;
@@ -36,16 +37,20 @@ public class SimpleComponentUI implements ComponentUI {
 	}
 	
 	@Override
-	public void render(Renderer r, SizePosGroup sizepos, UIManager uimgr) {
-		getLayout().render(r, sizepos, uimgr, getAppearence());
+	public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
+		getLayout().render(rd, sizepos, context, getAppearence());
 		validateTo(InvalidationLevel.PAINT);
 	}
 	
 	@Override
-	public void paint(Renderer r) {
-		if (background!=null) r.setBackground(background);
-		if (foreground!=null) r.setForeground(foreground);
-		getLayout().paint(r, getAppearence());
+	public void paint(RendererData rd, PaintContext context) {
+		if (background!=null) {
+			rd.getState().setBackground(background);
+		}
+		if (foreground!=null) {
+			rd.getState().setForeground(foreground);
+		}
+		getLayout().paint(rd, context, getAppearence());
 		validateTo(InvalidationLevel.IGNORE);
 	}
 	

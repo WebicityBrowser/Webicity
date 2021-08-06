@@ -1,12 +1,11 @@
 package everyos.engine.ribbon.renderer.skijarenderer;
 
+import java.util.HashMap;
+
 import org.jetbrains.skija.BackendRenderTarget;
 import org.jetbrains.skija.Canvas;
 import org.jetbrains.skija.ColorSpace;
 import org.jetbrains.skija.DirectContext;
-import org.jetbrains.skija.Font;
-import org.jetbrains.skija.FontMetrics;
-import org.jetbrains.skija.FontMgr;
 import org.jetbrains.skija.FramebufferFormat;
 import org.jetbrains.skija.Paint;
 import org.jetbrains.skija.RRect;
@@ -15,7 +14,6 @@ import org.jetbrains.skija.Surface;
 import org.jetbrains.skija.SurfaceColorFormat;
 import org.jetbrains.skija.SurfaceOrigin;
 import org.jetbrains.skija.TextBlob;
-import org.jetbrains.skija.Typeface;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL32;
 
@@ -24,167 +22,96 @@ import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.event.UIEventTarget;
 import everyos.engine.ribbon.core.graphics.Color;
-import everyos.engine.ribbon.core.graphics.FontStyle;
-import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
+import everyos.engine.ribbon.core.rendering.RibbonFont;
+import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class RibbonSkijaRenderer implements Renderer {
 	private static final ColorSpace colorSpace = ColorSpace.getSRGB();
+	private static final boolean debugBoxes = false;
+	
+	private HashMap<FontInfo, RibbonSkijaFont> fonts = new HashMap<>();
 	private DirectContext context;
-	
 	private Canvas canvas;
-	private int 
-		x = 0,
-		y = 0,
-		l = 0,
-		h = 0;
-	private int
-		scrollY = 0;
-	private int color;
-	private GUIState state;
 	private ListenerPaintListener lpl;
-	private FontMetrics metrics;
-	private RibbonSkijaRenderer parentRenderer;
-	private Font font;
-	private int[] widthCache;
-	private FontMgr manager;
-	private Typeface typeface;
-	private int fontHeight;
 	
-	private boolean debugBoxes = false;
-	
-	private RibbonSkijaRenderer(int x, int y, int l, int h, DirectContext context) {
-		/*if (x<0) x = 0;
-		if (y<0) y = 0;*/
-		if (l<0) l = 0;
-		if (h<0) h = 0;
-		this.x = x; this.y = y;
-		this.l = l; this.h = h;
+	public RibbonSkijaRenderer(Canvas canvas, DirectContext context) {
 		this.context = context;
-	}
-	
-	private RibbonSkijaRenderer(RibbonSkijaRenderer parentRenderer, GUIState state, int x, int y, int l, int h, DirectContext context) {
-		//TODO: Anti-aliasing
-		this(x, y, l, h, context);
-		
-		this.state = state;
-		this.parentRenderer = parentRenderer;
-		this.color = parentRenderer.color;
-		this.canvas = parentRenderer.canvas;
-		this.font = parentRenderer.font;
-		this.widthCache = parentRenderer.widthCache;
-	}
-	
-	public RibbonSkijaRenderer(Canvas canvas, GUIState state, int x, int y, int l, int h, DirectContext context) {
-		this(x, y, l, h, context);
-		this.state = state;
 		this.canvas = canvas;
-		this.manager = FontMgr.getDefault();
-		this.typeface = manager.matchFamilyStyle("Times New Roman", org.jetbrains.skija.FontStyle.NORMAL);
-		this.font = new Font(typeface, 12);
-		this.color = 0xFF << 24;
 		
 		canvas.save();
 	}
 
-	private void beforeDraw() {
+	private void beforeDraw(RendererData data) {
+		canvas.restore();
+		canvas.save();
+		
 		if (debugBoxes) {
-			canvas.restore();
-			canvas.save();
-			Rect rect = Rect.makeXYWH(this.x, this.y, this.l, this.h);
-			
-			try (Paint paint = new Paint()) {
-				paint.setColor((255<<24)+(0<<16)+(255<<8)+255);
-				paint.setStroke(true);
-				canvas.drawRect(rect, paint);
-			}
+			drawDebugBox(data.getBounds());
 		}
 		
-		setClip(this.x, this.y, this.l, this.h);
+		setClip(data.getClip());
+		canvas.translate(data.getBounds()[0]+data.getTranslateX(), data.getBounds()[1]+data.getTranslateY());
 	}
 	
-	private void setClip(int x, int y, int l, int h) {
-		if (y<this.y) y = this.y;
-		if (l>this.l) l = this.l;
-		if (h>this.h) h = this.h;
-		if (parentRenderer == null) {
-			int fx = Math.max(0, x);
-			int fy = Math.max(0, y);
-			int fl = Math.max(0, l);
-			int fh = Math.max(0, h);
-			
-			canvas.restore();
-			canvas.save();
-			canvas.clipRect(Rect.makeXYWH(fx, fy, fl, fh));
-			return;
-		}
-		
-		parentRenderer.setClip(x, y, l, h);
-	}
-
-	@Override
-	public void translate(int dx, int dy) {
-		this.scrollY -= dy;
-	}
-
-	@Override
-	public Renderer getSubcontext(int x, int y, int l, int h) {
-		RibbonSkijaRenderer r = new RibbonSkijaRenderer(
-			this, state.clone(),
-			this.x+x, this.y+y-this.scrollY,
-			l, h, context);
-		r.onPaint(new ListenerPaintListener() {
-			@Override
-			public void onPaint(UIEventTarget c, int ex, int ey, int el, int eh, EventListener<MouseEvent> listener) {
-				_paintMouseListener(c, x+ex, y+ey, el, eh, listener);
-			}
-
-			@Override
-			public void onPaint(EventListener<UIEvent> listener) {
-				paintListener(listener);
-			}
-		});
-		return r;
-	}
-
-	@Override
-	public void drawFilledRect(int x, int y, int l, int h) {
-		beforeDraw();
-		if (l<1 || h<1) return;
-		Rect rect = Rect.makeXYWH(this.x+x, this.y+y-this.scrollY, l, h);
+	private void drawDebugBox(int[] bounds) {
+		Rect rect = Rect.makeXYWH(bounds[0], bounds[1], bounds[2], bounds[3]);
 		
 		try (Paint paint = new Paint()) {
-			paint.setColor(color);
+			paint.setColor((255<<24)+(0<<16)+(255<<8)+255);
+			paint.setStroke(true);
+			canvas.drawRect(rect, paint);
+		}
+	}
+
+	private void setClip(int[] bounds) {
+		int fx = Math.max(0, bounds[0]);
+		int fy = Math.max(0, bounds[1]);
+		int fl = Math.max(0, bounds[2]);
+		int fh = Math.max(0, bounds[3]);
+		
+		canvas.clipRect(Rect.makeXYWH(fx, fy, fl, fh));
+	}
+
+	@Override
+	public void drawFilledRect(RendererData data, int x, int y, int l, int h) {
+		beforeDraw(data);
+		if (l<1 || h<1) return;
+		Rect rect = Rect.makeXYWH(x, y, l, h);
+		
+		try (Paint paint = new Paint()) {
+			paint.setColor(toColor(data.getCurrentColor()));
 			canvas.drawRect(rect, paint);
 		}
 	}
 	
 	@Override
-	public void drawEllipse(int x, int y, int l, int h) {
-		beforeDraw();
-		RRect ellipse = RRect.makeOvalXYWH(this.x+x, this.y+y-this.scrollY, l, h);
+	public void drawEllipse(RendererData data, int x, int y, int l, int h) {
+		beforeDraw(data);
+		RRect ellipse = RRect.makeOvalXYWH(x, y, l, h);
 		try (Paint paint = new Paint()) {
-			paint.setColor(color);
+			paint.setColor(toColor(data.getCurrentColor()));
 			canvas.drawRRect(ellipse, paint);
 		}
 	}
 
 	@Override
-	public void drawLine(int x, int y, int l, int h) {
-		beforeDraw();
+	public void drawLine(RendererData data, int x, int y, int l, int h) {
+		beforeDraw(data);
 		try (Paint paint = new Paint()) {
-			paint.setColor(color);
-			canvas.drawLine(this.x+x, this.y+y-this.scrollY, this.x+x+l, this.y+y+h-this.scrollY, paint);
+			paint.setColor(toColor(data.getCurrentColor()));
+			canvas.drawLine(x, y, x+l, y+h, paint);
 		}
 	}
 
 	@Override
-	public int drawText(int x, int y, String text) {
-		withMetrics();
-		beforeDraw();
+	public int drawText(RendererData data, int x, int y, String text) {
+		beforeDraw(data);
 		
-		short[] glyphs = font.getStringGlyphs(text);
-		float[] widths = font.getWidths(glyphs);
+		RibbonSkijaFont font = (RibbonSkijaFont) data.getState().getFont();
+		short[] glyphs = font.getRaw().getStringGlyphs(text);
+		float[] widths = font.getRaw().getWidths(glyphs);
         float[] xpos = new float[glyphs.length];
         int distance = 0;
         for (int i = 0; i < xpos.length; i++) {
@@ -193,31 +120,11 @@ public class RibbonSkijaRenderer implements Renderer {
         }
 
         try (Paint paint = new Paint()) {
-			paint.setColor(color);
-			canvas.drawTextBlob(TextBlob.makeFromPosH(glyphs, xpos, 0, font), this.x+x, this.y+y+fontHeight-this.scrollY, paint);
+			paint.setColor(toColor(data.getCurrentColor()));
+			canvas.drawTextBlob(TextBlob.makeFromPosH(glyphs, xpos, 0, font.getRaw()), x, y+font.getHeight(), paint);
         }
 		
 		return distance; //TODO
-	}
-
-	@Override
-	public void setForeground(Color color) {
-		state.setForeground(color);
-	}
-
-	@Override
-	public void setBackground(Color color) {
-		state.setBackground(color);
-	}
-
-	@Override
-	public void useForeground() {
-		color = toColor(state.getForeground());
-	}
-
-	@Override
-	public void useBackground() {
-		color = toColor(state.getBackground());
 	}
 
 	@Override
@@ -226,89 +133,22 @@ public class RibbonSkijaRenderer implements Renderer {
 			context.flush();
 		}
 	}
-
-	@Override
-	public int getFontHeight() {
-		withMetrics();
-		return fontHeight;
-	}
 	
-	private void withMetrics() {
-		if (metrics==null) {
-			metrics = font.getMetrics();
-			widthCache = new int[256];
-			fontHeight = (int) metrics.getHeight();
-		}
-	}
-
 	@Override
-	public int getFontPaddingHeight() {
-		withMetrics();
-		return (int) metrics.getDescent()+1;
-	}
-
-	@Override
-	public int charWidth(int ch) {
-		withMetrics();
-		if (ch<256 && widthCache[ch]!=0) {
-			return widthCache[ch];
-		}
-		short glyph = font.getUTF32Glyph(ch);
-		int width = (int) font.getWidths(new short[] {glyph})[0];
-		if (ch<256) {
-			widthCache[ch] = width;
-		}
-		return width;
-	}
-
-	@Override
-	public void setFont(String name, FontStyle style, int size) {
-		
+	public RibbonFont getFont(String name, int weight, int size) {
+		// TODO: Remove dead fonts
+		return fonts.computeIfAbsent(new FontInfo(name, weight, size), _1->RibbonSkijaFont.of(name, weight, size));
 	}
 	
 	@Override
-	public void setScrollY(int scrollY) {
-		this.scrollY = scrollY;
-	}
-
-	@Override
-	public int getScrollY() {
-		return this.scrollY;
-	}
-
-	@Override
-	public void onPaint(ListenerPaintListener l) {
-		this.lpl = l;
-	}
-	
-	@Override
-	public void paintMouseListener(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
-		_paintMouseListener(c, x, y, l, h, listener);
-	}
-	
-	private void _paintMouseListener(UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
-		//TODO: Solve why this does not work properly with scroll
-		y -= this.scrollY;
+	public void paintMouseListener(RendererData rd, UIEventTarget c, int x, int y, int l, int h, EventListener<MouseEvent> listener) {
+		x += rd.getBounds()[0];
+		y += rd.getBounds()[1];
+		y -= rd.getTranslateY();
 		
-		if (this.x==-1) {
-			if (lpl!=null) {
-				lpl.onPaint(c, x, y, l, h, listener);
-			}
-			return;
-		}
+		int[] bounds = Rectangle.intersectRaw(rd.getClip(), new int[] {x, y, l, h});
 		
-		int x2 = x+l;
-		int y2 = y+h;
-		if (x<0) x=0;
-		if (y<0) y=0;
-		if (x2>this.l) x2=this.l;
-		if (y2>this.h) y2=this.h;
-		l = x2-x;
-		h = y2-y;
-		
-		if (lpl!=null) {
-			lpl.onPaint(c, x, y, l, h, listener);
-		}
+		lpl.onPaint(c, bounds, listener);
 	}
 	
 	@Override
@@ -318,13 +158,8 @@ public class RibbonSkijaRenderer implements Renderer {
 		}
 	}
 	
-	@Override
-	public GUIState getState() {
-		return state;
-	}
-	@Override
-	public void restoreState(GUIState state) {
-		this.state = state;
+	public void onPaint(ListenerPaintListener lpl) {
+		this.lpl = lpl;
 	}
 	
 	private int toColor(Color foreground) {	
@@ -357,6 +192,7 @@ public class RibbonSkijaRenderer implements Renderer {
 			colorSpace);
 				
 		Canvas canvas = surface.getCanvas();
-		return new RibbonSkijaRenderer(canvas, new GUIState(), 0, 0, width[0], height[0], context);
+		
+		return new RibbonSkijaRenderer(canvas, context);
 	}
 }

@@ -3,7 +3,8 @@ package everyos.browser.webicity.webribbon.ui.webui;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
-import everyos.browser.webicity.webribbon.gui.UIContext;
+import everyos.browser.webicity.webribbon.gui.WebPaintContext;
+import everyos.browser.webicity.webribbon.gui.WebRenderContext;
 import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.DefaultAppearence;
@@ -11,7 +12,7 @@ import everyos.browser.webicity.webribbon.ui.webui.layout.InlineLayout;
 import everyos.browser.webicity.webribbon.ui.webui.layout.Layout;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
-import everyos.engine.ribbon.core.rendering.Renderer;
+import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class WebUIWebComponentUI implements WebComponentUI {
@@ -30,13 +31,13 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	}
 	
 	@Override
-	public void render(Renderer r, SizePosGroup sizepos, UIContext context) {
-		getLayout().render(r, sizepos, context, getAppearence());
+	public void render(RendererData rd, SizePosGroup sizepos, WebRenderContext context) {
+		getLayout().render(rd, sizepos, context, getAppearence());
 	}
 	
 	@Override
-	public void paint(Renderer r, Rectangle viewport) {
-		getLayout().paint(r, viewport, getAppearence());
+	public void paint(RendererData rd, Rectangle viewport, WebPaintContext context) {
+		getLayout().paint(rd, viewport, context, getAppearence());
 	}
 	
 	@Override
