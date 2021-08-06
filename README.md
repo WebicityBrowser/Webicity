@@ -1,5 +1,9 @@
 # Webicity
 
+[![codebeat badge](https://codebeat.co/badges/ba54b0a4-273f-4c95-868e-401b5f6d6671)](https://codebeat.co/projects/github-com-webicitybrowser-webicity-ribbon)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c5bf06b8cb6847dda11264294ba7c643)](https://www.codacy.com/gh/WebicityBrowser/Webicity/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WebicityBrowser/Webicity&amp;utm_campaign=Badge_Grade)
+[![Maintainability](https://api.codeclimate.com/v1/badges/89430c7f39e139c7772d/maintainability)](https://codeclimate.com/github/WebicityBrowser/Webicity/maintainability)
+
 Webicity is a simple web browser that I am working on (it is unfinished).
 
 Webicity consists of multiple components:
