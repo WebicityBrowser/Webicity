@@ -18,7 +18,9 @@ public class StringWrapHelper {
 		
 		int i = 0;
 		while (i<text.length()) {
-			if (sizepos.getCurrentPointer().getY()>sizepos.getMaxSize().getHeight() && sizepos.getMaxSize().getHeight()!=-1) break;
+			if (sizepos.getCurrentPointer().getY()>sizepos.getMaxSize().getHeight() && sizepos.getMaxSize().getHeight()!=-1) {
+				break;
+			}
 			
 			int ch = text.codePointAt(i);
 			sizepos.setMinLineHeight(font.getHeight());

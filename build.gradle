@@ -65,7 +65,8 @@ sourceSets {
 				'src/main/java/everyos.browser.webicitybrowser',
 				'src/main/java/everyos.engine.ribbon.core',
 				'src/main/java/everyos.engine.ribbon.renderer.skijarenderer',
-				'src/main/java/everyos.engine.ribbon.ui.simple'
+				'src/main/java/everyos.engine.ribbon.ui.simple',
+				'src/main/java/everyos.api.getopts'
 			]
 		}
 	}

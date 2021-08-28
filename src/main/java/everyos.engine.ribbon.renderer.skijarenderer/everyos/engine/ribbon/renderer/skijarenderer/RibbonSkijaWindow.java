@@ -169,7 +169,7 @@ public class RibbonSkijaWindow {
 			//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 		}
 		
-		if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
+		//if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
 			nextFrameRequiresRedraw = !rootComponentUI.getValidated(InvalidationLevel.PAINT);
 			
 			// We paint event listeners while painting graphics.
@@ -192,11 +192,11 @@ public class RibbonSkijaWindow {
 			
 			// Paint and display the UI.
 			// The target time is 16ms for paint per frame, max
-			long time = System.currentTimeMillis();
+			//long time = System.currentTimeMillis();
 			rootComponentUI.paint(createRendererData(renderer, size), new DefaultPaintContext());
 			renderer.draw();
-			System.out.println(System.currentTimeMillis()-time);
-		}
+			//System.out.println(System.currentTimeMillis()-time);
+		//}
 		
 		return renderer;
 	}

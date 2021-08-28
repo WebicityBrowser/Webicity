@@ -6,8 +6,8 @@ import java.util.Map;
 
 import everyos.browser.javadom.intf.Node;
 import everyos.browser.javadom.intf.NodeList;
+import everyos.browser.jcss.cssom.Attribute;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
-import everyos.browser.webicity.webribbon.core.cssom.Attribute;
 import everyos.engine.ribbon.core.event.UIEventTarget;
 
 public class WebComponent implements UIEventTarget { //TODO: Code will be moved to WebUI

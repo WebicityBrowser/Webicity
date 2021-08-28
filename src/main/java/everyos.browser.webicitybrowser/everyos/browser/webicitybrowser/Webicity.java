@@ -6,50 +6,77 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import everyos.api.getopts.ArgumentParser;
+import everyos.api.getopts.Flag;
+import everyos.api.getopts.ParserFailedException;
 import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.gui.binding.InstanceGUI;
 import everyos.browser.webicitybrowser.gui.window.SkijaWindow;
+import everyos.browser.webicitybrowser.imp.WebicityArgumentsImp;
 
 public class Webicity {
 	public static void main(String[] args) {
-		boolean isPrivate = false;
-		for (String arg: args) {
-			if (arg.equals("-p") || arg.equals("--private")) {
-				isPrivate = true;
-			}
+		WebicityArguments arguments;
+		try {
+			arguments = parseArguments(args);
+			startInstance(arguments);
+		} catch (ParserFailedException e) {
+			// The parser likely already handled this exception for us already
 		}
+	}
+
+	private static WebicityArguments parseArguments(String[] args) throws ParserFailedException {
+		ArgumentParser parser = createArgumentParser();
 		
-		WebicityInstance instance = new WebicityInstance(isPrivate);
+		return new WebicityArgumentsImp(parser.parse(args));
+	}
+	
+	private static ArgumentParser createArgumentParser() {
+		//TODO: Help flag?
 		
+		Flag[] flags = {
+			Flag.createBuilder("private")
+				.setID(WebicityArgumentsImp.PRIVATE_FLAG)
+				.setAlias("p")
+				.setDescription("Open in a private window")
+				.build(),
+			Flag.createBuilder("verbose")
+				.setID(WebicityArgumentsImp.VERBOSE_FLAG)
+				.setAlias("v")
+				.setDescription("Use verbose logging")
+				.build()
+		};
+		
+		return ArgumentParser.create(flags, true, "Webicity Browser\n\nA web browser written from scatch");
+	}
+
+	private static void startInstance(WebicityArguments arguments) {
 		Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 		logger.setLevel(Level.INFO);
-		for (int i=0; i<args.length; i++) {
-			if (args[i].equals("-v")||args[i].equals("--verbose")) {
-				logger.setLevel(Level.ALL);
-				return;
-			}
+		if (arguments.getVerbose()) {
+			logger.setLevel(Level.ALL);
 		}
 		
-		for (String arg: args) {
-			try {
-				instance.open(new URL(arg));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-		}
-		if (args.length==0) {
+		WebicityInstance instance = new WebicityInstance(arguments.getPrivate());
+		
+		if (arguments.getURLs().length==0) {
 			try {
 				//TODO: Configuration
 				//instance.open(new URL("webicity://csstest"));
-				instance.open(new URL("https://www.yahoo.com/"));
+				//instance.open(new URL("https://www.yahoo.com/"));
 				//instance.open(new URL("https://www.whatismybrowser.com/"));
 				//instance.open(new URL("https://www.example.com/"));
-				//instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
+				instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
 				//instance.open(new URL("https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state"));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
+		} else {
+			for (URL url: arguments.getURLs()) {
+				instance.open(url);
+			}
 		}
+		
 		instance.start();
 		
 		new InstanceGUI(instance, ()->{
