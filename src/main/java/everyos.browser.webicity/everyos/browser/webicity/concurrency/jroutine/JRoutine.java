@@ -17,9 +17,9 @@ public class JRoutine {
 			routine.set(self);
 			
 			try {
-				lockB.acquire();
+				lockB.acquireUninterruptibly();
 				r.run();
-			} catch (Exception e) {
+			} catch(Exception e) {
 				e.printStackTrace();
 			}
 			
@@ -29,28 +29,20 @@ public class JRoutine {
 		}).start();
 	}
 	
-	// This logic may be wrong, but so far it seems to work
-	// TODO: Specifically, there is a race condition between checking curThread and calling wait
-	// I dunno how bad this is
-	
 	public void resume() {
-		lockB.release();
-		
-		try {
-			lockA.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if (status == JRoutineStatus.DEAD) {
+			throw new RuntimeException("Attempt to resume a dead coroutine");
 		}
+		
+		status = JRoutineStatus.ACTIVE;
+		lockB.release();
+		lockA.acquireUninterruptibly();
 	}
 	
-	public void yield() {	
+	public void yield() {
+		status = JRoutineStatus.IDLE;
 		lockA.release();
-		
-		try {
-			lockB.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		lockB.acquireUninterruptibly();
 	}
 	
 	public JRoutineStatus getStatus() {

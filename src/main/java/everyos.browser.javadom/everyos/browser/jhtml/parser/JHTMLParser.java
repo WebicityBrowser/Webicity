@@ -24,8 +24,9 @@ import everyos.browser.jhtml.intf.HTMLStyleElement;
 
 public final class JHTMLParser {
 	public static final String HTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
+	
 	private static final char rep_char = '\uFFFD';
-	private static String[] specialHTML = new String[] {
+	private static final String[] specialHTML = new String[] {
 		"address", "applet", "area", "article", "aside", "base", "basefont", "bgsound", "blockquote",
 		"body", "br", "button", "caption", "center", "col", "colgroup", "dd", "details", "dir", "div",
 		"dl", "dt", "embed", "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset",
@@ -36,11 +37,14 @@ public final class JHTMLParser {
 		"th", "thead", "title", "tr", "track", "ul", "wbr", "xmp"
 	};
 	
+	private final Document document;
+	private final Stack<Element> elements;
+	private final UnicodeHelper unicodeHelper;
+	
 	private InsertionState istate = InsertionState.INITIAL;
 	private InsertionState ostate = null;
 	private TokenizeState state = TokenizeState.DATA;
-	private Document document;
-	private Stack<Element> elements = new Stack<Element>();
+	
 	private Element head;
 	private boolean fostering = false;
 	private PushbackReader reader;
@@ -49,7 +53,6 @@ public final class JHTMLParser {
 	private StringBuilder tmp_buf = new StringBuilder();
 	private boolean eof = false;
 	private String lastName;
-	private UnicodeHelper unicodeHelper = new UnicodeHelper();
 	
 			
 	public JHTMLParser(InputStream stream) throws UnsupportedEncodingException {
@@ -58,6 +61,9 @@ public final class JHTMLParser {
 			.setType(Document.HTML)
 			.setContentType("text/html")
 			.build();
+		
+		this.elements = new Stack<Element>();
+		this.unicodeHelper = new UnicodeHelper();
 	}
 	
 	public Document getDocument() {

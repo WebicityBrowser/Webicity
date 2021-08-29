@@ -6,7 +6,7 @@ public class RibbonSkijaMonitor {
 	
 	public RibbonSkijaMonitor(int id) throws NoMonitorAvailableException {
 		if (id<0) {
-			throw new java.lang.IllegalArgumentException();
+			throw new IllegalArgumentException();
 		}
 		this.id = id;
 	}

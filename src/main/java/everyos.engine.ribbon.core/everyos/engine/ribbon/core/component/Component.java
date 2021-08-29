@@ -116,6 +116,7 @@ public class Component implements UIEventTarget {
 		}
 		this.parent = parent;
 		parent.children.add(pos, this);
+		parent.invalidate(InvalidationLevel.RENDER);
 		invalidate(InvalidationLevel.RENDER);
 	}
 
@@ -140,6 +141,7 @@ public class Component implements UIEventTarget {
 		
 		return this;
 	}
+	
 	public Component[] getChildren() {
 		return children.toArray(new Component[children.size()]);
 	}

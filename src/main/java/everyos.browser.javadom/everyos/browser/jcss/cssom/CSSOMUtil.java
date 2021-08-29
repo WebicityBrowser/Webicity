@@ -27,11 +27,11 @@ public class CSSOMUtil {
 	}
 
 	private static void mergeCSSOM(CSSOMNode root, QualifiedRule rule) {
-		System.out.println(rule);
+		/*System.out.println(rule);
 		
 		for (Object pr: rule.getPrelude()) {
 			System.out.println(pr);
-		}
+		}*/
 
 		Object[] prelude = rule.getPrelude();
 		int[] i = new int[1];
@@ -62,11 +62,11 @@ public class CSSOMUtil {
 	}
 
 	private static void mergeBlock(CSSOMNode current, SimpleBlock block) {
-		System.out.println(block.getRules());
+		/*System.out.println(block.getRules());
 		
 		for (Object rule: block.getRules()) {
 			System.out.print("B");
 			System.out.println(rule);
-		}
+		}*/
 	}
 }

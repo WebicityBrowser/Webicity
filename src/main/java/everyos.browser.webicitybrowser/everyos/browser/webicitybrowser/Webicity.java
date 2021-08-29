@@ -78,7 +78,7 @@ public class Webicity {
 				//instance.open(new URL("https://www.yahoo.com/"));
 				//instance.open(new URL("https://www.whatismybrowser.com/"));
 				//instance.open(new URL("https://www.example.com/"));
-				instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
+				//instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
 				//instance.open(new URL("https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state"));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();

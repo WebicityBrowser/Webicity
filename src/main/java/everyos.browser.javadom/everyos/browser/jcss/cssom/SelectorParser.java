@@ -18,8 +18,8 @@ public class SelectorParser {
 		for (; i < prelude.length; i++) {
 			Object part = prelude[offset[0]];
 			
-			System.out.print("A");
-			System.out.println(part);
+			/*System.out.print("A");
+			System.out.println(part);*/
 			
 			if (state == State.EARLY_RETURN) {
 				//TODO: Read up to comma

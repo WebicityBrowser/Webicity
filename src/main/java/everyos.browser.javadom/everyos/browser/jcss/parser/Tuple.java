@@ -1,8 +1,8 @@
 package everyos.browser.jcss.parser;
 
 public class Tuple<T, T2> {
-	private T t1;
-	private T2 t2;
+	private final T t1;
+	private final T2 t2;
 
 	public Tuple(T t1, T2 t2) {
 		this.t1 = t1;
