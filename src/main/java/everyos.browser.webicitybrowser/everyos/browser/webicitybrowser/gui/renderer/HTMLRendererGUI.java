@@ -27,8 +27,8 @@ public class HTMLRendererGUI {
 			WebComponentWrapper innerPane = new WebComponentWrapper();
 			innerPane.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
 			innerPane.ui(new WebDocumentComponent(renderer, renderer.getDocument()));
+			
 			innerPane.pallete(new Pallete() {
-
 				@Override
 				public Color getAccent() {
 					return colors.getBackgroundSecondary();
@@ -44,6 +44,7 @@ public class HTMLRendererGUI {
 					return colors.getBackgroundSecondarySelected();
 				}
 			});
+			
 			displayPane.children(new Component[] {innerPane});
 		});
 	}

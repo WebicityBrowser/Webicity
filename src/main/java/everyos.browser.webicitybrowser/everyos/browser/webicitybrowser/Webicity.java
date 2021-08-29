@@ -28,7 +28,7 @@ public class Webicity {
 	private static WebicityArguments parseArguments(String[] args) throws ParserFailedException {
 		ArgumentParser parser = createArgumentParser();
 		
-		return new WebicityArgumentsImp(parser.parse(args));
+		return new WebicityArgumentsImp(parser, parser.parse(args));
 	}
 	
 	private static ArgumentParser createArgumentParser() {
@@ -44,10 +44,22 @@ public class Webicity {
 				.setID(WebicityArgumentsImp.VERBOSE_FLAG)
 				.setAlias("v")
 				.setDescription("Use verbose logging")
+				.build(),
+			Flag.createBuilder("help")
+				.setID(WebicityArgumentsImp.HELP_FLAG)
+				.setAlias("h")
+				.setDescription("Display this screen")
 				.build()
 		};
 		
-		return ArgumentParser.create(flags, true, "Webicity Browser\n\nA web browser written from scatch");
+		//TODO: Should we have a builder?
+		return ArgumentParser.createBuilder()
+			.setFlags(flags)
+			.setAllowLooseArguments(true)
+			.setHelpHeader("Webicity Browser by EveryOS (Jason Gronn)\n\nA web browser and rendering engine written in Java")
+			.setErrorFooter("Re-run Webicity with only the \"--help\" flag to view the help screen")
+			.setHelpFooter("Any extra arguments must be a URL to open automatically")
+			.build();
 	}
 
 	private static void startInstance(WebicityArguments arguments) {

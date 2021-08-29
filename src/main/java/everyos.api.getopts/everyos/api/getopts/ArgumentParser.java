@@ -1,11 +1,12 @@
 package everyos.api.getopts;
 
-import everyos.api.getopts.imp.ArgumentParserImp;
+import everyos.api.getopts.imp.ArgumentParserBuilderImp;
 
 public interface ArgumentParser {
-	FlagArgumentPair[] parse(String[] arguments);
+	FlagArgumentPair[] parse(String[] arguments) throws ParserFailedException;
+	void printHelpScreen();
 	
-	public static ArgumentParser create(Flag[] flags, boolean allowExtra, String description) {
-		return new ArgumentParserImp(flags, allowExtra, description);
+	public static ArgumentParserBuilder createBuilder() {
+		return new ArgumentParserBuilderImp();
 	}
 }

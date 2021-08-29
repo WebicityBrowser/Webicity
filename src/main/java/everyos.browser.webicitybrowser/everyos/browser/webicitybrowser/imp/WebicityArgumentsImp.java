@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import everyos.api.getopts.Argument;
+import everyos.api.getopts.ArgumentParser;
 import everyos.api.getopts.Flag;
 import everyos.api.getopts.FlagArgumentPair;
 import everyos.api.getopts.ParserFailedException;
@@ -11,14 +12,15 @@ import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.WebicityArguments;
 
 public class WebicityArgumentsImp implements WebicityArguments {
-	public static final int PRIVATE_FLAG = 1;
-	public static final int VERBOSE_FLAG = 2;
+	public static final int HELP_FLAG = 1;
+	public static final int PRIVATE_FLAG = 2;
+	public static final int VERBOSE_FLAG = 3;
 	
 	private final boolean isPrivate;
 	private final boolean isVerbose;
 	private URL[] urls;
 	
-	public WebicityArgumentsImp(FlagArgumentPair[] flags) throws ParserFailedException {
+	public WebicityArgumentsImp(ArgumentParser parser, FlagArgumentPair[] flags) throws ParserFailedException {
 		boolean isPrivate = false;
 		boolean isVerbose = false;
 		
@@ -27,7 +29,10 @@ public class WebicityArgumentsImp implements WebicityArguments {
 		URLArgumentReader urlReader = new URLArgumentReader();
 		
 		for (FlagArgumentPair pair: flags) {
-			if (pair.getFlag().getID() == PRIVATE_FLAG) {
+			if (pair.getFlag().getID() == HELP_FLAG) {
+				parser.printHelpScreen();
+				throw new ParserFailedException();
+			} else if (pair.getFlag().getID() == PRIVATE_FLAG) {
 				isPrivate = true;
 			} else if (pair.getFlag().getID() == VERBOSE_FLAG) {
 				isVerbose = true;

@@ -99,7 +99,7 @@ public class RibbonSkijaWindow {
 	
 	public void setMinSize(Location location) {
 		//TODO: Support the percentages
-		GLFW.glfwSetWindowSizeLimits(window, location.x.offset, location.y.offset, GLFW.GLFW_DONT_CARE, GLFW.GLFW_DONT_CARE);
+		GLFW.glfwSetWindowSizeLimits(window, location.getX().getAbsolute(), location.getY().getAbsolute(), GLFW.GLFW_DONT_CARE, GLFW.GLFW_DONT_CARE);
 	}
 
 	public void setDecorated(boolean decorated) {
@@ -169,7 +169,7 @@ public class RibbonSkijaWindow {
 			//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 		}
 		
-		//if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
+		if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
 			nextFrameRequiresRedraw = !rootComponentUI.getValidated(InvalidationLevel.PAINT);
 			
 			// We paint event listeners while painting graphics.
@@ -196,7 +196,7 @@ public class RibbonSkijaWindow {
 			rootComponentUI.paint(createRendererData(renderer, size), new DefaultPaintContext());
 			renderer.draw();
 			//System.out.println(System.currentTimeMillis()-time);
-		//}
+		}
 		
 		return renderer;
 	}
@@ -282,7 +282,7 @@ public class RibbonSkijaWindow {
 			
 			//Additionally, we will probably want normalized X and Y values in the future
 			//We can probably achieve this with an offset determined by the renderer,
-			//where 0,0 is the window's top left corner
+			//where (0, 0) is the window's top left corner
 			binding.getListener().accept(mouseEventBuilder.build());
 		}
 	}

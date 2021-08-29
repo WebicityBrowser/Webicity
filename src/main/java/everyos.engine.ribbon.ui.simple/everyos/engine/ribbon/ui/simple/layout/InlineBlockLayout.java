@@ -147,18 +147,19 @@ public class InlineBlockLayout implements Layout {
 	
 		if (this.position!=null) {
 			if (sizepos.getSize().getWidth()!=-1) {
-				builder.setX(position.x.calculate(sizepos.getSize().getWidth()));
+				builder.setX(position.getX().calculate(sizepos.getSize().getWidth()));
 			}
-			if (sizepos.getSize().getHeight()!=-1&&position.y.percent!=-1) {
-				builder.setY(position.y.calculate(sizepos.getSize().getHeight()));
+			if (sizepos.getSize().getHeight()!=-1&&position.getY().getRelative()!=-1) {
+				builder.setY(position.getY().calculate(sizepos.getSize().getHeight()));
 			}
 		}
+		
 		if (this.size!=null) {
-			if (size.x.percent!=-1) {
-				builder.setWidth(size.x.calculate(sizepos.getSize().getWidth()));
+			if (size.getX().getRelative() != -1) {
+				builder.setWidth(size.getX().calculate(sizepos.getSize().getWidth()));
 			}
-			if (size.y.percent!=-1) {
-				builder.setHeight(size.y.calculate(sizepos.getSize().getHeight()));	
+			if (size.getY().getRelative() != -1) {
+				builder.setHeight(size.getY().calculate(sizepos.getSize().getHeight()));	
 			}
 		}
 		

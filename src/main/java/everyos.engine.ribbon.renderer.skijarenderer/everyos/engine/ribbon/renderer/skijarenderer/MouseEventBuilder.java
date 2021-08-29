@@ -46,26 +46,32 @@ public class MouseEventBuilder {
 
 	public MouseEvent build() {
 		return new MouseEvent() {
+			@Override
 			public int getButton() {
 				return button;
 			}
 			
+			@Override
 			public int getAction() {
 				return action;
 			}
 			
+			@Override
 			public UIEventTarget getEventTarget() {
 				return target;
 			}
 			
+			@Override
 			public boolean isExternal() {
 				return isExternal;
 			}
 			
+			@Override
 			public int getAbsoluteX() {
 				return absX;
 			}
 			
+			@Override
 			public int getAbsoluteY() {
 				return absY;
 			}

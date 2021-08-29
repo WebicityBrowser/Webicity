@@ -15,10 +15,9 @@ public class EventDispatcher<T extends EventListener> {
 		listeners.remove(key);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void fire(Consumer<T> handler) {
-		for (EventListener c: listeners.toArray(new EventListener[listeners.size()])) {
-			handler.accept((T) c);
+		for (T listener: listeners) {
+			handler.accept(listener);
 		}
 	}
 }

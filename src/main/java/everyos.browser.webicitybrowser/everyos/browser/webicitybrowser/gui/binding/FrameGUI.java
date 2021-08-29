@@ -42,7 +42,9 @@ public class FrameGUI {
 	private class FrameMutationListener implements FrameMutationEventListener {
 		@Override
 		public void onRendererCreated(Renderer r) {
-			if (r==null) return;
+			if (r==null) {
+				return;
+			}
 			if (r.getClass() == HTMLRenderer.class) {
 				//TODO: Store "cleanup" to runnable for later
 				HTMLRendererGUI rendererGUI = new HTMLRendererGUI((HTMLRenderer) r, colors);
