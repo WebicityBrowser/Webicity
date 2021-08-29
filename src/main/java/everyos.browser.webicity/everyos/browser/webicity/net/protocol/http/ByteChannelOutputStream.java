@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
 
 public class ByteChannelOutputStream extends OutputStream {
-	private ByteChannel byteChannel;
+	private final ByteChannel byteChannel;
 
 	public ByteChannelOutputStream(ByteChannel byteChannel) {
 		this.byteChannel = byteChannel;

@@ -6,7 +6,7 @@ public interface UIBox {
 	boolean intersectsWith(Rectangle viewport);
 	
 	public static UIBox getRectangularUIBox(Rectangle bounds) {
-		return viewport->viewport.intersects(bounds);
+		return viewport -> viewport.intersects(bounds);
 	}
 	
 	//TODO: Ability to get Z-index

@@ -13,9 +13,9 @@ public final class WebComponentFactory {
 		if (child instanceof Text) {
 			return new WebTextComponent(renderer, (Text) child);
 		} else if (child instanceof Element) {
-			//TODO: Use a reflective factory instead?
+			//TODO: Use a factory instead?
 			Element e = (Element) child;
-			if (HTMLTitleElement.class.isAssignableFrom(child.getClass())) {
+			if (child instanceof HTMLTitleElement) {
 				return new WebTitleComponent(renderer, e);
 			}
 			switch (e.getTagName()) {

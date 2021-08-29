@@ -76,6 +76,7 @@ public class SkijaWindow implements RibbonWindow {
 			
 			component.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
 			window.bind(component, mgr);
+			
 			window.setVisible(true);
 		});
 			

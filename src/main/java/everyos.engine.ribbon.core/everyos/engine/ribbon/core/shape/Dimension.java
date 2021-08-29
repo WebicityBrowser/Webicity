@@ -20,4 +20,6 @@ public class Dimension {
 	public MutableDimension toMutable() {
 		return new MutableDimension(width, height);
 	}
+	
+	// TODO: Handle indefinite width/height here instead of everywhere
 }

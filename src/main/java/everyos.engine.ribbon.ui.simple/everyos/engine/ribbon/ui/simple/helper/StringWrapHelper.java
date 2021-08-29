@@ -17,7 +17,7 @@ public class StringWrapHelper {
 		int wordLength = 0;
 		
 		int i = 0;
-		while (i<text.length()) {
+		while (i < text.length()) {
 			if (sizepos.getCurrentPointer().getY()>sizepos.getMaxSize().getHeight() && sizepos.getMaxSize().getHeight()!=-1) {
 				break;
 			}

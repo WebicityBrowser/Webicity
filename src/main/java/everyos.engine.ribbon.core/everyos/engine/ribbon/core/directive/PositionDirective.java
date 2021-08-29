@@ -8,6 +8,7 @@ import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 
 public interface PositionDirective extends UIDirective {
 	public Location getPosition();
+	
 	public static UIDirectiveWrapper of(Location position) {
 		return UIDirectiveWrapper.<PositionDirective>wrap(()->position, InvalidationLevel.RENDER, ComponentUI.class);
 	}

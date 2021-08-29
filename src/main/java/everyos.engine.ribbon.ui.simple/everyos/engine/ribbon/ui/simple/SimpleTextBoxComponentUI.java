@@ -17,7 +17,7 @@ import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
 public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
-	private Appearence appearence;
+	private final Appearence appearence;
 	
 	public SimpleTextBoxComponentUI(Component c, ComponentUI parent) {
 		super(c, parent);
@@ -51,7 +51,9 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 			rd.useForeground();
 			for (int i=0; i<lines.size(); i++) {
 				int py = i*font.getHeight();
-				if (py>size.getHeight()) break;
+				if (py > size.getHeight()) {
+					break;
+				}
 				
 				int width = StringWrapHelper.stringWidth(font, lines.get(i));
 				int x = 0;

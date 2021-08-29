@@ -1,12 +1,12 @@
 package everyos.browser.webicitybrowser.gui.animation;
 
-import everyos.browser.webicitybrowser.gui.Animation;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.util.TimeSystem;
 
 public class SlideInAnimation implements Animation {
 	private static final double animationTime = 500;
+	
   	private float progress = 0;
 	
 	@Override

@@ -3,9 +3,9 @@ package everyos.engine.ribbon.renderer.skijarenderer;
 import java.util.Objects;
 
 public class FontInfo {
-	private String name;
-	private int weight;
-	private int size;
+	private final String name;
+	private final int weight;
+	private final int size;
 
 	public FontInfo(String name, int weight, int size) {
 		this.name = name;

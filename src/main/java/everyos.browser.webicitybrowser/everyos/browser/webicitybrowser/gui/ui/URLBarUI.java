@@ -22,7 +22,7 @@ import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
 public class URLBarUI extends SimpleBlockComponentUI {
-	private Appearence appearence;
+	private final Appearence appearence;
 
 	public URLBarUI(Component c, ComponentUI parent) {
 		super(c, parent);
@@ -116,7 +116,7 @@ public class URLBarUI extends SimpleBlockComponentUI {
 					int currentMouseOffset = 0;
 					int i;
 					for (i=0; i<text.length(); i++) {
-						int charWidth = font.getCharWidth(text.codePointAt(i)); //TODO: codePointAt?
+						int charWidth = font.getCharWidth(text.codePointAt(i));
 						if (currentMouseOffset + charWidth*.5 > mouseX) {
 							break;
 						}

@@ -33,18 +33,18 @@ public class WebicityButtonUI extends SimpleBlockComponentUI {
     }
     
     private class ButtonAppearence implements Appearence {
-    	private int strwidth;
+    	private int strWidth;
 		private Dimension bounds;
     	
 	    @Override
 	    public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
-	    	RibbonFont font = rd.getState().getFont();
-	    	
-	        this.strwidth = StringWrapHelper.stringWidth(font, Styling.PRODUCT_NAME);
-	        sizepos.move(strwidth + font.getHeight(), true);
-	        sizepos.setMinLineHeight(font.getHeight());
-	
-	       this.bounds = sizepos.getSize();
+			RibbonFont font = rd.getState().getFont();
+			
+			this.strWidth = StringWrapHelper.stringWidth(font, Styling.PRODUCT_NAME);
+			sizepos.move(strWidth + font.getHeight(), true);
+			sizepos.setMinLineHeight(font.getHeight());
+			
+			this.bounds = sizepos.getSize();
 	    }
 	
 	    @Override
@@ -60,7 +60,7 @@ public class WebicityButtonUI extends SimpleBlockComponentUI {
 	        r.drawFilledRect(rd, rectWidth, 0, bounds.getHeight()/2, bounds.getHeight()/2);
 	
 	        rd.useForeground();
-	        r.drawText(rd, bounds.getWidth() / 2 - strwidth / 2, Styling.ELEMENT_PADDING, Styling.PRODUCT_NAME);
+	        r.drawText(rd, bounds.getWidth() / 2 - strWidth / 2, Styling.ELEMENT_PADDING, Styling.PRODUCT_NAME);
 	    }
 
 		@Override

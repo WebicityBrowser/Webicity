@@ -1,9 +1,9 @@
 package everyos.browser.webicitybrowser.gui.component;
 
-import everyos.browser.webicitybrowser.gui.Colors;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.animation.SlideInAnimation;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
+import everyos.browser.webicitybrowser.gui.colors.Colors;
 import everyos.browser.webicitybrowser.gui.directive.AnimationDirective;
 import everyos.browser.webicitybrowser.ui.Window;
 import everyos.engine.ribbon.core.component.BlockComponent;
@@ -11,7 +11,6 @@ import everyos.engine.ribbon.core.component.BreakComponent;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.component.LabelComponent;
 import everyos.engine.ribbon.core.directive.BackgroundDirective;
-import everyos.engine.ribbon.core.directive.FontSizeDirective;
 import everyos.engine.ribbon.core.directive.PositionDirective;
 import everyos.engine.ribbon.core.directive.SizeDirective;
 import everyos.engine.ribbon.core.shape.Location;
@@ -19,14 +18,10 @@ import everyos.engine.ribbon.core.shape.Location;
 public class WebicityButton extends BlockComponent {
 
 	private final AnimatedComponent dropMenu;
-	private Colors colors;
 
 	public WebicityButton(Component parent, Window window, Colors colors) {
 		super();
-		this.directive(FontSizeDirective.of(14));
 		
-		this.colors = colors;
-
 		dropMenu = new AnimatedComponent();
 		dropMenu.directive(AnimationDirective.of(new SlideInAnimation()));
 		dropMenu.directive(PositionDirective.of(new Location(0, 0, 0, Styling.ELEMENT_PADDING + Styling.BUTTON_WIDTH)));
@@ -57,6 +52,7 @@ public class WebicityButton extends BlockComponent {
 		content.addChild(new BlockComponent()
 				.directive(SizeDirective.of(new Location(-1, -1, 0, 5))));
 		content.addChild(new BreakComponent());
+		
 		for (int i = 0; i < menuOptions.length; i++) {
 			BlockComponent menuItem = new BlockComponent();
 			menuItem.addChild(new BlockComponent()
@@ -67,16 +63,18 @@ public class WebicityButton extends BlockComponent {
 			menuItem.directive(SizeDirective.of(new Location(1, 0, -1, 0)));
 			content.addChild(menuItem);
 			
-			addButtonBehavior(menuItem, menuActions[i]);
+			addButtonBehavior(menuItem, menuActions[i], colors);
 			
 			content.addChild(new BreakComponent());
 		}
+		
 		content.addChild(new BlockComponent()
 				.directive(SizeDirective.of(new Location(0, 150, 0, 5)))); // TODO: Auto-size
+		
 		dropMenu.addChild(content);
 	}
 	
-	private void addButtonBehavior(Component button, Runnable handler) {
+	private void addButtonBehavior(Component button, Runnable handler, Colors colors) {
 		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondaryActive(),
 			colors.getBackgroundSecondary(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryHover(),
 			()->false);

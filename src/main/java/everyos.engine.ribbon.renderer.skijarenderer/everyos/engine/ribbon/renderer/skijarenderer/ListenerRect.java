@@ -6,9 +6,9 @@ import everyos.engine.ribbon.core.event.UIEventTarget;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class ListenerRect {
-	private Rectangle bounds;
-	private EventListener<MouseEvent> listener;
-	private UIEventTarget target;
+	private final Rectangle bounds;
+	private final EventListener<MouseEvent> listener;
+	private final UIEventTarget target;
 
 	public ListenerRect(Rectangle bounds, UIEventTarget target, EventListener<MouseEvent> listener) {
 		this.bounds = bounds;

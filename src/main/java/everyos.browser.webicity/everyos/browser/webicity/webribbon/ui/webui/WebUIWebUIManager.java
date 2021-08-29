@@ -10,7 +10,7 @@ import everyos.browser.webicity.webribbon.core.component.WebTextComponent;
 import everyos.browser.webicity.webribbon.core.component.WebTitleComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 
-public class WebUIWebUIManager {
+public final class WebUIWebUIManager {
 	private WebUIWebUIManager() {};
 	
 	public static WebUIManager createUI() {

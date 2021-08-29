@@ -11,14 +11,17 @@ import everyos.browser.webicitybrowser.ui.event.InstanceMutationEventListener;
 import everyos.browser.webicitybrowser.ui.event.WindowMutationEventListener;
 
 public class WebicityInstance {
-	private List<Window> windows = new ArrayList<>();
-	private EventDispatcher<InstanceMutationEventListener> mutationEventDispatcher = new EventDispatcher<>();
+	private final List<Window> windows;
+	private final EventDispatcher<InstanceMutationEventListener> mutationEventDispatcher;
 	private final WebicityEngine engine;
-	private WindowMutationListener windowMutationListener;
+	private final WindowMutationListener windowMutationListener;
 	
 	public WebicityInstance(boolean firstWindowIsPrivate) {
 		this.windowMutationListener = new WindowMutationListener();
+		this.mutationEventDispatcher = new EventDispatcher<>();
 		this.engine = createEngine();
+		this.windows = new ArrayList<>();
+		
 		createWindow(firstWindowIsPrivate);
 	}
 

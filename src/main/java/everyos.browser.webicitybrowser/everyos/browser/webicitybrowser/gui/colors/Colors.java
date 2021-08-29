@@ -1,4 +1,4 @@
-package everyos.browser.webicitybrowser.gui;
+package everyos.browser.webicitybrowser.gui.colors;
 
 import everyos.engine.ribbon.core.graphics.Color;
 

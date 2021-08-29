@@ -19,10 +19,10 @@ import everyos.engine.ribbon.ui.simple.layout.Layout;
 
 
 public class SimpleComponentUI implements ComponentUI {
-	private Layout layout;
-	private Appearence appearence;
-	private Component component;
-	private ComponentUI parent;
+	private final Component component;
+	private final ComponentUI parent;
+	private final Layout layout;
+	private final Appearence appearence;
 	
 	private InvalidationLevel invalidated = InvalidationLevel.IGNORE;
 	private Color background;
@@ -44,10 +44,10 @@ public class SimpleComponentUI implements ComponentUI {
 	
 	@Override
 	public void paint(RendererData rd, PaintContext context) {
-		if (background!=null) {
+		if (background != null) {
 			rd.getState().setBackground(background);
 		}
-		if (foreground!=null) {
+		if (foreground != null) {
 			rd.getState().setForeground(foreground);
 		}
 		getLayout().paint(rd, context, getAppearence());
@@ -61,11 +61,13 @@ public class SimpleComponentUI implements ComponentUI {
 	
 	@Override
 	public void invalidate(InvalidationLevel level) {
-		ComponentUI cui = this;
-		while (cui!=null) {
-			if (!cui.getValidated(level)) return;
-			cui.invalidateLocal(level);
-			cui = cui.getParent();
+		ComponentUI parentUI = this;
+		while (parentUI != null) {
+			if (!parentUI.getValidated(level)) {
+				return;
+			}
+			parentUI.invalidateLocal(level);
+			parentUI = parentUI.getParent();
 		}
 	}
 	
@@ -89,7 +91,7 @@ public class SimpleComponentUI implements ComponentUI {
 	@Override
 	public void processEvent(UIEvent event) {	
 		layout.processEvent(event);
-		if (parent!=null) {
+		if (parent != null) {
 			parent.processEvent(event);
 		}
 	}
@@ -109,8 +111,12 @@ public class SimpleComponentUI implements ComponentUI {
 
 	@Override
 	public void directive(UIDirective directive) {
-		if (directive instanceof BackgroundDirective) background = ((BackgroundDirective) directive).getBackground();
-		if (directive instanceof ForegroundDirective) foreground = ((ForegroundDirective) directive).getForeground();
+		if (directive instanceof BackgroundDirective) {
+			background = ((BackgroundDirective) directive).getBackground();
+		}
+		if (directive instanceof ForegroundDirective) {
+			foreground = ((ForegroundDirective) directive).getForeground();
+		}
 		
 		getLayout().directive(directive);
 		getAppearence().directive(directive);

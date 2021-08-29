@@ -3,7 +3,7 @@ package everyos.engine.ribbon.core.graphics;
 public enum InvalidationLevel {
 	IGNORE(0), RENDER(1), PAINT(2), COMPOSITE(3);
 
-	private int level;
+	private final int level;
 
 	private InvalidationLevel(int level) {
 		this.level = level;

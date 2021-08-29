@@ -21,7 +21,7 @@ import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 
 public class WebComponentWrapperUI extends SimpleBlockComponentUI {
-	private Appearence appearence;
+	private final Appearence appearence;
 	
 	public WebComponentWrapperUI(Component c, ComponentUI parent) {
 		super(c, parent);
@@ -35,7 +35,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 	}
 	
 	private class WebRenderContextImp implements WebRenderContext {
-		private WebUIManager uimanager;
+		private final WebUIManager uimanager;
 
 		public WebRenderContextImp(WebUIManager uimgr) {
 			this.uimanager = uimgr;
@@ -54,7 +54,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 	}
 	
 	private class WebPaintContextImp implements WebPaintContext {
-		private Renderer renderer;
+		private final Renderer renderer;
 
 		public WebPaintContextImp(Renderer r) {
 			this.renderer = r;
@@ -72,27 +72,27 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 	}
 	
 	private class WebComponentWrapperAppearence implements Appearence {
+		private final WebUIManager webUIManager;
+		
 		private WebComponent webComponent;
 		private WebUIWebWindowUI documentUI;
-		private WebUIManager webUIManager;
 		private Rectangle viewport;
 		
 		public WebComponentWrapperAppearence() {
-			webUIManager = WebUIWebUIManager.createUI();
+			this.webUIManager = WebUIWebUIManager.createUI();
 		}
 		
 		@Override
 		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
 			WebComponent oldWebComponent = this.webComponent;
 			this.webComponent = getComponent().casted(WebComponentWrapper.class).getUI();
-			if (webComponent!=oldWebComponent) {
+			if (webComponent != oldWebComponent) {
 				this.documentUI = new WebUIWebWindowUI(webComponent, null);
 				//documentUI.onInvalidation((level) -> invalidate(level));
 			}
-			if (webComponent!=null) {
+			if (webComponent != null) {
 				Dimension bounds = sizepos.getSize();
-				everyos.browser.webicity.webribbon.gui.shape.SizePosGroup spg = new everyos.browser.webicity.webribbon.gui.shape.SizePosGroup(
-					bounds.getWidth(), bounds.getHeight(), 0, 0);
+				SizePosGroup spg = new SizePosGroup(bounds.getWidth(), bounds.getHeight(), 0, 0);
 				this.viewport = new Rectangle(0, 0, spg.getSize().getWidth(), spg.getSize().getHeight());
 				
 				documentUI.setWindowSize(new Dimension(bounds.getWidth(), bounds.getHeight()));
@@ -106,7 +106,8 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 			GUIState state = new GUIState();
 			state.setFont(context.getRenderer().getFont("Times New Roman", 100, 12));
 			rd.restoreState(state);
-			if (webComponent!=null) {
+			
+			if (webComponent != null) {
 				documentUI.paint(rd, viewport, new WebPaintContextImp(context.getRenderer()));
 			}
 		}

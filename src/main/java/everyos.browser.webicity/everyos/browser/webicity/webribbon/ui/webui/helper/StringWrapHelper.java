@@ -3,8 +3,8 @@ package everyos.browser.webicity.webribbon.ui.webui.helper;
 import java.util.ArrayList;
 import java.util.List;
 
-import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.core.rendering.RibbonFont;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public class StringWrapHelper {
 	private boolean ignoreWhitespace;
@@ -96,22 +96,22 @@ public class StringWrapHelper {
 	}
 	
 	private static int fastStringWidth(RibbonFont font, String str) {
-		int mw = 0;
+		int maxWidth = 0;
 		for (byte ch: str.getBytes()) {
-			mw+=font.getCharWidth((char) ch); 
+			maxWidth += font.getCharWidth((char) ch); 
 		}
 		
-		return mw;
+		return maxWidth;
 	}
 	
 	public static int stringWidth(RibbonFont font, String str) {
 		int width = 0;
 		for (String spl: str.split("\n")) {
-			int mw = 0;
+			int currentLineWidth = 0;
 			for (byte ch: spl.getBytes()) {
-				mw+=font.getCharWidth((char) ch); 
+				currentLineWidth += font.getCharWidth((char) ch); 
 			}
-			width=mw>width?mw:width;
+			width = Math.max(currentLineWidth, width);
 		}
 		return width;
 	}

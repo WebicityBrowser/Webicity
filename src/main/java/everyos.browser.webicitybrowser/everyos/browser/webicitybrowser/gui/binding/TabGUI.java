@@ -6,9 +6,9 @@ import java.net.URLEncoder;
 import java.util.function.Supplier;
 
 import everyos.browser.webicity.net.URL;
-import everyos.browser.webicitybrowser.gui.Colors;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
+import everyos.browser.webicitybrowser.gui.colors.Colors;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
@@ -22,16 +22,18 @@ import everyos.engine.ribbon.core.directive.SizeDirective;
 import everyos.engine.ribbon.core.shape.Location;
 
 public class TabGUI {
-	private Tab tab;
-	private TabButton tabButton; //TODO: This should be a TabComponent instead
+	private final Tab tab;
+	private final TabEventListener mutationListener;
+	
+	private TabButton tabButton;
 	private Component tabPane;
 	private boolean selected;
 	private URLBar urlBar;
-	private TabEventListener mutationListener;
 	private Colors colors;
 
 	public TabGUI(Tab tab) {
 		this.tab = tab;
+		this.mutationListener = new TabEventListener();
 	}
 	
 	public void start(Colors colors) {
@@ -40,9 +42,8 @@ public class TabGUI {
 		
 		createTabPane();
 		
-		mutationListener = new TabEventListener();
-		mutationListener.onNavigate(tab.getURL());
 		tab.addTabMutationListener(mutationListener);
+		mutationListener.onNavigate(tab.getURL());
 	}
 
 	public void cleanup() {
@@ -84,6 +85,7 @@ public class TabGUI {
 		
 		FrameGUI frame = new FrameGUI(tab.getFrame());
 		frame.start(colors);
+		
 		Component frameComponent = frame.getDisplayPane();
 		frameComponent.directive(SizeDirective.of(new Location(1, 0, 1, -decorHeight)));
 		frameComponent.directive(PositionDirective.of(new Location(0, 0, 0, decorHeight)));
@@ -125,7 +127,7 @@ public class TabGUI {
 		
 		tabDecor.addChild(reloadButton);
 		
-		this.urlBar = new URLBar(null);
+		this.urlBar = new URLBar();
 		urlBar.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
 		urlBar.directive(PositionDirective.of(new Location(
 			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
@@ -158,6 +160,7 @@ public class TabGUI {
 	private void addButtonBehavior(Component button, Runnable handler) {
 		addButtonBehavior(button, handler, ()->false);
 	}
+	
 	private void addButtonBehavior(Component button, Runnable handler, Supplier<Boolean> activeChecker) {
 		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondary(),
 			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
@@ -165,6 +168,7 @@ public class TabGUI {
 	}
 	
 	private class TabEventListener implements TabMutationEventListener {
+		
 		@Override
 		public void onNavigate(URL url) {
 			configureTabButton(tabButton);
@@ -180,5 +184,6 @@ public class TabGUI {
 		public void onClose() {
 			tabButton.delete();
 		}
+		
 	}
 }

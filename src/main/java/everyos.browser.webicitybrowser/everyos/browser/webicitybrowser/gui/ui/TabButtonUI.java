@@ -18,7 +18,7 @@ import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
 public class TabButtonUI extends SimpleBlockComponentUI {
-	private Appearence appearence;
+	private final Appearence appearence;
 
 	public TabButtonUI(Component c, ComponentUI parent) {
 		super(c, parent);
@@ -34,20 +34,20 @@ public class TabButtonUI extends SimpleBlockComponentUI {
 	
 	private class TabButtonAppearence implements Appearence {
 		private String text;
-		private int strwidth;
+		private int strWidth;
 		private Dimension bounds;
 		
 		@Override
 		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
 			this.bounds = sizepos.getSize();
-			// Width in which we expect the text to be fit in.
-			int expectedWidth = bounds.getWidth() - Styling.BUTTON_WIDTH - 2 * Styling.ELEMENT_PADDING;
+			
+			int maxTextWidth = bounds.getWidth() - Styling.BUTTON_WIDTH - 2 * Styling.ELEMENT_PADDING;
 
 			RibbonFont font = rd.getState().getFont();
 			
-			this.text = StringWrapHelper.trim(font, getComponent().casted(TabButton.class).getText(), expectedWidth);
-			this.strwidth = StringWrapHelper.stringWidth(font, text);
-			sizepos.move(strwidth+font.getPaddingHeight(), true);
+			this.text = StringWrapHelper.trim(font, getComponent().casted(TabButton.class).getText(), maxTextWidth);
+			this.strWidth = StringWrapHelper.stringWidth(font, text);
+			sizepos.move(strWidth+font.getPaddingHeight(), true);
 			sizepos.setMinLineHeight(font.getHeight());
 		}
 
@@ -63,7 +63,6 @@ public class TabButtonUI extends SimpleBlockComponentUI {
 
 			rd.useForeground();
 			r.drawText(rd, Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING, Styling.ELEMENT_PADDING, text);
-
 		}
 
 		@Override
@@ -73,7 +72,6 @@ public class TabButtonUI extends SimpleBlockComponentUI {
 
 		@Override
 		public void processEvent(UIEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 	}

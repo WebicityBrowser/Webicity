@@ -9,6 +9,7 @@ import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 
 public interface ExternalMouseListenerDirective extends UIDirective {
 	EventListener<MouseEvent> getListener();
+	
 	public static UIDirectiveWrapper of(EventListener<MouseEvent> listener) {
 		return UIDirectiveWrapper.<ExternalMouseListenerDirective>wrap(()->listener, InvalidationLevel.IGNORE, ComponentUI.class);
 	}

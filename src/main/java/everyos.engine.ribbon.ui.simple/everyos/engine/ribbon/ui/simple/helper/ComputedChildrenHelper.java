@@ -8,8 +8,9 @@ import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 
 public class ComputedChildrenHelper {
-	private List<ComponentUI> computedChildren;
-	private Component component;
+	private final Component component;
+	private final List<ComponentUI> computedChildren;
+
 	private ComponentUI[] computedChildrenAsArray;
 	
 	public ComputedChildrenHelper(Component component) {

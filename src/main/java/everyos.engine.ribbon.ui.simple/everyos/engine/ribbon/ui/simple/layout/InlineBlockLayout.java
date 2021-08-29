@@ -25,9 +25,9 @@ import everyos.engine.ribbon.ui.simple.helper.ComputedChildrenHelper;
 import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;
 
 public class InlineBlockLayout implements Layout {
-	private Component component;
-	private ComponentUI ui;
-	private ComputedChildrenHelper computedChildrenHelper;
+	private final Component component;
+	private final ComponentUI ui;
+	private final ComputedChildrenHelper computedChildrenHelper;
 	
 	private Rectangle bounds;
 	private Location position;
@@ -57,14 +57,14 @@ public class InlineBlockLayout implements Layout {
 		// Usually, the UI is bound to a display, so we know the maximum possible width of an element ahead of time
 		// In the case of a scrolling pane, however, the usable width is potentially infinite
 		SizePosGroup group = new SizePosGroup(bounds.getWidth(), bounds.getHeight(), 0, 0,
-			bounds.getWidth()!=-1?
+			bounds.getWidth() != -1?
 				bounds.getWidth():
-				sizepos.getMaxSize().getWidth()==-1?
+				sizepos.getMaxSize().getWidth() == -1?
 					-1:
 					sizepos.getMaxSize().getWidth()-sizepos.getCurrentPointer().getX(),
-			bounds.getHeight()!=-1?
+			bounds.getHeight() != -1?
 				bounds.getHeight():
-				sizepos.getMaxSize().getHeight()==-1?
+				sizepos.getMaxSize().getHeight() == -1?
 					-1:
 					sizepos.getMaxSize().getHeight()-sizepos.getCurrentPointer().getY());
 		
@@ -93,13 +93,13 @@ public class InlineBlockLayout implements Layout {
 		}
 		
 		// Offset the element, if desired
-		if (offset!=null) {
+		if (offset != null) {
 			bounds.setX(offset.applyX(bounds.getWidth()));
 			bounds.setY(offset.applyY(bounds.getHeight()));
 		}
 		
 		// Change the parent component's current pointer
-		if (position==null) {
+		if (position == null) {
 			sizepos.add(new Dimension(bounds.getWidth(), bounds.getHeight()));
 		} else {
 			// Components with a fixed position do not affect the pointer
@@ -121,10 +121,18 @@ public class InlineBlockLayout implements Layout {
 	@Override
 	public void directive(UIDirective directive) {
 		//TODO: Optimize: Don't unnecessarily redraw redundant data
-		if (directive instanceof PositionDirective) this.position = ((PositionDirective) directive).getPosition();
-		if (directive instanceof SizeDirective) this.size = ((SizeDirective) directive).getSize();
-		if (directive instanceof MouseListenerDirective) this.mouseListener = ((MouseListenerDirective) directive).getListener();
-		if (directive instanceof ExternalMouseListenerDirective) this.externalMouseListener = ((ExternalMouseListenerDirective) directive).getListener();
+		if (directive instanceof PositionDirective) {
+			this.position = ((PositionDirective) directive).getPosition();
+		}
+		if (directive instanceof SizeDirective) {
+			this.size = ((SizeDirective) directive).getSize();
+		}
+		if (directive instanceof MouseListenerDirective) {
+			this.mouseListener = ((MouseListenerDirective) directive).getListener();
+		}
+		if (directive instanceof ExternalMouseListenerDirective) {
+			this.externalMouseListener = ((ExternalMouseListenerDirective) directive).getListener();
+		}
 	}
 	
 	@Override
@@ -132,8 +140,12 @@ public class InlineBlockLayout implements Layout {
 		if (event instanceof MouseEvent) {
 			MouseEvent e = (MouseEvent) event;
 			
-			if (e.isExternal()&&externalMouseListener!=null) externalMouseListener.accept(e);
-			if (!e.isExternal()&&mouseListener!=null) mouseListener.accept(e);
+			if (e.isExternal()&&externalMouseListener != null) {
+				externalMouseListener.accept(e);
+			}
+			if (!e.isExternal()&&mouseListener != null) {
+				mouseListener.accept(e);
+			}
 		}
 	}
 	
@@ -145,16 +157,16 @@ public class InlineBlockLayout implements Layout {
 		Position pos = sizepos.getCurrentPointer();
 		RectangleBuilder builder = new RectangleBuilder(pos.getX(), pos.getY(), -1, -1);
 	
-		if (this.position!=null) {
-			if (sizepos.getSize().getWidth()!=-1) {
+		if (this.position != null) {
+			if (sizepos.getSize().getWidth() != -1) {
 				builder.setX(position.getX().calculate(sizepos.getSize().getWidth()));
 			}
-			if (sizepos.getSize().getHeight()!=-1&&position.getY().getRelative()!=-1) {
+			if (sizepos.getSize().getHeight() != -1&&position.getY().getRelative() != -1) {
 				builder.setY(position.getY().calculate(sizepos.getSize().getHeight()));
 			}
 		}
 		
-		if (this.size!=null) {
+		if (this.size != null) {
 			if (size.getX().getRelative() != -1) {
 				builder.setWidth(size.getX().calculate(sizepos.getSize().getWidth()));
 			}

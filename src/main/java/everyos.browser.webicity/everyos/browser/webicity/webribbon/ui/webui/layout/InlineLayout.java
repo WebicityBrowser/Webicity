@@ -5,20 +5,20 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.browser.webicity.webribbon.gui.shape.Marker;
-import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.browser.webicity.webribbon.ui.webui.helper.ComputedChildrenHelper;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.RendererData;
+import everyos.engine.ribbon.core.shape.Marker;
 import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public class InlineLayout implements Layout {
-	private WebComponent component;
-	private WebComponentUI ui;
+	private final WebComponent component;
+	private final WebComponentUI ui;
+	private final ComputedChildrenHelper computedChildrenHelper;
 	
-	private ComputedChildrenHelper computedChildrenHelper;
 	private Rectangle bounds;
 	
 	public InlineLayout(WebComponent component, WebComponentUI ui) {

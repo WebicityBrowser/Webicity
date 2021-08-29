@@ -8,6 +8,7 @@ import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 
 public interface BackgroundDirective extends UIDirective {
 	public Color getBackground(); //TODO: `Texture` or `Paintbrush` instead
+	
 	public static UIDirectiveWrapper of(Color background) {
 		return UIDirectiveWrapper.<BackgroundDirective>wrap(()->background, InvalidationLevel.PAINT, ComponentUI.class);
 	}

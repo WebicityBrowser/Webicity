@@ -74,7 +74,7 @@ public class Webicity {
 		if (arguments.getURLs().length==0) {
 			try {
 				//TODO: Configuration
-				//instance.open(new URL("webicity://csstest"));
+				instance.open(new URL("webicity://csstest"));
 				//instance.open(new URL("https://www.yahoo.com/"));
 				//instance.open(new URL("https://www.whatismybrowser.com/"));
 				//instance.open(new URL("https://www.example.com/"));

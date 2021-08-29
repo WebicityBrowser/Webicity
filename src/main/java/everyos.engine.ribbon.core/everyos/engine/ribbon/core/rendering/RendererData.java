@@ -5,16 +5,18 @@ import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class RendererData {
+	private final int[] bounds;
+	private final int[] clip;
+	
 	private GUIState state;
-	private int[] bounds;
-	private int[] translate;
-	private int[] clip;
 	private Color currentColor;
+	private int[] translate;
 	
 	public RendererData(GUIState state, int[] bounds, int[] clip) {
 		this.bounds = bounds;
 		this.translate = new int[] {0, 0};
 		this.clip = clip;
+		
 		restoreState(state);
 	}
 

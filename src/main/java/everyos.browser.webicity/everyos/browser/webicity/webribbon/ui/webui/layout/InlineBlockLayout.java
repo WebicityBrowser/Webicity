@@ -5,8 +5,6 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.browser.webicity.webribbon.gui.shape.Position;
-import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.browser.webicity.webribbon.ui.webui.helper.ComputedChildrenHelper;
 import everyos.browser.webicity.webribbon.ui.webui.psuedo.ScrollBar;
@@ -14,22 +12,27 @@ import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
+import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;	
 
 public class InlineBlockLayout implements Layout {
-	private WebComponent component;
-	private WebComponentUI ui;
+	private final WebComponent component;
+	private final WebComponentUI ui;
+	private final ScrollBar scrollBar;
+	private final ComputedChildrenHelper computedChildrenHelper;
+	
 	private Dimension outerSize;
 	private Dimension pageSize;
-	private ComputedChildrenHelper computedChildrenHelper;
 	private Position position;
-	private ScrollBar scrollBar;
+	
 	private boolean requiresMouseTarget = false;
 	
 	public InlineBlockLayout(WebComponent component, WebComponentUI ui) {
 		this.component = component;
 		this.ui = ui;
+		
 		this.scrollBar = new ScrollBar(ui);
 		this.computedChildrenHelper = new ComputedChildrenHelper(this.component);
 	}
@@ -50,8 +53,8 @@ public class InlineBlockLayout implements Layout {
 		this.outerSize = temporaryPageBounds.getSize();
 		
 		//TODO: Make SizePosGroup#compareTo a thing
-		if (maxBlockSize.getHeight()<temporaryPageBounds.getSize().getHeight() && maxBlockSize.getHeight()!=-1) {
-			if (maxBlockSize.getWidth()!=-1) {
+		if (maxBlockSize.getHeight() < temporaryPageBounds.getSize().getHeight() && maxBlockSize.getHeight() != -1) {
+			if (maxBlockSize.getWidth() != -1) {
 				temporaryPageBounds = new SizePosGroup(
 					sizepos.getSize().getWidth()-10, 0,
 					0, 0,
@@ -96,7 +99,7 @@ public class InlineBlockLayout implements Layout {
 	
 	@Override
 	public void processEvent(UIEvent event) {
-		if (this.pageSize!=null) {
+		if (this.pageSize != null) {
 			scrollBar.processEvent(event);
 		}
 	}
@@ -111,7 +114,7 @@ public class InlineBlockLayout implements Layout {
 	}
 	
 	private void renderChildren(RendererData rd, SizePosGroup sizepos, WebRenderContext context) {
-		this.computedChildrenHelper.recompute(c->context.getManager().get(c, ui));
+		computedChildrenHelper.recompute(c->context.getManager().get(c, ui));
 		
 		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
 			c.render(rd, sizepos, context);

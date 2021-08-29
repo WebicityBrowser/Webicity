@@ -11,18 +11,19 @@ import everyos.browser.webicitybrowser.ui.event.InstanceMutationEventListener;
 
 public class InstanceGUI {
 	//TODO: Add tooltips
-	private WebicityInstance instance;
-	private MutationEventListener mutationListener;
-	private List<WindowGUI> windows = new ArrayList<>();
-	private Supplier<RibbonWindow> windowSupplier;
+	private final WebicityInstance instance;
+	private final MutationEventListener mutationListener;
+	private final List<WindowGUI> windows;
+	private final Supplier<RibbonWindow> windowSupplier;
 
 	public InstanceGUI(WebicityInstance instance, Supplier<RibbonWindow> windowSupplier) {
 		this.instance = instance;
 		this.windowSupplier = windowSupplier;
+		this.mutationListener = new MutationEventListener();
+		this.windows = new ArrayList<>();
 	}
 	
 	public void start() {
-		mutationListener = new MutationEventListener();
 		instance.addInstanceMutationListener(mutationListener);
 		
 		for (Window window: instance.getWindows()) {

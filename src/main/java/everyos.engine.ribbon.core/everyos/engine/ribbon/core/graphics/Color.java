@@ -11,12 +11,12 @@ public class Color {
 	public static final Color DARK_GREY = DARK_GRAY;
 	public static final Color LIGHT_GREY = LIGHT_GRAY;
 	
-	
 	////
-	private int color;
+	
+	private final int color;
 
 	public Color(int a, int r, int g, int b) {
-		color = (a<<24)+(r<<16)+(g<<8)+b;
+		color = (a<<24) + (r<<16) + (g<<8) + b;
 	}
 	
 	public Color(int r, int g, int b) {
@@ -24,19 +24,19 @@ public class Color {
 	}
 
 	public int getAlpha() {
-		return (color>>24)&0xFF;
+		return (color>>24) & 0xFF;
 	}
 	
 	public int getRed() {
-		return color>>16&255;
+		return (color>>16) & 255;
 	}
 	
 	public int getGreen() {
-		return color>>8&255;
+		return (color>>8) & 255;
 	}
 	
 	public int getBlue() {
-		return color&255;
+		return color & 255;
 	}
 	
 	@Override

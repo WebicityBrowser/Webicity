@@ -18,7 +18,7 @@ public class WebicityArgumentsImp implements WebicityArguments {
 	
 	private final boolean isPrivate;
 	private final boolean isVerbose;
-	private URL[] urls;
+	private final URL[] urls;
 	
 	public WebicityArgumentsImp(ArgumentParser parser, FlagArgumentPair[] flags) throws ParserFailedException {
 		boolean isPrivate = false;

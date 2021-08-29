@@ -1,14 +1,13 @@
 package everyos.browser.webicity.net.protocol.io;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
 import everyos.browser.webicity.net.URL;
 
 public class AboutRequest implements Request {
-	private URL url;
+	private final URL url;
 
 	public AboutRequest(URL url) {
 		this.url = url;
@@ -25,7 +24,6 @@ public class AboutRequest implements Request {
 
 	@Override
 	public Response send() throws IOException {
-		String path = Optional.of(url.getPath()).orElse("/");
-		return new IOResponse(ClassLoader.getSystemClassLoader().getResourceAsStream("about/"+path));
+		return new IOResponse(ClassLoader.getSystemClassLoader().getResourceAsStream("about/"+url.getPath()));
 	}
 }

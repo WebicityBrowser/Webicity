@@ -10,9 +10,11 @@ import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.shape.Location;
 
 public class TabButton extends BlockComponent {
-	private String text;
+	
 	private final CircularText closeButton;
-	private BlockComponent spacer;
+	private final BlockComponent spacer;
+	
+	private String text = "";
 
 	public TabButton() {
 		super();
@@ -31,6 +33,7 @@ public class TabButton extends BlockComponent {
 	public Component text(String text) {
 		this.text = text;
 		invalidate(InvalidationLevel.RENDER);
+		
 		return this;
 	}
 

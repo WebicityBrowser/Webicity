@@ -13,27 +13,16 @@ public class HTTP11Response {
 	
 	//TODO: Support cache
 	
-	private Map<String, String> headers;
-	private int status;
-	private InputStream stream;
+	private final Map<String, String> headers;
+	private final int status;
+	private final InputStream stream;
 
-	public HTTP11Response(int status, Map<String, String> headers, InputStream stream) {
+	public HTTP11Response(int status, Map<String, String> headers, InputStream stream) throws IOException {
 		this.status = status;
 		this.headers = headers;
-		this.stream = wrapStream(stream);
-		
-		if (headers.getOrDefault("content-encoding", "identity").equals("gzip")) {
-			try {
-				this.stream = new GZIPInputStream(stream);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		System.out.println(status);
-		headers.forEach((n, v)->System.out.println(n+": "+v));
+		this.stream = decodeStream(wrapStream(stream));
 	}
-	
+
 	public int getStatusCode() {
 		return status;
 	}
@@ -54,6 +43,10 @@ public class HTTP11Response {
 		return null; //TODO
 	}
 	
+	public String getHeader(String name) {
+		return headers.get(name.toLowerCase());
+	}
+	
 	public static enum RESPONSE_TYPE {
 		INFORMATIONAL, SUCCESSFUL, REDIRECTION, CLIENT_ERROR, SERVER_ERROR
 	}
@@ -67,8 +60,12 @@ public class HTTP11Response {
 			return stream;
 		}
 	}
-
-	public String getHeader(String name) {
-		return headers.get(name.toLowerCase());
+	
+	private InputStream decodeStream(InputStream stream) throws IOException {
+		if (headers.getOrDefault("content-encoding", "identity").equals("gzip")) {
+			return new GZIPInputStream(stream);
+		}
+		
+		return stream;
 	}
 }

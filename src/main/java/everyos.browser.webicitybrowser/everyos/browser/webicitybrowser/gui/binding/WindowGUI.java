@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import everyos.browser.webicitybrowser.gui.Colors;
-import everyos.browser.webicitybrowser.gui.NormalColors;
-import everyos.browser.webicitybrowser.gui.PrivateColors;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
+import everyos.browser.webicitybrowser.gui.colors.Colors;
+import everyos.browser.webicitybrowser.gui.colors.NormalColors;
+import everyos.browser.webicitybrowser.gui.colors.PrivateColors;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.browser.webicitybrowser.gui.component.WebicityButton;
@@ -33,8 +33,9 @@ import everyos.engine.ribbon.core.shape.Position;
 public class WindowGUI {
 	private final Window window;
 	private final RibbonWindow windowGrip;
-	private WindowEventListener mutationListener;
-	private List<TabGUI> tabs = new ArrayList<>();
+	private final WindowEventListener mutationListener;
+	private final List<TabGUI> tabs;
+	
 	private TabGUI selected;
 	private Component tabPane;
 	private Component tabPaneContainer;
@@ -43,6 +44,8 @@ public class WindowGUI {
 	public WindowGUI(Window window, RibbonWindow windowGrip) {
 		this.window = window;
 		this.windowGrip = windowGrip;
+		this.mutationListener = new WindowEventListener();
+		this.tabs = new ArrayList<>();
 	}
 
 	public void start() {
@@ -53,7 +56,6 @@ public class WindowGUI {
 		Component pane = windowGrip.getDisplayPane();
 		configureWindow(pane);
 
-		mutationListener = new WindowEventListener();
 		window.addWindowMutationListener(mutationListener);
 
 		for (Tab tab: window.getTabs()) {
@@ -104,8 +106,8 @@ public class WindowGUI {
 		menuButton.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
 		menuButton.directive(PositionDirective.of(new Location(0, 0, 0, 0)));
 		menuButton.directive(SizeDirective.of(new Location(
-				0, Styling.BUTTON_WIDTH * 3 + Styling.ELEMENT_PADDING * 2 + Styling.BORDER_PADDING,
-				0, Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING)));
+			0, Styling.BUTTON_WIDTH * 3 + Styling.ELEMENT_PADDING * 2 + Styling.BORDER_PADDING,
+			0, Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING)));
 		addButtonBehavior(menuButton, menuButton::toggleMenu);
 
 		windowDecor.addChild(menuButton);
@@ -153,8 +155,8 @@ public class WindowGUI {
 		// and the New Tab button...
 		CircularText newTabButton = new CircularText();
 		newTabButton.directive(PositionDirective.of(new Location(
-				0, Styling.BORDER_PADDING+Styling.BUTTON_WIDTH*3+Styling.ELEMENT_PADDING*3,
-				0, Styling.ELEMENT_PADDING)));
+			0, Styling.BORDER_PADDING+Styling.BUTTON_WIDTH*3+Styling.ELEMENT_PADDING*3,
+			0, Styling.ELEMENT_PADDING)));
 		newTabButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
 		newTabButton.text("+");
 		addButtonBehavior(newTabButton, ()->window.openNewTab());
@@ -203,11 +205,13 @@ public class WindowGUI {
 	private void addButtonBehavior(Component button, Runnable handler) {
 		addButtonBehavior(button, handler, ()->false);
 	}
+	
 	private void addButtonBehavior(Component button, Runnable handler, Supplier<Boolean> activeChecker) {
 		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondary(),
 			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
 			activeChecker);
 	}
+	
 	private void addDangerousButtonBehavior(Component button, Runnable handler) {
 		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondaryDanger(),
 			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),

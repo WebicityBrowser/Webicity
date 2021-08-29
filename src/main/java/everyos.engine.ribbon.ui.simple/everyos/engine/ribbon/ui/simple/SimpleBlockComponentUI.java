@@ -8,8 +8,8 @@ import everyos.engine.ribbon.ui.simple.layout.InlineBlockLayout;
 import everyos.engine.ribbon.ui.simple.layout.Layout;
 
 public class SimpleBlockComponentUI extends SimpleComponentUI {
-	private Layout layout;
-	private Appearence appearence;
+	private final Layout layout;
+	private final Appearence appearence;
 
 	public SimpleBlockComponentUI(Component c, ComponentUI parent) {
 		super(c, parent);

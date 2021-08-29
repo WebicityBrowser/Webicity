@@ -1,14 +1,14 @@
-package everyos.browser.webicitybrowser.gui;
+package everyos.browser.webicitybrowser.gui.colors;
 
 import everyos.engine.ribbon.core.graphics.Color;
 
-public class PrivateColors implements Colors {
+public class NormalColors implements Colors {
 	
-	private static final Color BACKGROUND_PRIMARY = new Color(217, 70, 70);
-	private static final Color BACKGROUND_SECONDARY = new Color(255, 82, 82);
+	private static final Color BACKGROUND_PRIMARY = new Color(0, 119, 131);
+	private static final Color BACKGROUND_SECONDARY = new Color(0, 178, 152);
 	private static final Color BACKGROUND_SECONDARY_HOVER = Color.LIGHT_GRAY;
 	private static final Color BACKGROUND_SECONDARY_SELECTED = Color.DARK_GRAY;
-	private static final Color BACKGROUND_SECONDARY_ACTIVE = new Color(253, 124, 124);
+	private static final Color BACKGROUND_SECONDARY_ACTIVE = new Color(0, 151, 129);
 	private static final Color BACKGROUND_SECONDARY_DANGER = new Color(178, 0, 0);
 	private static final Color FOREGROUND_PRIMARY = Color.WHITE;
 

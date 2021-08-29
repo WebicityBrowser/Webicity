@@ -10,13 +10,13 @@ import everyos.browser.webicity.renderer.html.HTMLRenderer;
 
 public class WebDocumentComponent extends WebComponent {
 	private Document document;
-	private CSSOMNode rootCSSOMNode;
 
 	public WebDocumentComponent(HTMLRenderer renderer, Document node) {
 		super(renderer, node);
 		this.document = node;
 		
-		this.rootCSSOMNode = computeCSSOM();
+		//TODO: This is likely not where this goes
+		computeCSSOM();
 	}
 
 	private CSSOMNode computeCSSOM() {

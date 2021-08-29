@@ -1,7 +1,6 @@
 package everyos.browser.webicitybrowser.ui;
 
 import java.io.Closeable;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,13 +12,20 @@ import everyos.browser.webicitybrowser.ui.event.WindowMutationEventListener;
 
 public class Window implements Closeable {
 	private final WebicityInstance instance;
-	private final List<Tab> tabs = new ArrayList<>();
-	private EventDispatcher<WindowMutationEventListener> mutationEventDispatcher = new EventDispatcher<>();
-	private boolean isPrivateWindow;
+	private final boolean isPrivateWindow;
+	private final List<Tab> tabs;
+	private final EventDispatcher<WindowMutationEventListener> mutationEventDispatcher;
 	
 	public Window(WebicityInstance instance, boolean isPrivateWindow) {
 		this.instance = instance;
 		this.isPrivateWindow = isPrivateWindow;
+		
+		this.tabs = new ArrayList<>();
+		this.mutationEventDispatcher = new EventDispatcher<>();
+	}
+	
+	public void start() {
+		
 	}
 	
 	public void openTab(URL url) {
@@ -31,20 +37,11 @@ public class Window implements Closeable {
 	}
 	
 	public void openNewTab() {
-		try {
-			openTab(new URL("https://www.google.com/"));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		openTab(URL.ofSafe("https://www.google.com/"));
 	}
 	
 	public Tab[] getTabs() {
 		return tabs.toArray(new Tab[tabs.size()]);
-	}
-	
-
-	public void start() {
-		
 	}
 	
 	public WebicityInstance getApplicationInstance() {

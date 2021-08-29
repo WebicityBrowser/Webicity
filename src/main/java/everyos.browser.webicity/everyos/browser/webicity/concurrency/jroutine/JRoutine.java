@@ -1,16 +1,14 @@
 package everyos.browser.webicity.concurrency.jroutine;
 
-public class JRoutine {
-	private static ThreadLocal<JRoutine> routine = new ThreadLocal<>();
-	
-	public static JRoutine create(Runnable r) {
-		return new JRoutine(r);
-	}
+import java.util.concurrent.Semaphore;
 
+public class JRoutine {
+	private static final ThreadLocal<JRoutine> routine = new ThreadLocal<>();
+
+	private final Semaphore lockA = new Semaphore(0);
+	private final Semaphore lockB = new Semaphore(1);
+	
 	private JRoutineStatus status = JRoutineStatus.IDLE;
-	private Object lockA = new Object();
-	private Object lockB = new Object();
-	private int curThread = 0;
 	
 	private JRoutine(Runnable r) {
 		JRoutine self = this;
@@ -19,11 +17,7 @@ public class JRoutine {
 			routine.set(self);
 			
 			try {
-				synchronized (lockB) {
-					if (curThread == 0) {
-						lockB.wait();
-					}
-				}
+				lockB.acquire();
 				r.run();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -31,14 +25,8 @@ public class JRoutine {
 			
 			this.status = JRoutineStatus.DEAD;
 			
-			synchronized(lockA) {
-				lockA.notify();
-			}
+			lockA.release();
 		}).start();
-	}
-	
-	public JRoutineStatus getStatus() {
-		return this.status;
 	}
 	
 	// This logic may be wrong, but so far it seems to work
@@ -46,38 +34,34 @@ public class JRoutine {
 	// I dunno how bad this is
 	
 	public void resume() {
-		synchronized (lockB) {
-			curThread = 1;
-			lockB.notify();
-		}
-		synchronized (lockA) {
-			try {
-				if (curThread==1) {
-					lockA.wait();
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		lockB.release();
+		
+		try {
+			lockA.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 	
 	public void yield() {	
-		synchronized (lockA) {
-			curThread = 0;
-			lockA.notify();
+		lockA.release();
+		
+		try {
+			lockB.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		synchronized (lockB) {
-			try {
-				if (curThread == 0) {
-					lockB.wait();
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+	}
+	
+	public JRoutineStatus getStatus() {
+		return this.status;
 	}
 
 	public static JRoutine getJRoutine() {
 		return routine.get();
+	}
+	
+	public static JRoutine create(Runnable r) {
+		return new JRoutine(r);
 	}
 }

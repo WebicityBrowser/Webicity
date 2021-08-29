@@ -16,9 +16,15 @@ import everyos.browser.webicity.net.protocol.io.FileRequest;
 import everyos.browser.webicity.net.protocol.io.WebicityRequest;
 
 public abstract class WebicityEngine {
-	private HashMap<String, Protocol> protocols = new HashMap<>();
-	private ArrayList<ExecutorService> threads = new ArrayList<>();
+	private final HashMap<String, Protocol> protocols;
+	private final ArrayList<ExecutorService> threads;
+	
 	private boolean stopped = false;
+	
+	public WebicityEngine() {
+		this.protocols = new HashMap<>();
+		this.threads = new ArrayList<>();
+	}
 	
 	public abstract Response processRequest(Request request) throws IOException;
 	

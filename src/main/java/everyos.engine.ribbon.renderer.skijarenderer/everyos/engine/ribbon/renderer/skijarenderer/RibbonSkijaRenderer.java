@@ -31,14 +31,17 @@ public class RibbonSkijaRenderer implements Renderer {
 	private static final ColorSpace colorSpace = ColorSpace.getSRGB();
 	private static final boolean debugBoxes = false;
 	
-	private HashMap<FontInfo, RibbonSkijaFont> fonts = new HashMap<>();
-	private DirectContext context;
-	private Canvas canvas;
+	private final DirectContext context;
+	private final Canvas canvas;
+	private final HashMap<FontInfo, RibbonSkijaFont> fonts;
+	
 	private ListenerPaintListener lpl;
 	
 	public RibbonSkijaRenderer(Canvas canvas, DirectContext context) {
 		this.context = context;
 		this.canvas = canvas;
+		
+		this.fonts = new HashMap<>();
 		
 		canvas.save();
 	}
@@ -77,7 +80,9 @@ public class RibbonSkijaRenderer implements Renderer {
 	@Override
 	public void drawFilledRect(RendererData data, int x, int y, int l, int h) {
 		beforeDraw(data);
-		if (l<1 || h<1) return;
+		if (l < 1 || h < 1) {
+			return;
+		}
 		Rect rect = Rect.makeXYWH(x, y, l, h);
 		
 		try (Paint paint = new Paint()) {
@@ -90,6 +95,7 @@ public class RibbonSkijaRenderer implements Renderer {
 	public void drawEllipse(RendererData data, int x, int y, int l, int h) {
 		beforeDraw(data);
 		RRect ellipse = RRect.makeOvalXYWH(x, y, l, h);
+		
 		try (Paint paint = new Paint()) {
 			paint.setColor(toColor(data.getCurrentColor()));
 			canvas.drawRRect(ellipse, paint);

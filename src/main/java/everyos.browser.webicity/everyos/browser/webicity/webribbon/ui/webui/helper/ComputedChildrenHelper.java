@@ -8,8 +8,9 @@ import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 
 public class ComputedChildrenHelper {
-	private List<WebComponentUI> computedChildren;
-	private WebComponent component;
+	private final List<WebComponentUI> computedChildren;
+	private final WebComponent component;
+	
 	private WebComponentUI[] computedChildrenAsArray;
 	
 	public ComputedChildrenHelper(WebComponent component) {
@@ -32,7 +33,7 @@ public class ComputedChildrenHelper {
 				computedChildren.add(slot, ui);
 			}
 		}
-		for (int i = found[0]+1; i<computedChildren.size(); i++) {
+		for (int i = found[0]+1; i < computedChildren.size(); i++) {
 			computedChildren.remove(i);
 		}
 		

@@ -9,6 +9,7 @@ import org.jetbrains.skija.Typeface;
 import everyos.engine.ribbon.core.rendering.RibbonFont;
 
 public class RibbonSkijaFont implements RibbonFont {
+	
 	private static final FontMgr manager = FontMgr.getDefault();
 	
 	private final Font font;
@@ -28,13 +29,13 @@ public class RibbonSkijaFont implements RibbonFont {
 
 	@Override
 	public int getCharWidth(int ch) {
-		if (ch<256 && widthCache[ch]!=0) {
+		if (ch < 256 && widthCache[ch] != 0) {
 			return widthCache[ch];
 		}
 		
 		short glyph = font.getUTF32Glyph(ch);
 		int width = (int) font.getWidths(new short[] {glyph})[0];
-		if (ch<256) {
+		if (ch < 256) {
 			widthCache[ch] = width;
 		}
 		

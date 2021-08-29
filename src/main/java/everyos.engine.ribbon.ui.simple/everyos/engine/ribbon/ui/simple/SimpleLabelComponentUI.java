@@ -15,7 +15,7 @@ import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
 public class SimpleLabelComponentUI extends SimpleComponentUI {
-	private LabelAppearence appearence;
+	private final LabelAppearence appearence;
 	
 	public SimpleLabelComponentUI(Component c, ComponentUI parent) {
 		super(c, parent);
@@ -41,7 +41,7 @@ public class SimpleLabelComponentUI extends SimpleComponentUI {
 			
 			this.position = sizepos.getCurrentPointer();
 			int width = StringWrapHelper.stringWidth(font, text);
-			this.height = font.getHeight()+font.getPaddingHeight();
+			this.height = font.getHeight() + font.getPaddingHeight();
 			sizepos.setMinLineHeight(height);
 			sizepos.move(width, true);
 		}

@@ -2,26 +2,22 @@ package everyos.engine.ribbon.renderer.skijarenderer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import org.lwjgl.glfw.GLFW;
 
 import everyos.engine.ribbon.core.util.TimeSystem;
 
 public class RenderingThread {
+	private static final Semaphore lock = new Semaphore(0);
 	private static List<Runnable> tasks = new ArrayList<>();
-	private static volatile boolean mustWait = true;
 	
 	static {
 		new Thread(()->{
 			try {
-				synchronized (tasks) {
-					if (mustWait) {
-						tasks.wait();
-						mustWait = false;
-					}
-				}
+				lock.acquire();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 			while (tasks.size() > 0) {
 				List<Runnable> curTasks;
@@ -41,8 +37,7 @@ public class RenderingThread {
 	public static void run(Runnable action) {
 		synchronized (tasks) {
 			tasks.add(action);
-			tasks.notify();
-			mustWait = false;
+			lock.release();
 		}
 	}
 }

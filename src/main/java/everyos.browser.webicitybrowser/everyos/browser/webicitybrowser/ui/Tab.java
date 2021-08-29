@@ -11,16 +11,19 @@ import everyos.browser.webicitybrowser.ui.event.FrameMutationEventListener;
 import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
 
 public class Tab implements Closeable {
-	private EventDispatcher<TabMutationEventListener> mutationEventDispatcher = new EventDispatcher<>();
-	private Frame frame;
-	private FrameMutationListener frameMutationListener;
+	
+	private final Frame frame;
+	private final EventDispatcher<TabMutationEventListener> mutationEventDispatcher;
+	private final FrameMutationListener frameMutationListener;
 
 	public Tab(WebicityInstance instance) {
 		this.frame = new Frame(instance);
+		
+		this.mutationEventDispatcher = new EventDispatcher<>();
+		this.frameMutationListener = new FrameMutationListener();
 	}
 	
 	public void start() {
-		this.frameMutationListener = new FrameMutationListener();
 		frame.addFrameMutationListener(frameMutationListener);
 	};
 

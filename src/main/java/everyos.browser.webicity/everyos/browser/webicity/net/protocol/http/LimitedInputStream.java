@@ -5,7 +5,8 @@ import java.io.InputStream;
 
 public class LimitedInputStream extends InputStream {
 	
-	private InputStream stream;
+	private final InputStream stream;
+	
 	private int size;
 
 	public LimitedInputStream(InputStream stream, int size) {

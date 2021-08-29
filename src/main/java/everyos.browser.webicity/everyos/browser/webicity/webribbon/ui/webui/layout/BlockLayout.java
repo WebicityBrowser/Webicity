@@ -5,11 +5,11 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public class BlockLayout implements Layout {
 	private InlineBlockLayout layout;
@@ -20,9 +20,9 @@ public class BlockLayout implements Layout {
 	
 	@Override
 	public void render(RendererData rd, SizePosGroup sizepos, WebRenderContext context, Appearence appearence) {
-		if (sizepos.getCurrentPointer().getX()!=0) sizepos.nextLine();
+		ensureLineDedicated(sizepos);
 		layout.render(rd, sizepos, context, appearence);
-		if (sizepos.getCurrentPointer().getX()!=0) sizepos.nextLine();
+		ensureLineDedicated(sizepos);
 	}
 
 	@Override
@@ -39,5 +39,11 @@ public class BlockLayout implements Layout {
 	public void processEvent(UIEvent event) {
 		//TODO
 		layout.processEvent(event);
+	}
+	
+	private void ensureLineDedicated(SizePosGroup sizepos) {
+		if (sizepos.getCurrentPointer().getX()!=0) {
+			sizepos.nextLine();
+		}
 	}
 }

@@ -7,6 +7,7 @@ import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 
 public interface FontSizeDirective extends UIDirective {
 	public int getSize();
+	
 	public static UIDirectiveWrapper of(int size) {
 		return UIDirectiveWrapper.<FontSizeDirective>wrap(()->size, InvalidationLevel.RENDER, ComponentUI.class);
 	}

@@ -12,9 +12,9 @@ import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.ComputedChildrenHelper;
 
 public class InlineLayout implements Layout {
-	private Component component;
-	private ComponentUI ui;
-	private ComputedChildrenHelper computedChildrenHelper;
+	private final Component component;
+	private final ComponentUI ui;
+	private final ComputedChildrenHelper computedChildrenHelper;
 
 	public InlineLayout(Component component, ComponentUI ui) {
 		this.component = component;

@@ -4,11 +4,11 @@ import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public interface WebComponentUI {
 	//TODO: Also pass a stack

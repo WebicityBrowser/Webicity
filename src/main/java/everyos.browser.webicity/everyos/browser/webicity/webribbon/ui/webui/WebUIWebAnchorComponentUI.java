@@ -5,16 +5,16 @@ import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public class WebUIWebAnchorComponentUI extends WebUIWebComponentUI {
-	private AnchorAppearence appearence;
+	private final AnchorAppearence appearence;
 
 	public WebUIWebAnchorComponentUI(WebComponent component, WebComponentUI parent) {
 		super(component, parent);
@@ -31,7 +31,7 @@ public class WebUIWebAnchorComponentUI extends WebUIWebComponentUI {
 	public void processEvent(UIEvent event) {
 		if (event instanceof MouseEvent && !((MouseEvent) event).isExternal()) {
 			MouseEvent ev = (MouseEvent) event;
-			if (ev.getAction()==MouseEvent.PRESS && ev.getButton()==MouseEvent.LEFT_BUTTON) {
+			if (ev.getAction() == MouseEvent.PRESS && ev.getButton() == MouseEvent.LEFT_BUTTON) {
 				//TODO: Resolve url properly
 				String href = ((Element) getComponent().getNode()).getAttribute("href");
 				getComponent().getRenderer().getFrame().browse(href);

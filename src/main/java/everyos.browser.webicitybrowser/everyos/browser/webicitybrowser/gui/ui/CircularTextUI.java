@@ -17,7 +17,7 @@ import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
 public class CircularTextUI extends SimpleBlockComponentUI {
-	private Appearence appearence;
+	private final Appearence appearence;
 
 	public CircularTextUI(Component c, ComponentUI parent) {
 		super(c, parent);
@@ -32,7 +32,7 @@ public class CircularTextUI extends SimpleBlockComponentUI {
 	
 	private class CircularTextAppearence implements Appearence {
 		private String text;
-		private int strwidth;
+		private int strWidth;
 		private Dimension bounds;
 		
 		@Override
@@ -41,8 +41,8 @@ public class CircularTextUI extends SimpleBlockComponentUI {
 			
 			RibbonFont font = rd.getState().getFont();
 			
-			this.strwidth = StringWrapHelper.stringWidth(font, text);
-			sizepos.move(strwidth+font.getPaddingHeight(), true);
+			this.strWidth = StringWrapHelper.stringWidth(font, text);
+			sizepos.move(strWidth+font.getPaddingHeight(), true);
 			sizepos.setMinLineHeight(font.getHeight());
 			
 			this.bounds = sizepos.getSize();
@@ -57,7 +57,7 @@ public class CircularTextUI extends SimpleBlockComponentUI {
 			r.drawFilledRect(rd, bounds.getHeight()/2, 0, bounds.getWidth()-bounds.getHeight(), bounds.getHeight());
 			
 			rd.useForeground();
-			r.drawText(rd, bounds.getWidth()/2-strwidth/2, bounds.getHeight()/2-rd.getState().getFont().getHeight()/2, text);
+			r.drawText(rd, bounds.getWidth()/2-strWidth/2, bounds.getHeight()/2-rd.getState().getFont().getHeight()/2, text);
 		}
 
 		@Override
@@ -67,7 +67,6 @@ public class CircularTextUI extends SimpleBlockComponentUI {
 
 		@Override
 		public void processEvent(UIEvent e) {
-			// TODO Auto-generated method stub
 			
 		}
 	}

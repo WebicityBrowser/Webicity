@@ -15,7 +15,9 @@ import everyos.browser.webicitybrowser.gui.ui.WebicityButtonUI;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.ui.simple.SimpleUIManager;
 
-public class WebicityUIManager {
+public final class WebicityUIManager {
+	private WebicityUIManager() {};
+	
 	public static UIManager createUI() {
 		UIManager ui = SimpleUIManager.createUI();
 		ui.put(CircularText.class, CircularTextUI::new);

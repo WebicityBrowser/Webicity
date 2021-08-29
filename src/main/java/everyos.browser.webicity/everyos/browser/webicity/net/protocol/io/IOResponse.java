@@ -8,7 +8,7 @@ import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
 
 public class IOResponse implements Response {
-	private InputStream stream;
+	private final InputStream stream;
 
 	public IOResponse(InputStream stream) {
 		this.stream = stream;

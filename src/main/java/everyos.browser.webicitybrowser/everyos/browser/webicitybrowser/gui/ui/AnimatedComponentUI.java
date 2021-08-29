@@ -1,6 +1,6 @@
 package everyos.browser.webicitybrowser.gui.ui;
 
-import everyos.browser.webicitybrowser.gui.Animation;
+import everyos.browser.webicitybrowser.gui.animation.Animation;
 import everyos.browser.webicitybrowser.gui.component.AnimatedComponent;
 import everyos.browser.webicitybrowser.gui.directive.AnimationDirective;
 import everyos.engine.ribbon.core.component.Component;
@@ -17,24 +17,25 @@ import everyos.engine.ribbon.ui.simple.layout.InlineBlockLayout;
 import everyos.engine.ribbon.ui.simple.layout.Layout;
 
 public class AnimatedComponentUI extends SimpleBlockComponentUI {
-	private AnimatedComponent component;
-	private Layout layout;
-	private Appearence appearence;
+	private final AnimatedComponent component;
+	private final Layout layout;
+	private final Appearence appearence;
 
 	public AnimatedComponentUI(Component c, ComponentUI parent) {
 		super(c, parent);
-		component = getComponent().casted(AnimatedComponent.class);
+		
+		this.component = getComponent().casted(AnimatedComponent.class);
 		this.layout = new AnimatedComponentLayout(c, parent);
 		this.appearence = new DefaultAppearence();
 	}
 
 	@Override
-	public Layout getLayout() {
+	protected Layout getLayout() {
 		return layout;
 	}
 	
 	@Override
-	public Appearence getAppearence() {
+	protected Appearence getAppearence() {
 		return appearence;
 	}
 	

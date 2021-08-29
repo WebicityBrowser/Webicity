@@ -17,10 +17,11 @@ public class WebicityFrame {
 	private final URL url;
 	private final FrameCallback callback;
 	private final WebicityEngine engine;
-	private ExecutorService tasks;
-	private Renderer renderer;
+	private final ExecutorService tasks;
 	@SuppressWarnings("unused")
-	private BrowsingContext context;
+	private final BrowsingContext context;
+	
+	private Renderer renderer;
 
 	public WebicityFrame(WebicityEngine engine, FrameCallback callback, URL url, ExecutorService queue) {
 		this.engine = engine;

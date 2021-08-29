@@ -6,22 +6,21 @@ import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 
 public class WebComponentWrapper extends BlockComponent {
+	
 	private WebDocumentComponent webComponent;
 	private Pallete pallete;
-
-	public WebComponentWrapper() {
-		super();
-	}
 
 	public WebComponentWrapper ui(WebDocumentComponent component) {
 		this.webComponent = component;
 		invalidate(InvalidationLevel.RENDER);
+		
 		return this;
 	}
 	
 	public WebComponentWrapper pallete(Pallete pallete) {
 		this.pallete = pallete;
-		invalidate(InvalidationLevel.RENDER);
+		invalidate(InvalidationLevel.PAINT);
+		
 		return this;
 	}
 	
@@ -32,4 +31,5 @@ public class WebComponentWrapper extends BlockComponent {
 	public Pallete getPallete() {
 		return this.pallete;
 	}
+	
 }

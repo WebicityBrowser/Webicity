@@ -5,7 +5,6 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.DefaultAppearence;
 import everyos.browser.webicity.webribbon.ui.webui.layout.InlineLayout;
@@ -14,12 +13,14 @@ import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public class WebUIWebComponentUI implements WebComponentUI {
-	private Layout layout;
-	private Appearence appearence;
-	private WebComponent component;
-	private WebComponentUI parent;
+	private final WebComponent component;
+	private final WebComponentUI parent;
+	private final Layout layout;
+	private final Appearence appearence;
+	
 	private InvalidationLevel invalidated = InvalidationLevel.IGNORE;
 	
 	public WebUIWebComponentUI(WebComponent component, WebComponentUI parent) {
@@ -47,11 +48,13 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	
 	@Override
 	public void invalidate(InvalidationLevel level) {
-		WebComponentUI cui = this;
-		while (cui!=null) {
-			if (!cui.getValidated(level)) return;
-			cui.invalidateLocal(level);
-			cui = cui.getParent();
+		WebComponentUI parentUI = this;
+		while (parentUI != null) {
+			if (!parentUI.getValidated(level)) {
+				return;
+			}
+			parentUI.invalidateLocal(level);
+			parentUI = parentUI.getParent();
 		}
 	}
 	
@@ -80,7 +83,7 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	@Override
 	public void processEvent(UIEvent event) {	
 		layout.processEvent(event);
-		if (parent!=null) {
+		if (parent != null) {
 			parent.processEvent(event);
 		}
 	}

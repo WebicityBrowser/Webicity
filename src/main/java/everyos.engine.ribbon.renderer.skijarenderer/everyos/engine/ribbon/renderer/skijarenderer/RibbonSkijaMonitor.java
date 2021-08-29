@@ -1,11 +1,16 @@
 package everyos.engine.ribbon.renderer.skijarenderer;
 
 public class RibbonSkijaMonitor {
-	private int id;
+	
+	private final int id;
+	
 	public RibbonSkijaMonitor(int id) throws NoMonitorAvailableException {
-		if (id<0) throw new java.lang.IllegalArgumentException();
+		if (id<0) {
+			throw new java.lang.IllegalArgumentException();
+		}
 		this.id = id;
 	}
+	
 	public RibbonSkijaMonitor() throws NoMonitorAvailableException {
 		this.id = 0;
 	}

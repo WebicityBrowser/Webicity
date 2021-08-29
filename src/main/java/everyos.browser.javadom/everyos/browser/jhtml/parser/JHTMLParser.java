@@ -20,6 +20,7 @@ import everyos.browser.javadom.intf.Text;
 import everyos.browser.jhtml.intf.HTMLStyleElement;
 
 //TODO: Do not fire mutation events
+//TODO: http://finance.yahoo.com/news/study-reveals-city-worst-traffic-223420982.html cuts off first letter (at parser level)
 
 public final class JHTMLParser {
 	public static final String HTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
@@ -641,6 +642,7 @@ public final class JHTMLParser {
 					} else {
 						((TagToken) token).getAttributeValueBuilder().appendCodePoint(ch);
 					}
+					break;
 					
 				case ATTRIBUTE_VALUE_UQ:
 					if (("\t\n\f ").indexOf(ch)!=-1) {
@@ -1106,11 +1108,9 @@ public final class JHTMLParser {
 					String foundRef = null;
 					int longest = 0;
 					for (String ref: unicodeHelper.getEntityNames()) {
-						if (ref.length()>longest) {
-							if (ref.equals('&'+new String(peek(reader, ref.length()-1)))) {
-								longest = ref.length();
-								foundRef = ref;
-							}
+						if (ref.length() > longest && ref.equals('&'+new String(peek(reader, ref.length()-1)))) {
+							longest = ref.length();
+							foundRef = ref;
 						}
 					}
 					
@@ -1175,14 +1175,18 @@ public final class JHTMLParser {
 		// TODO: Not codepoint safe
 		char[] b = new char[s.length()];
 		stream.read(b, 0, s.length());
-		if (new String(b).equals(s)) return true;
+		if (new String(b).equals(s)) {
+			return true;
+		}
 		stream.unread(b);
 		return false;
 	}
 	private boolean consumeIfEqualsCI(PushbackReader stream, String s) throws IOException {
 		char[] b = new char[s.length()];
 		stream.read(b, 0, s.length());
-		if (new String(b).toLowerCase().equals(s.toLowerCase())) return true;
+		if (new String(b).equalsIgnoreCase(s)) {
+			return true;
+		}
 		stream.unread(b);
 		return false;
 	}

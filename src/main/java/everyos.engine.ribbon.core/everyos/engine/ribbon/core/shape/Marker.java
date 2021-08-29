@@ -1,9 +1,8 @@
-package everyos.browser.webicity.webribbon.gui.shape;
-
-import everyos.engine.ribbon.core.shape.Rectangle;
+package everyos.engine.ribbon.core.shape;
 
 public class Marker {
-	private Marker parent;
+	private final Marker parent;
+	
 	private int
 		lowX = Integer.MAX_VALUE,
 		lowY = Integer.MAX_VALUE,
@@ -15,10 +14,11 @@ public class Marker {
 	}
 
 	public Marker end() {
-		if (parent!=null) {
+		if (parent != null) {
 			parent.mergeX(lowX, highX);
 			parent.mergeY(lowY, highY);
 		}
+		
 		return parent;
 	}
 

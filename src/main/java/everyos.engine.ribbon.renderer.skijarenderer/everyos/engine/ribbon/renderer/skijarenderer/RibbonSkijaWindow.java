@@ -29,7 +29,9 @@ import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
-import everyos.engine.ribbon.renderer.skijarenderer.ImageUtil.Image;
+import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil;
+import everyos.engine.ribbon.renderer.skijarenderer.util.KeyLookupUtil;
+import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil.Image;
 
 public class RibbonSkijaWindow {
 	private long window;
@@ -148,7 +150,7 @@ public class RibbonSkijaWindow {
 		
 		// Check if the window size has changed
 		Dimension size = getSize();
-		if (oldSize==null || oldSize.getWidth()!=size.getWidth() || oldSize.getHeight()!=size.getHeight()) {
+		if (oldSize == null || oldSize.getWidth() != size.getWidth() || oldSize.getHeight() != size.getHeight()) {
 			rootComponentUI.invalidateLocal(InvalidationLevel.RENDER);
 			renderer = RibbonSkijaRenderer.of(window, context);
 			oldSize = size;
@@ -220,7 +222,7 @@ public class RibbonSkijaWindow {
 	
 	private void setIcons(Image[] images) {
 		GLFWImage.Buffer imagesBuffer = GLFWImage.create(images.length);
-		for (int i=0; i<images.length; i++) {
+		for (int i=0; i < images.length; i++) {
 			final Image image = images[i];
 			if (!(image instanceof Image)) {
 				throw new RuntimeException("Expected an Image class!");
@@ -234,9 +236,9 @@ public class RibbonSkijaWindow {
 	}
 	
 	private int fixButton(int button) {
-		if (button==GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+		if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
 			button = MouseEvent.LEFT_BUTTON;
-		} else if (button==GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+		} else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
 			button = MouseEvent.RIGHT_BUTTON;
 		}
 		
@@ -244,7 +246,7 @@ public class RibbonSkijaWindow {
 	}
 	
 	private int fixAction(int action) {
-		if (action==GLFW.GLFW_RELEASE) {
+		if (action == GLFW.GLFW_RELEASE) {
 			action = MouseEvent.RELEASE;
 		}
 		
@@ -261,15 +263,15 @@ public class RibbonSkijaWindow {
 		mouseEventBuilder.setButton(button);
 		mouseEventBuilder.setAction(action);
 		
-		for (int i = mouseBindings.size()-1; i>=0; i--) {
+		for (int i = mouseBindings.size()-1; i >= 0; i--) {
 			ListenerRect binding = mouseBindings.get(i);
 			Rectangle bounds = binding.getBounds();
 			
 			mouseEventBuilder.setEventTarget(binding.getEventTarget());
 			mouseEventBuilder.setRelativeCords(x-bounds.getX(), y-bounds.getY());
 			
-			if (x>=bounds.getX()&&x<=bounds.getX()+bounds.getWidth()&&
-				y>=bounds.getY()&&y<=bounds.getY()+bounds.getHeight()) {
+			if (x >= bounds.getX() && x <= bounds.getX()+bounds.getWidth() &&
+				y >= bounds.getY() && y <= bounds.getY()+bounds.getHeight()) {
 				
 				mouseEventBuilder.setInternal(!isDetermined);
 				isDetermined = true;
@@ -311,9 +313,9 @@ public class RibbonSkijaWindow {
 		
 		GLFW.glfwSetCursorPosCallback(window, ($, x, y)->{
 			if (GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT)==GLFW.GLFW_PRESS) {
-				emitMouseEvent((int) x, (int) y, GLFW.GLFW_MOUSE_BUTTON_LEFT, MouseEvent.DRAG);
+				emitMouseEvent((int) x, (int) y, MouseEvent.LEFT_BUTTON, MouseEvent.DRAG);
 			} else if (GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_RIGHT)==GLFW.GLFW_PRESS) {
-				emitMouseEvent((int) x, (int) y, GLFW.GLFW_MOUSE_BUTTON_RIGHT, MouseEvent.DRAG);
+				emitMouseEvent((int) x, (int) y, MouseEvent.RIGHT_BUTTON, MouseEvent.DRAG);
 			} else {
 				emitMouseEvent((int) x, (int) y, 0, MouseEvent.MOVE);
 			}
@@ -328,7 +330,7 @@ public class RibbonSkijaWindow {
 		});
 		
 		GLFW.glfwSetKeyCallback(window, ($, kc, $1, action, $2) -> {
-			Key key = KeyLookup.query(kc);
+			Key key = KeyLookupUtil.query(kc);
 			KeyboardEvent e = new KeyboardEvent() {
 
 				@Override

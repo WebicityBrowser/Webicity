@@ -11,28 +11,27 @@ import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.renderer.Renderer;
 
 public class HTMLRenderer implements Renderer {
+	private final List<Runnable> readyHooks;
+	
 	private Document document;
-	private List<Runnable> readyHooks = new ArrayList<>();
 	private WebicityFrame frame;
+	
+	public HTMLRenderer() {
+		this.readyHooks = new ArrayList<>();
+	}
 
-	@Override public void execute(WebicityFrame frame, InputStream stream) throws IOException {
-		/*try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
-		
+	@Override
+	public void execute(WebicityFrame frame, InputStream stream) throws IOException {
 		this.frame = frame;
 		
 		long time = System.currentTimeMillis();
+		
 		JHTMLParser parser = new JHTMLParser(stream);
 		parser.parse();
-		System.out.println("TIME: "+(System.currentTimeMillis()-time));
 		stream.close();
+		this.document = parser.getDocument();
 		
-		Document doc = parser.getDocument();
-		
-		this.document = doc;
+		System.out.println("TIME: "+(System.currentTimeMillis()-time));
 		
 		for (Runnable hook: readyHooks) {
 			hook.run();
@@ -42,21 +41,22 @@ public class HTMLRenderer implements Renderer {
 
 	@Override
 	public void addReadyHook(Runnable hook) {
-		if (this.document!=null) {
+		if (this.document != null) {
 			hook.run();
 		} else {
 			readyHooks.add(hook);
 		}
 	}
-	
-	public Document getDocument() {
-		return document;
-	}
 
 	@Override
 	public String getTitle() {
-		if (document==null) return null;
-		return document.getTitle();
+		return document == null ?
+			null :
+			document.getTitle();
+	}
+	
+	public Document getDocument() {
+		return document;
 	}
 
 	public WebicityFrame getFrame() {

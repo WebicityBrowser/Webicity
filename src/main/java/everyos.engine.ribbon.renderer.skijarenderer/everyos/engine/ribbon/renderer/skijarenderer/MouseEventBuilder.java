@@ -45,6 +45,17 @@ public class MouseEventBuilder {
 	}
 
 	public MouseEvent build() {
+		int button = this.button;
+		int action = this.action;
+		UIEventTarget target = this.target;
+		boolean isExternal = this.isExternal;
+		int absX = this.absX;
+		int absY = this.absY;
+		int relX = this.relX;
+		int relY = this.relY;
+		int scrX = this.scrX;
+		int scrY = this.scrY;
+		
 		return new MouseEvent() {
 			@Override
 			public int getButton() {

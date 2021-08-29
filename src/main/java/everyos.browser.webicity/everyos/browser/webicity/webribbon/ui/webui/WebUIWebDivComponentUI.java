@@ -6,7 +6,7 @@ import everyos.browser.webicity.webribbon.ui.webui.layout.BlockLayout;
 import everyos.browser.webicity.webribbon.ui.webui.layout.Layout;
 
 public class WebUIWebDivComponentUI extends WebUIWebComponentUI {
-	private Layout layout;
+	private final Layout layout;
 
 	public WebUIWebDivComponentUI(WebComponent component, WebComponentUI parent) {
 		super(component, parent);

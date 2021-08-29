@@ -10,14 +10,23 @@ public class WebUIManager extends HashMap<Class<? extends WebComponent>, WebComp
 	public WebComponentUI get(WebComponent c, WebComponentUI parent) {
 		WebComponentUIFactory factory = this.computeIfAbsent(c.getClass(), key->{
 			Class<?> cz = key;
-			while (cz!=null&&get(cz)==null) {
-				cz=cz.getSuperclass();
+			while (cz != null && get(cz) == null) {
+				cz = cz.getSuperclass();
 			}
-			if(cz==null) return null;
-			if (!WebComponent.class.isAssignableFrom(cz)) return null;
+			if (cz == null) {
+				return null;
+			}
+			if (!WebComponent.class.isAssignableFrom(cz)) {
+				return null;
+			}
+			
 			return get(cz);
 		});
-		if (factory==null) return null;
+		
+		if (factory==null) {
+			return null;
+		}
+		
 		return factory.create(c, parent);
 	}
 }

@@ -29,45 +29,51 @@ public class HTTP11Parser {
 							state = ParseState.STATUS_CODE;
 						}
 						break;
+						
 					case STATUS_CODE:
 						if (ch==' ') {
 							status = Integer.valueOf(tmp_buf.toString());
 							state = ParseState.STATUS_TEXT;
 						} else tmp_buf.append(ch);
 						break;
+						
 					case STATUS_TEXT:
 						if (ch=='\r') {
 							state = ParseState.NEWLINE;
 							returnState = ParseState.HEADER_NAME_OR_NEWLINE;
 						}
 						break;
+						
 					case NEWLINE:
-						//assert: ch=='\n'
+						assert(ch == '\n');
 						state = returnState;
 						break;
+						
 					case HEADER_NAME_OR_NEWLINE:
-						if (ch=='\r') {
+						if (ch == '\r') {
 							returnState = null;
 							state = ParseState.NEWLINE;
 							break;
 						}
 						tmp_buf = new StringBuilder();
 						state = ParseState.HEADER_NAME;
+						
 					case HEADER_NAME:
-						if (ch==':') {
+						if (ch == ':') {
 							tmp_buf_2 = new StringBuilder();
-							state = ParseState.HEADER_VALUE_OR_SPACE;
+							state = ParseState.HEADER_VALUE;
 						} else tmp_buf.append(ch);
 						break;
-					case HEADER_VALUE_OR_SPACE:
-						if (ch==' ') break;
-						state = ParseState.HEADER_VALUE;
+						
 					case HEADER_VALUE:
-						if (ch=='\r') {
+						if (ch == '\r') {
 							headers.put(tmp_buf.toString().toLowerCase(), tmp_buf_2.toString());
 							returnState = ParseState.HEADER_NAME_OR_NEWLINE;
 							state = ParseState.NEWLINE;
-						} else tmp_buf_2.append(ch);
+						} else if (ch != ' ' || !tmp_buf_2.isEmpty()) {
+							tmp_buf_2.append(ch);
+						}
+						
 					default:
 						break;
 				}
@@ -80,6 +86,6 @@ public class HTTP11Parser {
 	}
 
 	private static enum ParseState {
-		STATUS_HEADER, STATUS_CODE, STATUS_TEXT, NEWLINE, HEADER_NAME_OR_NEWLINE, HEADER_NAME, HEADER_VALUE, HEADER_VALUE_OR_SPACE
+		STATUS_HEADER, STATUS_CODE, STATUS_TEXT, NEWLINE, HEADER_NAME_OR_NEWLINE, HEADER_NAME, HEADER_VALUE
 	}
 }

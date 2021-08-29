@@ -9,7 +9,7 @@ import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.appearence.DefaultAppearence;
 
 public class SimpleBreakComponentUI extends SimpleComponentUI {
-	private Appearence appearence;
+	private final Appearence appearence;
 	
 	public SimpleBreakComponentUI(Component c, ComponentUI parent) {
 		super(c, parent);

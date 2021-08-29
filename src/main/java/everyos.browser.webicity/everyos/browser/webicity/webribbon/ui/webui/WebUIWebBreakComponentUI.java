@@ -4,13 +4,13 @@ import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.browser.webicity.webribbon.gui.shape.SizePosGroup;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
+import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public class WebUIWebBreakComponentUI extends WebUIWebComponentUI {
-	private BreakAppearence appearence;
+	private final BreakAppearence appearence;
 
 	public WebUIWebBreakComponentUI(WebComponent component, WebComponentUI parent) {
 		super(component, parent);

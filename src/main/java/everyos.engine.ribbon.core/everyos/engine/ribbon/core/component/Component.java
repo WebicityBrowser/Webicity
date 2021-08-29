@@ -2,6 +2,9 @@ package everyos.engine.ribbon.core.component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import everyos.engine.ribbon.core.event.UIEventTarget;
@@ -10,10 +13,11 @@ import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 
 public class Component implements UIEventTarget {
+	private final ArrayList<Component> children;
+	private final List<ComponentUI> boundObservers;
+	private final Map<Class<? extends ComponentUI>, List<UIDirectiveWrapper>> directives;
+	
 	private Component parent;
-	private ArrayList<Component> children;
-	private ArrayList<ComponentUI> boundObservers; //TODO:
-	private HashMap<Class<? extends ComponentUI>, ArrayList<UIDirectiveWrapper>> directives;
 	
 	public Component() {
 		children = new ArrayList<Component>();
@@ -29,16 +33,19 @@ public class Component implements UIEventTarget {
 	 */
 	@SuppressWarnings("unchecked")
 	public Component directive(Class<? extends ComponentUI> uicls, UIDirectiveWrapper directive) {
-		ArrayList<UIDirectiveWrapper> dirs = directives.computeIfAbsent(uicls.getClass().cast(ComponentUI.class), c->new ArrayList<UIDirectiveWrapper>());
-		for (int i = dirs.size()-1; i>=0; i--) {
+		List<UIDirectiveWrapper> dirs = directives.computeIfAbsent(uicls.getClass().cast(ComponentUI.class), c->new ArrayList<UIDirectiveWrapper>());
+		for (int i = dirs.size()-1; i >= 0; i--) {
 			UIDirectiveWrapper dir = dirs.get(i);
-			if (dir.getClass().isAssignableFrom(uicls.getClass())) dirs.remove(i);
+			if (dir.getClass().isAssignableFrom(uicls.getClass())) {
+				dirs.remove(i);
+			}
 		}
 		dirs.add(directive);
 		for (ComponentUI ui: boundObservers.toArray(new ComponentUI[boundObservers.size()])) {
-			if (uicls.isAssignableFrom(ui.getClass()))
-			ui.directive(directive.getDirective());
-			ui.invalidate(directive.getPipelineHint());
+			if (uicls.isAssignableFrom(ui.getClass())) {
+				ui.directive(directive.getDirective());
+				ui.invalidate(directive.getPipelineHint());
+			}
 		}
 		return this;
 	}
@@ -104,14 +111,18 @@ public class Component implements UIEventTarget {
 	 * @param pos The placement of this component within the new parent's children
 	 */
 	public void setParent(Component parent, int pos) {
-		if (this.parent!=null) this.parent.delete(this);
+		if (this.parent != null) {
+			this.parent.delete(this);
+		}
 		this.parent = parent;
 		parent.children.add(pos, this);
 		invalidate(InvalidationLevel.RENDER);
 	}
 
 	public void delete() {
-		if (parent!=null) parent.delete(this);
+		if (parent != null) {
+			parent.delete(this);
+		}
 	}
 	public void delete(Component component) {
 		children.remove(component);
@@ -120,8 +131,13 @@ public class Component implements UIEventTarget {
 	}
 
 	public Component children(Component[] children) {
-		this.children = new ArrayList<Component>(children.length);
-		for (Component child: children) child.setParent(this);
+		this.children.clear();
+		this.children.ensureCapacity(children.length);
+		for (Component child: children) {
+			child.setParent(this);
+		}
+		this.children.trimToSize();
+		
 		return this;
 	}
 	public Component[] getChildren() {
@@ -129,13 +145,6 @@ public class Component implements UIEventTarget {
 	}
 	
 	public void invalidate(InvalidationLevel level) {
-		Component c = this;
-		while (c!=null) {
-			c.invalidateLocal(level);
-			c = c.parent;
-		}
-	}
-	protected void invalidateLocal(InvalidationLevel level) {
 		for (ComponentUI ui: boundObservers.toArray(new ComponentUI[boundObservers.size()])) {
 			ui.invalidate(level);
 		}
@@ -152,7 +161,9 @@ public class Component implements UIEventTarget {
 	 */
 	public void bind(ComponentUI ui) {
 		boundObservers.add(ui);
-		for (UIDirectiveWrapper dir: getDirectives(ui.getClass())) ui.directive(dir.getDirective());
+		for (UIDirectiveWrapper dir: getDirectives(ui.getClass())) {
+			ui.directive(dir.getDirective());
+		}
 	}
 	
 	public void unbind(ComponentUI ui) {
@@ -160,22 +171,21 @@ public class Component implements UIEventTarget {
 	}
 
 	public Component[] query(Function<Component, Boolean> query) {
-		ArrayList<Component> components = new ArrayList<>();
-		ArrayList<Component> matches = new ArrayList<>();
-		components.add(this);
+		List<Component> components = new LinkedList<>();
+		List<Component> matches = new ArrayList<>();
 		
-		while(components.size()>0) {
+		components.add(this);
+		while(components.size() > 0) {
 			Component cur = components.get(0);
-			if (query.apply(cur)) matches.add(cur);
-			for (Component child: cur.getChildren()) components.add(child);
+			if (query.apply(cur)) {
+				matches.add(cur);
+			}
+			for (Component child: cur.getChildren()) {
+				components.add(child);
+			}
 			components.remove(0);
 		}
 		
 		return matches.toArray(new Component[matches.size()]);
-	}
-
-	//TODO: Should not exist
-	public void unbindAll() {
-		boundObservers.clear();
 	}
 }

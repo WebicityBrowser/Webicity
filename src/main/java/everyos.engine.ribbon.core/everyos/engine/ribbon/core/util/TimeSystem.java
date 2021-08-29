@@ -1,8 +1,6 @@
 package everyos.engine.ribbon.core.util;
 
-// TODO: Better name, and not TimeUtil, because everyos.browser.javadom.imp.TimeUtil
 public class TimeSystem {
-
     private static long lastTime = System.currentTimeMillis();
     private static long delta = -1;
 

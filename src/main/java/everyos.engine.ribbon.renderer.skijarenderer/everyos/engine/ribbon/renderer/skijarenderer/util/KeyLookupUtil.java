@@ -1,11 +1,11 @@
-package everyos.engine.ribbon.renderer.skijarenderer;
+package everyos.engine.ribbon.renderer.skijarenderer.util;
 
 import org.lwjgl.glfw.GLFW;
 
 import everyos.engine.ribbon.core.event.Key;
 
-public final class KeyLookup {
-	private KeyLookup() {}
+public final class KeyLookupUtil {
+	private KeyLookupUtil() {}
 	
 	public static Key query(int kc) {
 		switch(kc) {
