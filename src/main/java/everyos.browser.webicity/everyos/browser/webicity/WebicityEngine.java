@@ -54,6 +54,7 @@ public abstract class WebicityEngine {
 	public ExecutorService createThreadQueue() {
 		ExecutorService thread = Executors.newSingleThreadExecutor();
 		threads.add(thread);
+		
 		return thread;
 	}
 	
