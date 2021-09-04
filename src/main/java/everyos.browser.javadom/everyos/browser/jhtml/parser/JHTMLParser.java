@@ -40,6 +40,7 @@ public final class JHTMLParser {
 	private final Document document;
 	private final Stack<Element> elements;
 	private final UnicodeHelper unicodeHelper;
+	private final PushbackReader reader;
 	
 	private InsertionState istate = InsertionState.INITIAL;
 	private InsertionState ostate = null;
@@ -47,14 +48,9 @@ public final class JHTMLParser {
 	
 	private Element head;
 	private boolean fostering = false;
-	private PushbackReader reader;
 	private TokenizeState returnState = null;
-	private Token token = null;
 	private StringBuilder tmp_buf = new StringBuilder();
-	private boolean eof = false;
 	private String lastName;
-
-	private int characterReferenceCode = 0;
 	
 			
 	public JHTMLParser(InputStream stream) throws UnsupportedEncodingException {
@@ -68,24 +64,17 @@ public final class JHTMLParser {
 		this.unicodeHelper = new UnicodeHelper();
 	}
 	
-	public Document getDocument() {
-		return document;
-	}
-
-	public boolean parse() throws IOException {
-		while(!eof) {
-			parseChunk();
-		}
-		return eof;
-	}
-	
 	//TODO: Debug why parsing WhatWG HTML Spec is totally broken
-	public void parseChunk() throws IOException {
+	public Document parse() throws IOException {
+		int characterReferenceCode = 0;
+		boolean eof = false;
+		Token token = null;
+		
 		while (!eof) {
 			int ich = reader.read();
 			
-			eof = eof|ich == -1;
-			int ch = eof?'\0':ich;
+			eof = eof || (ich == -1);
+			int ch = eof ? '\0' : ich;
 			
 			switch (state) {
 				case DATA:
@@ -190,14 +179,14 @@ public final class JHTMLParser {
 					break;
 					
 				case TAG_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
 					} else if (ch == '/') {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
 					} else if (ch == '>') {
 						state = TokenizeState.DATA;
 						emit(token);
-					} else if (Character.isAlphabetic(ch)&&Character.isUpperCase(ch)) {
+					} else if (Character.isAlphabetic(ch) && Character.isUpperCase(ch)) {
 						((TagToken) token).getNameBuilder().appendCodePoint(ch+32);
 					} else if (eof) {
 						emit(new EOFToken());
@@ -233,11 +222,11 @@ public final class JHTMLParser {
 					break;
 					
 				case RCDATA_END_TAG_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1&&token instanceof TagToken) {
+					if (("\t\n\f ").indexOf(ch) != -1&&token instanceof TagToken) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
-					} else if (ch == '/'&&token instanceof TagToken) {
+					} else if (ch == '/' && token instanceof TagToken) {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
-					} else if (ch == '>'&&isAppropriateEndTagToken(token)) {
+					} else if (ch == '>' && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.DATA;
 						emit(token);
 					} else if (Character.isAlphabetic(ch)) {
@@ -246,7 +235,9 @@ public final class JHTMLParser {
 					} else {
 						emit(new CharToken('<'));
 						emit(new CharToken('/'));
-						for (int i=0; i <  tmp_buf.length(); i++) emit(new CharToken(tmp_buf.charAt(i)));
+						for (int i=0; i <  tmp_buf.length(); i++) {
+							emit(new CharToken(tmp_buf.charAt(i)));
+						}
 						reader.unread(ch);
 						state = TokenizeState.RCDATA;
 					}
@@ -277,11 +268,11 @@ public final class JHTMLParser {
 					break;
 					
 				case RAWTEXT_END_TAG_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1&&isAppropriateEndTagToken(token)) {
+					if (("\t\n\f ").indexOf(ch) != -1 && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
-					} else if (ch == '/'&&isAppropriateEndTagToken(token)) {
+					} else if (ch == '/' && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
-					} else if (ch == '>'&&isAppropriateEndTagToken(token)) {
+					} else if (ch == '>' && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.DATA;
 						emit(token);
 					} else if (Character.isAlphabetic(ch)) {
@@ -290,7 +281,9 @@ public final class JHTMLParser {
 					} else {
 						emit(new CharToken('<'));
 						emit(new CharToken('/'));
-						for (int i=0; i <  tmp_buf.length(); i++) emit(new CharToken(tmp_buf.charAt(i)));
+						for (int i=0; i <  tmp_buf.length(); i++) {
+							emit(new CharToken(tmp_buf.charAt(i)));
+						}
 						reader.unread(ch);
 						state = TokenizeState.RAWTEXT;
 					}
@@ -325,11 +318,11 @@ public final class JHTMLParser {
 					break;
 					
 				case SCRIPT_DATA_END_TAG_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1&&isAppropriateEndTagToken(token)) {
+					if (("\t\n\f ").indexOf(ch) != -1 && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
-					} else if (ch == '/'&&isAppropriateEndTagToken(token)) {
+					} else if (ch == '/' && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
-					} else if (ch == '>'&&isAppropriateEndTagToken(token)) {
+					} else if (ch == '>' && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.DATA;
 						emit(token);
 					} else if (Character.isAlphabetic(ch)) {
@@ -338,7 +331,9 @@ public final class JHTMLParser {
 					} else {
 						emit(new CharToken('<'));
 						emit(new CharToken('/'));
-						for (int i=0; i <  tmp_buf.length(); i++) emit(new CharToken(tmp_buf.charAt(i)));
+						for (int i=0; i <  tmp_buf.length(); i++) {
+							emit(new CharToken(tmp_buf.charAt(i)));
+						}
 						reader.unread(ch);
 						state = TokenizeState.SCRIPT_DATA;
 					}
@@ -445,11 +440,11 @@ public final class JHTMLParser {
 					break;
 					
 				case SCRIPT_DATA_ESCAPED_END_TAG_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1&&isAppropriateEndTagToken(token)) {
+					if (("\t\n\f ").indexOf(ch) != -1 && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
-					} else if (ch == '/'&&isAppropriateEndTagToken(token)) {
+					} else if (ch == '/' && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
-					} else if (ch == '>'&&isAppropriateEndTagToken(token)) {
+					} else if (ch == '>' && isAppropriateEndTagToken(token)) {
 						state = TokenizeState.DATA;
 					} else if (Character.isAlphabetic(ch)) {
 						((TagToken) token).getNameBuilder().append(Character.toLowerCase(ch));
@@ -457,14 +452,16 @@ public final class JHTMLParser {
 					} else {
 						emit(new CharToken('<'));
 						emit(new CharToken('/'));
-						for (int i=0; i <  tmp_buf.length(); i++) emit(new CharToken(tmp_buf.charAt(i)));
+						for (int i=0; i <  tmp_buf.length(); i++) {
+							emit(new CharToken(tmp_buf.charAt(i)));
+						}
 						reader.unread(ch);
 						state = TokenizeState.SCRIPT_DATA_ESCAPED;
 					}
 					break;
 					
 				case SCRIPT_DATA_DOUBLE_ESCAPE_START:
-					if (("\t\n\f />").indexOf(ch)!=-1&&token instanceof TagToken) {
+					if (("\t\n\f />").indexOf(ch) != -1&&token instanceof TagToken) {
 						state = tmp_buf.toString().equals("script")?
 							TokenizeState.SCRIPT_DATA_DOUBLE_ESCAPED:
 							TokenizeState.SCRIPT_DATA_ESCAPED;
@@ -542,7 +539,7 @@ public final class JHTMLParser {
 					break;
 					
 				case SCRIPT_DATA_DOUBLE_ESCAPE_END:
-					if (("\t\n\f />").indexOf(ch)!=-1&&token instanceof TagToken) {
+					if (("\t\n\f />").indexOf(ch) != -1 && token instanceof TagToken) {
 						state = tmp_buf.toString().equals("script")?
 							TokenizeState.SCRIPT_DATA_ESCAPED:
 							TokenizeState.SCRIPT_DATA_DOUBLE_ESCAPED;
@@ -557,8 +554,8 @@ public final class JHTMLParser {
 					break;
 					
 				case BEFORE_ATTRIBUTE_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
-					} else if (ch == '/'||ch == '>'||eof) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
+					} else if (ch == '/' || ch == '>' || eof) {
 						reader.unread(ch);
 						state = TokenizeState.AFTER_ATTRIBUTE_NAME;
 					} else if (ch == '=') {
@@ -576,7 +573,7 @@ public final class JHTMLParser {
 					
 				case ATTRIBUTE_NAME:
 					//TODO: Finalize attr
-					if (("\t\n\f />").indexOf(ch)!=-1||eof) {
+					if (("\t\n\f />").indexOf(ch) != -1 || eof) {
 						reader.unread(ch);
 						state = TokenizeState.AFTER_ATTRIBUTE_NAME;
 					} else if (ch == '=') {
@@ -589,7 +586,7 @@ public final class JHTMLParser {
 					break;
 					
 				case AFTER_ATTRIBUTE_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 					} else if (ch == '/') {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
 					} else if (ch == '=') {
@@ -608,7 +605,7 @@ public final class JHTMLParser {
 					break;
 					
 				case BEFORE_ATTRIBUTE_VALUE:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 					} else if (ch == '"') {
 						state = TokenizeState.ATTRIBUTE_VALUE_DQ;
 					} else if (ch == '\'') {
@@ -653,7 +650,7 @@ public final class JHTMLParser {
 					break;
 					
 				case ATTRIBUTE_VALUE_UQ:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
 					} else if (ch == '&') {
 						returnState = TokenizeState.ATTRIBUTE_VALUE_UQ;
@@ -671,7 +668,7 @@ public final class JHTMLParser {
 					break;
 					
 				case AFTER_ATTRIBUTE_VALUE_QUOTED:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						state = TokenizeState.BEFORE_ATTRIBUTE_NAME;
 					} else if (ch == '/') {
 						state = TokenizeState.SELF_CLOSING_START_TAG;
@@ -861,7 +858,7 @@ public final class JHTMLParser {
 					break;
 					
 				case DOCTYPE:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						state = TokenizeState.BEFORE_DOCTYPE_NAME;
 					} else if (ch == '>') {
 						reader.unread(ch);
@@ -878,7 +875,7 @@ public final class JHTMLParser {
 					break;
 					
 				case BEFORE_DOCTYPE_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 					} else if (eof) {
 						DoctypeToken toke = new DoctypeToken();
 						toke.setForceQuirks(true);
@@ -903,7 +900,7 @@ public final class JHTMLParser {
 					break;
 					
 				case DOCTYPE_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						state = TokenizeState.AFTER_DOCTYPE_NAME;
 					} else if (ch == '>') {
 						state = TokenizeState.DATA;
@@ -918,7 +915,7 @@ public final class JHTMLParser {
 					
 					
 				case AFTER_DOCTYPE_NAME:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						
 					} else if (ch == '>') {
 						state = TokenizeState.DATA;
@@ -939,7 +936,7 @@ public final class JHTMLParser {
 					break;
 					
 				case AFTER_DOCTYPE_PUBLIC_KEYWORD:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						state = TokenizeState.BEFORE_DOCTYPE_PUBLIC_IDENTIFIER;
 					} else if (ch == '"') {
 						((DoctypeToken) token).setPublicIdentifier("");
@@ -963,7 +960,7 @@ public final class JHTMLParser {
 					break;
 					
 				case BEFORE_DOCTYPE_PUBLIC_IDENTIFIER:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						
 					} else if (ch == '"') {
 						((DoctypeToken) token).setPublicIdentifier("");
@@ -1023,7 +1020,7 @@ public final class JHTMLParser {
 					break;
 					
 				case AFTER_DOCTYPE_PUBLIC_IDENTIFIER:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						state = TokenizeState.BETWEEN_DOCTYPE_PUBLIC_AND_SYSTEM_IDENTIFIERS;
 					} else if (ch == '>') {
 						state = TokenizeState.DATA;
@@ -1046,7 +1043,7 @@ public final class JHTMLParser {
 					break;
 					
 				case BETWEEN_DOCTYPE_PUBLIC_AND_SYSTEM_IDENTIFIERS:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						
 					} else if (ch == '>') {
 						state = TokenizeState.DATA;
@@ -1069,7 +1066,7 @@ public final class JHTMLParser {
 					break;
 					
 				case AFTER_DOCTYPE_SYSTEM_KEYWORD:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						state = TokenizeState.BEFORE_DOCTYPE_SYSTEM_IDENTIFIER;
 					} else if (ch == '"') {
 						((DoctypeToken) token).setSystemIdentifier("");
@@ -1094,7 +1091,7 @@ public final class JHTMLParser {
 					
 					
 				case BEFORE_DOCTYPE_SYSTEM_IDENTIFIER:
-					if (("\t\n\f ").indexOf(ch)!=-1) {
+					if (("\t\n\f ").indexOf(ch) != -1) {
 						
 					} else if (ch == '"') {
 						((DoctypeToken) token).setSystemIdentifier("");
@@ -1359,6 +1356,8 @@ public final class JHTMLParser {
 		while (!elements.isEmpty()) {
 			pop();
 		}
+		
+		return document;
 	}
 
 	private int decodeHexDigit(int ch) {
@@ -1393,7 +1392,7 @@ public final class JHTMLParser {
 	}
 	
 	private boolean isConsumedAsPartOfAnAttribute() {
-		return 
+		return
 			returnState == TokenizeState.ATTRIBUTE_VALUE_DQ ||
 			returnState == TokenizeState.ATTRIBUTE_VALUE_SQ ||
 			returnState == TokenizeState.ATTRIBUTE_VALUE_UQ;
@@ -1405,6 +1404,7 @@ public final class JHTMLParser {
 		stream.unread(b);
 		return b;
 	}
+	
 	private boolean consumeIfEquals(PushbackReader stream, String s) throws IOException {
 		// TODO: Not codepoint safe
 		char[] b = new char[s.length()];
@@ -1415,6 +1415,7 @@ public final class JHTMLParser {
 		stream.unread(b);
 		return false;
 	}
+	
 	private boolean consumeIfEqualsCI(PushbackReader stream, String s) throws IOException {
 		char[] b = new char[s.length()];
 		stream.read(b, 0, s.length());
@@ -1433,6 +1434,7 @@ public final class JHTMLParser {
 				this.lastName = name;
 			}
 		}
+		
 		switch(cstate) {
 			case INITIAL:
 				if (isWhitespace(token)) {	
@@ -1469,9 +1471,9 @@ public final class JHTMLParser {
 				} else if (token instanceof CommentToken) {
 					//TODO
 				} else if (token instanceof DoctypeToken) {
-				} else if (isStartTag(token)&&name.equals("html")) {
+				} else if (isStartTag(token) && name.equals("html")) {
 					emit(InsertionState.IN_BODY, token);
-				} else if (isStartTag(token)&&name.equals("head")) {
+				} else if (isStartTag(token) && name.equals("head")) {
 					head = insertElement((TagToken) token, HTML_NAMESPACE);
 					istate = InsertionState.IN_HEAD;
 				} else if (isEndTag(token) && !tagIs(name, "head", "body", "html", "br")) {
@@ -1489,7 +1491,7 @@ public final class JHTMLParser {
 				} else if (token instanceof DoctypeToken) {
 				} else if (isStartTag(token) && name.equals("html")) {
 					emit(InsertionState.IN_BODY, token);
-				} else if (isStartTag(token)&&tagIs(name, "base", "basefont", "bgsound", "link")) {
+				} else if (isStartTag(token) && tagIs(name, "base", "basefont", "bgsound", "link")) {
 					insertElement((TagToken) token, HTML_NAMESPACE);
 					pop();
 					//TODO: "Acknowledge" the element
@@ -1515,7 +1517,7 @@ public final class JHTMLParser {
 					pop();
 					istate = InsertionState.AFTER_HEAD;
 				} else if (isEndTag(token) && !tagIs(name,  "body", "html", "br")) {
-					/*TODO: Template*/ 
+					/*TODO: Template*/
 				} else if (isStartTag(token) && name.equals("head") || isEndTag(token)) {
 				} else {
 					if (!elements.isEmpty()) {
@@ -1529,7 +1531,7 @@ public final class JHTMLParser {
 			//TODO: In head noscript
 				
 			case AFTER_HEAD:
-				if (token instanceof CharToken && ("\t\n\f\r ").indexOf(((CharToken) token).getCharacter())!=-1) {
+				if (token instanceof CharToken && ("\t\n\f\r ").indexOf(((CharToken) token).getCharacter()) != -1) {
 					insertCharacter(((CharToken) token).getCharacter());
 				} else if (token instanceof CommentToken) {
 					insertComment((CommentToken) token);
@@ -1549,7 +1551,7 @@ public final class JHTMLParser {
 					while (pop()!=head); //TODO: Am I supposed to remove only head? Or all elements afterwards?
 				} else if (isEndTag(token) && name.equals("template")) {
 					emit(InsertionState.IN_HEAD, token);
-				} else if ((isStartTag(token)&&name.equals("head")) || (isEndTag(token)&&!tagIs(name, "body", "html", "br"))) {
+				} else if ((isStartTag(token) && name.equals("head")) || (isEndTag(token) && !tagIs(name, "body", "html", "br"))) {
 				} else {
 					insertElement(new TagToken("body", false), HTML_NAMESPACE);
 					istate = InsertionState.IN_BODY;
@@ -1561,14 +1563,16 @@ public final class JHTMLParser {
 				if (token instanceof CharToken) {
 					//TODO: All char processing
 					char data = ((CharToken) token).getCharacter();
-					if (data=='\0') break;
+					if (data=='\0') {
+						break;
+					}
 					insertCharacter(data);
 				} else if (token instanceof CommentToken) {
 					insertComment((CommentToken) token);
 				} else if (token instanceof DoctypeToken) {
 				} else if (isStartTag(token) && name.equals("html")) {
 					// TODO
-				} else if ((isStartTag(token) && tagIs(name, "base", "basefont", "bgsound", "link", 
+				} else if ((isStartTag(token) && tagIs(name, "base", "basefont", "bgsound", "link",
 						"meta", "noframes", "script", "style", /*"template",*/ "title"))
 						/*|| (isEndTag(token) && name.equals("template"))*/) {
 					//TODO
@@ -1619,9 +1623,13 @@ public final class JHTMLParser {
 					while (!elements.isEmpty()) {
 						//System.out.println(elements.size());
 						s.add(pop());
-						if (s.peek().getTagName().equals(name)) break;
+						if (s.peek().getTagName().equals(name)) {
+							break;
+						}
 						if (elements.isEmpty()) {
-							while(!s.isEmpty()) elements.push(s.pop());
+							while(!s.isEmpty()) {
+								elements.push(s.pop());
+							}
 							break;
 						}
 					}
@@ -1639,9 +1647,13 @@ public final class JHTMLParser {
 					Stack<Element> s = new Stack<>();
 					while (!elements.isEmpty()) {
 						s.add(pop());
-						if (s.peek().getTagName().equals(name)) break;
+						if (s.peek().getTagName().equals(name)) {
+							break;
+						}
 						if (elements.isEmpty()) {
-							while(!s.isEmpty()) elements.push(s.pop());
+							while(!s.isEmpty()) {
+								elements.push(s.pop());
+							}
 							break;
 						}
 					}
@@ -1670,7 +1682,7 @@ public final class JHTMLParser {
 				if (token instanceof CharToken) {
 					insertCharacter(((CharToken) token).getCharacter());
 				} else if (isEndTag(token) && name.equals("script")) {
-					Element e = elements.isEmpty()?null:pop();
+					Element e = elements.isEmpty() ? null : pop();
 					//TODO
 					istate = ostate;
 				} else if (isEndTag(token)) {
@@ -1698,18 +1710,23 @@ public final class JHTMLParser {
 		}
 		return false;
 	}
+	
 	private boolean isWhitespace(Token token) {
-		return token instanceof CharToken && ("\t\n\f\r ").indexOf(((CharToken) token).getCharacter())!=-1;
+		return token instanceof CharToken && ("\t\n\f\r ").indexOf(((CharToken) token).getCharacter()) != -1;
 	}
+	
 	private boolean isStartTag(Token toke) {
 		return toke instanceof TagToken && !((TagToken) toke).getIsEnd();
 	}
+	
 	private boolean isEndTag(Token toke) {
 		return toke instanceof TagToken && ((TagToken) toke).getIsEnd();
 	}
 	
 	private void insertComment(CommentToken comment, Node location) {
-		Node adjusted = location==null?getNodeInsertionLocation(null):location;
+		Node adjusted = location == null ?
+			getNodeInsertionLocation(null) :
+			location;
 		insert(location, new JDComment(getNodeDocument(adjusted), comment.getDataBuilder().toString()));
 	}
 
@@ -1753,6 +1770,7 @@ public final class JHTMLParser {
 		
 		return e;
 	}
+	
 	private Element createElement(Document document, String localName, String namespace, String prefix, String is, boolean synccus) {
 		//TODO: a lot of logic
 		ElementFactory factory = new ElementFactory();
@@ -1767,7 +1785,9 @@ public final class JHTMLParser {
 	
 	private void insertCharacter(char data) {
 		Node parent = getNodeInsertionLocation(null);
-		if (parent instanceof Document) return;
+		if (parent instanceof Document) {
+			return;
+		}
 		Node lc = parent.getLastChild();
 		if (!(lc instanceof Text)) {
 			lc = new JDText(getNodeDocument(parent));
@@ -1791,6 +1811,7 @@ public final class JHTMLParser {
 		ostate = istate;
 		istate = InsertionState.TEXT;
 	}
+	
 	private void parseGenericRawText(TagToken token) {
 		insertElement(token, HTML_NAMESPACE);
 		state = TokenizeState.RAWTEXT;
@@ -1799,10 +1820,13 @@ public final class JHTMLParser {
 	}
 	
 	private boolean elementIs(Element element, String namespace, String... options) {
-		if (element==null) return false;
-		if (!element.getNamespaceURI().equals(namespace)) return false;
+		if (element == null || !element.getNamespaceURI().equals(namespace)) {
+			return false;
+		}
 		for (String tagName: options) {
-			if (tagName.equals(element.getTagName())) return true;
+			if (tagName.equals(element.getTagName())) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -1810,7 +1834,9 @@ public final class JHTMLParser {
 	private boolean isSpecial(String namespace, String name) {
 		if (namespace.equals(HTML_NAMESPACE)) {
 			for (String n: specialHTML) {
-				if (n.equals(name)) return true;
+				if (n.equals(name)) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -1821,8 +1847,9 @@ public final class JHTMLParser {
 	}
 	
 	private boolean isAppropriateEndTagToken(Token token) {
-		if (!isEndTag(token)) return false;
-		return ((TagToken) token).getNameBuilder().toString().equals(lastName);
+		return
+			isEndTag(token) &&
+			((TagToken) token).getNameBuilder().toString().equals(lastName);
 	}
 	
 	private Element pop() {

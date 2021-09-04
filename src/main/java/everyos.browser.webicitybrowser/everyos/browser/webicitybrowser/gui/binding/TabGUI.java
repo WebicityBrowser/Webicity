@@ -93,45 +93,19 @@ public class TabGUI {
 	}
 
 	private Component createTabDecorations() {
-		int horizontalDrop = (int) (Styling.ELEMENT_PADDING*.5);
-		
 		Component tabDecor = new BlockComponent();
 		tabDecor.directive(BackgroundDirective.of(colors.getBackgroundPrimary()));
 		
 		// Add the tab action buttons
-		CircularText backButton = new CircularText();
-		backButton.directive(PositionDirective.of(new Location(0, Styling.BORDER_PADDING, 0, horizontalDrop)));
-		backButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
-		backButton.text("<");
-		addButtonBehavior(backButton, ()->tab.back());
-		
-		tabDecor.addChild(backButton);
-		
-		CircularText forwardButton = new CircularText();
-		forwardButton.directive(PositionDirective.of(new Location(
-			0, Styling.BORDER_PADDING+Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING,
-			0, horizontalDrop)));
-		forwardButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
-		forwardButton.text(">");
-		addButtonBehavior(forwardButton, ()->tab.forward());
-		
-		tabDecor.addChild(forwardButton);
-		
-		CircularText reloadButton = new CircularText();
-		reloadButton.directive(PositionDirective.of(new Location(
-			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*2,
-			0, horizontalDrop)));
-		reloadButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
-		reloadButton.text("O");
-		addButtonBehavior(reloadButton, ()->tab.reload());
-		
-		tabDecor.addChild(reloadButton);
+		tabDecor.addChild(createBackButton());
+		tabDecor.addChild(createForwardButton());
+		tabDecor.addChild(createReloadButton());
 		
 		this.urlBar = new URLBar();
 		urlBar.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
 		urlBar.directive(PositionDirective.of(new Location(
 			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
-			0, horizontalDrop)));
+			0, (int) (Styling.ELEMENT_PADDING*.5))));
 		urlBar.directive(SizeDirective.of(new Location(
 			1, -Styling.BORDER_PADDING*2-(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
 			0, Styling.BUTTON_WIDTH)));
@@ -155,6 +129,40 @@ public class TabGUI {
 		tabDecor.addChild(urlBar);
 		
 		return tabDecor;
+	}
+
+	private Component createBackButton() {
+		CircularText backButton = new CircularText();
+		backButton.directive(PositionDirective.of(new Location(0, Styling.BORDER_PADDING, 0, (int) (Styling.ELEMENT_PADDING*.5))));
+		backButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
+		backButton.text("<");
+		addButtonBehavior(backButton, ()->tab.back());
+		
+		return backButton;
+	}
+
+	private Component createForwardButton() {
+		CircularText forwardButton = new CircularText();
+		forwardButton.directive(PositionDirective.of(new Location(
+			0, Styling.BORDER_PADDING+Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING,
+			0, (int) (Styling.ELEMENT_PADDING*.5))));
+		forwardButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
+		forwardButton.text(">");
+		addButtonBehavior(forwardButton, ()->tab.forward());
+		
+		return forwardButton;
+	}
+	
+	private Component createReloadButton() {
+		CircularText reloadButton = new CircularText();
+		reloadButton.directive(PositionDirective.of(new Location(
+			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*2,
+			0, (int) (Styling.ELEMENT_PADDING*.5))));
+		reloadButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
+		reloadButton.text("O");
+		addButtonBehavior(reloadButton, ()->tab.reload());
+		
+		return reloadButton;
 	}
 	
 	private void addButtonBehavior(Component button, Runnable handler) {

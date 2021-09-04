@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import everyos.browser.jcss.imp.AtRule;
-import everyos.browser.jcss.imp.Declaration;
 import everyos.browser.jcss.imp.Function;
 import everyos.browser.jcss.imp.QualifiedRule;
 import everyos.browser.jcss.imp.SimpleBlock;
@@ -17,7 +16,7 @@ public class JCSSParser {
 		return consumeAListOfRules(tokens, false);
 	}
 	
-	public Declaration[] parseAListOfDeclarations(CSSToken[] tokens) {
+	public CSSRule[] parseAListOfDeclarations(CSSToken[] tokens) {
 		return consumeAListOfDeclarations(new TokenStream(tokens));
 	}
 
@@ -95,13 +94,43 @@ public class JCSSParser {
 		}
 	}
 	
-	private Declaration[] consumeAListOfDeclarations(TokenStream tokenStream) {
-		List<Declaration> declarations = new ArrayList<>();
+	private CSSRule[] consumeAListOfDeclarations(TokenStream stream) {
+		List<CSSRule> declarations = new ArrayList<>();
 		
-		return declarations.toArray(new Declaration[declarations.size()]);
+		while (true) {
+			CSSToken token = stream.read();
+			if (token instanceof WhitespaceToken || token instanceof SemicolonToken) {
+				
+			} else if (token instanceof EOFToken) {
+				return declarations.toArray(new CSSRule[declarations.size()]);
+			} else if (token instanceof AtKeywordToken) {
+				stream.unread();
+				declarations.add(consumeAnAtRule(stream));
+			} else if (token instanceof IdentToken) {
+				List<CSSToken> tempList = new ArrayList<>();
+				tempList.add(token);
+				while (!(stream.peek() instanceof SemicolonToken || stream.peek() instanceof EOFToken)) {
+					tempList.add(consumeAComponentValue(stream));
+				}
+				TokenStream tempStream = new TokenStream(tempList.toArray(new CSSToken[tempList.size()]));
+				Declaration declaration = consumeADeclaration(tempStream);
+				if (declaration != null) {
+					declarations.add(declaration);
+				}
+			} else {
+				stream.unread();
+				while (!(stream.peek() instanceof SemicolonToken || stream.peek() instanceof EOFToken)) {
+					consumeAComponentValue(stream);
+				}
+			}
+		}
 	}
 	
-	private Object consumeAComponentValue(TokenStream stream) {
+	private Declaration consumeADeclaration(TokenStream tempStream) {
+		return null;
+	}
+
+	private CSSToken consumeAComponentValue(TokenStream stream) {
 		CSSToken token = stream.read();
 		
 		if (token instanceof LCBrackToken ||

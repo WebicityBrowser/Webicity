@@ -4,6 +4,7 @@ import everyos.browser.jcss.imp.QualifiedRule;
 import everyos.browser.jcss.imp.SimpleBlock;
 import everyos.browser.jcss.intf.CSSRule;
 import everyos.browser.jcss.intf.CSSStyleSheet;
+import everyos.browser.jcss.parser.CSSToken;
 
 //TODO: Track whether attributes are from UA or Site
 public class CSSOMUtil {
@@ -27,12 +28,6 @@ public class CSSOMUtil {
 	}
 
 	private static void mergeCSSOM(CSSOMNode root, QualifiedRule rule) {
-		/*System.out.println(rule);
-		
-		for (Object pr: rule.getPrelude()) {
-			System.out.println(pr);
-		}*/
-
 		Object[] prelude = rule.getPrelude();
 		int[] i = new int[1];
 		while (i[0] < prelude.length) {
@@ -62,11 +57,9 @@ public class CSSOMUtil {
 	}
 
 	private static void mergeBlock(CSSOMNode current, SimpleBlock block) {
-		/*System.out.println(block.getRules());
-		
-		for (Object rule: block.getRules()) {
+		for (CSSToken rule: block.getValue()) {
 			System.out.print("B");
 			System.out.println(rule);
-		}*/
+		}
 	}
 }

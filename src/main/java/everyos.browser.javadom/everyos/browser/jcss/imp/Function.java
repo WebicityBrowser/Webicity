@@ -1,6 +1,8 @@
 package everyos.browser.jcss.imp;
 
-public class Function {
+import everyos.browser.jcss.parser.CSSToken;
+
+public class Function implements CSSToken {
 	public void append(Object value) {
 		
 	}

@@ -27,9 +27,8 @@ public class HTMLRenderer implements Renderer {
 		long time = System.currentTimeMillis();
 		
 		JHTMLParser parser = new JHTMLParser(stream);
-		parser.parse();
+		this.document = parser.parse();
 		stream.close();
-		this.document = parser.getDocument();
 		
 		System.out.println("TIME: "+(System.currentTimeMillis()-time));
 		

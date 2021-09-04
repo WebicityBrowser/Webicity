@@ -40,7 +40,8 @@ public class WebicityButton extends BlockComponent {
 				window.getApplicationInstance().createWindow(false);
 			},
 			() -> {
-				window.getApplicationInstance().createWindow(true);
+				window.getApplicationInstance().createWindow(true)
+					.openNewTab();
 			},
 			() -> {},
 			() -> {},

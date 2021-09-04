@@ -14,4 +14,10 @@ Webicity consists of multiple components:
 
 Thanks to @Minecraftian14 for helping!
 
+### But how do I run it?
+`./gradlew run`
+
+
+### Screenshot
+
 ![image](https://user-images.githubusercontent.com/15697938/128383315-43ae7aaf-8d5b-44a7-9a0e-ad5a4d4b5ae7.png)

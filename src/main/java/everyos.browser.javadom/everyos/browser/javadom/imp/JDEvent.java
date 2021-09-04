@@ -276,13 +276,13 @@ public class JDEvent implements Event {
 	private void dispatchEventListener(EventTarget target, EventTarget legacyTargetOverride, boolean legacyOutputDidListenersThrow) {
 		setDispatch(true);
 		EventTarget targetOverride = target;
-		assert(legacyTargetOverride==null||targetOverride instanceof PartialWindow);
-		if (legacyTargetOverride!=null&&targetOverride instanceof PartialWindow) {
+		assert(legacyTargetOverride == null || targetOverride instanceof PartialWindow);
+		if (legacyTargetOverride != null && targetOverride instanceof PartialWindow) {
 			target = ((PartialWindow) target).getDocument();
 		}
 		EventTarget activationTarget = null;
 		EventTarget relatedTarget = retarget(getRelatedTarget(), target);
-		if (target!=relatedTarget||target==getRelatedTarget()) {
+		if (target != relatedTarget || target == getRelatedTarget()) {
 			//TODO: Another instance where we should use dependency inversion
 			//to avoid relying on `ArrayList` as our list
 			List<EventTarget> touchTargets = new ArrayList<>();
@@ -295,16 +295,18 @@ public class JDEvent implements Event {
 			if (isActivationEvent) { //TODO: Check if target has activation behaviour
 				activationTarget = target;
 			}
-			Slottable slottable = target instanceof Slottable&&((Slottable) target).isAssigned()?(Slottable) target:null;
+			Slottable slottable = target instanceof Slottable && ((Slottable) target).isAssigned() ?
+				(Slottable) target :
+				null;
 			boolean slotInClosedTree = false;
 			EventTarget parent = target.getTheParent(this);
-			while (parent!=null) {
+			while (parent != null) {
 				if (slottable!=null) {
 					assert(parent instanceof Slot);
 					slottable = null;
 					((Slot) parent).getRootNode(null);
 				}
-				if (parent instanceof Slottable&&((Slottable) parent).isAssigned()) {
+				if (parent instanceof Slottable && ((Slottable) parent).isAssigned()) {
 					slottable = (Slottable) parent;
 				}
 				relatedTarget = retarget(this.getRelatedTarget(), parent);
@@ -313,7 +315,7 @@ public class JDEvent implements Event {
 					touchTargets.add(retarget(touchTarget, parent));
 				}
 				if (parent instanceof DOMWindowPart || (parent instanceof Node && false)) { //TODO
-					if (isActivationEvent && bubbles && activationTarget==null && parent.getActivationBehaviour()!=null) {
+					if (isActivationEvent && bubbles && activationTarget == null && parent.getActivationBehaviour() != null) {
 						activationTarget = parent;
 					}
 					appendToAnEventPath(parent, null, relatedTarget, touchTargets, slotInClosedTree);
@@ -321,7 +323,7 @@ public class JDEvent implements Event {
 					parent = null;
 				} else {
 					target = parent;
-					if (isActivationEvent && activationTarget==null && parent.getActivationBehaviour()!=null) {
+					if (isActivationEvent && activationTarget == null && parent.getActivationBehaviour() != null) {
 						activationTarget = target;
 					}
 					appendToAnEventPath(parent, target, relatedTarget, touchTargets, slotInClosedTree);

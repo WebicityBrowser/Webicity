@@ -13,13 +13,10 @@ public class SelectorParser {
 		List<SelectorPart> selectorParts = new ArrayList<>();
 		
 		int i = offset[0];
-		
+		//System.out.println(prelude.length);
 		State state = State.DEFAULT;
 		for (; i < prelude.length; i++) {
-			Object part = prelude[offset[0]];
-			
-			/*System.out.print("A");
-			System.out.println(part);*/
+			Object part = prelude[i];
 			
 			if (state == State.EARLY_RETURN) {
 				//TODO: Read up to comma
@@ -39,6 +36,7 @@ public class SelectorParser {
 					if (part instanceof IdentToken) {
 						i--;
 						state = State.TYPE_SELECTOR;
+					} else if (part instanceof WhitespaceToken) {
 					} else {
 						state = State.EARLY_RETURN;
 					}
@@ -59,7 +57,7 @@ public class SelectorParser {
 		
 		offset[0] = i;
 		
-		if (state == State.DEFAULT) {
+		if (state == State.DEFAULT) { //TODO
 			return selectorParts.toArray(new SelectorPart[selectorParts.size()]);
 		}
 		return null;
