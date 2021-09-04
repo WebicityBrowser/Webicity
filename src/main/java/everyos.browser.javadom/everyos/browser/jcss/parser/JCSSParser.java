@@ -37,7 +37,7 @@ public class JCSSParser {
 				}
 				stream.unread();
 				CSSRule rule = consumeAQualifiedRule(stream);
-				if (rule!=null) {
+				if (rule != null) {
 					rules.add(rule);
 				}
 			} else if (token instanceof AtKeywordToken) {
@@ -46,7 +46,7 @@ public class JCSSParser {
 			} else {
 				stream.unread();
 				CSSRule rule = consumeAQualifiedRule(stream);
-				if (rule!=null) {
+				if (rule != null) {
 					rules.add(rule);
 				}
 			}
