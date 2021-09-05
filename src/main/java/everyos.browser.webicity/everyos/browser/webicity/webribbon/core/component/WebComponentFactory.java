@@ -1,9 +1,9 @@
 package everyos.browser.webicity.webribbon.core.component;
 
-import everyos.browser.javadom.intf.Element;
-import everyos.browser.javadom.intf.Node;
-import everyos.browser.javadom.intf.Text;
-import everyos.browser.jhtml.intf.HTMLTitleElement;
+import everyos.browser.spec.javadom.intf.Element;
+import everyos.browser.spec.javadom.intf.Node;
+import everyos.browser.spec.javadom.intf.Text;
+import everyos.browser.spec.jhtml.intf.HTMLTitleElement;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
 
 public final class WebComponentFactory {

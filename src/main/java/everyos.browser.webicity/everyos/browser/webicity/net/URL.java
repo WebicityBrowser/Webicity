@@ -4,7 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import everyos.browser.jhtml.browsing.Origin;
+import everyos.browser.spec.jhtml.browsing.Origin;
 
 public class URL {
 	

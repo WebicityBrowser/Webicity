@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.ExecutorService;
 
-import everyos.browser.jhtml.browsing.BrowsingContext;
+import everyos.browser.spec.jhtml.browsing.BrowsingContext;
 import everyos.browser.webicity.concurrency.jroutine.JRoutine;
 import everyos.browser.webicity.concurrency.jroutine.JRoutineHelper;
 import everyos.browser.webicity.event.FrameCallback;

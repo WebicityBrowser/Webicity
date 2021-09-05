@@ -19,7 +19,7 @@
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="bin/main" path="src/main/java/everyos.browser.javadom">
+	<classpathentry kind="src" output="bin/main" path="src/main/java/everyos.browser.spec">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
 			<attribute name="gradle_used_by_scope" value="main,test"/>

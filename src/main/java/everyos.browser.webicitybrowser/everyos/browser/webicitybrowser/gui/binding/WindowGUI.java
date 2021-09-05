@@ -79,12 +79,18 @@ public class WindowGUI {
 	private void configureWindow(Component pane) {
 		pane.directive(BackgroundDirective.of(Color.DARK_GRAY));
 		pane.directive(ForegroundDirective.of(colors.getForegroundPrimary()));
+		
+		Component innerOuterPane = new BlockComponent();
+		innerOuterPane.directive(SizeDirective.of(new Location(1, -2, 1, -2)));
+		innerOuterPane.directive(PositionDirective.of(new Location(0, 1, 0, 1)));
+		innerOuterPane.directive(BackgroundDirective.of(new Color(92, 92, 92)));
+		pane.addChild(innerOuterPane);
 
 		Component innerPane = new BlockComponent();
 		innerPane.directive(SizeDirective.of(new Location(1, -2, 1, -2)));
 		innerPane.directive(PositionDirective.of(new Location(0, 1, 0, 1)));
 		innerPane.directive(BackgroundDirective.of(Color.WHITE));
-		pane.addChild(innerPane);
+		innerOuterPane.addChild(innerPane);
 
 		Component windowDecor = createWindowDecorations();
 		int decorHeight = Styling.BUTTON_WIDTH+(int)(Styling.ELEMENT_PADDING*1.5);
@@ -102,6 +108,7 @@ public class WindowGUI {
 		windowDecor.directive(BackgroundDirective.of(colors.getBackgroundPrimary()));
 
 		// Add the menu button
+		//TODO: Menu is overlapping window edges
 		WebicityButton menuButton = new WebicityButton(windowGrip.getDisplayPane(), window, colors);
 		menuButton.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
 		menuButton.directive(PositionDirective.of(new Location(0, 0, 0, 0)));

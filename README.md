@@ -15,7 +15,7 @@ Webicity consists of multiple components:
 Thanks to [@Minecraftian14](https://github.com/Minecraftian14) for helping!
 
 ## Checking out the code
-```
+```bash
 git clone https://github.com/jasonthekitten/Webicity-Java.git
 cd Webicity-Java
 ```

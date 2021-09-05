@@ -3,8 +3,8 @@ package everyos.browser.webicity.webribbon.core.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import everyos.browser.javadom.intf.Node;
-import everyos.browser.javadom.intf.NodeList;
+import everyos.browser.spec.javadom.intf.Node;
+import everyos.browser.spec.javadom.intf.NodeList;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
 import everyos.engine.ribbon.core.event.UIEventTarget;
 

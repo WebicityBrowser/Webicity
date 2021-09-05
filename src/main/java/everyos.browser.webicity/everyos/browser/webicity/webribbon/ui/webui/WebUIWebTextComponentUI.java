@@ -2,7 +2,7 @@ package everyos.browser.webicity.webribbon.ui.webui;
 
 import java.util.List;
 
-import everyos.browser.javadom.intf.Text;
+import everyos.browser.spec.javadom.intf.Text;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;

@@ -4,7 +4,7 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
-import everyos.browser.javadom.intf.Document;
+import everyos.browser.spec.javadom.intf.Document;
 import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.WebicityInstance;
 import everyos.browser.webicitybrowser.event.EventDispatcher;

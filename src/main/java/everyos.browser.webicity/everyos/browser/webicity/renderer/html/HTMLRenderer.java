@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import everyos.browser.javadom.intf.Document;
-import everyos.browser.jhtml.parser.JHTMLParser;
+import everyos.browser.spec.javadom.intf.Document;
+import everyos.browser.spec.jhtml.parser.JHTMLParser;
 import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.renderer.Renderer;
 

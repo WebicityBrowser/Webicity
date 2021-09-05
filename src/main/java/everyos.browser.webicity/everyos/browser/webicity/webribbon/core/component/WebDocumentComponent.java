@@ -2,10 +2,10 @@ package everyos.browser.webicity.webribbon.core.component;
 
 import java.util.List;
 
-import everyos.browser.javadom.intf.Document;
-import everyos.browser.jcss.cssom.CSSOMNode;
-import everyos.browser.jcss.cssom.CSSOMUtil;
-import everyos.browser.jcss.intf.CSSStyleSheet;
+import everyos.browser.spec.javadom.intf.Document;
+import everyos.browser.spec.jcss.cssom.CSSOMNode;
+import everyos.browser.spec.jcss.cssom.CSSOMUtil;
+import everyos.browser.spec.jcss.intf.CSSStyleSheet;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
 
 public class WebDocumentComponent extends WebComponent {
