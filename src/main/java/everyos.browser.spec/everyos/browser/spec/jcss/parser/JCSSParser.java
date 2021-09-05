@@ -126,7 +126,19 @@ public class JCSSParser {
 		}
 	}
 	
-	private Declaration consumeADeclaration(TokenStream tempStream) {
+	private Declaration consumeADeclaration(TokenStream stream) {
+		Declaration declaration = new Declaration(stream.read());
+		while (stream.peek() instanceof WhitespaceToken) {
+			stream.read();
+		}
+		if (!(stream.peek() instanceof ColonToken)) {
+			return null;
+		}
+		stream.read();
+		while (stream.peek() instanceof WhitespaceToken) {
+			stream.read();
+		}
+		
 		return null;
 	}
 
