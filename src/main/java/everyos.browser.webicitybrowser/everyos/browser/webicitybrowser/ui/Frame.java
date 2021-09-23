@@ -29,7 +29,7 @@ public class Frame {
 	
 	public String getName() {
 		String name = frame.getTitle();
-		if (name!=null) {
+		if (name != null) {
 			return name;
 		}
 		
@@ -49,9 +49,9 @@ public class Frame {
 		setURL(url, true);
 	}
 	
-	private void setURL(URL url, boolean clearFutureHistory) {
+	private void setURL(URL url, boolean clearForwardHistory) {
 		//TODO: Use a "thread context" instead
-		if (clearFutureHistory) {
+		if (clearForwardHistory) {
 			forwardHistory.clear();
 		}
 		

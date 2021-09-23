@@ -23,12 +23,10 @@ public class ByteChannelInputStream extends InputStream {
 
 	@Override
 	public int read() throws IOException {
-		if (available == -1) {
-			return -1;
-		}
-		
 		byte[] bytes = new byte[1];
-		read(bytes, 0, 1);
+		if (read(bytes, 0, 1) == -1) {
+			return -1;
+		};
 		return bytes[0] & 0xFF;
 	}
 	
@@ -38,35 +36,26 @@ public class ByteChannelInputStream extends InputStream {
 			return -1;
 		}
 		
-		for (int i = 0; i < len;) {
-			long lastSuccess = System.currentTimeMillis();
-			while (available == 0) {
-				updateAvailable();
-				if (available == 0) {
-					throwExceptionIfTimedOut(lastSuccess);
-					JRoutine.getJRoutine().yield();
-				}
+		for (int read = 0; read < len;) {
+			waitForInput();
+			
+			if (available == -1) {
+				// If we read anything before EOF, indicate what we read
+				// Else, indicate the EOF
+				return (read > 1) ? (read - 1) : -1;
 			}
 			
-			if (available==-1) {
-				b[i] = -1;
-				if (i > 1) {
-					return i-1;
-				}
-				return i;
+			int readSize = len - read;
+			if (readSize > available) {
+				readSize = available;
 			}
-			
-			int flen = len-i;
-			if (flen > available) {
-				flen = available;
-			}
-			byteBuffer.get(b, off+i, flen);
-			i += flen;
-			available -= flen;
+			byteBuffer.get(b, off + read, readSize);
+			read += readSize;
+			available -= readSize;
 		}
 		return len;
 	}
-	
+
 	@Override
 	public int available() throws IOException {
 		updateAvailable();
@@ -79,20 +68,28 @@ public class ByteChannelInputStream extends InputStream {
 	}
 	
 	private void updateAvailable() throws IOException {
-		if (available == 0) {
-			byteBuffer.clear();
-			try {
-				available = byteChannel.read(byteBuffer);
-			} catch (NeedsReadException e) {
-				available = 0;
-			}
-			byteBuffer.flip();
+		if (available != 0) {
+			return;
 		}
+		
+		byteBuffer.clear();
+		try {
+			available = byteChannel.read(byteBuffer);
+		} catch (NeedsReadException e) {}
+		byteBuffer.flip();
 	}
 	
 	private void throwExceptionIfTimedOut(long lastSuccess) throws IOException {
-		if (System.currentTimeMillis()-lastSuccess >= timeout) {
+		if (System.currentTimeMillis() - lastSuccess >= timeout) {
 			throw new IOException("Socket timed out");
+		}
+	}
+	
+	private void waitForInput() throws IOException {
+		long lastSuccess = System.currentTimeMillis();
+		while (available() == 0) {
+			throwExceptionIfTimedOut(lastSuccess);
+			JRoutine.getJRoutine().yield();
 		}
 	}
 }

@@ -12,11 +12,10 @@ import everyos.browser.webicity.renderer.html.HTMLRenderer;
 import everyos.browser.webicity.renderer.plaintext.PlainTextRenderer;
 
 public class HTTPResponse implements Response {
-	private HTTP11Response response;
+	private final HTTP11Response response;
 
 	public HTTPResponse(HTTPSocket socket) throws IOException {
 		this.response = socket.getResponse();
-		socket.setBlocking(false);
 	}
 
 	@Override
@@ -26,7 +25,10 @@ public class HTTPResponse implements Response {
 		}
 		
 		String type = response.getContentType();
-		if (type.indexOf(';')!=-1) type = type.substring(0, type.indexOf(';'));
+		if (type.indexOf(';') != -1) {
+			type = type.substring(0, type.indexOf(';'));
+		}
+		
 		switch(type) {//TODO: Move this to a registry
 			case "text/html":
 				return new HTMLRenderer();	

@@ -47,7 +47,6 @@ public class HTTPRequest implements Request {
 		HTTPSocket socket = HTTPSocket.openSocket(url, true);
 		
 		socket.sendRequest(request);
-		socket.setBlocking(false);
 		//TODO: Catch SSLHandshakeException and prompt user to disable TLS
 		
 		return new HTTPResponse(socket);

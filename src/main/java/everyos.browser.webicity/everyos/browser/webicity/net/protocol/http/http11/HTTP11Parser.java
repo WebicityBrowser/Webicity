@@ -18,27 +18,26 @@ public class HTTP11Parser {
 		StringBuilder tmp_buf_2 = null;
 		
 		try {
-			while (state!=null) {
-				int chi = stream.read();
-				if (chi==-1) break;
+			int chi;
+			while (state != null && (chi = stream.read()) != -1) {
 				char ch = (char) chi;
 				switch(state) {
 					case STATUS_HEADER:
-						if (ch==' ') {
-							tmp_buf = new StringBuilder(3);
+						if (ch == ' ') {
 							state = ParseState.STATUS_CODE;
 						}
 						break;
 						
 					case STATUS_CODE:
-						if (ch==' ') {
-							status = Integer.valueOf(tmp_buf.toString());
+						if (ch == ' ') {
 							state = ParseState.STATUS_TEXT;
-						} else tmp_buf.append(ch);
+						} else {
+							status = status * 10 + Character.digit(ch, 10);
+						}
 						break;
 						
 					case STATUS_TEXT:
-						if (ch=='\r') {
+						if (ch == '\r') {
 							state = ParseState.NEWLINE;
 							returnState = ParseState.HEADER_NAME_OR_NEWLINE;
 						}
@@ -62,7 +61,9 @@ public class HTTP11Parser {
 						if (ch == ':') {
 							tmp_buf_2 = new StringBuilder();
 							state = ParseState.HEADER_VALUE;
-						} else tmp_buf.append(ch);
+						} else {
+							tmp_buf.append(ch);
+						}
 						break;
 						
 					case HEADER_VALUE:

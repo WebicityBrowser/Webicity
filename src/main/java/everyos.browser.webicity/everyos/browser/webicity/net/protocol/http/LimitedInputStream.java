@@ -7,43 +7,51 @@ public class LimitedInputStream extends InputStream {
 	
 	private final InputStream stream;
 	
-	private int size;
+	private int remainingBytes;
 
 	public LimitedInputStream(InputStream stream, int size) {
 		this.stream = stream;
-		this.size = size;
+		this.remainingBytes = size;
 	}
 
 	@Override
 	public int read() throws IOException {
-		if (size<=0) return -1;
+		if (remainingBytes <= 0) {
+			return -1;
+		}
 		int result = stream.read();
-		size--;
+		remainingBytes--;
 		return result;
 	}
 
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
-		if (size<=0) {
-			b[off] = -1;
+		if (remainingBytes <= 0) {
 			return -1;
 		}
 		
-		if (len>size) {
-			len = size;
+		if (len > remainingBytes) {
+			len = remainingBytes;
 		}
 		
 		int read = stream.read(b, off, len);
-		if (read==-1) return -1;
-		size-=len;
+		if (read == -1) {
+			remainingBytes = 0;
+			return -1;
+		}
+		remainingBytes -= len;
 		return read;
 	}
 	
 	@Override
 	public int available() throws IOException {
-		if (size<=0) return -1;
+		if (remainingBytes <= 0) {
+			return -1;
+		}
 		int available = stream.available();
-		if (available>size) return size;
+		if (available > remainingBytes) {
+			return remainingBytes;
+		}
 		return available;
 	}
 }

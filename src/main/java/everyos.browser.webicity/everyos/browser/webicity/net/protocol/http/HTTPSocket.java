@@ -25,9 +25,9 @@ import everyos.browser.webicity.net.protocol.http.http11.HTTP11Response;
 import tlschannel.ClientTlsChannel;
 
 public class HTTPSocket {
-	private SocketChannel channel;
-	private InputStream inputStream;
-	private OutputStream outputStream;
+	private final SocketChannel channel;
+	private final InputStream inputStream;
+	private final OutputStream outputStream;
 
 	public HTTPSocket(SocketChannel channel, InputStream inputStream, OutputStream outputStream) {
 		this.channel = channel;
@@ -36,8 +36,9 @@ public class HTTPSocket {
 	}
 
 	public static HTTPSocket openSocket(URL url, boolean useTLS) throws IOException {
-		int port = url.getPort();
-		if (port==-1) port=url.getProtocol().equals("https")?443:80;
+		int port = url.getPort() != -1 ?
+			url.getPort() :
+			url.getProtocol().equals("https")?443:80;
 		
 		SocketChannel sockChannel = SocketChannel.open();
 		sockChannel.connect(new InetSocketAddress(url.getHost(), port));
@@ -45,7 +46,7 @@ public class HTTPSocket {
 		
 		ByteChannel finalChannel = sockChannel;
 		
-		if (port==443) {
+		if (port == 443) {
 			try {
 				SSLContext sslContext = SSLContext.getInstance("TLSv1.3");
 				if (useTLS) {
@@ -58,6 +59,7 @@ public class HTTPSocket {
 			        };
 					sslContext.init(null, new TrustManager[] {tm}, new SecureRandom());
 				}
+				
 				SSLEngine engine = sslContext.createSSLEngine();
 				SSLParameters params = engine.getSSLParameters();
 				params.setServerNames(Collections.singletonList(new SNIHostName(url.getHost())));
@@ -87,12 +89,9 @@ public class HTTPSocket {
 	public InputStream getInputStream() {
 		return inputStream;
 	}
-
-	public void setBlocking(boolean b) throws IOException {
-		channel.configureBlocking(b);
-	}
-
+	
 	public HTTP11Response getResponse() throws IOException {
+		channel.configureBlocking(false);
 		return HTTP11Parser.parseFrom(inputStream);
 	}
 }

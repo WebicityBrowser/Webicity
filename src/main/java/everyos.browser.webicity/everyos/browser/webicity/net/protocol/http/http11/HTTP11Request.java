@@ -1,16 +1,20 @@
 package everyos.browser.webicity.net.protocol.http.http11;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import everyos.browser.webicity.net.URL;
 
 public class HTTP11Request {
 	// TODO: https://wicg.github.io/ua-client-hints/
+	private final Map<String, String> headers;
+	
 	private String type = "GET";
 	private String target = "/";
-	private HashMap<String, String> headers = new HashMap<>();
 	
 	public HTTP11Request() {
+		this.headers = new HashMap<>();
+		
 		//headers.put("Transfer-Encoding", "identity");
 		headers.put("Upgrade-Insecure-Requests", "1");
 		
@@ -88,15 +92,21 @@ public class HTTP11Request {
 	
 	public void setReferrer(URL url, boolean isSecure) {
 		String built = "";
-		if (url.getProtocol()!=null) {
-			if (url.getHost().equals("file")||url.getHost().equals("data")) {
+		if (url.getProtocol() != null) {
+			if (url.getHost().equals("file") || url.getHost().equals("data")) {
 				return;
 			}
 			
-			built+=url.getProtocol()+"://";
+			built += url.getProtocol() + "://";
 		}
-		if (url.getHost()!=null) built+=url.getHost()+"/";
-		if (url.getPath()!=null) built+=url.getPath();
+		
+		if (url.getHost() != null) {
+			built += url.getHost()+"/";
+		}
+		
+		if (url.getPath() != null) {
+			built += url.getPath();
+		}
 		headers.put("Referrer", built);
 	}
 	

@@ -13,11 +13,11 @@ public class SlideInAnimation implements Animation {
 	public RendererData step(RendererData rd, boolean visible, Dimension bounds) {
 		if (visible) {
 			if (progress < 1) {
-				progress += TimeSystem.getDeltaMillis()/animationTime;
+				progress += TimeSystem.getDeltaMillis() / animationTime;
 			}
 		} else {
 			if (progress > 0) {
-				progress -= TimeSystem.getDeltaMillis()/animationTime;
+				progress -= TimeSystem.getDeltaMillis() / animationTime;
 			}
 		}
 		

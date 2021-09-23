@@ -6,8 +6,8 @@ import everyos.api.getopts.FlagArgumentPair;
 
 public class FlagArgumentPairImp implements FlagArgumentPair {
 
-	private Flag flag;
-	private Argument[] arguments;
+	private final Flag flag;
+	private final Argument[] arguments;
 
 	public FlagArgumentPairImp(Flag flag, Argument[] arguments) {
 		this.flag = flag;

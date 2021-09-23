@@ -5,12 +5,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import everyos.browser.spec.javadom.intf.Document;
 import everyos.browser.spec.jhtml.parser.JHTMLParser;
 import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.renderer.Renderer;
 
 public class HTMLRenderer implements Renderer {
+	private static final Logger logger = LoggerFactory.getLogger(HTMLRenderer.class);
+	
 	private final List<Runnable> readyHooks;
 	
 	private Document document;
@@ -30,7 +35,8 @@ public class HTMLRenderer implements Renderer {
 		this.document = parser.parse();
 		stream.close();
 		
-		System.out.println("TIME: "+(System.currentTimeMillis()-time));
+		long millisToParse = System.currentTimeMillis()-time;
+		logger.info("Page parsed in " + (millisToParse) + " millis (" + (int) (millisToParse/1000 + .5) +" seconds).");
 		
 		for (Runnable hook: readyHooks) {
 			hook.run();

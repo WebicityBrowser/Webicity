@@ -14,7 +14,7 @@ public class ByteChannelOutputStream extends OutputStream {
 
 	@Override
 	public void write(int b) throws IOException {
-		byteChannel.write(ByteBuffer.wrap(new byte[] {(byte) b}));
+		write(new byte[] {(byte) b});
 	}
 	
 	@Override

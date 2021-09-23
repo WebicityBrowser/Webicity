@@ -138,6 +138,28 @@ public class JCSSParser {
 		while (stream.peek() instanceof WhitespaceToken) {
 			stream.read();
 		}
+		while (!(stream.peek() instanceof EOFToken)) {
+			declaration.append(consumeAComponentValue(stream));
+		}
+		List<CSSToken> value = declaration.getValueAsList();
+		CSSToken tok1 = value.get(value.size()-2);
+		CSSToken tok2 = value.get(value.size()-1);
+		if (value.size() > 1) {
+			if (
+				tok1 instanceof DelimToken &&
+				((DelimToken) tok1).getValue().equals("!") &&
+				tok2 instanceof IdentToken &&
+				((IdentToken) tok2).getValue().equalsIgnoreCase("important")) {
+				
+				declaration.setImportant(true);
+				value.remove(value.size()-1);
+				value.remove(value.size()-1);
+			}
+		}
+		
+		while (value.get(value.size()-1) instanceof WhitespaceToken) {
+			value.remove(value.size()-1);
+		}
 		
 		return null;
 	}
