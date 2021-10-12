@@ -1,10 +1,6 @@
 package everyos.browser.spec.jcss.parser;
 
 public class DelimToken extends ValueToken {
-	/*public DelimToken() {
-		
-	}*/
-	
 	public DelimToken(String value) {
 		super.setValue(value);
 	}

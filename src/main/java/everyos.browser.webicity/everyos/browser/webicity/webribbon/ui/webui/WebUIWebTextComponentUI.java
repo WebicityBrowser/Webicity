@@ -3,11 +3,14 @@ package everyos.browser.webicity.webribbon.ui.webui;
 import java.util.List;
 
 import everyos.browser.spec.javadom.intf.Text;
+import everyos.browser.spec.jcss.cssom.ApplicablePropertyMap;
+import everyos.browser.spec.jcss.cssom.CSSOMNode;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
 import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
+import everyos.browser.webicity.webribbon.ui.webui.appearence.DefaultAppearence;
 import everyos.browser.webicity.webribbon.ui.webui.helper.StringWrapHelper;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.rendering.RendererData;
@@ -33,7 +36,12 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 		return this.appearence;
 	}
 	
-	private class TextAppearence implements Appearence {
+	private class TextAppearence extends DefaultAppearence {
+		@Override
+		public void recalculatePaintCSSOM(CSSOMNode cssomNode, ApplicablePropertyMap properties, Appearence appearence) {
+			super.recalculatePaintCSSOM(cssomNode, properties, appearence);
+		}
+		
 		@Override
 		public void render(RendererData rd, SizePosGroup sizepos, WebRenderContext context) {
 			String text = ((Text) getComponent().getNode()).getWholeText();
@@ -44,13 +52,20 @@ public class WebUIWebTextComponentUI extends WebUIWebComponentUI {
 		
 		@Override
 		public void paint(RendererData rd, Rectangle viewport, WebPaintContext context) {
+			//super.paint(rd, viewport, context);
+			
 			RibbonFont font = rd.getState().getFont();
 			Renderer r = context.getRenderer();
 			
-			rd.useForeground();
-			for (int i=0; i < lines.size(); i++) {
+			for (int i = 0; i < lines.size(); i++) {
 				int py = i*(font.getHeight()+font.getPaddingHeight());
-				int width = r.drawText(rd, i==0?position.getX():0, position.getY()+py, lines.get(i));
+				
+				rd.useBackground();
+				int preWidth = StringWrapHelper.fastStringWidth(font, lines.get(i));
+				r.drawFilledRect(rd, i==0?position.getX():0, position.getY()+py, preWidth, font.getHeight()+font.getPaddingHeight());
+				rd.useForeground();
+				int width = r.drawText(rd, i==0?position.getX():0, position.getY()+py, lines.get(i)); //TODO: Don't do this twice
+				
 				r.paintMouseListener(rd, getComponent(), position.getX(), position.getY()+py, width, font.getHeight(), e->{
 					processEvent(e);
 				});

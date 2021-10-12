@@ -1,12 +1,16 @@
 package everyos.api.getopts.imp;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import everyos.api.getopts.Argument;
 import everyos.api.getopts.ArgumentParser;
 import everyos.api.getopts.Flag;
 import everyos.api.getopts.FlagArgumentPair;
+import everyos.api.getopts.FlagArgumentPairCollection;
 import everyos.api.getopts.ParserFailedException;
 
 public class ArgumentParserImp implements ArgumentParser {
@@ -33,7 +37,7 @@ public class ArgumentParserImp implements ArgumentParser {
 	}
 
 	@Override
-	public FlagArgumentPair[] parse(String[] arguments) throws ParserFailedException {
+	public FlagArgumentPairCollection parse(String[] arguments, PrintStream dest) throws ParserFailedException {
 		extraEntries.clear();
 		flagEntries.clear();
 		argumentEntries.clear();
@@ -45,72 +49,76 @@ public class ArgumentParserImp implements ArgumentParser {
 			}
 			
 			if (isFlagName(arguments[i])) {
-				startNewFlagByName(arguments[i].substring(2));
+				startNewFlagByName(arguments[i].substring(2), dest);
 			} else if (isFlagAlias(arguments[i])) {
-				startNewFlagByAlias(arguments[i].substring(1));
+				startNewFlagByAlias(arguments[i].substring(1), dest);
 			} else if (isParsingCommand) {
-				getCurrentArguments().add(new ArgumentImp(arguments[i], message -> error(message)));
+				getCurrentArguments().add(new ArgumentImp(arguments[i], message -> error(message, dest)));
 			} else {
 				if (!allowExtra) {
-					error("Loose argument disabled: \"" + arguments[i] +'"');
+					error("Loose argument disabled: \"" + arguments[i] +'"', dest);
 				}
-				extraEntries.add(new ArgumentImp(arguments[i], message -> error(message)));
+				extraEntries.add(new ArgumentImp(arguments[i], message -> error(message, dest)));
 			}
 		}
 		
-		onFlagEnd();
+		onFlagEnd(dest);
 		
 		return gatherFinalFlags();
 	}
 	
 	@Override
-	public void printHelpScreen() {
+	public void printHelpScreen(PrintStream dest) {
 		if (helpHeader != null) {
-			System.out.println(helpHeader);
-			System.out.println();
+			dest.println(helpHeader);
+			dest.println();
 		}
 		
 		for (Flag flag: flags) {
 			if (flag.isMandatory()) {
-				System.out.print("(M) ");
+				dest.print("(M) ");
 			}
 			
-			System.out.print("--");
-			System.out.print(flag.getName());
+			dest.print("--");
+			dest.print(flag.getName());
 			for (String alias: flag.getAlias()) {
-				System.out.print(", -");
-				System.out.print(alias);
+				dest.print(", -");
+				dest.print(alias);
 			}
-			System.out.print(' ');
+			dest.print(' ');
 			//TODO Print Arguments
-			System.out.println(flag.getDescription());
+			dest.println(flag.getDescription());
 		}
 		
 		if (errorFooter != null) {
-			System.out.println();
-			System.out.println(helpFooter);
+			dest.println();
+			dest.println(helpFooter);
 		}
 	}
 	
-	private FlagArgumentPair[] gatherFinalFlags() {
+	private FlagArgumentPairCollection gatherFinalFlags() {
 		//TODO: Ensure all mandatory flags are met
 		
-		List<FlagArgumentPair> arguments = new ArrayList<>(flagEntries.size()+1);
+		Map<Integer, List<FlagArgumentPair>> arguments = new HashMap<>();
 		
 		for (int i = 0; i < flagEntries.size(); i++) {
 			List<Argument> argList = argumentEntries.get(i);
-			arguments.add(new FlagArgumentPairImp(flagEntries.get(i), argList.toArray(new Argument[argList.size()])));
+			Flag flag = flagEntries.get(i);
+			FlagArgumentPair flagArgumentPair = new FlagArgumentPairImp(flag, argList.toArray(new Argument[argList.size()]));
+			arguments.computeIfAbsent(flag.getID(), (id)->new ArrayList<FlagArgumentPair>())
+				.add(flagArgumentPair);
 		}
 		
 		Flag defaultFlag = Flag.createBuilder("").setID(Flag.NO_FLAG).build();
-		arguments.add(new FlagArgumentPairImp(defaultFlag, extraEntries.toArray(new Argument[extraEntries.size()])));
+		List<FlagArgumentPair> defaultFlagList = List.of(new FlagArgumentPairImp(defaultFlag, extraEntries.toArray(new Argument[extraEntries.size()])));
+		arguments.put(Flag.NO_FLAG, defaultFlagList);
 		
-		return arguments.toArray(new FlagArgumentPair[arguments.size()]);
+		return new FlagArgumentPairCollectionImp(arguments);
 	}
 
 	private void endIfOptionalArgumentsMet() {
 		Flag flag = getCurrentFlag();
-		if (flag.getOptionalArguments() != Flag.INFINITE_ARGUMENTS && getCurrentArguments().size() > flag.getArguments() + flag.getOptionalArguments()) {
+		if (flag.getNumberOptionalArguments() != Flag.INFINITE_ARGUMENTS && getCurrentArguments().size() > flag.getNumberRequiredArguments() + flag.getNumberOptionalArguments()) {
 			isParsingCommand = false;
 		}
 	}
@@ -123,20 +131,20 @@ public class ArgumentParserImp implements ArgumentParser {
 		return string.startsWith("-") && !isFlagName(string);
 	}
 
-	private void onFlagEnd() throws ParserFailedException {
+	private void onFlagEnd(PrintStream dest) throws ParserFailedException {
 		if (!isParsingCommand) {
 			return;
 		}
 		
 		Flag flag = getCurrentFlag();
-		if (getCurrentArguments().size() < flag.getArguments()) {
-			error("Not enough arguments supplied for flag \"" + flag.getName() +'"');
+		if (getCurrentArguments().size() < flag.getNumberRequiredArguments()) {
+			error("Not enough arguments supplied for flag \"" + flag.getName() +'"', dest);
 		}
 	}
 	
-	private void startNewFlag(Flag flag) throws ParserFailedException {
-		if (!flag.allowDuplicates() && flagEntries.contains(flag)) {
-			error("Duplicate flag specified where duplicates not allowed: \"" + flag.getName() +'"');
+	private void startNewFlag(Flag flag, PrintStream dest) throws ParserFailedException {
+		if (!flag.getAllowDuplicates() && flagEntries.contains(flag)) {
+			error("Duplicate flag specified where duplicates not allowed: \"" + flag.getName() +'"', dest);
 		}
 		
 		flagEntries.add(flag);
@@ -145,45 +153,45 @@ public class ArgumentParserImp implements ArgumentParser {
 		isParsingCommand = true;
 	}
 	
-	private void startNewFlagByName(String name) throws ParserFailedException {
+	private void startNewFlagByName(String name, PrintStream dest) throws ParserFailedException {
 		for (Flag flag: flags) {
 			if (flag.getName().equals(name)) {
-				startNewFlag(flag);
+				startNewFlag(flag, dest);
 				return;
 			}
 		}
 		
-		error("Not a valid flag name: \"" + name +'"');
+		error("Not a valid flag name: \"" + name +'"', dest);
 	}
 	
-	private void startNewFlagByAlias(String alias) throws ParserFailedException {
+	private void startNewFlagByAlias(String alias, PrintStream dest) throws ParserFailedException {
 		for (Flag flag: flags) {
 			for (String alias2: flag.getAlias()) {
 				if (alias2.equals(alias)) {
-					startNewFlag(flag);
+					startNewFlag(flag, dest);
 					return;
 				}
 			}
 		}
 		
-		error("Not a valid flag alias: \"" + alias +'"');
+		error("Not a valid flag alias: \"" + alias +'"', dest);
 	}
 	
-	private void error(String message) throws ParserFailedException {
-		System.out.println(message);
+	private void error(String message, PrintStream dest) throws ParserFailedException {
+		dest.println(message);
 		
 		if (errorFooter != null) {
-			System.out.println(errorFooter);
+			dest.println(errorFooter);
 		}
 		
 		throw new ParserFailedException();
 	}
 
 	private List<Argument> getCurrentArguments() {
-		return argumentEntries.get(argumentEntries.size()-1);
+		return argumentEntries.get(argumentEntries.size() - 1);
 	};
 	
 	private Flag getCurrentFlag() {
-		return flagEntries.get(flagEntries.size()-1);
+		return flagEntries.get(flagEntries.size() - 1);
 	}
 }

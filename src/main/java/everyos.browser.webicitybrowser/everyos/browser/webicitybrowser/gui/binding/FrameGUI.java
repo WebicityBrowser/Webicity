@@ -2,8 +2,10 @@ package everyos.browser.webicitybrowser.gui.binding;
 
 import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
+import everyos.browser.webicity.renderer.plaintext.PlainTextRenderer;
 import everyos.browser.webicitybrowser.gui.colors.Colors;
 import everyos.browser.webicitybrowser.gui.renderer.HTMLRendererGUI;
+import everyos.browser.webicitybrowser.gui.renderer.TextRendererGUI;
 import everyos.browser.webicitybrowser.ui.Frame;
 import everyos.browser.webicitybrowser.ui.event.FrameMutationEventListener;
 import everyos.engine.ribbon.core.component.BlockComponent;
@@ -49,6 +51,13 @@ public class FrameGUI {
 			if (r.getClass() == HTMLRenderer.class) {
 				//TODO: Store "cleanup" to runnable for later
 				HTMLRendererGUI rendererGUI = new HTMLRendererGUI((HTMLRenderer) r, colors);
+				rendererGUI.start();
+				outerPane.children(new Component[] {
+					rendererGUI.getDisplayPane()
+						.directive(SizeDirective.of(new Location(1, 0, 1, 0)))
+				});
+			} else if (r.getClass() == PlainTextRenderer.class) {
+				TextRendererGUI rendererGUI = new TextRendererGUI((PlainTextRenderer) r, colors);
 				rendererGUI.start();
 				outerPane.children(new Component[] {
 					rendererGUI.getDisplayPane()

@@ -31,10 +31,11 @@ repositories {
 dependencies {
 	implementation 'com.google.code.gson:gson:2.8.7'
 	//implementation 'net.java.dev.jna:jna:5.5.0'
-	implementation 'com.github.marianobarrios:tls-channel:0.4.0'
-	implementation 'ch.qos.logback:logback-classic:1.2.5'
+	implementation 'com.github.marianobarrios:tls-channel:0.4.2'
+	implementation 'org.brotli:dec:0.1.2'
 	
-	//implementation 'com.github.taucher2003:t2003-logger-impl:1.0.1'
+	implementation 'com.github.taucher2003:t2003-logger-impl:1.0.1'
+	implementation 'com.github.taucher2003:t2003-logger-binder:1.0.1'
 	
 	implementation platform("org.lwjgl:lwjgl-bom:3.2.3")
 
@@ -49,7 +50,9 @@ dependencies {
 	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 	
-	implementation "org.jetbrains.skija:${skijaNatives}:0.92.22"
+	implementation "org.jetbrains.skija:${skijaNatives}:0.93.0"
+	
+	testImplementation "org.junit.jupiter:junit-jupiter-engine:5.8.1"
 }
 
 apply plugin: 'java'
@@ -70,6 +73,10 @@ sourceSets {
 			]
 		}
 	}
+}
+
+test {
+	useJUnitPlatform()
 }
 
 mainClassName = "everyos.browser.webicitybrowser.Webicity"

@@ -29,7 +29,7 @@ public class JHTMLStyleElement extends JHTMLElement implements HTMLStyleElement 
 		//TODO: CSP policy
 		CSSStyleSheet stylesheet = JCSSStyleSheet.create(getOwnerDocument());
 		//TODO: Move this to .create
-		stylesheet.setCSSRules(new JCSSParser().parseAListOfRules(new JCSSTokenizer().createFromString(this.getChildTextContent())));
+		stylesheet.setCSSRules(JCSSParser.parseAListOfRules(new JCSSTokenizer().createFromString(this.getChildTextContent())));
 	}
 
 	private void removeTheCSSStyleSheetInQuestion() {

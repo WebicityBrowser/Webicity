@@ -57,7 +57,7 @@ public class HTTPSocket {
 			            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {}
 						public X509Certificate[] getAcceptedIssuers() { return null; }
 			        };
-					sslContext.init(null, new TrustManager[] {tm}, new SecureRandom());
+					sslContext.init(null, new TrustManager[] {tm}, null);
 				}
 				
 				SSLEngine engine = sslContext.createSSLEngine();

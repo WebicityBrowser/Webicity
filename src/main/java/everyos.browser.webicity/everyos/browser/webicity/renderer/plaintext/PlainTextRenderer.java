@@ -17,22 +17,30 @@ public class PlainTextRenderer implements Renderer {
 
 	public PlainTextRenderer() {
 		this.readyHooks = new ArrayList<>();
+		
+		System.out.println("A");
 	}
 	
 	//TODO: WhatWG actually specifies how this should be done
 	@Override 
 	public void execute(WebicityFrame frame, InputStream stream) throws IOException {
-		
 		//TODO: Specialized rendering context, to prevent lag on browser UI
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 		StringBuilder builder = new StringBuilder();
 		
+		System.out.println("C");
+		
 		while (!frame.getTasks().isShutdown()) {
+			System.out.println("D");
 			final int read = reader.read();
-			if (read==-1) break;
+			if (read == -1) {
+				System.out.println("E");
+				break;
+			}
+			System.out.println("F");
 			
-			builder.append(read);
+			builder.appendCodePoint(read);
 		}
 		stream.close();
 		

@@ -1,5 +1,9 @@
 package everyos.browser.webicity.webribbon.ui.webui.layout;
 
+import everyos.browser.spec.jcss.cssom.ApplicablePropertyMap;
+import everyos.browser.spec.jcss.cssom.CSSOMNode;
+import everyos.browser.spec.jcss.cssom.property.PropertyName;
+import everyos.browser.spec.jcss.cssom.property.backgroundcolor.BackgroundColorProperty;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
@@ -9,6 +13,7 @@ import everyos.browser.webicity.webribbon.ui.webui.appearence.Appearence;
 import everyos.browser.webicity.webribbon.ui.webui.helper.ComputedChildrenHelper;
 import everyos.browser.webicity.webribbon.ui.webui.psuedo.ScrollBar;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
@@ -29,12 +34,27 @@ public class InlineBlockLayout implements Layout {
 	
 	private boolean requiresMouseTarget = false;
 	
+	private Color bgcolor;
+	
 	public InlineBlockLayout(WebComponent component, WebComponentUI ui) {
 		this.component = component;
 		this.ui = ui;
 		
 		this.scrollBar = new ScrollBar(ui);
 		this.computedChildrenHelper = new ComputedChildrenHelper(this.component);
+	}
+	
+	// TODO: Move code for calculations to other file
+	
+	@Override
+	public void recalculatePaintCSSOM(CSSOMNode cssomNode, ApplicablePropertyMap properties, Appearence appearence) {
+		this.bgcolor = ((BackgroundColorProperty) properties.getPropertyByName(PropertyName.BACKGROUND_COLOR)).getComputedColor();
+		
+		appearence.recalculatePaintCSSOM(cssomNode, properties, appearence);
+		
+		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
+			c.recalculatePaintCSSOM(cssomNode);
+		}
 	}
 	
 	@Override
@@ -122,6 +142,11 @@ public class InlineBlockLayout implements Layout {
 	}
 	
 	private void paintInnerPart(RendererData rd, Rectangle viewport, WebPaintContext context, Appearence appearence) {
+		int[] bounds = rd.getBounds();
+		rd.getState().setBackground(bgcolor);
+		rd.useBackground();
+		context.getRenderer().drawFilledRect(rd, 0, 0, bounds[2], bounds[3]);
+		
 		appearence.paint(rd, viewport, context);
 		paintChildren(rd, viewport, context);
 	}

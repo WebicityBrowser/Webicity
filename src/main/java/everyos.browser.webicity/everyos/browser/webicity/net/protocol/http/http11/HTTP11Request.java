@@ -22,6 +22,9 @@ public class HTTP11Request {
 		headers.put("Sec-Fetch-Mode", "navigate");
 		headers.put("Sec-Fetch-Site", "cross-site");
 		headers.put("Sec-Fetch-User", "?1");
+		
+		headers.put("Cache-Control", "no-cache");
+		headers.put("Connection", "keep-alive");
 	}
 
 	public void setRequestType(REQUEST_TYPE type) {

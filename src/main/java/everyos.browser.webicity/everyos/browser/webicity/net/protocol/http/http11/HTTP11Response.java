@@ -3,7 +3,10 @@ package everyos.browser.webicity.net.protocol.http.http11;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
+
+import org.brotli.dec.BrotliInputStream;
 
 import everyos.browser.webicity.net.protocol.http.ChunkedInputStream;
 import everyos.browser.webicity.net.protocol.http.LimitedInputStream;
@@ -62,8 +65,14 @@ public class HTTP11Response {
 	}
 	
 	private InputStream decodeStream(InputStream stream) throws IOException {
-		if (headers.getOrDefault("content-encoding", "identity").equals("gzip")) {
+		String compression = headers.getOrDefault("content-encoding", "identity");
+		
+		if (compression.equals("gzip")) {
 			return new GZIPInputStream(stream);
+		} else if (compression.equals("br")) {
+			return new BrotliInputStream(stream);
+		} else if (compression.equals("deflate")) {
+			return new DeflaterInputStream(stream);
 		}
 		
 		return stream;

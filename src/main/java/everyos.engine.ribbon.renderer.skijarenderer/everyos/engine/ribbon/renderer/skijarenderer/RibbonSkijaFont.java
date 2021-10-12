@@ -53,7 +53,7 @@ public class RibbonSkijaFont implements RibbonFont {
 
 	public static RibbonSkijaFont of(String name, int weight, int size) {
 		Typeface typeface = manager.matchFamilyStyle(name, FontStyle.NORMAL);
-		Font font = new Font(typeface, 12);
+		Font font = new Font(typeface, size);
 		
 		return new RibbonSkijaFont(font);
 	}

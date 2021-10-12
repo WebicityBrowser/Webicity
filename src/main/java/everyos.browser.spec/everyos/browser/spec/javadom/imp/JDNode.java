@@ -13,6 +13,8 @@ public class JDNode extends JDEventTarget implements Node {
 	private Document nodeDocument;
 	private List<Node> children = createChildrenList();
 	
+	private Node parent;
+	
 	protected JDNode(Document nodeDocument) {
 		this.nodeDocument = nodeDocument;
 	}
@@ -50,8 +52,7 @@ public class JDNode extends JDEventTarget implements Node {
 
 	@Override
 	public Node getParentNode() {
-		// TODO Auto-generated method stub
-		return null;
+		return parent;
 	}
 	@Override
 	public Node getLastChild() {
@@ -83,6 +84,12 @@ public class JDNode extends JDEventTarget implements Node {
 		}
 		return all.toString();
 	}
+	
+	@Override
+	public void setParent(Node node) {
+		//TODO: Should this method exist?
+		this.parent = node;
+	}
 
 	protected void setNodeDocument(JDDocument nodeDocument) {
 		this.nodeDocument = nodeDocument;
@@ -113,8 +120,12 @@ public class JDNode extends JDEventTarget implements Node {
 	}
 
 	private void insert(Node node, Node child, boolean suppressObservers) {
-		if (children == null) return;
+		if (children == null) {
+			return;
+		}
 		//TODO: Actually implement
+		
+		node.setParent(this);
 		children.add(node);
 	}
 }

@@ -41,8 +41,14 @@ public class JCSSTokenizer {
 	}
 
 	private static CSSToken consumeAToken(PushbackReader reader) throws IOException {
-		// TODO: Consume comments
+
+		consumeComments(reader);
+		
 		int ch = reader.read();
+		if (ch == 0) {
+			ch = -1;
+			//TODO
+		}
 		
 		if (Character.isWhitespace(ch)) {
 			while (Character.isWhitespace(peek(reader, 1)[0])) {
@@ -146,6 +152,26 @@ public class JCSSTokenizer {
 		}
 	}
 
+	private static void consumeComments(PushbackReader reader) throws IOException {
+		int ch1 = reader.read();
+		if (!(ch1 == '/')) {
+			reader.unread(ch1);
+			return;
+		}
+		
+		int ch2 = reader.read();
+		if (!(ch2 == '*')) {
+			reader.unread(ch2);
+			reader.unread(ch1);
+			return;
+		}
+		
+		while (ch2 != -1 && !(ch1 == '*' && ch2 == '/')) {
+			ch1 = ch2;
+			ch2 = reader.read();
+		}
+	}
+
 	private static boolean startsWithAnIdentifier_(PushbackReader reader) throws IOException {
 		int ch = reader.read();
 		boolean result = startsWithAnIdentifier(ch, reader);
@@ -212,7 +238,7 @@ public class JCSSTokenizer {
 		}
 		
 		if (peek(reader, 1)[0] == '.' && Character.isDigit(peek(reader, 2)[1])) {
-			reader.read();
+			repr.appendCodePoint(reader.read());
 			type = "number";
 			while (Character.isDigit(peek(reader, 1)[0])) {
 				repr.appendCodePoint(reader.read());

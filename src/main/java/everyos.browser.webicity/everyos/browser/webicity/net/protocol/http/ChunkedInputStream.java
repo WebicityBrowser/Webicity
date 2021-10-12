@@ -36,6 +36,7 @@ public class ChunkedInputStream extends InputStream {
 					ended = true;
 					return -1;
 				}
+				
 				parsedChunkSize = parsedChunkSize * 16 + Character.digit(chi, 16);
 			}
 			stream.read();
@@ -44,13 +45,19 @@ public class ChunkedInputStream extends InputStream {
 				ended = true;
 				return -1;
 			}
-			remainingChunkLength = parsedChunkSize + 2;
+			remainingChunkLength = parsedChunkSize;
 		}
 		
 		int read = stream.read(b, off, Math.min(len, remainingChunkLength));
 		remainingChunkLength -= read;
 		
-		return read; //TODO
+		if (remainingChunkLength == 0) {
+			// TODO: Check if these return -1
+			stream.read();
+			stream.read();
+		}
+		
+		return read;
 	}
 
 	@Override

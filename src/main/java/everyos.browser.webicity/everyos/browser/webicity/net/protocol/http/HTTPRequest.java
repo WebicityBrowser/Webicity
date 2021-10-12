@@ -18,13 +18,11 @@ public class HTTPRequest implements Request {
 		
 		request.setRequestTarget(url);
 		
-		// We include Firefox/70.0 in our UA string because some sites are not served properly without it
-		request.setUserAgent("Webicity/0.1.0 (WebRibbon/0.1.0); Firefox/86.0 UA styling preferred");
-		request.acceptEncoding("identity", -1);
-		//request.acceptEncoding("*", 0);
-		//request.acceptEncoding("gzip", -1); //TODO: Fix gzip
-		//request.acceptEncoding("br", .5);
-		//headers.put("Upgrade-Insecure-Requests", "1");
+		// We include Firefox in our UA string because some sites are not served properly without it
+		request.setUserAgent("Webicity/0.1.0 (WebRibbon/0.1.0); Firefox/93.0 UA styling preferred");
+		request.acceptEncoding("gzip", -1);
+		request.acceptEncoding("deflate", -1);
+		request.acceptEncoding("br", -1);
 		request.acceptLanugage("en-US", -1);
 		request.acceptLanugage("en", .9);
 		request.acceptCharset("utf-8", -1);

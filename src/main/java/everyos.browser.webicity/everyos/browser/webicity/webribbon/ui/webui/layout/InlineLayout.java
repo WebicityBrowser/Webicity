@@ -1,5 +1,7 @@
 package everyos.browser.webicity.webribbon.ui.webui.layout;
 
+import everyos.browser.spec.jcss.cssom.ApplicablePropertyMap;
+import everyos.browser.spec.jcss.cssom.CSSOMNode;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
@@ -25,6 +27,15 @@ public class InlineLayout implements Layout {
 		this.component = component;
 		this.ui = ui;
 		this.computedChildrenHelper = new ComputedChildrenHelper(this.component);
+	}
+	
+	@Override
+	public void recalculatePaintCSSOM(CSSOMNode cssomNode, ApplicablePropertyMap properties, Appearence appearence) {
+		appearence.recalculatePaintCSSOM(cssomNode, properties, appearence);
+		
+		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
+			c.recalculatePaintCSSOM(cssomNode);
+		}
 	}
 	
 	@Override
@@ -89,4 +100,5 @@ public class InlineLayout implements Layout {
 		}
 		return viewport->viewport.intersects(bounds);
 	}
+	
 }

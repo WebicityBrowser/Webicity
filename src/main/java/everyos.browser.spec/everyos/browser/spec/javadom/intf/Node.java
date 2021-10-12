@@ -13,4 +13,7 @@ public interface Node {
 	String getBaseURL();
 	
 	String getChildTextContent();
+	
+	//TODO Should this be an actual method?
+	void setParent(Node node);
 }

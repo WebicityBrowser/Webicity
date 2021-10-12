@@ -1,6 +1,8 @@
 package everyos.browser.webicity.webribbon.ui.webui;
 
 import everyos.browser.spec.javadom.intf.Element;
+import everyos.browser.spec.jcss.cssom.ApplicablePropertyMap;
+import everyos.browser.spec.jcss.cssom.CSSOMNode;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
@@ -42,13 +44,18 @@ public class WebUIWebAnchorComponentUI extends WebUIWebComponentUI {
 	
 	private class AnchorAppearence implements Appearence {
 		@Override
+		public void recalculatePaintCSSOM(CSSOMNode cssomNode, ApplicablePropertyMap properties, Appearence appearence) {
+			
+		}
+		
+		@Override
 		public void render(RendererData rd, SizePosGroup sizepos, WebRenderContext context) {
 			
 		}
 
 		@Override
 		public void paint(RendererData rd, Rectangle viewport, WebPaintContext context) {
-			rd.getState().setForeground(Color.BLUE);
+			rd.getState().setForeground(new Color(0x00, 0x00, 0xEE));
 		}
 	}
 }

@@ -36,7 +36,7 @@ public class HTMLRenderer implements Renderer {
 		stream.close();
 		
 		long millisToParse = System.currentTimeMillis()-time;
-		logger.info("Page parsed in " + (millisToParse) + " millis (" + (int) (millisToParse/1000 + .5) +" seconds).");
+		logger.info("Page (" + frame.getURL().toString() +") parsed in " + (millisToParse) + " millis (" + (int) (millisToParse/1000 + .5) +" seconds).");
 		
 		for (Runnable hook: readyHooks) {
 			hook.run();

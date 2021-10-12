@@ -6,7 +6,7 @@ import java.util.List;
 import everyos.api.getopts.Argument;
 import everyos.api.getopts.ArgumentParser;
 import everyos.api.getopts.Flag;
-import everyos.api.getopts.FlagArgumentPair;
+import everyos.api.getopts.FlagArgumentPairCollection;
 import everyos.api.getopts.ParserFailedException;
 import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.WebicityArguments;
@@ -20,31 +20,22 @@ public class WebicityArgumentsImp implements WebicityArguments {
 	private final boolean isVerbose;
 	private final URL[] urls;
 	
-	public WebicityArgumentsImp(ArgumentParser parser, FlagArgumentPair[] flags) throws ParserFailedException {
-		boolean isPrivate = false;
-		boolean isVerbose = false;
-		
+	public WebicityArgumentsImp(ArgumentParser parser, FlagArgumentPairCollection arguments) throws ParserFailedException {
 		List<URL> urls = new ArrayList<>();
 		
 		URLArgumentReader urlReader = new URLArgumentReader();
 		
-		for (FlagArgumentPair pair: flags) {
-			if (pair.getFlag().getID() == HELP_FLAG) {
-				parser.printHelpScreen();
-				throw new ParserFailedException();
-			} else if (pair.getFlag().getID() == PRIVATE_FLAG) {
-				isPrivate = true;
-			} else if (pair.getFlag().getID() == VERBOSE_FLAG) {
-				isVerbose = true;
-			} else if (pair.getFlag().getID() == Flag.NO_FLAG) {
-				for (Argument argument: pair.getArguments()) {
-					urls.add(argument.read(urlReader));
-				}
-			}
+		if (arguments.get(HELP_FLAG).length > 0) {
+			parser.printHelpScreen(System.out);
+			throw new ParserFailedException();
 		}
 		
-		this.isPrivate = isPrivate;
-		this.isVerbose = isVerbose;
+		this.isPrivate = arguments.get(PRIVATE_FLAG).length > 0;
+		this.isVerbose = arguments.get(VERBOSE_FLAG).length > 0;
+		for (Argument argument: arguments.get(Flag.NO_FLAG)[0].getArguments()) {
+			urls.add(argument.read(urlReader));
+		}
+		
 		this.urls = urls.toArray(new URL[urls.size()]);
 	}
 

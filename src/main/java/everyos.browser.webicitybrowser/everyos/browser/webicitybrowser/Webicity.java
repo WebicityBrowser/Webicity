@@ -2,10 +2,6 @@ package everyos.browser.webicitybrowser;
 
 import java.net.MalformedURLException;
 
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import everyos.api.getopts.ArgumentParser;
 import everyos.api.getopts.Flag;
 import everyos.api.getopts.ParserFailedException;
@@ -15,6 +11,13 @@ import everyos.browser.webicitybrowser.gui.window.SkijaWindow;
 import everyos.browser.webicitybrowser.imp.WebicityArgumentsImp;
 
 public class Webicity {
+	
+	/**
+	 * The entry point to Webicity Browser.
+	 * Parses the command line arguments and creates an instance
+	 * of the browser.
+	 * @param args The command line arguments
+	 */
 	public static void main(String[] args) {
 		WebicityArguments arguments;
 		try {
@@ -28,7 +31,7 @@ public class Webicity {
 	private static WebicityArguments parseArguments(String[] args) throws ParserFailedException {
 		ArgumentParser parser = createArgumentParser();
 		
-		return new WebicityArgumentsImp(parser, parser.parse(args));
+		return new WebicityArgumentsImp(parser, parser.parse(args, System.out));
 	}
 	
 	private static ArgumentParser createArgumentParser() {
@@ -63,23 +66,28 @@ public class Webicity {
 	}
 
 	private static void startInstance(WebicityArguments arguments) {
-		Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		logger.setLevel(Level.INFO);
+		//TODO: Static stuff like this is probably better elsewhere
+		System.setProperty("logging.level", "INFO");
+		//System.setProperty("logging.level", "TRACE");
+		//System.setProperty("logging.use_colors", "false");
 		if (arguments.getVerbose()) {
-			logger.setLevel(Level.ALL);
+			System.setProperty("logging.level", "DEBUG");
 		}
 		
 		WebicityInstance instance = new WebicityInstance(arguments.getPrivate());
 		
-		if (arguments.getURLs().length==0) {
+		if (arguments.getURLs().length == 0) {
 			try {
 				//TODO: Configuration
-				//instance.open(new URL("webicity://csstest"));
+				instance.open(new URL("webicity://csstest"));
+				instance.open(new URL("http://wpt.live/css/css-color"));
+				//instance.open(new URL("https://www.google.com/"));
 				//instance.open(new URL("https://www.yahoo.com/"));
 				//instance.open(new URL("https://www.whatismybrowser.com/"));
 				//instance.open(new URL("https://www.example.com/"));
-				instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
+				//instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
 				//instance.open(new URL("https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state"));
+				//instance.open(new URL("file:///C:\\Users\\JasonGronn\\Downloads\\vkspec.html"));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}

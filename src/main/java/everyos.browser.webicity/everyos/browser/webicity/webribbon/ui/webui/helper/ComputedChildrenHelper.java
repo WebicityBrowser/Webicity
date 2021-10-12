@@ -11,7 +11,7 @@ public class ComputedChildrenHelper {
 	private final List<WebComponentUI> computedChildren;
 	private final WebComponent component;
 	
-	private WebComponentUI[] computedChildrenAsArray;
+	private WebComponentUI[] computedChildrenAsArray = new WebComponentUI[0];
 	
 	public ComputedChildrenHelper(WebComponent component) {
 		this.computedChildren = new LinkedList<>();

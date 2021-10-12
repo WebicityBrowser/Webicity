@@ -29,6 +29,8 @@ public class HTTPResponse implements Response {
 			type = type.substring(0, type.indexOf(';'));
 		}
 		
+		System.out.println(type);
+		
 		switch(type) {//TODO: Move this to a registry
 			case "text/html":
 				return new HTMLRenderer();	

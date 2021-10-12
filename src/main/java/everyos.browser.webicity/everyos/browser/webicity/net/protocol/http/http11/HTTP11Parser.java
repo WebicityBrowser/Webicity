@@ -68,6 +68,7 @@ public class HTTP11Parser {
 						
 					case HEADER_VALUE:
 						if (ch == '\r') {
+							System.out.println(tmp_buf.toString().toLowerCase() + ": " + tmp_buf_2.toString());
 							headers.put(tmp_buf.toString().toLowerCase(), tmp_buf_2.toString());
 							returnState = ParseState.HEADER_NAME_OR_NEWLINE;
 							state = ParseState.NEWLINE;

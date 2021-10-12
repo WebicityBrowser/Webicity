@@ -1,5 +1,8 @@
 package everyos.browser.webicity.webribbon.ui.webui;
 
+import everyos.browser.spec.jcss.cssom.ApplicablePropertyMap;
+import everyos.browser.spec.jcss.cssom.CSSOMNode;
+import everyos.browser.spec.jcss.cssom.CSSOMUtil;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.UIBox;
@@ -29,6 +32,13 @@ public class WebUIWebComponentUI implements WebComponentUI {
 		
 		this.layout = new InlineLayout(component, this);
 		this.appearence = new DefaultAppearence();
+	}
+	
+	@Override
+	public void recalculatePaintCSSOM(CSSOMNode cssomNode) {
+		CSSOMNode[] matchingNodes = CSSOMUtil.getMatchingNodes(component.getNode(), cssomNode);
+		ApplicablePropertyMap properties = CSSOMUtil.calculateProperties(matchingNodes);
+		getLayout().recalculatePaintCSSOM(cssomNode, properties, getAppearence());
 	}
 	
 	@Override
@@ -100,4 +110,5 @@ public class WebUIWebComponentUI implements WebComponentUI {
 	protected Layout getLayout() {
 		return this.layout;
 	}
+
 }

@@ -777,7 +777,7 @@ public final class JHTMLParser {
 						((CommentToken) token).getDataBuilder().append((char) ch);
 					} else {
 						reader.unread(ch);
-						state = TokenizeState.DATA;
+						state = TokenizeState.COMMENT;
 					}
 					break;
 					
@@ -1642,7 +1642,7 @@ public final class JHTMLParser {
 					
 					//TODO: Many things in between
 				} else if (isEndTag(token) && name.equals("a")) {
-					//TODO: adoption agency algorithm
+					//TODO: adoption agency algorithm and more tags
 					
 					Stack<Element> s = new Stack<>();
 					while (!elements.isEmpty()) {
@@ -1658,6 +1658,13 @@ public final class JHTMLParser {
 						}
 					}
 					//TODO: Many things in between
+				} else if (isStartTag(token) && tagIs(name, "area", "br", "embed", "img", "keygen", "wbr")) {
+					//TODO: Active elements
+					insertElement((TagToken) token, HTML_NAMESPACE);
+					pop();
+					//TODO: "Acknowledge" the element
+					
+					//TODO: Many things in between. Also, handle </br>
 				} else if (isStartTag(token)) {
 					//TODO: Reconstruct active formatting elements
 					insertElement((TagToken) token, HTML_NAMESPACE);

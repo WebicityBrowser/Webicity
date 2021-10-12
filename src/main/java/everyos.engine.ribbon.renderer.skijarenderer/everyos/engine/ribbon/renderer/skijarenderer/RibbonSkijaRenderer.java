@@ -170,7 +170,7 @@ public class RibbonSkijaRenderer implements Renderer {
 	
 	private int toColor(Color foreground) {	
 		return
-			(0xFF << 24) +
+			(foreground.getAlpha() << 24) +
 			(foreground.getRed() << 16) +
 			(foreground.getGreen() << 8) +
 			foreground.getBlue(); // Equivalent to foreground.getBlue() << 0

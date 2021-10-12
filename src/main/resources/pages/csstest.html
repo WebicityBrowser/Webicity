@@ -4,16 +4,50 @@
 		<title>CSS Test</title>
 		<style>
 			span {
-				color: rgb();
+				color: rebeccapurple;
+			}
+			div > b {
+				color: rgba(255 0 0 / 1);
+			}
+			#hellomoto {
+				background-color: rgba(0, 255, 255);
+			}
+			.hello {
+				color: rgba(10 175 10 / 100%);
 			}
 		</style>
 	<head>
 	<body>
-		<div>
-			Hello, World!
+		<div id="hellomoto">
+			CSS applied.
 		</div>
 		<span>
-			Goodbye, cruel world!
+			CSS applied.
 		</span>
+		<div>
+			<b>
+				CSS applied.
+			</b>
+		</div>
+		<div>
+			<i>
+				No CSS applied.
+			</i><br/>
+			<b>
+				CSS applied.
+			</b><br/>
+			<s>
+				No CSS applied.
+			</s><br/>
+			<span>
+				CSS applied.
+			</span><br>
+			<div class="hello world">
+				CSS applied.
+			</div>
+		</div>
+		<b>
+			No CSS applied.
+		</b>
 	</body>
 </html>

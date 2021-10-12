@@ -30,7 +30,7 @@ public class TagToken extends Token{
 	}
 
 	public void resetAttributeNameBuilder() {
-		if (attribute_name!=null && attribute_value!=null) {
+		if (attribute_name != null && attribute_value != null) {
 			attributes.put(attribute_name.toString().toLowerCase(), attribute_value.toString());
 		}
 		attribute_name = new StringBuilder(8);

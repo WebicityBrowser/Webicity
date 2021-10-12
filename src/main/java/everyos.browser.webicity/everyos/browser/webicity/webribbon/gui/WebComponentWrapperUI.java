@@ -1,5 +1,11 @@
 package everyos.browser.webicity.webribbon.gui;
 
+import java.util.List;
+
+import everyos.browser.spec.javadom.intf.Document;
+import everyos.browser.spec.jcss.cssom.CSSOMNode;
+import everyos.browser.spec.jcss.cssom.CSSOMUtil;
+import everyos.browser.spec.jcss.intf.CSSStyleSheet;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.Pallete;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
@@ -78,6 +84,8 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		private WebUIWebWindowUI documentUI;
 		private Rectangle viewport;
 		
+		private boolean cssomPaintRecalculateRequired = true;
+		
 		public WebComponentWrapperAppearence() {
 			this.webUIManager = WebUIWebUIManager.createUI();
 		}
@@ -99,6 +107,9 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 				
 				documentUI.render(rd, spg, new WebRenderContextImp(webUIManager));
 			}
+			
+			//TODO: Probably find a better place/method for this
+			cssomPaintRecalculateRequired = true;
 		}
 
 		@Override
@@ -108,6 +119,16 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 			rd.restoreState(state);
 			
 			if (webComponent != null) {
+				if (cssomPaintRecalculateRequired) {
+					List<CSSStyleSheet> styleSheets = ((Document) documentUI.getComponent().getNode()).getDocumentOrShadowRootCSSStyleSheets();
+					CSSOMNode cssomRoot = CSSOMUtil.computeCSSOM(styleSheets.toArray(new CSSStyleSheet[styleSheets.size()]));
+					documentUI.recalculatePaintCSSOM(cssomRoot);
+					
+					cssomPaintRecalculateRequired = false;
+					
+					System.gc();
+				}
+				
 				documentUI.paint(rd, viewport, new WebPaintContextImp(context.getRenderer()));
 			}
 		}

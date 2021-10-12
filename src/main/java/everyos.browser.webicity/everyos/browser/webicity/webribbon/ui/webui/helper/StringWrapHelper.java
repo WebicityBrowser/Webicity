@@ -95,7 +95,7 @@ public class StringWrapHelper {
 		return new StringBuilder();
 	}
 	
-	private static int fastStringWidth(RibbonFont font, String str) {
+	public static int fastStringWidth(RibbonFont font, String str) {
 		int maxWidth = 0;
 		for (byte ch: str.getBytes()) {
 			maxWidth += font.getCharWidth((char) ch); 

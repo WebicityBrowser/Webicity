@@ -61,7 +61,7 @@ public class WindowGUI {
 		for (Tab tab: window.getTabs()) {
 			mutationListener.onTabAdded(window, tab);
 		}
-		if (tabs.size()>0) {
+		if (tabs.size() > 0) {
 			selectTab(tabs.get(0));
 		}
 	}

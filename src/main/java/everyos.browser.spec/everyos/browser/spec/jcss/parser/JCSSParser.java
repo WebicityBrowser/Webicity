@@ -9,18 +9,19 @@ import everyos.browser.spec.jcss.imp.QualifiedRule;
 import everyos.browser.spec.jcss.imp.SimpleBlock;
 import everyos.browser.spec.jcss.intf.CSSRule;
 
-public class JCSSParser {
-	//TODO: Allow use of ComponentValues instead of tokens
+public final class JCSSParser {
 	
-	public CSSRule[] parseAListOfRules(CSSToken[] tokens) {
+	private JCSSParser() {};
+	
+	public static CSSRule[] parseAListOfRules(CSSToken[] tokens) {
 		return consumeAListOfRules(tokens, false);
 	}
 	
-	public CSSRule[] parseAListOfDeclarations(CSSToken[] tokens) {
+	public static CSSRule[] parseAListOfDeclarations(CSSToken[] tokens) {
 		return consumeAListOfDeclarations(new TokenStream(tokens));
 	}
 
-	private CSSRule[] consumeAListOfRules(CSSToken[] tokens, boolean topLevel) {
+	private static CSSRule[] consumeAListOfRules(CSSToken[] tokens, boolean topLevel) {
 		List<CSSRule> rules = new ArrayList<>();
 		TokenStream stream = new TokenStream(tokens);
 		
@@ -53,7 +54,7 @@ public class JCSSParser {
 		}
 	}
 	
-	private AtRule consumeAnAtRule(TokenStream stream) {
+	private static AtRule consumeAnAtRule(TokenStream stream) {
 		assert(stream.peek() instanceof AtKeywordToken);
 		AtKeywordToken atToken = (AtKeywordToken) stream.read();
 		
@@ -75,7 +76,7 @@ public class JCSSParser {
 		}
 	}
 
-	private QualifiedRule consumeAQualifiedRule(TokenStream stream) {
+	private static QualifiedRule consumeAQualifiedRule(TokenStream stream) {
 		QualifiedRule rule = new QualifiedRule();
 		
 		while (true) {
@@ -94,7 +95,7 @@ public class JCSSParser {
 		}
 	}
 	
-	private CSSRule[] consumeAListOfDeclarations(TokenStream stream) {
+	private static CSSRule[] consumeAListOfDeclarations(TokenStream stream) {
 		List<CSSRule> declarations = new ArrayList<>();
 		
 		while (true) {
@@ -112,6 +113,7 @@ public class JCSSParser {
 				while (!(stream.peek() instanceof SemicolonToken || stream.peek() instanceof EOFToken)) {
 					tempList.add(consumeAComponentValue(stream));
 				}
+				
 				TokenStream tempStream = new TokenStream(tempList.toArray(new CSSToken[tempList.size()]));
 				Declaration declaration = consumeADeclaration(tempStream);
 				if (declaration != null) {
@@ -126,8 +128,8 @@ public class JCSSParser {
 		}
 	}
 	
-	private Declaration consumeADeclaration(TokenStream stream) {
-		Declaration declaration = new Declaration(stream.read());
+	private static Declaration consumeADeclaration(TokenStream stream) {
+		Declaration declaration = new Declaration((IdentToken) stream.read());
 		while (stream.peek() instanceof WhitespaceToken) {
 			stream.read();
 		}
@@ -142,9 +144,9 @@ public class JCSSParser {
 			declaration.append(consumeAComponentValue(stream));
 		}
 		List<CSSToken> value = declaration.getValueAsList();
-		CSSToken tok1 = value.get(value.size()-2);
-		CSSToken tok2 = value.get(value.size()-1);
 		if (value.size() > 1) {
+			CSSToken tok1 = value.get(value.size()-2);
+			CSSToken tok2 = value.get(value.size()-1);
 			if (
 				tok1 instanceof DelimToken &&
 				((DelimToken) tok1).getValue().equals("!") &&
@@ -161,10 +163,10 @@ public class JCSSParser {
 			value.remove(value.size()-1);
 		}
 		
-		return null;
+		return declaration;
 	}
 
-	private CSSToken consumeAComponentValue(TokenStream stream) {
+	private static CSSToken consumeAComponentValue(TokenStream stream) {
 		CSSToken token = stream.read();
 		
 		if (token instanceof LCBrackToken ||
@@ -179,7 +181,7 @@ public class JCSSParser {
 		}
 	}
 
-	private SimpleBlock consumeASimpleBlock(TokenStream stream) {
+	private static SimpleBlock consumeASimpleBlock(TokenStream stream) {
 		stream.unread();
 		CSSToken startToken = stream.read();
 		
@@ -202,14 +204,14 @@ public class JCSSParser {
 		}
 	}
 	
-	private boolean isEndingToken(CSSToken token, CSSToken startToken) {
+	private static boolean isEndingToken(CSSToken token, CSSToken startToken) {
 		return
 			(startToken instanceof LCBrackToken && token instanceof RCBrackToken) ||
 			(startToken instanceof LSBrackToken && token instanceof RSBrackToken) ||
 			(startToken instanceof LParenToken && token instanceof RParenToken);
 	}
 
-	private Function consumeAFunction(TokenStream stream) {
+	private static Function consumeAFunction(TokenStream stream) {
 		stream.unread();
 		assert(stream.peek() instanceof FunctionToken);
 		FunctionToken funcToken = (FunctionToken) stream.read();

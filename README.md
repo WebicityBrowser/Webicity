@@ -32,6 +32,10 @@ After checking out the code, run this:
 ./gradlew shadowJar
 ```
 Your Jarfile should appear at `./build/libs/Webicity-all.jar`.
+You can run it with this command:
+```bash
+java -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 -XX:+UseG1GC -jar Webicity-all.jar
+```
 
 ## Screenshot
 
