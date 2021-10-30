@@ -1,6 +1,7 @@
 package everyos.browser.webicitybrowser.gui.binding;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -8,6 +9,7 @@ import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.colors.Colors;
 import everyos.browser.webicitybrowser.gui.colors.NormalColors;
+import everyos.browser.webicitybrowser.gui.colors.OctoberColors;
 import everyos.browser.webicitybrowser.gui.colors.PrivateColors;
 import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
@@ -50,7 +52,9 @@ public class WindowGUI {
 
 	public void start() {
 		this.colors = window.isPrivateWindow() ?
-				new PrivateColors() :
+			new PrivateColors() :
+			Calendar.getInstance().get(Calendar.MONTH) == Calendar.OCTOBER ?
+				new OctoberColors() :
 				new NormalColors();
 		
 		Component pane = windowGrip.getDisplayPane();

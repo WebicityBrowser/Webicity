@@ -1,31 +1,31 @@
 package everyos.browser.webicity.webribbon.ui.webui;
 
-import everyos.browser.webicity.webribbon.core.component.WebAnchorComponent;
-import everyos.browser.webicity.webribbon.core.component.WebBreakComponent;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
-import everyos.browser.webicity.webribbon.core.component.WebDivComponent;
+import everyos.browser.webicity.webribbon.core.component.WebDocumentComponent;
 import everyos.browser.webicity.webribbon.core.component.WebScriptComponent;
 import everyos.browser.webicity.webribbon.core.component.WebStyleComponent;
 import everyos.browser.webicity.webribbon.core.component.WebTextComponent;
 import everyos.browser.webicity.webribbon.core.component.WebTitleComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
+import everyos.browser.webicity.webribbon.ui.webui.ui.WebUIWebComponentUI;
+import everyos.browser.webicity.webribbon.ui.webui.ui.WebUIWebIgnoredComponentUI;
+import everyos.browser.webicity.webribbon.ui.webui.ui.WebUIWebWindowUI;
+import everyos.browser.webicity.webribbon.ui.webui.ui.text.WebUIWebTextComponentUI;
 
-public final class WebUIWebUIManager {
-	private WebUIWebUIManager() {};
-	
+public class WebUIWebUIManager {
+
 	public static WebUIManager createUI() {
-		WebUIManager wuim = new WebUIManager();
+		WebUIManager uiManager = new WebUIManager();
 		
-		wuim.put(WebComponent.class, WebUIWebComponentUI::new);
-		wuim.put(WebTextComponent.class, WebUIWebTextComponentUI::new);
-		wuim.put(WebBreakComponent.class, WebUIWebBreakComponentUI::new);
-		wuim.put(WebAnchorComponent.class, WebUIWebAnchorComponentUI::new);
-		wuim.put(WebDivComponent.class, WebUIWebDivComponentUI::new);
+		uiManager.put(WebComponent.class, WebUIWebComponentUI::new);
+		uiManager.put(WebDocumentComponent.class, WebUIWebWindowUI::new);
+		uiManager.put(WebTextComponent.class, WebUIWebTextComponentUI::new);
 		
-		wuim.put(WebTitleComponent.class, WebUIWebIgnoredComponentUI::new);
-		wuim.put(WebScriptComponent.class, WebUIWebIgnoredComponentUI::new);
-		wuim.put(WebStyleComponent.class, WebUIWebIgnoredComponentUI::new);
+		uiManager.put(WebScriptComponent.class, WebUIWebIgnoredComponentUI::new);
+		uiManager.put(WebTitleComponent.class, WebUIWebIgnoredComponentUI::new);
+		uiManager.put(WebStyleComponent.class, WebUIWebIgnoredComponentUI::new);
 		
-		return wuim;
+		return uiManager;
 	}
+
 }

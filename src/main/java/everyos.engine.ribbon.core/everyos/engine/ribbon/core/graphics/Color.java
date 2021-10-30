@@ -23,6 +23,16 @@ public class Color {
 	public Color(int r, int g, int b) {
 		this(255, r, g, b);
 	}
+	
+	// Thanks to joeyjoejoe from Discord for suggesting these constructors!
+	public Color(int rgb) {
+		color = (255 << 24) + rgb;
+	}
+	
+	public Color(int rgb, int alpha) {
+		color = (alpha << 24) + rgb;
+	}
+	//
 
 	public int getAlpha() {
 		return (color >>> 24) & 0xFF;

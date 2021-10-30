@@ -45,31 +45,34 @@ public class InlineBlockLayout implements Layout {
 	}
 
 	public void render(RendererData rd, SizePosGroup sizepos, RenderContext context, Appearence appearence) {
+		recomputeChildren(context);
+		
+		
 		//TODO: Offset bindings
 		//TODO: Auto-wrap
 		
 		// Using directives, determine the size and position of this element
 		// Oftentimes, this may be proportional to sizepos
-		RectangleBuilder bounds = calculatePreferredBounds(sizepos);
+		RectangleBuilder predictedBounds = calculatePreferredBounds(sizepos);
 		
 		// Block components maintain their own size, which is used for positioning and the background size
 		// If we don't know the width of an element ahead of time, we try to use as little screen space as possible.
 		// Usually, the UI is bound to a display, so we know the maximum possible width of an element ahead of time
 		// In the case of a scrolling pane, however, the usable width is potentially infinite
-		SizePosGroup group = new SizePosGroup(bounds.getWidth(), bounds.getHeight(), 0, 0,
-			bounds.getWidth() != -1?
-				bounds.getWidth():
+		SizePosGroup group = new SizePosGroup(predictedBounds.getWidth(), predictedBounds.getHeight(), 0, 0,
+			predictedBounds.getWidth() != -1?
+				predictedBounds.getWidth():
 				sizepos.getMaxSize().getWidth() == -1?
 					-1:
 					sizepos.getMaxSize().getWidth()-sizepos.getCurrentPointer().getX(),
-			bounds.getHeight() != -1?
-				bounds.getHeight():
+			predictedBounds.getHeight() != -1?
+				predictedBounds.getHeight():
 				sizepos.getMaxSize().getHeight() == -1?
 					-1:
 					sizepos.getMaxSize().getHeight()-sizepos.getCurrentPointer().getY());
 		
 		// Use our current guess of the approximate bounds to help render the component
-		this.bounds = bounds.build();
+		this.bounds = predictedBounds.build();
 		
 		// Render our component, as well as any child components
 		renderInnerPart(rd, group, context, appearence);
@@ -79,38 +82,42 @@ public class InlineBlockLayout implements Layout {
 		// use as little space as possible.
 		//group.normalize();
 		group.nextLine();
-		if (bounds.getWidth() == -1 || bounds.getHeight() == -1) {
-			if (bounds.getWidth() == -1) {
-				bounds.setWidth(group.getSize().getWidth());
+		if (predictedBounds.getWidth() == -1 || predictedBounds.getHeight() == -1) {
+			if (predictedBounds.getWidth() == -1) {
+				predictedBounds.setWidth(group.getSize().getWidth());
 			}
-			if (bounds.getHeight() == -1) {
-				bounds.setHeight(group.getSize().getHeight());
+			if (predictedBounds.getHeight() == -1) {
+				predictedBounds.setHeight(group.getSize().getHeight());
 			}
 		
 			//TODO: This causes O(n^2), we should try to get rid of it
-			group = new SizePosGroup(bounds.getWidth(), bounds.getHeight(), 0, 0, bounds.getWidth(), bounds.getHeight());
+			group = new SizePosGroup(predictedBounds.getWidth(), predictedBounds.getHeight(), 0, 0, predictedBounds.getWidth(), predictedBounds.getHeight());
 			renderInnerPart(rd, group, context, appearence);
 		}
 		
 		// Offset the element, if desired
 		if (offset != null) {
-			bounds.setX(offset.applyX(bounds.getWidth()));
-			bounds.setY(offset.applyY(bounds.getHeight()));
+			predictedBounds.setX(offset.applyX(predictedBounds.getWidth()));
+			predictedBounds.setY(offset.applyY(predictedBounds.getHeight()));
 		}
 		
 		// Change the parent component's current pointer
 		if (position == null) {
-			sizepos.add(new Dimension(bounds.getWidth(), bounds.getHeight()));
+			sizepos.add(new Dimension(predictedBounds.getWidth(), predictedBounds.getHeight()));
 		} else {
 			// Components with a fixed position do not affect the pointer
 			// However, we do still need to stretch the parent container to accommodate the component.
-			sizepos.min(new Dimension(bounds.getX()+bounds.getWidth(), bounds.getY()+bounds.getHeight()));
+			sizepos.min(new Dimension(predictedBounds.getX()+predictedBounds.getWidth(), predictedBounds.getY()+predictedBounds.getHeight()));
 		}
 		
 		// Cache the bounds for when we go and draw this component
-		this.bounds = bounds.build();
+		this.bounds = predictedBounds.build();
 	}
 	
+	private void recomputeChildren(RenderContext context) {
+		computedChildrenHelper.recompute(childComponent -> context.getUIManager().get(childComponent, ui));
+	}
+
 	@Override
 	public void paint(RendererData rd, PaintContext context, Appearence appearence) {
 		RendererData r2 = rd.getSubcontext(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
@@ -161,7 +168,7 @@ public class InlineBlockLayout implements Layout {
 			if (sizepos.getSize().getWidth() != -1) {
 				builder.setX(position.getX().calculate(sizepos.getSize().getWidth()));
 			}
-			if (sizepos.getSize().getHeight() != -1&&position.getY().getRelative() != -1) {
+			if (sizepos.getSize().getHeight() != -1 && position.getY().getRelative() != -1) {
 				builder.setY(position.getY().calculate(sizepos.getSize().getHeight()));
 			}
 		}
@@ -187,8 +194,6 @@ public class InlineBlockLayout implements Layout {
 	}
 
 	private void renderChildren(RendererData rd, SizePosGroup sizepos, RenderContext context) {
-		computedChildrenHelper.recompute(c -> context.getUIManager().get(c, ui));
-		
 		GUIState state = rd.getState().clone();
 		for (ComponentUI c: computedChildrenHelper.getChildren()) {
 			c.render(rd, sizepos, context);

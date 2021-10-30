@@ -25,7 +25,9 @@ public class JHTMLStyleElement extends JHTMLElement implements HTMLStyleElement 
 		removeTheCSSStyleSheetInQuestion();
 		//TODO: Check if we are connected
 		String type = getAttribute("type");
-		if (type!=null && !(type.isEmpty()||type.equals("text/css"))) return;
+		if (type != null && !(type.isEmpty() || type.equals("text/css"))) {
+			return;
+		}
 		//TODO: CSP policy
 		CSSStyleSheet stylesheet = JCSSStyleSheet.create(getOwnerDocument());
 		//TODO: Move this to .create

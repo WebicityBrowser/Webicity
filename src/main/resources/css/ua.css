@@ -1,5 +1,14 @@
 @namespace url(http://www.w3.org/1999/xhtml);
 
-/* Copied directly on WhatWG's HTML spec */
-/* https://html.spec.whatwg.org/multipage/rendering.html */
+html, body {
+	display: block;
+}
 
+div, p {
+	display: block;
+}
+
+/* TODO: Go back to handling <br>s via code instead */
+br {
+	display: block;
+}

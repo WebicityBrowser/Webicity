@@ -26,9 +26,9 @@ public class WebComponent implements UIEventTarget {
 			NodeList nchildren = node.getChildNodes();
 			int len = (int) nchildren.getLength();
 			List<WebComponent> children = new ArrayList<>(len);
-			for (int i=0; i<len; i++) {
+			for (int i = 0; i < len; i++) {
 				WebComponent c = WebComponentFactory.createComponentFromNode(nchildren.item(i), renderer);
-				if (c!=null) {
+				if (c != null) {
 					children.add(c);
 				}
 			}

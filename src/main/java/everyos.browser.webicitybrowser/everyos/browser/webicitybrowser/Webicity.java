@@ -71,7 +71,7 @@ public class Webicity {
 		//System.setProperty("logging.level", "TRACE");
 		//System.setProperty("logging.use_colors", "false");
 		if (arguments.getVerbose()) {
-			System.setProperty("logging.level", "DEBUG");
+			System.setProperty("logging.level", "TRACE");
 		}
 		
 		WebicityInstance instance = new WebicityInstance(arguments.getPrivate());
@@ -79,10 +79,10 @@ public class Webicity {
 		if (arguments.getURLs().length == 0) {
 			try {
 				//TODO: Configuration
-				instance.open(new URL("webicity://csstest"));
-				instance.open(new URL("http://wpt.live/css/css-color"));
+				//instance.open(new URL("webicity://csstest"));
+				//instance.open(new URL("http://wpt.live/css/css-color"));
 				//instance.open(new URL("https://www.google.com/"));
-				//instance.open(new URL("https://www.yahoo.com/"));
+				instance.open(new URL("https://www.yahoo.com/"));
 				//instance.open(new URL("https://www.whatismybrowser.com/"));
 				//instance.open(new URL("https://www.example.com/"));
 				//instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));

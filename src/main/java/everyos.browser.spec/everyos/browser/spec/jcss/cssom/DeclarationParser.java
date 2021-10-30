@@ -3,6 +3,7 @@ package everyos.browser.spec.jcss.cssom;
 import everyos.browser.spec.jcss.cssom.property.Property;
 import everyos.browser.spec.jcss.cssom.property.backgroundcolor.BackgroundColorPropertyParser;
 import everyos.browser.spec.jcss.cssom.property.color.ColorPropertyParser;
+import everyos.browser.spec.jcss.cssom.property.display.DisplayPropertyParser;
 import everyos.browser.spec.jcss.parser.CSSToken;
 import everyos.browser.spec.jcss.parser.Declaration;
 import everyos.browser.spec.jcss.parser.WhitespaceToken;
@@ -20,6 +21,9 @@ public final class DeclarationParser {
 				
 			case "background-color":
 				return BackgroundColorPropertyParser.parse(tidyValue);
+				
+			case "display":
+				return DisplayPropertyParser.parse(tidyValue);
 		
 			default:
 				return null;

@@ -2,22 +2,17 @@ package everyos.browser.webicity.webribbon.core.ui;
 
 import everyos.browser.spec.jcss.cssom.CSSOMNode;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
-import everyos.browser.webicity.webribbon.gui.UIBox;
-import everyos.browser.webicity.webribbon.gui.WebPaintContext;
-import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.browser.webicity.webribbon.gui.WebBoxContext;
+import everyos.browser.webicity.webribbon.gui.box.MutableBox;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
-import everyos.engine.ribbon.core.rendering.RendererData;
-import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public interface WebComponentUI {
-	void recalculatePaintCSSOM(CSSOMNode cssomNode);
 	
-	//TODO: Also pass a stack
-	void render(RendererData rd, SizePosGroup sizepos, WebRenderContext context);
-	void paint(RendererData rd, Rectangle viewport, WebPaintContext context);
-	//void composite(RendererData rd);
+	//TODO: Avoid StackOverflow exceptions if too many UIs are nested
+	// (The exception, not the site)
+	
+	void recalculateCSSOM(CSSOMNode cssomNode, WebUIManager manager);
+	void box(MutableBox parent, WebBoxContext context);
 	
 	WebComponentUI getParent();
 	
@@ -26,8 +21,6 @@ public interface WebComponentUI {
 	void validateTo(InvalidationLevel level);
 	boolean getValidated(InvalidationLevel level);
 	
-	UIBox getUIBox();
-
-	void processEvent(UIEvent ev);
 	WebComponent getComponent();
+
 }

@@ -59,7 +59,12 @@ public class RibbonSkijaRenderer implements Renderer {
 	}
 	
 	private void drawDebugBox(int[] bounds) {
-		Rect rect = Rect.makeXYWH(bounds[0], bounds[1], bounds[2], bounds[3]);
+		int fx = Math.max(0, bounds[0]);
+		int fy = Math.max(0, bounds[1]);
+		int fl = Math.max(0, bounds[2]);
+		int fh = Math.max(0, bounds[3]);
+		
+		Rect rect = Rect.makeXYWH(fx, fy, fl, fh);
 		
 		try (Paint paint = new Paint()) {
 			paint.setColor((255<<24)+(0<<16)+(255<<8)+255);

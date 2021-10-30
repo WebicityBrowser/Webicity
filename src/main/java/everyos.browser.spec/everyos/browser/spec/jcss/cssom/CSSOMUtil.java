@@ -13,25 +13,24 @@ import everyos.browser.spec.jcss.cssom.selector.ComplexSelectorPart;
 import everyos.browser.spec.jcss.imp.QualifiedRule;
 import everyos.browser.spec.jcss.imp.SimpleBlock;
 import everyos.browser.spec.jcss.intf.CSSRule;
-import everyos.browser.spec.jcss.intf.CSSStyleSheet;
 import everyos.browser.spec.jcss.parser.Declaration;
 import everyos.browser.spec.jcss.parser.JCSSParser;
 import everyos.browser.spec.jcss.parser.Tuple;
 
 //TODO: Track whether attributes are from UA or Site
 public class CSSOMUtil {
-	public static CSSOMNode computeCSSOM(CSSStyleSheet[] stylesheets) {
+	public static CSSOMNode computeCSSOM(List<CSSRule[]> cssRules) {
 		CSSOMNode rootCSSOMNode = new CSSOMNode();
 		
-		for (CSSStyleSheet stylesheet: stylesheets) {
-			mergeCSSOM(rootCSSOMNode, stylesheet);
+		for (CSSRule[] ruleSet: cssRules) {
+			mergeCSSOM(rootCSSOMNode, ruleSet);
 		}
 		
 		return rootCSSOMNode;
 	}
 
-	private static void mergeCSSOM(CSSOMNode root, CSSStyleSheet stylesheet) {
-		for (CSSRule rule: stylesheet.getCSSRules()) {
+	private static void mergeCSSOM(CSSOMNode root, CSSRule[] ruleSet) {
+		for (CSSRule rule: ruleSet) {
 			if (rule instanceof QualifiedRule) {
 				mergeCSSOM(root, (QualifiedRule) rule);
 			}

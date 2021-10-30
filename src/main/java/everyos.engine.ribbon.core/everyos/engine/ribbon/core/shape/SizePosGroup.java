@@ -38,8 +38,8 @@ public class SizePosGroup {
 	}
 	
 	public boolean move(int x, boolean forceInline) {
-		boolean willExtendCurrentSizeWidth = size.getWidth()!=-1 && this.x+x > size.getWidth();
-		boolean willExceedMaxSizeWidth = maxSize.getWidth() != -1 && this.x+x > maxSize.getWidth();
+		boolean willExtendCurrentSizeWidth = size.getWidth() != -1 && this.x + x > size.getWidth();
+		boolean willExceedMaxSizeWidth = maxSize.getWidth() != -1 && this.x + x > maxSize.getWidth();
 		if (!forceInline && (willExtendCurrentSizeWidth || willExceedMaxSizeWidth)) {
 			//Refuse
 			return false;
@@ -69,7 +69,7 @@ public class SizePosGroup {
 	}
 	
 	public void add(Dimension s) {
-		this.x+=s.getWidth();
+		this.x += s.getWidth();
 		this.setMinLineHeight(s.getHeight());
 		normalizeX(true);
 		normalizeY();
@@ -103,7 +103,7 @@ public class SizePosGroup {
 		
 		if (x > size.getWidth()) {
 			size.setWidth(
-				(x<maxSize.getWidth() || maxSize.getWidth()==-1) ?
+				(x<maxSize.getWidth() || maxSize.getWidth() == -1) ?
 					x :
 					maxSize.getWidth());
 		}
@@ -115,9 +115,9 @@ public class SizePosGroup {
 	}
 	
 	private void normalizeY() {
-		marker.mergeY(y, y+this.currentLineHeight);
+		marker.mergeY(y, y + this.currentLineHeight);
 		
-		if (this.y+this.currentLineHeight > size.getHeight()) {
+		if (this.y + this.currentLineHeight > size.getHeight()) {
 			size.setHeight(this.y+this.currentLineHeight);
 			boolean currentHeightExceedsMaxHeight = maxSize.getHeight() != -1 && size.getHeight() > maxSize.getHeight();
 			if (currentHeightExceedsMaxHeight) {

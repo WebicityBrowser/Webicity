@@ -6,6 +6,9 @@ import everyos.browser.spec.jcss.cssom.property.Property;
 import everyos.browser.spec.jcss.cssom.property.PropertyName;
 import everyos.browser.spec.jcss.cssom.property.backgroundcolor.BackgroundColorProperty;
 import everyos.browser.spec.jcss.cssom.property.color.ColorProperty;
+import everyos.browser.spec.jcss.cssom.property.display.DisplayProperty;
+import everyos.browser.spec.jcss.cssvalue.display.InnerDisplayType;
+import everyos.browser.spec.jcss.cssvalue.display.OuterDisplayType;
 import everyos.engine.ribbon.core.graphics.Color;
 
 public class ApplicablePropertyMap {
@@ -24,7 +27,8 @@ public class ApplicablePropertyMap {
 	
 	static {
 		defaultProperties.put(PropertyName.COLOR, new ColorProperty(Color.BLACK));
-		defaultProperties.put(PropertyName.BACKGROUND_COLOR, new BackgroundColorProperty(Color.WHITE));
+		defaultProperties.put(PropertyName.BACKGROUND_COLOR, new BackgroundColorProperty(new Color(0, 0, 0, 0)));
+		defaultProperties.put(PropertyName.DISPLAY, new DisplayProperty(OuterDisplayType.INLINE, InnerDisplayType.FLOW));
 	}
 	
 }
