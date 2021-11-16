@@ -1,6 +1,8 @@
 package everyos.engine.ribbon.core.shape;
 
 public class SizePosGroup {
+	
+	//TODO: Support top/bottom writing modes
 	private final MutableDimension size;
 	private final Dimension maxSize;
 	
@@ -135,4 +137,5 @@ public class SizePosGroup {
 	public Marker getMarker() {
 		return this.marker;
 	}
+	
 }

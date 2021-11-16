@@ -4,7 +4,7 @@ import everyos.browser.spec.jcss.cssvalue.ValueParseInfo;
 import everyos.browser.spec.jcss.imp.Function;
 import everyos.browser.spec.jcss.parser.CSSToken;
 import everyos.browser.spec.jcss.parser.IdentToken;
-import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.paintfill.Color;
 
 public class ColorValue {
 

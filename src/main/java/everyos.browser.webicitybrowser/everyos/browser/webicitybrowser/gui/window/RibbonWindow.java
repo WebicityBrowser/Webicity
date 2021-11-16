@@ -4,6 +4,7 @@ import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.shape.Position;
 
 public interface RibbonWindow {
+	
 	Component getDisplayPane();
 	void close();
 	void minimize();
@@ -11,5 +12,4 @@ public interface RibbonWindow {
 	Position getPosition();
 	void setPosition(int x, int y);
 	
-	void onReady(Runnable r);
 }

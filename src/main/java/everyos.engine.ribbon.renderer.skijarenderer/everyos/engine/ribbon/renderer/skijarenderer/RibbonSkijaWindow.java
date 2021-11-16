@@ -11,17 +11,21 @@ import org.lwjgl.system.MemoryUtil;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.CharEvent;
 import everyos.engine.ribbon.core.event.EventListener;
-import everyos.engine.ribbon.core.event.Key;
-import everyos.engine.ribbon.core.event.KeyboardEvent;
-import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.event.UIEventTarget;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.graphics.font.FontInfo;
+import everyos.engine.ribbon.core.graphics.font.FontWeight;
+import everyos.engine.ribbon.core.input.keyboard.Key;
+import everyos.engine.ribbon.core.input.keyboard.KeyboardEvent;
+import everyos.engine.ribbon.core.input.mouse.MouseEvent;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.rendering.RendererData;
+import everyos.engine.ribbon.core.rendering.ResourceGenerator;
+import everyos.engine.ribbon.core.rendering.SharedRendererContext;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Location;
 import everyos.engine.ribbon.core.shape.Position;
@@ -29,12 +33,21 @@ import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
+import everyos.engine.ribbon.renderer.skijarenderer.event.ListenerPaintListener;
+import everyos.engine.ribbon.renderer.skijarenderer.event.ListenerRect;
+import everyos.engine.ribbon.renderer.skijarenderer.event.MouseEventBuilder;
 import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil;
-import everyos.engine.ribbon.renderer.skijarenderer.util.KeyLookupUtil;
 import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil.Image;
+import everyos.engine.ribbon.renderer.skijarenderer.util.KeyLookupUtil;
 
 public class RibbonSkijaWindow {
-	private long window;
+	
+	// TODO: Seperate graphics and input components
+	
+	private final SharedRendererContext rendererContext = new RibbonSkijaSharedRendererContext();
+	private final DirectContext context;	
+	private final long window;
+	
 	private boolean running = true;
 	private UIManager uiManager;
 	private ComponentUI rootComponentUI;
@@ -43,21 +56,25 @@ public class RibbonSkijaWindow {
 	private Dimension oldSize;
 	private boolean nextFrameRequiresRedraw = false;
 	private RibbonSkijaRenderer root;
-	private Runnable onReady;
-	private DirectContext context;
 
-	public RibbonSkijaWindow(int id) {
-		this.mouseBindings = new ArrayList<>();
+	public RibbonSkijaWindow(int id, boolean decorated) {
+		if (!SkijaRenderingThread.isCurrent()) {
+			throw new RuntimeException("Running on wrong thread!");
+		}
 		
-		RenderingThread.run(()->{
-			createWindow(id);
-			createMouseBindings();
-			createKeyboardBindings();
-			onReady.run();
-			RenderingThread.run(()->runLoop());
-		});
+		GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, decorated ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);		
+		this.window = createWindow(id);
+		
+		this.context = DirectContext.makeGL();
+		this.root = RibbonSkijaRenderer.of(window, context);
+		
+		createMouseBindings();
+		createKeyboardBindings();
 	}
 
+	
+	// PUBLIC METHODS START
+	
 	public void bind(Component component, UIManager uimanager) {
 		this.rootComponentUI = uimanager.get(component, null);
 		component.bind(rootComponentUI);
@@ -79,6 +96,7 @@ public class RibbonSkijaWindow {
 		} else {
 			GLFW.glfwMaximizeWindow(window);
 		}
+		rootComponentUI.invalidate(InvalidationLevel.PAINT);
 	}
 	
 	public void setVisible(boolean visible) {
@@ -103,9 +121,13 @@ public class RibbonSkijaWindow {
 		//TODO: Support the percentages
 		GLFW.glfwSetWindowSizeLimits(window, location.getX().getAbsolute(), location.getY().getAbsolute(), GLFW.GLFW_DONT_CARE, GLFW.GLFW_DONT_CARE);
 	}
-
-	public void setDecorated(boolean decorated) {
-		//TODO
+	
+	public Dimension getSize() {
+		int[] width = new int[1];
+		int[] height = new int[1];
+		GLFW.glfwGetFramebufferSize(window, width, height);
+		
+		return new Dimension(width[0], height[0]);
 	}
 	
 	public void setPosition(int x, int y) {
@@ -120,11 +142,17 @@ public class RibbonSkijaWindow {
 		return new Position(x[0], y[0]);
 	}
 	
-	public void onReady(Runnable onReady) {
-		this.onReady = onReady;
-	}
+	// PUBLIC METHODS END
 	
-	/////
+	private long createWindow(int id) {
+		long window = GLFW.glfwCreateWindow(800, 600, "Untitled Application", id, MemoryUtil.NULL);
+		GLFW.glfwMakeContextCurrent(window);
+		GL.createCapabilities();
+		GLFW.glfwSwapInterval(1);
+		GLFW.glfwSetWindowPos(window, 100, 100);
+		
+		return window;
+	}
 	
 	private void runLoop() {
 		if (GLFW.glfwWindowShouldClose(window) || !running) {
@@ -132,19 +160,21 @@ public class RibbonSkijaWindow {
 			return;
 		}
 		
-		//long time = System.currentTimeMillis();
 		if (GLFW.glfwGetWindowAttrib(window, GLFW.GLFW_ICONIFIED) == GLFW.GLFW_FALSE) {
 			GLFW.glfwMakeContextCurrent(window);
 			root = updateWindow(root);
 		}
 		GLFW.glfwSwapBuffers(window);
-		//System.out.println(System.currentTimeMillis()-time);
 		
-		RenderingThread.run(()->runLoop());
+		SkijaRenderingThread.run(()->runLoop());
 	}
 	
 	private RibbonSkijaRenderer updateWindow(RibbonSkijaRenderer root) {
-		if (rootComponentUI==null) return root;
+		if (rootComponentUI == null) {
+			return root;
+		}
+		
+		rendererContext.getTimeSystem().step();
 		
 		RibbonSkijaRenderer renderer = root;
 		
@@ -156,12 +186,19 @@ public class RibbonSkijaWindow {
 			oldSize = size;
 		}
 		
+		render(renderer, size);
+		paint(renderer, size);
+		
+		return renderer;
+	}
+
+	private void render(Renderer renderer, Dimension size) {
 		// Recalculate the layout if it is invalid
 		if (!rootComponentUI.getValidated(InvalidationLevel.RENDER)) {
 			//long time = System.currentTimeMillis();
 			//TODO: Fix the memory leak
 			rootComponentUI.render(
-				createRendererData(renderer, size),
+				createRendererData(renderer.getResourceGenerator(), size),
 				new SizePosGroup(
 					size.getWidth(), size.getHeight(), 
 					0, 0, 
@@ -170,7 +207,9 @@ public class RibbonSkijaWindow {
 			rootComponentUI.validateTo(InvalidationLevel.PAINT);
 			//System.out.println("RENDER: "+(System.currentTimeMillis()-time));
 		}
-		
+	}
+
+	private void paint(Renderer renderer, Dimension size) {
 		if (!rootComponentUI.getValidated(InvalidationLevel.PAINT) || nextFrameRequiresRedraw) {
 			nextFrameRequiresRedraw = !rootComponentUI.getValidated(InvalidationLevel.PAINT);
 			
@@ -195,34 +234,26 @@ public class RibbonSkijaWindow {
 			// Paint and display the UI.
 			// The target time is 16ms for paint per frame, max
 			//long time = System.currentTimeMillis();
-			rootComponentUI.paint(createRendererData(renderer, size), new DefaultPaintContext());
+			rootComponentUI.paint(createRendererData(renderer.getResourceGenerator(), size), new DefaultPaintContext());
 			renderer.draw();
 			//System.out.println(System.currentTimeMillis()-time);
 		}
-		
-		return renderer;
 	}
 
-	private RendererData createRendererData(Renderer r, Dimension size) {
-		RendererData data = new RendererData(
+	private RendererData createRendererData(ResourceGenerator gen, Dimension size) {
+		RendererData data = new RendererDataImp(
 			new GUIState(),
 			new int[] {0, 0, size.getWidth(), size.getHeight()},
-			new int[] {0, 0, size.getWidth(), size.getHeight()});
-		data.getState().setFont(r.getFont("Times New Roman", 100, 12));
-		return data;
-	}
-
-	private Dimension getSize() {
-		int[] width = new int[1];
-		int[] height = new int[1];
-		GLFW.glfwGetFramebufferSize(window, width, height);
+			new int[] {0, 0, size.getWidth(), size.getHeight()},
+			rendererContext);
+		data.getState().setFont(gen.getFont(FontInfo.getByName("Open Sans", 12, FontWeight.NORMAL)));
 		
-		return new Dimension(width[0], height[0]);
+		return data;
 	}
 	
 	private void setIcons(Image[] images) {
 		GLFWImage.Buffer imagesBuffer = GLFWImage.create(images.length);
-		for (int i=0; i < images.length; i++) {
+		for (int i = 0; i < images.length; i++) {
 			final Image image = images[i];
 			if (!(image instanceof Image)) {
 				throw new RuntimeException("Expected an Image class!");
@@ -302,6 +333,8 @@ public class RibbonSkijaWindow {
 	}
 
 	private void createMouseBindings() {
+		this.mouseBindings = new ArrayList<>();
+		
 		GLFW.glfwSetMouseButtonCallback(window, ($, button, action, mods)->{
 			button = fixButton(button);
 			action = fixAction(action);
@@ -332,7 +365,6 @@ public class RibbonSkijaWindow {
 		GLFW.glfwSetKeyCallback(window, ($, kc, $1, action, $2) -> {
 			Key key = KeyLookupUtil.query(kc);
 			KeyboardEvent e = new KeyboardEvent() {
-
 				@Override
 				public Key getKey() {
 					return key;
@@ -350,26 +382,20 @@ public class RibbonSkijaWindow {
 					return -1;
 				}
 			};
+			
 			emitKeyboardEvent(e);
 		});
-	}
-
-	private void createWindow(int id) {
-		GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
-		this.window = GLFW.glfwCreateWindow(800, 600, "Untitled Application", id, MemoryUtil.NULL);
-		GLFW.glfwMakeContextCurrent(window);
-		GL.createCapabilities();
-		GLFW.glfwSwapInterval(1);
-		GLFW.glfwSetWindowPos(window, 100, 100);
-		
-		context = DirectContext.makeGL();
-		root = RibbonSkijaRenderer.of(window, context);
 	}
 	
 	private class DefaultRenderContext implements RenderContext {
 		@Override
 		public UIManager getUIManager() {
 			return uiManager;
+		}
+
+		@Override
+		public ResourceGenerator getResourceGenerator() {
+			return root.getResourceGenerator();
 		}
 	}
 	
@@ -385,4 +411,9 @@ public class RibbonSkijaWindow {
 			throw new RuntimeException("GLFW init failed!");
 		}
 	}
+
+	public void start() {
+		SkijaRenderingThread.run(()->runLoop());
+	}
+	
 }

@@ -1,6 +1,7 @@
 package everyos.engine.ribbon.core.shape;
 
 public class Dimension {
+	
 	private final int width;
 	private final int height;
 

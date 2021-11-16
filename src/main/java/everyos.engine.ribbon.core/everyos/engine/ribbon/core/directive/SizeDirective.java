@@ -7,9 +7,11 @@ import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 
 public interface SizeDirective extends UIDirective {
+	
 	public Location getSize();
 	
 	public static UIDirectiveWrapper of(Location size) {
 		return UIDirectiveWrapper.<SizeDirective>wrap(()->size, InvalidationLevel.RENDER, ComponentUI.class);
 	}
+	
 }

@@ -20,7 +20,6 @@ import everyos.browser.spec.javadom.intf.Text;
 import everyos.browser.spec.jhtml.intf.HTMLStyleElement;
 
 //TODO: Do not fire mutation events
-//TODO: http://finance.yahoo.com/news/study-reveals-city-worst-traffic-223420982.html cuts off first letter (at parser level)
 
 public final class JHTMLParser {
 	public static final String HTML_NAMESPACE = "http://www.w3.org/1999/xhtml";
@@ -572,7 +571,6 @@ public final class JHTMLParser {
 					break;
 					
 				case ATTRIBUTE_NAME:
-					//TODO: Finalize attr
 					if (("\t\n\f />").indexOf(ch) != -1 || eof) {
 						reader.unread(ch);
 						state = TokenizeState.AFTER_ATTRIBUTE_NAME;
@@ -1223,7 +1221,7 @@ public final class JHTMLParser {
 						tmp_buf.appendCodePoint(ch);
 						state = TokenizeState.NUMERIC_CHARACTER_REFERENCE;
 					} else {
-						flushCodePointsConsumedAsACharacterReference();
+						flushCodePointsConsumedAsACharacterReference(token);
 						reader.unread(ch);
 						state = returnState;
 					}
@@ -1249,10 +1247,10 @@ public final class JHTMLParser {
 						for (int ch2: unicodeHelper.getCodePointsForNamedEntity(foundRef)) {
 							tmp_buf.appendCodePoint(ch2);
 						}
-						flushCodePointsConsumedAsACharacterReference();
+						flushCodePointsConsumedAsACharacterReference(token);
 						state = returnState;
 					} else {
-						flushCodePointsConsumedAsACharacterReference();
+						flushCodePointsConsumedAsACharacterReference(token);
 						state = TokenizeState.AMBIGUOUS_AMPERSAND;
 					}
 					
@@ -1261,7 +1259,7 @@ public final class JHTMLParser {
 				case AMBIGUOUS_AMPERSAND:
 					if (Character.isAlphabetic(ch) || Character.isDigit(ch)) {
 						if (isConsumedAsPartOfAnAttribute()) {
-							//TODO
+							((TagToken) token).getAttributeValueBuilder().appendCodePoint(ch);
 						} else {
 							emit(new CharToken(ch));
 						}
@@ -1290,7 +1288,7 @@ public final class JHTMLParser {
 						reader.unread(ch);
 						state = TokenizeState.HEXADECIMAL_CHARACTER_REFERENCE;
 					} else {
-						flushCodePointsConsumedAsACharacterReference();
+						flushCodePointsConsumedAsACharacterReference(token);
 						reader.unread(ch);
 						state = returnState;
 					}
@@ -1301,7 +1299,7 @@ public final class JHTMLParser {
 						reader.unread(ch);
 						state = TokenizeState.DECIMAL_CHARACTER_REFERENCE;
 					} else {
-						flushCodePointsConsumedAsACharacterReference();
+						flushCodePointsConsumedAsACharacterReference(token);
 						reader.unread(ch);
 						state = returnState;
 					}
@@ -1346,7 +1344,7 @@ public final class JHTMLParser {
 					
 					tmp_buf = new StringBuilder();
 					tmp_buf.appendCodePoint(characterReferenceCode);
-					flushCodePointsConsumedAsACharacterReference();
+					flushCodePointsConsumedAsACharacterReference(token);
 					state = returnState;
 					
 					break;
@@ -1379,9 +1377,11 @@ public final class JHTMLParser {
 			(ch >= 'A' && ch <= 'F');
 	}
 
-	private void flushCodePointsConsumedAsACharacterReference() {
+	private void flushCodePointsConsumedAsACharacterReference(Token token) {
 		if (isConsumedAsPartOfAnAttribute()) {
-			//TODO
+			for (int i = 0; i <  tmp_buf.length(); i++) {
+				((TagToken) token).getAttributeValueBuilder().appendCodePoint(tmp_buf.codePointAt(i));
+			}
 		} else {
 			for (int i=0; i <  tmp_buf.length(); i++) {
 				emit(new CharToken(tmp_buf.codePointAt(i)));

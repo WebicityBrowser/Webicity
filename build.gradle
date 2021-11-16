@@ -33,6 +33,7 @@ dependencies {
 	//implementation 'net.java.dev.jna:jna:5.5.0'
 	implementation 'com.github.marianobarrios:tls-channel:0.5.0'
 	implementation 'org.brotli:dec:0.1.2'
+	implementation 'org.jline:jline-terminal-jna:3.21.0'
 	
 	implementation 'com.github.taucher2003:t2003-logger-impl:1.0.1'
 	implementation 'com.github.taucher2003:t2003-logger-binder:1.0.1'
@@ -65,10 +66,14 @@ sourceSets {
 			srcDirs = [
 				'src/main/java/everyos.browser.spec',
 				'src/main/java/everyos.browser.webicity',
+				'src/main/java/everyos.browser.webicity.webribbon',
+				'src/main/java/everyos.browser.webicity.webttyg',
 				'src/main/java/everyos.browser.webicitybrowser',
 				'src/main/java/everyos.engine.ribbon.core',
 				'src/main/java/everyos.engine.ribbon.renderer.skijarenderer',
 				'src/main/java/everyos.engine.ribbon.ui.simple',
+				'src/main/java/everyos.engine.ttyg.core',
+				'src/main/java/everyos.engine.ttyg.jlinerenderer',
 				'src/main/java/everyos.api.getopts'
 			]
 		}

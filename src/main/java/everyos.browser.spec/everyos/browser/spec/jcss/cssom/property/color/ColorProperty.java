@@ -2,7 +2,7 @@ package everyos.browser.spec.jcss.cssom.property.color;
 
 import everyos.browser.spec.jcss.cssom.property.Property;
 import everyos.browser.spec.jcss.cssom.property.PropertyName;
-import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.paintfill.Color;
 
 public class ColorProperty implements Property {
 	private Color color;

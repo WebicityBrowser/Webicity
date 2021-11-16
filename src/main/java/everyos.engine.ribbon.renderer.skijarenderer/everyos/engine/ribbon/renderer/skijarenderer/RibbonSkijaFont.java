@@ -3,12 +3,15 @@ package everyos.engine.ribbon.renderer.skijarenderer;
 import org.jetbrains.skija.Font;
 import org.jetbrains.skija.FontMetrics;
 import org.jetbrains.skija.FontMgr;
+import org.jetbrains.skija.FontSlant;
 import org.jetbrains.skija.FontStyle;
+import org.jetbrains.skija.FontWidth;
 import org.jetbrains.skija.Typeface;
 
-import everyos.engine.ribbon.core.rendering.RibbonFont;
+import everyos.engine.ribbon.core.graphics.font.FontInfo;
+import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
 
-public class RibbonSkijaFont implements RibbonFont {
+public class RibbonSkijaFont implements RibbonFontMetrics {
 	
 	private static final FontMgr manager = FontMgr.getDefault();
 	
@@ -44,17 +47,24 @@ public class RibbonSkijaFont implements RibbonFont {
 
 	@Override
 	public int getPaddingHeight() {
-		return (int) metrics.getDescent() + 1;
+		return (int) metrics.getDescent();
 	}
 	
-	public Font getRaw() {
+	@Override
+	public String toString() {
+		return font.getTypeface().getFamilyName();
+	}
+	
+	protected Font getRaw() {
 		return font;
 	}
-
-	public static RibbonSkijaFont of(String name, int weight, int size) {
-		Typeface typeface = manager.matchFamilyStyle(name, FontStyle.NORMAL);
-		Font font = new Font(typeface, size);
+	
+	public static RibbonSkijaFont of(FontInfo info) {
+		FontStyle style = new FontStyle(info.getWeight(), FontWidth.NORMAL, FontSlant.UPRIGHT);
+		Typeface typeface = manager.matchFamilyStyle(info.getName(), style);
+		Font font = new Font(typeface, info.getSize());
 		
 		return new RibbonSkijaFont(font);
 	}
+	
 }

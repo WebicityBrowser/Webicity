@@ -5,9 +5,9 @@ import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.rendering.RendererData;
-import everyos.engine.ribbon.core.rendering.RibbonFont;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
@@ -38,7 +38,7 @@ public class WebicityButtonUI extends SimpleBlockComponentUI {
     	
 	    @Override
 	    public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
-			RibbonFont font = rd.getState().getFont();
+			RibbonFontMetrics font = rd.getState().getFont();
 			
 			this.strWidth = StringWrapHelper.stringWidth(font, Styling.PRODUCT_NAME);
 			sizepos.move(strWidth + font.getHeight(), true);

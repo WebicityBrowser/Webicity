@@ -12,9 +12,11 @@ import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.WebicityArguments;
 
 public class WebicityArgumentsImp implements WebicityArguments {
+	
 	public static final int HELP_FLAG = 1;
 	public static final int PRIVATE_FLAG = 2;
 	public static final int VERBOSE_FLAG = 3;
+	public static final int DISPLAY_FLAG = 4;
 	
 	private final boolean isPrivate;
 	private final boolean isVerbose;
@@ -53,4 +55,5 @@ public class WebicityArgumentsImp implements WebicityArguments {
 	public boolean getPrivate() {
 		return isPrivate;
 	}
+	
 }

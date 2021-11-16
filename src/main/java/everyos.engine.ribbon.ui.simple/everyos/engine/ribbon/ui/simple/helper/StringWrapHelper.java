@@ -2,11 +2,11 @@ package everyos.engine.ribbon.ui.simple.helper;
 
 import java.util.ArrayList;
 
-import everyos.engine.ribbon.core.rendering.RibbonFont;
+import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 
 public class StringWrapHelper {
-	public static ArrayList<String> calculateString(String text, RibbonFont font, SizePosGroup sizepos) {
+	public static ArrayList<String> calculateString(String text, RibbonFontMetrics font, SizePosGroup sizepos) {
 		ArrayList<String> lines = new ArrayList<String>(1);
 		
 		StringBuilder line = new StringBuilder();
@@ -75,7 +75,7 @@ public class StringWrapHelper {
 		return lines;
 	}
 
-	public static int stringWidth(RibbonFont font, String str) {
+	public static int stringWidth(RibbonFontMetrics font, String str) {
 		int width = 0;
 		for (String spl : str.split("\n")) {
 			int mw = 0;
@@ -85,7 +85,7 @@ public class StringWrapHelper {
 		return width;
 	}
 
-	public static String trim(RibbonFont font, String text, int fixedWidth) {
+	public static String trim(RibbonFontMetrics font, String text, int fixedWidth) {
 		int curWidth = stringWidth(font, text);
 
 		// If it's already a small string, return it as it is.

@@ -2,6 +2,7 @@ package everyos.browser.spec.jhtml.parser;
 
 import everyos.browser.spec.javadom.intf.Document;
 import everyos.browser.spec.javadom.intf.Element;
+import everyos.browser.spec.jhtml.imp.JHTMLAnchorElement;
 import everyos.browser.spec.jhtml.imp.JHTMLElement;
 import everyos.browser.spec.jhtml.imp.JHTMLStyleElement;
 import everyos.browser.spec.jhtml.imp.JHTMLTitleElement;
@@ -61,6 +62,9 @@ public class ElementFactory {
 				
 			case "style":
 				return new JHTMLStyleElement(this);
+				
+			case "a":
+				return new JHTMLAnchorElement(this);
 		
 			default:
 				return new JHTMLElement(this);

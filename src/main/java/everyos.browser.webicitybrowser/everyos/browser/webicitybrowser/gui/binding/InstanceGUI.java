@@ -10,6 +10,7 @@ import everyos.browser.webicitybrowser.ui.Window;
 import everyos.browser.webicitybrowser.ui.event.InstanceMutationEventListener;
 
 public class InstanceGUI {
+	
 	//TODO: Add tooltips
 	private final WebicityInstance instance;
 	private final MutationEventListener mutationListener;
@@ -46,4 +47,5 @@ public class InstanceGUI {
 			windowGUI.start();
 		}
 	}
+	
 }

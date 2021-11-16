@@ -8,7 +8,7 @@ import everyos.browser.spec.jcss.parser.DelimToken;
 import everyos.browser.spec.jcss.parser.NumberToken;
 import everyos.browser.spec.jcss.parser.PercentageToken;
 import everyos.browser.spec.jcss.parser.WhitespaceToken;
-import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.paintfill.Color;
 
 public final class RGBColorValue {
 
@@ -73,7 +73,7 @@ public final class RGBColorValue {
 			}
 		}
 		
-		return new ValueParseInfo<Color>(new Color(rgba[3], rgba[0], rgba[1], rgba[2]), 1);
+		return new ValueParseInfo<Color>(Color.of(rgba[3], rgba[0], rgba[1], rgba[2]), 1);
 	}
 
 	private static boolean scanForPercent(Object[] body) {

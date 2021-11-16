@@ -3,10 +3,12 @@ package everyos.browser.webicitybrowser.gui.component;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.directive.FontSizeDirective;
+import everyos.engine.ribbon.core.directive.FontInfoDirective;
 import everyos.engine.ribbon.core.directive.PositionDirective;
 import everyos.engine.ribbon.core.directive.SizeDirective;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
+import everyos.engine.ribbon.core.graphics.font.FontInfo;
+import everyos.engine.ribbon.core.graphics.font.FontWeight;
 import everyos.engine.ribbon.core.shape.Location;
 
 public class TabButton extends BlockComponent {
@@ -27,7 +29,7 @@ public class TabButton extends BlockComponent {
 		
 		spacer = new BlockComponent();
 
-		this.directive(FontSizeDirective.of(14));
+		this.directive(FontInfoDirective.of(FontInfo.getByName("Open Sans", 14, FontWeight.NORMAL)));
 	}
 
 	public Component text(String text) {

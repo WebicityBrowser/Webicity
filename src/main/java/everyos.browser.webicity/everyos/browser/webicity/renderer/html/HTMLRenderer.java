@@ -14,6 +14,7 @@ import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.renderer.Renderer;
 
 public class HTMLRenderer implements Renderer {
+	
 	private static final Logger logger = LoggerFactory.getLogger(HTMLRenderer.class);
 	
 	private final List<Runnable> readyHooks;
@@ -67,4 +68,5 @@ public class HTMLRenderer implements Renderer {
 	public WebicityFrame getFrame() {
 		return frame;
 	}
+	
 }

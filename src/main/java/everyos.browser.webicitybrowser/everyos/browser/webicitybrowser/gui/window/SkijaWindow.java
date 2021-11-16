@@ -10,6 +10,7 @@ import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.renderer.skijarenderer.RibbonSkijaMonitor;
 import everyos.engine.ribbon.renderer.skijarenderer.RibbonSkijaMonitor.NoMonitorAvailableException;
 import everyos.engine.ribbon.renderer.skijarenderer.RibbonSkijaWindow;
+import everyos.engine.ribbon.renderer.skijarenderer.RibbonSkijaWindowBuilder;
 
 public class SkijaWindow implements RibbonWindow {
 	private RibbonSkijaWindow window;
@@ -50,11 +51,6 @@ public class SkijaWindow implements RibbonWindow {
 		window.setPosition(x, y);
 	}
 	
-	@Override
-	public void onReady(Runnable r) {
-		window.onReady(r);
-	}
-	
 	public static SkijaWindow create() {
 		RibbonSkijaMonitor monitor;
 		try {
@@ -63,23 +59,24 @@ public class SkijaWindow implements RibbonWindow {
 			throw new WindowCreationFailureException(e);
 		}
 		
-		RibbonSkijaWindow window = monitor.createWindow();
+		RibbonSkijaWindowBuilder windowBuilder = monitor.createWindowBuilder();
+		windowBuilder.setDecorated(false);
+		
+		RibbonSkijaWindow window = windowBuilder.build();
+		
+		window.setTitle("Webicity Browser");
+		window.setIcon("webicity.png");
+		window.setMinSize(new Location(0, 600, 0, 400));
+		
+		UIManager mgr = WebicityUIManager.createUI();
 		BlockComponent component = new BlockComponent();
+		component.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
+		window.bind(component, mgr);
 		
-		window.onReady(() -> {
-			window.setTitle("Webicity Browser");
-			window.setIcon("webicity.png");
-			window.setMinSize(new Location(0, 600, 0, 400));
-			//window.setDecorated(false);
-		
-			UIManager mgr = WebicityUIManager.createUI();
-			
-			component.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
-			window.bind(component, mgr);
-			
-			window.setVisible(true);
-		});
+		window.start();
+		window.setVisible(true);
 			
 		return new SkijaWindow(window, component);
 	}
+	
 }

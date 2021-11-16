@@ -1,35 +1,38 @@
 package everyos.engine.ribbon.core.graphics;
 
-import everyos.engine.ribbon.core.rendering.RibbonFont;
+import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
+import everyos.engine.ribbon.core.graphics.paintfill.Color;
+import everyos.engine.ribbon.core.graphics.paintfill.PaintFill;
 
 public class GUIState implements Cloneable {
-	private Color foreground = Color.BLACK;
-	private Color background = Color.WHITE;
-	private RibbonFont font = null;
+	
+	private PaintFill foreground = Color.BLACK;
+	private PaintFill background = Color.WHITE;
+	private RibbonFontMetrics font = null;
 	
 	public GUIState() {}
 	
-	public void setForeground(Color foreground) {
+	public void setForeground(PaintFill foreground) {
 		this.foreground = foreground;
 	}
 	
-	public Color getForeground() {
+	public PaintFill getForeground() {
 		return foreground;
 	};
 	
-	public void setBackground(Color background) {
+	public void setBackground(PaintFill background) {
 		this.background = background;
 	}
 	
-	public Color getBackground() {
+	public PaintFill getBackground() {
 		return background;
 	};
 	
-	public void setFont(RibbonFont font) {
+	public void setFont(RibbonFontMetrics font) {
 		this.font = font;
 	}
 	
-	public RibbonFont getFont() {
+	public RibbonFontMetrics getFont() {
 		return font;
 	}
 	
@@ -42,4 +45,5 @@ public class GUIState implements Cloneable {
 		
 		return clone;
 	}
+	
 }

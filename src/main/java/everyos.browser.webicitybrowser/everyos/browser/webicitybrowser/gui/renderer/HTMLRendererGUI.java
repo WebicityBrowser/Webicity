@@ -8,7 +8,7 @@ import everyos.browser.webicitybrowser.gui.colors.Colors;
 import everyos.engine.ribbon.core.component.BlockComponent;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.directive.SizeDirective;
-import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.paintfill.Color;
 import everyos.engine.ribbon.core.shape.Location;
 
 public class HTMLRendererGUI {

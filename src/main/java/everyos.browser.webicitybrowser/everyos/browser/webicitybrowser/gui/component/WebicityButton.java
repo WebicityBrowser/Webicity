@@ -1,5 +1,6 @@
 package everyos.browser.webicitybrowser.gui.component;
 
+import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.animation.SlideInAnimation;
 import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
@@ -43,9 +44,15 @@ public class WebicityButton extends BlockComponent {
 				window.getApplicationInstance().createWindow(true)
 					.openNewTab();
 			},
-			() -> {},
-			() -> {},
-			() -> {}
+			() -> {
+				window.getApplicationInstance().open(URL.ofSafe("webicity://settings"));
+			},
+			() -> {
+				window.getApplicationInstance().open(URL.ofSafe("webicity://history"));
+			},
+			() -> {
+				window.getApplicationInstance().open(URL.ofSafe("webicity://bookmarks"));
+			}
 		};
 		
 		BlockComponent content = new BlockComponent();

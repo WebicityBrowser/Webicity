@@ -1,6 +1,6 @@
 package everyos.browser.webicitybrowser.gui.colors;
 
-import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.paintfill.Color;
 
 public interface Colors {
 	Color getBackgroundPrimary();

@@ -6,6 +6,9 @@
 			span {
 				color: rebeccapurple;
 			}
+			span > div {
+				color: inherit;
+			}
 			div > b {
 				color: rgba(255 0 0 / 1);
 			}
@@ -15,14 +18,20 @@
 			.hello {
 				color: rgba(10 175 10 / 100%);
 			}
+			.spandiv {
+				background-color: green;
+			}
 		</style>
 	<head>
 	<body>
+	AA
 		<div id="hellomoto">
 			CSS applied.
 		</div>
 		<span>
 			CSS applied.
+			<div>CSS applied</div>
+			<span>C</span>SS applied.
 		</span>
 		<div>
 			<b>
@@ -52,5 +61,8 @@
 		<p>
 			This should appear on the <span>same line <span>correctly</span></span>.
 		</p>
+		<div class="spandiv">
+			Hello, World!<br/>Goodbye, cruel world!
+		</div>
 	</body>
 </html>

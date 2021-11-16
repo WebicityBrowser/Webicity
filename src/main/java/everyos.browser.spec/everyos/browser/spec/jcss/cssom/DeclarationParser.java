@@ -20,6 +20,7 @@ public final class DeclarationParser {
 				return ColorPropertyParser.parse(tidyValue);
 				
 			case "background-color":
+			case "background": //Temporary case statement
 				return BackgroundColorPropertyParser.parse(tidyValue);
 				
 			case "display":

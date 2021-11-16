@@ -1,6 +1,7 @@
 package everyos.engine.ribbon.core.shape;
 
-public class Position implements Cloneable {
+public class Position {
+	
 	private final int x;
 	private final int y;
 
@@ -17,7 +18,4 @@ public class Position implements Cloneable {
 		return this.y;
 	}
 	
-	public Position clone() {
-		return new Position(x, y);
-	}
 }

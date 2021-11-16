@@ -4,10 +4,10 @@ import java.util.function.Supplier;
 
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.directive.BackgroundDirective;
-import everyos.engine.ribbon.core.directive.ExternalMouseListenerDirective;
-import everyos.engine.ribbon.core.directive.MouseListenerDirective;
-import everyos.engine.ribbon.core.event.MouseEvent;
-import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.paintfill.Color;
+import everyos.engine.ribbon.core.input.mouse.ExternalMouseListenerDirective;
+import everyos.engine.ribbon.core.input.mouse.MouseEvent;
+import everyos.engine.ribbon.core.input.mouse.MouseListenerDirective;
 
 public final class ActionButtonBehavior {
 	private ActionButtonBehavior() {}

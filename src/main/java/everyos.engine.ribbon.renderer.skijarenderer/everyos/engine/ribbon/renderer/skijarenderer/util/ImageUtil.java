@@ -8,6 +8,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBImage;
 
 public final class ImageUtil {
+	
 	private ImageUtil() {}
 	
 	public static Image fromInputStream(InputStream stream) {
@@ -55,4 +56,5 @@ public final class ImageUtil {
 			return this.height;
 		}
 	}
+	
 }

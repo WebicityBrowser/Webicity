@@ -113,7 +113,7 @@ public class CSSOMUtil {
 	}
 	
 	//TODO: This is only a rough, inefficient implementation
-	public static ApplicablePropertyMap calculateProperties(CSSOMNode[] cssomNodes) {
+	public static ApplicablePropertyMap calculateProperties(CSSOMNode[] cssomNodes, ApplicablePropertyMap parent) {
 		HashMap<PropertyName, Property> properties = new HashMap<>(8);
 		
 		for (CSSOMNode cssomNode: cssomNodes) {
@@ -122,7 +122,7 @@ public class CSSOMUtil {
 			}
 		}
 		
-		return new ApplicablePropertyMap(properties);
+		return new ApplicablePropertyMap(properties, parent);
 	}
 	
 }

@@ -1,6 +1,7 @@
 package everyos.engine.ribbon.core.shape;
 
-public class Rectangle implements Cloneable {
+public class Rectangle {
+	
 	private final int x;
 	private final int y;
 	private final int width;
@@ -33,11 +34,6 @@ public class Rectangle implements Cloneable {
 			intersected[0], intersected[1],
 			intersected[2], intersected[3]
 		);
-	}
-	
-	@Override
-	public Rectangle clone() {
-		return new Rectangle(x, y, width, height);
 	}
 
 	public int getX() {
@@ -83,7 +79,7 @@ public class Rectangle implements Cloneable {
 	
 	@Override
 	public String toString() {
-		return
-			"[x="+x+", y="+y+", width="+width+", height="+height+"]";
+		return "[x="+x+", y="+y+", width="+width+", height="+height+"]";
 	}
+	
 }

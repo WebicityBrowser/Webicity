@@ -1,6 +1,7 @@
 package everyos.engine.ribbon.core.shape;
 
 public class MutableDimension {
+	
 	private int width;
 	private int height;
 
@@ -28,4 +29,5 @@ public class MutableDimension {
 	public Dimension freeze() {
 		return new Dimension(width, height);
 	}
+	
 }

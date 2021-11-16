@@ -9,6 +9,10 @@ import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.gui.binding.InstanceGUI;
 import everyos.browser.webicitybrowser.gui.window.SkijaWindow;
 import everyos.browser.webicitybrowser.imp.WebicityArgumentsImp;
+import everyos.browser.webicitybrowser.tty.binding.InstanceTTY;
+import everyos.browser.webicitybrowser.tty.console.JLineConsole;
+import everyos.engine.ribbon.renderer.skijarenderer.SkijaRenderingThread;
+import everyos.engine.ttyg.jlinerenderer.JLineRenderingThread;
 
 public class Webicity {
 	
@@ -52,6 +56,13 @@ public class Webicity {
 				.setID(WebicityArgumentsImp.HELP_FLAG)
 				.setAlias("h")
 				.setDescription("Display this screen")
+				.build(),
+			Flag.createBuilder("display")
+				.setID(WebicityArgumentsImp.DISPLAY_FLAG)
+				.setAlias("d")
+				.setDescription("Set the display backend to one of: skija, jline3")
+				.setNumberRequiredArguments(1)
+				.setAllowDuplicates(false)
 				.build()
 		};
 		
@@ -68,8 +79,6 @@ public class Webicity {
 	private static void startInstance(WebicityArguments arguments) {
 		//TODO: Static stuff like this is probably better elsewhere
 		System.setProperty("logging.level", "INFO");
-		//System.setProperty("logging.level", "TRACE");
-		//System.setProperty("logging.use_colors", "false");
 		if (arguments.getVerbose()) {
 			System.setProperty("logging.level", "TRACE");
 		}
@@ -80,11 +89,11 @@ public class Webicity {
 			try {
 				//TODO: Configuration
 				//instance.open(new URL("webicity://csstest"));
-				//instance.open(new URL("http://wpt.live/css/css-color"));
+				//instance.open(new URL("https://wpt.live/css/css-color/"));
 				//instance.open(new URL("https://www.google.com/"));
-				instance.open(new URL("https://www.yahoo.com/"));
+				//instance.open(new URL("https://www.yahoo.com/"));
 				//instance.open(new URL("https://www.whatismybrowser.com/"));
-				//instance.open(new URL("https://www.example.com/"));
+				instance.open(new URL("https://www.example.com/"));
 				//instance.open(new URL("https://khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html"));
 				//instance.open(new URL("https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state"));
 				//instance.open(new URL("file:///C:\\Users\\JasonGronn\\Downloads\\vkspec.html"));
@@ -99,12 +108,22 @@ public class Webicity {
 		
 		instance.start();
 		
-		new InstanceGUI(instance, ()->{
-			try {
-				return SkijaWindow.create();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}).start();
+		boolean useTTY = false;
+		
+		if (!useTTY) {
+			SkijaRenderingThread.run(()->{
+				new InstanceGUI(instance, ()->{
+					try {
+						return SkijaWindow.create();
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}).start();
+			});
+		} else {
+			JLineRenderingThread.run(()->{
+				new InstanceTTY(instance, JLineConsole.get()).start();
+			});
+		}
 	}
 }

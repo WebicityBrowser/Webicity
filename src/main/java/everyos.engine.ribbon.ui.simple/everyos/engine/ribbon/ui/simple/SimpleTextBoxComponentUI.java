@@ -7,8 +7,8 @@ import everyos.engine.ribbon.core.component.TextBoxComponent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
 import everyos.engine.ribbon.core.rendering.RendererData;
-import everyos.engine.ribbon.core.rendering.RibbonFont;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
@@ -17,6 +17,7 @@ import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 
 public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
+	
 	private final Appearence appearence;
 	
 	public SimpleTextBoxComponentUI(Component c, ComponentUI parent) {
@@ -46,7 +47,7 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 
 		@Override
 		public void paint(RendererData rd, PaintContext context) {
-			RibbonFont font = rd.getState().getFont();
+			RibbonFontMetrics font = rd.getState().getFont();
 			
 			rd.useForeground();
 			for (int i=0; i<lines.size(); i++) {
@@ -77,4 +78,5 @@ public class SimpleTextBoxComponentUI extends SimpleBlockComponentUI {
 			// TODO
 		}
 	}
+	
 }

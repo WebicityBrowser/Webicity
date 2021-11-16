@@ -4,10 +4,10 @@ import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.directive.BackgroundDirective;
 import everyos.engine.ribbon.core.directive.ForegroundDirective;
 import everyos.engine.ribbon.core.event.UIEvent;
-import everyos.engine.ribbon.core.graphics.Color;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
-import everyos.engine.ribbon.core.graphics.RenderContext;
 import everyos.engine.ribbon.core.graphics.PaintContext;
+import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.graphics.paintfill.PaintFill;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
@@ -25,8 +25,8 @@ public class SimpleComponentUI implements ComponentUI {
 	private final Appearence appearence;
 	
 	private InvalidationLevel invalidated = InvalidationLevel.IGNORE;
-	private Color background;
-	private Color foreground;
+	private PaintFill background;
+	private PaintFill foreground;
 	
 	public SimpleComponentUI(Component component, ComponentUI parent) {
 		this.component = component;

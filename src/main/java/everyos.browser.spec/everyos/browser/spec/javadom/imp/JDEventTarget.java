@@ -1,13 +1,13 @@
 package everyos.browser.spec.javadom.imp;
 
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 import everyos.browser.spec.javadom.intf.AddEventListenerOptions;
 import everyos.browser.spec.javadom.intf.Event;
 import everyos.browser.spec.javadom.intf.EventListener;
 import everyos.browser.spec.javadom.intf.EventTarget;
 import everyos.browser.spec.javadom.intf.ServiceWorkerGlobalScope;
+import everyos.browser.spec.javadom.intf.inf.ActivationBehavior;
 
 public class JDEventTarget implements EventTarget {
 	//TODO: Implement
@@ -45,7 +45,7 @@ public class JDEventTarget implements EventTarget {
 		return null;
 	}
 	@Override
-	public Consumer<Event> getActivationBehaviour() {
+	public ActivationBehavior getActivationBehavior() {
 		return null;
 	}
 	

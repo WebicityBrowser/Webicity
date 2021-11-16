@@ -2,22 +2,23 @@ package everyos.browser.webicitybrowser.gui.animation;
 
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
-import everyos.engine.ribbon.core.util.TimeSystem;
 
 public class SlideInAnimation implements Animation {
+	
 	private static final double animationTime = 500;
 	
   	private float progress = 0;
 	
 	@Override
 	public RendererData step(RendererData rd, boolean visible, Dimension bounds) {
+		long deltaMillis = rd.getSharedContext().getTimeSystem().getDeltaMillis();
 		if (visible) {
 			if (progress < 1) {
-				progress += TimeSystem.getDeltaMillis() / animationTime;
+				progress += deltaMillis / animationTime;
 			}
 		} else {
 			if (progress > 0) {
-				progress -= TimeSystem.getDeltaMillis() / animationTime;
+				progress -= deltaMillis / animationTime;
 			}
 		}
 		
@@ -31,4 +32,5 @@ public class SlideInAnimation implements Animation {
 		
 		return r2;
 	}
+	
 }

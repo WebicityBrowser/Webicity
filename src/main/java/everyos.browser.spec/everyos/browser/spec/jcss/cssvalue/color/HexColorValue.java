@@ -3,7 +3,7 @@ package everyos.browser.spec.jcss.cssvalue.color;
 import everyos.browser.spec.jcss.cssvalue.ValueParseInfo;
 import everyos.browser.spec.jcss.parser.CSSToken;
 import everyos.browser.spec.jcss.parser.HashToken;
-import everyos.engine.ribbon.core.graphics.Color;
+import everyos.engine.ribbon.core.graphics.paintfill.Color;
 
 public class HexColorValue {
 
@@ -18,14 +18,14 @@ public class HexColorValue {
 		try {
 			switch (hex.length()) {
 				case 6:
-					color = new Color(
+					color = Color.of(
 						get6Part(hex, 0),
 						get6Part(hex, 2),
 						get6Part(hex, 4));
 					break;
 					
 				case 3:
-					color = new Color(
+					color = Color.of(
 						get3Part(hex, 0),
 						get3Part(hex, 1),
 						get3Part(hex, 2));

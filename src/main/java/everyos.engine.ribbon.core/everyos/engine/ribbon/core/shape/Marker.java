@@ -1,6 +1,7 @@
 package everyos.engine.ribbon.core.shape;
 
 public class Marker {
+	
 	private final Marker parent;
 	
 	private int
@@ -36,6 +37,8 @@ public class Marker {
 		if (highX < lowX || highY < lowY) {
 			return new Rectangle(0, 0, 0, 0);
 		}
+		
 		return new Rectangle(lowX, lowY, highX-lowX, highY-lowY);
 	}
+	
 }

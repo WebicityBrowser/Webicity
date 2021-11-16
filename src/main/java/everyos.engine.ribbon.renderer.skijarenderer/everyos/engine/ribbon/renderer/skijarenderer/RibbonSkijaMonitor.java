@@ -15,8 +15,8 @@ public class RibbonSkijaMonitor {
 		this.id = 0;
 	}
 	
-	public RibbonSkijaWindow createWindow() {
-		return new RibbonSkijaWindow(id);
+	public RibbonSkijaWindowBuilder createWindowBuilder() {
+		return new RibbonSkijaWindowBuilder(id);
 	}
 	
 	public static class NoMonitorAvailableException extends Exception {

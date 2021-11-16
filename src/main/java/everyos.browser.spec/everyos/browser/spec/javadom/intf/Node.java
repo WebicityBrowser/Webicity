@@ -1,6 +1,6 @@
 package everyos.browser.spec.javadom.intf;
 
-public interface Node {
+public interface Node extends EventTarget {
 	Node getRootNode(Object o);
 	Node appendChild(Node child);
 	Node getParentNode();

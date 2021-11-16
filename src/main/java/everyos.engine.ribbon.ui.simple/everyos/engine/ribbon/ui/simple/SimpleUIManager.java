@@ -8,6 +8,7 @@ import everyos.engine.ribbon.core.component.TextBoxComponent;
 import everyos.engine.ribbon.core.ui.UIManager;
 
 public class SimpleUIManager {
+	
 	public static UIManager createUI() {
 		UIManager manager = new UIManager();
 		manager.put(Component.class, SimpleComponentUI::new);
@@ -15,6 +16,8 @@ public class SimpleUIManager {
 		manager.put(LabelComponent.class, SimpleLabelComponentUI::new);
 		manager.put(TextBoxComponent.class, SimpleTextBoxComponentUI::new);
 		manager.put(BreakComponent.class, SimpleBreakComponentUI::new);
+		
 		return manager;
 	}
+	
 }

@@ -315,7 +315,7 @@ public class JDEvent implements Event {
 					touchTargets.add(retarget(touchTarget, parent));
 				}
 				if (parent instanceof DOMWindowPart || (parent instanceof Node && false)) { //TODO
-					if (isActivationEvent && bubbles && activationTarget == null && parent.getActivationBehaviour() != null) {
+					if (isActivationEvent && bubbles && activationTarget == null && parent.getActivationBehavior() != null) {
 						activationTarget = parent;
 					}
 					appendToAnEventPath(parent, null, relatedTarget, touchTargets, slotInClosedTree);
@@ -323,7 +323,7 @@ public class JDEvent implements Event {
 					parent = null;
 				} else {
 					target = parent;
-					if (isActivationEvent && activationTarget == null && parent.getActivationBehaviour() != null) {
+					if (isActivationEvent && activationTarget == null && parent.getActivationBehavior() != null) {
 						activationTarget = target;
 					}
 					appendToAnEventPath(parent, target, relatedTarget, touchTargets, slotInClosedTree);

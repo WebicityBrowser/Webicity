@@ -1,6 +1,7 @@
 package everyos.engine.ribbon.core.shape;
 
 public class Location {
+	
 	private final Margin x;
 	private final Margin y;
 	
@@ -16,4 +17,5 @@ public class Location {
 	public Margin getY() {
 		return y;
 	}
+	
 }

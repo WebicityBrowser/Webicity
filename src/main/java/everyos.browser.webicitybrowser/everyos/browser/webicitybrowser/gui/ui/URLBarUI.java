@@ -3,16 +3,16 @@ package everyos.browser.webicitybrowser.gui.ui;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.CharEvent;
-import everyos.engine.ribbon.core.event.Key;
-import everyos.engine.ribbon.core.event.KeyboardEvent;
-import everyos.engine.ribbon.core.event.MouseEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
+import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
+import everyos.engine.ribbon.core.input.keyboard.Key;
+import everyos.engine.ribbon.core.input.keyboard.KeyboardEvent;
+import everyos.engine.ribbon.core.input.mouse.MouseEvent;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.rendering.RendererData;
-import everyos.engine.ribbon.core.rendering.RibbonFont;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
@@ -52,7 +52,7 @@ public class URLBarUI extends SimpleBlockComponentUI {
 		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
 			this.text = getComponent().casted(URLBar.class).getText();
 			
-			RibbonFont font = rd.getState().getFont();
+			RibbonFontMetrics font = rd.getState().getFont();
 			
 			int width = StringWrapHelper.stringWidth(font, text);
 			sizepos.move(width+10, true);
@@ -98,7 +98,7 @@ public class URLBarUI extends SimpleBlockComponentUI {
 
 		@Override
 		public void processEvent(UIEvent e) {
-			RibbonFont font = lastRenderer.getState().getFont();
+			RibbonFontMetrics font = lastRenderer.getState().getFont();
 			
 			if (e instanceof MouseEvent) {
 				MouseEvent ev = (MouseEvent) e;
