@@ -3,7 +3,7 @@ package everyos.engine.ribbon.ui.simple.helper;
 import java.util.ArrayList;
 
 import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class StringWrapHelper {
 	public static ArrayList<String> calculateString(String text, RibbonFontMetrics font, SizePosGroup sizepos) {

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 
 public class ComputedChildrenHelper {

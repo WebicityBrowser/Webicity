@@ -1,6 +1,6 @@
 package everyos.engine.ribbon.ui.simple;
 
-import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.appearence.BlockAppearence;

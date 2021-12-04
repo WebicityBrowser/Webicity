@@ -17,7 +17,7 @@ import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class ScrollBarContent implements Content {
 	private static final int PADDING_Y = 4;

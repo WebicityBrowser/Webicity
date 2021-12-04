@@ -7,13 +7,13 @@ import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.colors.Colors;
 import everyos.browser.webicitybrowser.gui.directive.AnimationDirective;
 import everyos.browser.webicitybrowser.ui.Window;
-import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.BreakComponent;
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.component.LabelComponent;
-import everyos.engine.ribbon.core.directive.BackgroundDirective;
-import everyos.engine.ribbon.core.directive.PositionDirective;
-import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.components.component.BlockComponent;
+import everyos.engine.ribbon.components.component.BreakComponent;
+import everyos.engine.ribbon.components.component.LabelComponent;
+import everyos.engine.ribbon.components.directive.BackgroundDirective;
+import everyos.engine.ribbon.components.directive.PositionDirective;
+import everyos.engine.ribbon.components.directive.SizeDirective;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.shape.Location;
 
 public class WebicityButton extends BlockComponent {

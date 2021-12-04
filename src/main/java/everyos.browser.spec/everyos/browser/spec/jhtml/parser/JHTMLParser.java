@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PushbackReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -53,7 +54,11 @@ public final class JHTMLParser {
 	
 			
 	public JHTMLParser(InputStream stream) throws UnsupportedEncodingException {
-		this.reader = new PushbackReader(new InputStreamReader(new BufferedInputStream(stream), "UTF-8"), 32);
+		this(new InputStreamReader(new BufferedInputStream(stream), "UTF-8"));
+	}
+	
+	public JHTMLParser(Reader reader) throws UnsupportedEncodingException {
+		this.reader = new PushbackReader(reader, 32);
 		this.document = new JDDocumentBuilder()
 			.setType(Document.HTML)
 			.setContentType("text/html")

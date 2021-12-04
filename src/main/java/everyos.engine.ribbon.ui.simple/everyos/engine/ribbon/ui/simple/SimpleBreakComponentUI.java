@@ -1,12 +1,12 @@
 package everyos.engine.ribbon.ui.simple;
 
-import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.RenderContext;
 import everyos.engine.ribbon.core.rendering.RendererData;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.appearence.DefaultAppearence;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class SimpleBreakComponentUI extends SimpleComponentUI {
 	private final Appearence appearence;

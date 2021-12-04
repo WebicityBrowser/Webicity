@@ -1,4 +1,4 @@
-package everyos.engine.ribbon.core.directive;
+package everyos.engine.ribbon.components.directive;
 
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.shape.Location;

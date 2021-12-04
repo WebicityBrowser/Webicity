@@ -20,14 +20,14 @@ public class Rectangle {
 
 	public boolean intersects(Rectangle r2) {
 		return !(
-			(r2.x+r2.width<x || x+width<r2.x) ||
-			(r2.y+r2.height<y || y+height<r2.y));
+			(r2.x+r2.width < x || x+width < r2.x) ||
+			(r2.y+r2.height < y || y+height < r2.y));
 	}
 	
 	public Rectangle intersect(Rectangle r2) {
 		int[] intersected = intersectRaw(
-			new int[] {x, y, width, height},
-			new int[] {r2.getX(), r2.getY(), r2.getWidth(), r2.getHeight()}
+			new int[] { x, y, width, height },
+			new int[] { r2.getX(), r2.getY(), r2.getWidth(), r2.getHeight() }
 		);
 		
 		return new Rectangle(
@@ -59,6 +59,7 @@ public class Rectangle {
 			rect1[2] = rect1[2]-(rect2[0]-rect1[0]);
 			rect1[0] = rect2[0];
 		}
+		
 		if (rect1[1] < rect2[1]) {
 			rect1[3] = rect1[3]-(rect2[1]-rect1[1]);
 			rect1[1] = rect2[1];

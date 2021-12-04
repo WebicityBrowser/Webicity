@@ -1,4 +1,6 @@
-package everyos.engine.ribbon.core.shape;
+package everyos.engine.ribbon.ui.simple.shape;
+
+import everyos.engine.ribbon.core.shape.Dimension;
 
 public class MutableDimension {
 	
@@ -28,6 +30,10 @@ public class MutableDimension {
 	
 	public Dimension freeze() {
 		return new Dimension(width, height);
+	}
+
+	public static MutableDimension createFrom(Dimension base) {
+		return new MutableDimension(base.getWidth(), base.getHeight());
 	}
 	
 }

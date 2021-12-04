@@ -1,7 +1,7 @@
 package everyos.browser.webicitybrowser.gui.component;
 
-import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.components.component.BlockComponent;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 
 public class CircularText extends BlockComponent {

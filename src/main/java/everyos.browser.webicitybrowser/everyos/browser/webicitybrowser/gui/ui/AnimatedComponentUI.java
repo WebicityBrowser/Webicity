@@ -3,7 +3,7 @@ package everyos.browser.webicitybrowser.gui.ui;
 import everyos.browser.webicitybrowser.gui.animation.Animation;
 import everyos.browser.webicitybrowser.gui.component.AnimatedComponent;
 import everyos.browser.webicitybrowser.gui.directive.AnimationDirective;
-import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
@@ -24,7 +24,7 @@ public class AnimatedComponentUI extends SimpleBlockComponentUI {
 	public AnimatedComponentUI(Component c, ComponentUI parent) {
 		super(c, parent);
 		
-		this.component = getComponent().casted(AnimatedComponent.class);
+		this.component = getComponent().casted();
 		this.layout = new AnimatedComponentLayout(c, parent);
 		this.appearence = new DefaultAppearence();
 	}

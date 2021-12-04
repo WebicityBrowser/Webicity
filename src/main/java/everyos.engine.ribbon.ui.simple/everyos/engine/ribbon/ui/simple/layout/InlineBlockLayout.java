@@ -1,10 +1,10 @@
 package everyos.engine.ribbon.ui.simple.layout;
 
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.directive.PositionDirective;
-import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.components.directive.PositionDirective;
+import everyos.engine.ribbon.components.directive.SizeDirective;
 import everyos.engine.ribbon.core.event.EventListener;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
@@ -17,12 +17,12 @@ import everyos.engine.ribbon.core.shape.Location;
 import everyos.engine.ribbon.core.shape.PercentOffset;
 import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.ComputedChildrenHelper;
 import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class InlineBlockLayout implements Layout {
 	private final Component component;

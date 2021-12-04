@@ -1,9 +1,9 @@
 package everyos.browser.webicitybrowser.gui.ui;
 
 import everyos.browser.webicitybrowser.gui.component.URLBar;
-import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.CharEvent;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
@@ -14,12 +14,12 @@ import everyos.engine.ribbon.core.input.mouse.MouseEvent;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class URLBarUI extends SimpleBlockComponentUI {
 	private final Appearence appearence;
@@ -50,7 +50,7 @@ public class URLBarUI extends SimpleBlockComponentUI {
 		
 		@Override
 		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
-			this.text = getComponent().casted(URLBar.class).getText();
+			this.text = getComponent().<URLBar>casted().getText();
 			
 			RibbonFontMetrics font = rd.getState().getFont();
 			
@@ -141,7 +141,7 @@ public class URLBarUI extends SimpleBlockComponentUI {
 					this.text = text.substring(0, currentCursorPosition-1) + text.substring(currentCursorPosition);
 					currentCursorPosition--;	
 				} else if (ev.getKey() == Key.ENTER && ev.getAction() == KeyboardEvent.KEY_RELEASE) {
-					getComponent().casted(URLBar.class).getAction().accept(text);
+					getComponent().<URLBar>casted().getAction().accept(text);
 				}
 			} else {
 				return;

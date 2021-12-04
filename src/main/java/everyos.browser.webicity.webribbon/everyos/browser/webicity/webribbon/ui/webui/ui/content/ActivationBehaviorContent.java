@@ -9,7 +9,7 @@ import everyos.browser.webicity.webribbon.gui.box.Box;
 import everyos.engine.ribbon.core.input.mouse.MouseEvent;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class ActivationBehaviorContent implements Content {
 

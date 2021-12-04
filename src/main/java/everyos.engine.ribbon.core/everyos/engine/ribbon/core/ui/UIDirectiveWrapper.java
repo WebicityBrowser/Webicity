@@ -3,6 +3,7 @@ package everyos.engine.ribbon.core.ui;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 
 public interface UIDirectiveWrapper {
+	
 	public Class<? extends ComponentUI>[] getAffectedUIs();
 	public InvalidationLevel getPipelineHint();
 	public UIDirective getDirective();
@@ -26,4 +27,5 @@ public interface UIDirectiveWrapper {
 			}
 		};
 	}
+	
 }

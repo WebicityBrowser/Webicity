@@ -1,6 +1,6 @@
 package everyos.browser.webicitybrowser.gui.component;
 
-import everyos.engine.ribbon.core.component.BlockComponent;
+import everyos.engine.ribbon.components.component.BlockComponent;
 
 public class AnimatedComponent extends BlockComponent {
     private boolean isVisible = false;

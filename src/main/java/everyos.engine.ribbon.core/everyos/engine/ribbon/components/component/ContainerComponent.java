@@ -1,4 +1,4 @@
-package everyos.engine.ribbon.core.component;
+package everyos.engine.ribbon.components.component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,22 +7,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import everyos.engine.ribbon.core.event.UIEventTarget;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirectiveWrapper;
 
-public class Component implements UIEventTarget {
+public class ContainerComponent implements Component {
+	
 	private final ArrayList<Component> children;
 	private final List<ComponentUI> boundObservers;
 	private final Map<Class<? extends ComponentUI>, List<UIDirectiveWrapper>> directives;
 	
-	private Component parent;
-	
-	public Component() {
-		children = new ArrayList<Component>();
-		boundObservers = new ArrayList<>();
-		directives = new HashMap<>();
+	public ContainerComponent() {
+		this.children = new ArrayList<Component>();
+		this.boundObservers = new ArrayList<>();
+		this.directives = new HashMap<>();
 	}
 	
 	/**
@@ -32,6 +31,7 @@ public class Component implements UIEventTarget {
 	 * @return Chain-able self
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public Component directive(Class<? extends ComponentUI> uicls, UIDirectiveWrapper directive) {
 		List<UIDirectiveWrapper> dirs = directives.computeIfAbsent(uicls.getClass().cast(ComponentUI.class), c->new ArrayList<UIDirectiveWrapper>());
 		for (int i = dirs.size()-1; i >= 0; i--) {
@@ -47,6 +47,7 @@ public class Component implements UIEventTarget {
 				ui.invalidate(directive.getPipelineHint());
 			}
 		}
+		
 		return this;
 	}
 	
@@ -55,10 +56,12 @@ public class Component implements UIEventTarget {
 	 * @param directive The directive to be sent
 	 * @return Chainable self
 	 */
-	public Component directive(UIDirectiveWrapper directive) {
+	@Override
+	public ContainerComponent directive(UIDirectiveWrapper directive) {
 		for (Class<? extends ComponentUI> cls: directive.getAffectedUIs()) {
 			directive(cls, directive);
 		}
+		
 		return this;
 	}
 	
@@ -67,22 +70,19 @@ public class Component implements UIEventTarget {
 	 * @param cls The class to get applicable UI directives of
 	 * @return The applicable UI directives
 	 */
+	@Override
 	public <T extends ComponentUI> UIDirectiveWrapper[] getDirectives(Class<T> cls) {
 		ArrayList<UIDirectiveWrapper> matches = new ArrayList<>();
 		Class<?> clz = cls;
 		while (ComponentUI.class.isAssignableFrom(clz)) {
 			if (directives.containsKey(clz)) {
-				directives.get(clz).forEach(a->{
-					matches.add(a);
-				});
+				directives.get(clz).forEach(a -> matches.add(a));
 			}
 			
 			//Interfaces are not returned by .getSuperclass, so we have this primitive code that needs fixed
 			for (Class<?> c: clz.getInterfaces()) {
-				if (ComponentUI.class.isAssignableFrom(c)&&directives.containsKey(c)) {
-					directives.get(c).forEach(a->{
-						matches.add(a);
-					});
+				if (ComponentUI.class.isAssignableFrom(c) && directives.containsKey(c)) {
+					directives.get(c).forEach(a -> matches.add(a));
 				}
 			}
 			clz = clz.getSuperclass();
@@ -90,62 +90,49 @@ public class Component implements UIEventTarget {
 		return matches.toArray(new UIDirectiveWrapper[matches.size()]);
 	}
 	
+	@Override
 	public void addChild(Component component) {
-		component.setParent(this);
-	}
-	public void addChild(int pos, Component component) {
-		component.setParent(this, pos);
-	}
-
-	/**
-	 * Change this component's parent
-	 * @param parent The new parent
-	 */
-	public void setParent(Component parent) {
-		setParent(parent, parent.children.size());
+		children.add(component);
+		invalidate(InvalidationLevel.RENDER);
 	}
 	
-	/**
-	 * Change this component's parent
-	 * @param parent The new parent
-	 * @param pos The placement of this component within the new parent's children
-	 */
-	public void setParent(Component parent, int pos) {
-		if (this.parent != null) {
-			this.parent.delete(this);
-		}
-		this.parent = parent;
-		parent.children.add(pos, this);
-		parent.invalidate(InvalidationLevel.RENDER);
+	@Override
+	public void addChild(int pos, Component component) {
+		children.add(pos, component);
 		invalidate(InvalidationLevel.RENDER);
 	}
 
-	public void delete() {
-		if (parent != null) {
-			parent.delete(this);
+	@Override
+	public void removeChild(Component component) {
+		if (children.remove(component)) {
+			invalidate(InvalidationLevel.RENDER);
 		}
 	}
-	public void delete(Component component) {
-		children.remove(component);
-		component.parent = null;
+	
+	@Override
+	public void removeChild(int i) {
+		children.remove(i);
 		invalidate(InvalidationLevel.RENDER);
 	}
 
+	@Override
 	public Component children(Component[] children) {
 		this.children.clear();
 		this.children.ensureCapacity(children.length);
-		for (Component child: children) {
-			child.setParent(this);
-		}
 		this.children.trimToSize();
+		for (Component component: children) {
+			addChild(component);
+		}
 		
 		return this;
 	}
 	
+	@Override
 	public Component[] getChildren() {
-		return children.toArray(new Component[children.size()]);
+		return children.toArray(new ContainerComponent[children.size()]);
 	}
 	
+	@Override
 	public void invalidate(InvalidationLevel level) {
 		for (ComponentUI ui: boundObservers.toArray(new ComponentUI[boundObservers.size()])) {
 			ui.invalidate(level);
@@ -153,7 +140,8 @@ public class Component implements UIEventTarget {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> T casted(Class<T> cls) {
+	@Override
+	public <T extends Component> T casted() {
 		return (T) this;
 	}
 	
@@ -161,6 +149,7 @@ public class Component implements UIEventTarget {
 	 * Binds a ComponentUI to this component, allowing it to receive events from this component
 	 * @param ui The ComponentUI to be bound
 	 */
+	@Override
 	public void bind(ComponentUI ui) {
 		boundObservers.add(ui);
 		for (UIDirectiveWrapper dir: getDirectives(ui.getClass())) {
@@ -168,10 +157,12 @@ public class Component implements UIEventTarget {
 		}
 	}
 	
+	@Override
 	public void unbind(ComponentUI ui) {
 		boundObservers.remove(ui);
 	}
 
+	@Override
 	public Component[] query(Function<Component, Boolean> query) {
 		List<Component> components = new LinkedList<>();
 		List<Component> matches = new ArrayList<>();
@@ -190,4 +181,5 @@ public class Component implements UIEventTarget {
 		
 		return matches.toArray(new Component[matches.size()]);
 	}
+	
 }

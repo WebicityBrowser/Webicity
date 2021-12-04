@@ -1,6 +1,6 @@
 package everyos.browser.webicitybrowser.gui.window;
 
-import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.shape.Position;
 
 public interface RibbonWindow {

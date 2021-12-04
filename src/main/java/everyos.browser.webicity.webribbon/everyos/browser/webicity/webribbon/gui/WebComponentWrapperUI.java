@@ -16,8 +16,8 @@ import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 import everyos.browser.webicity.webribbon.core.ui.WebWindowUI;
 import everyos.browser.webicity.webribbon.gui.box.MutableBlockLevelBox;
 import everyos.browser.webicity.webribbon.ui.webui.WebUIWebUIManager;
-import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
@@ -29,13 +29,14 @@ import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class WebComponentWrapperUI extends SimpleBlockComponentUI {
+	
 	private final Appearence appearence;
 	
 	public WebComponentWrapperUI(Component c, ComponentUI parent) {
@@ -78,7 +79,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		
 		@Override
 		public Pallete getPallete() {
-			return getComponent().casted(WebComponentWrapper.class).getPallete();
+			return getComponent().<WebComponentWrapper>casted().getPallete();
 		}
 
 		@Override
@@ -114,7 +115,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		@Override
 		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
 			WebComponent oldWebComponent = this.webComponent;
-			this.webComponent = getComponent().casted(WebComponentWrapper.class).getUI();
+			this.webComponent = getComponent().<WebComponentWrapper>casted().getUI();
 			if (webComponent != oldWebComponent) {
 				this.documentUI = (WebWindowUI) webUIManager.get(webComponent, null);
 				documentUI.onInvalidation((level) -> invalidate(level));
@@ -185,4 +186,5 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 			this.cssomRoot = CSSOMUtil.computeCSSOM(appliedRules);
 		}
 	}
+	
 }

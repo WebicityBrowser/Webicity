@@ -2,7 +2,7 @@ package everyos.engine.ribbon.core.ui;
 
 import java.util.HashMap;
 
-import everyos.engine.ribbon.core.component.Component;
+import everyos.engine.ribbon.core.graphics.Component;
 
 public class UIManager extends HashMap<Class<? extends Component>, ComponentUIFactory> {
 	private static final long serialVersionUID = 1418973899929833339L;

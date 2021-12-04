@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 public final class TestUtils {
+	
 	private TestUtils() {}
 	
 	public static final class StringPrintStream extends PrintStream {
@@ -36,4 +37,5 @@ public final class TestUtils {
 			}
 		}
 	}
+	
 }

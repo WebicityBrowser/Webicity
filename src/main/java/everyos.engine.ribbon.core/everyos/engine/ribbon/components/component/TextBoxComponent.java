@@ -1,4 +1,4 @@
-package everyos.engine.ribbon.core.component;
+package everyos.engine.ribbon.components.component;
 
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 

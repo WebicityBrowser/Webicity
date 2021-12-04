@@ -1,24 +1,29 @@
 package everyos.engine.ribbon.ui.simple;
 
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.directive.BackgroundDirective;
-import everyos.engine.ribbon.core.directive.ForegroundDirective;
+import java.util.Optional;
+
+import everyos.engine.ribbon.components.directive.BackgroundDirective;
+import everyos.engine.ribbon.components.directive.ForegroundDirective;
+import everyos.engine.ribbon.core.accessibility.alt.AltLabel;
+import everyos.engine.ribbon.core.accessibility.alt.AltTarget;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
 import everyos.engine.ribbon.core.graphics.paintfill.PaintFill;
 import everyos.engine.ribbon.core.rendering.RendererData;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.appearence.DefaultAppearence;
 import everyos.engine.ribbon.ui.simple.layout.InlineLayout;
 import everyos.engine.ribbon.ui.simple.layout.Layout;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 
 public class SimpleComponentUI implements ComponentUI {
+	
 	private final Component component;
 	private final ComponentUI parent;
 	private final Layout layout;
@@ -100,14 +105,6 @@ public class SimpleComponentUI implements ComponentUI {
 	public Component getComponent() {
 		return this.component;
 	}
-	
-	protected Appearence getAppearence() {
-		return this.appearence;
-	}
-	
-	protected Layout getLayout() {
-		return this.layout;
-	}
 
 	@Override
 	public void directive(UIDirective directive) {
@@ -121,4 +118,37 @@ public class SimpleComponentUI implements ComponentUI {
 		getLayout().directive(directive);
 		getAppearence().directive(directive);
 	}
+	
+	@Override
+	public AltLabel getLabel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<AltTarget> execAction() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AltTarget getNext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AltTarget getPrev() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	protected Appearence getAppearence() {
+		return this.appearence;
+	}
+	
+	protected Layout getLayout() {
+		return this.layout;
+	}
+	
 }

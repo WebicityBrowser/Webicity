@@ -2,7 +2,7 @@ package everyos.browser.webicitybrowser.gui.component;
 
 import java.util.function.Consumer;
 
-import everyos.engine.ribbon.core.component.BlockComponent;
+import everyos.engine.ribbon.components.component.BlockComponent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 
 public class URLBar extends BlockComponent {

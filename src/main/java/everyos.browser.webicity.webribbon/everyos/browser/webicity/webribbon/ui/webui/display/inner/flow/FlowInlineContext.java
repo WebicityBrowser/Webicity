@@ -15,7 +15,7 @@ import everyos.engine.ribbon.core.graphics.paintfill.Color;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class FlowInlineContext implements FlowContext {
 	

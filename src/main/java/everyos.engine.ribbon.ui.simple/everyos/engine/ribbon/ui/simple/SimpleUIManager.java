@@ -1,10 +1,10 @@
 package everyos.engine.ribbon.ui.simple;
 
-import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.BreakComponent;
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.component.LabelComponent;
-import everyos.engine.ribbon.core.component.TextBoxComponent;
+import everyos.engine.ribbon.components.component.BlockComponent;
+import everyos.engine.ribbon.components.component.BreakComponent;
+import everyos.engine.ribbon.components.component.LabelComponent;
+import everyos.engine.ribbon.components.component.TextBoxComponent;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.ui.UIManager;
 
 public class SimpleUIManager {

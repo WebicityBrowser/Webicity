@@ -1,9 +1,9 @@
 package everyos.browser.webicitybrowser.gui.window;
 
 import everyos.browser.webicitybrowser.gui.WebicityUIManager;
-import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.components.component.BlockComponent;
+import everyos.engine.ribbon.components.directive.SizeDirective;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.shape.Location;
 import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.ui.UIManager;

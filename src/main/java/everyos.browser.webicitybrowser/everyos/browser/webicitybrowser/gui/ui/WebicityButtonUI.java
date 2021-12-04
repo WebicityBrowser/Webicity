@@ -1,25 +1,24 @@
 package everyos.browser.webicitybrowser.gui.ui;
 
 import everyos.browser.webicitybrowser.gui.Styling;
-import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.UIEvent;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
 import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
 import everyos.engine.ribbon.core.rendering.Renderer;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIDirective;
 import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
 import everyos.engine.ribbon.ui.simple.appearence.Appearence;
 import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class WebicityButtonUI extends SimpleBlockComponentUI {
+	
     private ButtonAppearence appearence;
-
-
 
 	public WebicityButtonUI(Component c, ComponentUI parent) {
         super(c, parent);

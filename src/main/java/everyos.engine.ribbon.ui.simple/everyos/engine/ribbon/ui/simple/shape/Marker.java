@@ -1,4 +1,6 @@
-package everyos.engine.ribbon.core.shape;
+package everyos.engine.ribbon.ui.simple.shape;
+
+import everyos.engine.ribbon.core.shape.Rectangle;
 
 public class Marker {
 	

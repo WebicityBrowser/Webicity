@@ -8,11 +8,11 @@ import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
-import everyos.engine.ribbon.core.component.Component;
 import everyos.engine.ribbon.core.event.CharEvent;
 import everyos.engine.ribbon.core.event.EventListener;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.event.UIEventTarget;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.graphics.PaintContext;
@@ -30,7 +30,6 @@ import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Location;
 import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.core.ui.ComponentUI;
 import everyos.engine.ribbon.core.ui.UIManager;
 import everyos.engine.ribbon.renderer.skijarenderer.event.ListenerPaintListener;
@@ -38,6 +37,7 @@ import everyos.engine.ribbon.renderer.skijarenderer.event.ListenerRect;
 import everyos.engine.ribbon.renderer.skijarenderer.event.MouseEventBuilder;
 import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil;
 import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil.Image;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 import everyos.engine.ribbon.renderer.skijarenderer.util.KeyLookupUtil;
 
 public class RibbonSkijaWindow {
@@ -174,7 +174,7 @@ public class RibbonSkijaWindow {
 			return root;
 		}
 		
-		rendererContext.getTimeSystem().step();
+		((RibbonSkijaTimeSystem) rendererContext.getTimeSystem()).step();
 		
 		RibbonSkijaRenderer renderer = root;
 		

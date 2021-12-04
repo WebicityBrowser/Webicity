@@ -1,4 +1,7 @@
-package everyos.engine.ribbon.core.shape;
+package everyos.engine.ribbon.ui.simple.shape;
+
+import everyos.engine.ribbon.core.shape.Dimension;
+import everyos.engine.ribbon.core.shape.Position;
 
 public class SizePosGroup {
 	
@@ -12,7 +15,7 @@ public class SizePosGroup {
 	private int currentLineHeight;
 
 	public SizePosGroup(Dimension size, int x, int y, int mw, int mh) {
-		this.size = size.toMutable();
+		this.size = MutableDimension.createFrom(size);
 		this.x = x;
 		this.y = y;
 		this.maxSize = new Dimension(mw, mh);

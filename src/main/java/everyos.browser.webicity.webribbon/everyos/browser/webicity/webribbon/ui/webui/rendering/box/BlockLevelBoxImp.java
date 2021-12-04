@@ -17,8 +17,8 @@ import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Dimension;
 import everyos.engine.ribbon.core.shape.Position;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
 import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class BlockLevelBoxImp extends MutableBoxBase implements MutableBlockLevelBox {
 

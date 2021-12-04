@@ -7,7 +7,7 @@ import everyos.browser.webicity.webribbon.gui.box.InlineLevelBox;
 import everyos.browser.webicity.webribbon.ui.webui.rendering.box.InlineLevelBoxBase;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 class TextBox extends InlineLevelBoxBase {
 	

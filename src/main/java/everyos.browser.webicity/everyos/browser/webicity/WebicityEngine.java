@@ -38,6 +38,7 @@ public abstract class WebicityEngine {
 
 	public void registerDefaultProtocols() {
 		Protocol httpProtocol = HTTPRequest::new;
+		
 		registerProtocol("http", httpProtocol);
 		registerProtocol("https", httpProtocol);
 		

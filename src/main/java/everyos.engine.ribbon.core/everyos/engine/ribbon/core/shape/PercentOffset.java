@@ -11,11 +11,11 @@ public class PercentOffset {
 	}
 	
 	public int applyX(int width) {
-		return (int) (offsetX*width);
+		return (int) (offsetX * width);
 	}
 	
 	public int applyY(int height) {
-		return (int) (offsetY*height);
+		return (int) (offsetY * height);
 	}
 	
 }

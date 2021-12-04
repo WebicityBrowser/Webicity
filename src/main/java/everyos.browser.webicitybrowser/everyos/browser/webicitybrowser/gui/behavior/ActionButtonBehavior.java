@@ -2,8 +2,8 @@ package everyos.browser.webicitybrowser.gui.behavior;
 
 import java.util.function.Supplier;
 
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.directive.BackgroundDirective;
+import everyos.engine.ribbon.components.directive.BackgroundDirective;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.paintfill.Color;
 import everyos.engine.ribbon.core.input.mouse.ExternalMouseListenerDirective;
 import everyos.engine.ribbon.core.input.mouse.MouseEvent;

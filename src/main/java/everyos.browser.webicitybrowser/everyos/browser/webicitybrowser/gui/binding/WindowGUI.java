@@ -18,13 +18,13 @@ import everyos.browser.webicitybrowser.gui.window.RibbonWindow;
 import everyos.browser.webicitybrowser.ui.Tab;
 import everyos.browser.webicitybrowser.ui.Window;
 import everyos.browser.webicitybrowser.ui.event.WindowMutationEventListener;
-import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.directive.BackgroundDirective;
-import everyos.engine.ribbon.core.directive.ForegroundDirective;
-import everyos.engine.ribbon.core.directive.PositionDirective;
-import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.components.component.BlockComponent;
+import everyos.engine.ribbon.components.directive.BackgroundDirective;
+import everyos.engine.ribbon.components.directive.ForegroundDirective;
+import everyos.engine.ribbon.components.directive.PositionDirective;
+import everyos.engine.ribbon.components.directive.SizeDirective;
 import everyos.engine.ribbon.core.event.EventListener;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.paintfill.Color;
 import everyos.engine.ribbon.core.input.mouse.ExternalMouseListenerDirective;
 import everyos.engine.ribbon.core.input.mouse.MouseEvent;
@@ -232,7 +232,7 @@ public class WindowGUI {
 	}
 
 	private void selectTab(TabGUI tab) {
-		if (selected!=null) {
+		if (selected != null) {
 			selected.setSelected(false);
 		}
 		selected = tab;
@@ -240,7 +240,7 @@ public class WindowGUI {
 
 		Component tabPane = tab.getTabPane();
 		tabPane.directive(SizeDirective.of(new Location(1, 0, 1, 0)));
-		tabPaneContainer.children(new Component[] {tabPane});
+		tabPaneContainer.children(new Component[] { tabPane });
 	}
 
 	private TabGUI createTabGUI(Tab tab) {

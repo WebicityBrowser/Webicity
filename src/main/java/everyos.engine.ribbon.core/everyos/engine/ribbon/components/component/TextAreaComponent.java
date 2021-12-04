@@ -1,4 +1,4 @@
-package everyos.engine.ribbon.core.component;
+package everyos.engine.ribbon.components.component;
 
 public class TextAreaComponent extends BlockComponent {
 	

@@ -1,11 +1,11 @@
 package everyos.browser.webicitybrowser.gui.component;
 
 import everyos.browser.webicitybrowser.gui.Styling;
-import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.directive.FontInfoDirective;
-import everyos.engine.ribbon.core.directive.PositionDirective;
-import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.components.component.BlockComponent;
+import everyos.engine.ribbon.components.directive.FontInfoDirective;
+import everyos.engine.ribbon.components.directive.PositionDirective;
+import everyos.engine.ribbon.components.directive.SizeDirective;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.graphics.font.FontInfo;
 import everyos.engine.ribbon.core.graphics.font.FontWeight;
@@ -51,9 +51,4 @@ public class TabButton extends BlockComponent {
 		return spacer;
 	}
 	
-	@Override
-	public void delete() {
-		spacer.delete();
-		super.delete();
-	}
 }

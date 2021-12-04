@@ -25,8 +25,8 @@ public class ArgumentParserImp implements ArgumentParser {
 	private final List<Flag> flagEntries = new ArrayList<>();
 	private final List<List<Argument>> argumentEntries = new ArrayList<>();
 	
-	private boolean isParsingCommand;
-	//TODO
+	private boolean isParsingFlag;
+	//TODO: Allow localization
 
 	public ArgumentParserImp(Flag[] flags, boolean allowExtra, String helpHeader, String helpFooter, String errorFooter) {
 		this.flags = flags;
@@ -41,18 +41,28 @@ public class ArgumentParserImp implements ArgumentParser {
 		extraEntries.clear();
 		flagEntries.clear();
 		argumentEntries.clear();
-		isParsingCommand = false;
+		isParsingFlag = false;
 		
 		for (int i = 0; i < arguments.length; i++) {
-			if (isParsingCommand) {
+			if (isParsingFlag) {
 				endIfOptionalArgumentsMet();
 			}
 			
 			if (isFlagName(arguments[i])) {
+				if (!canSwitchFlag()) {
+					error(
+						"Attempt to switch to flag of name \"" + arguments[i] +
+						"\" while still supplying arguments for flag \"" + getCurrentFlag().getName() + "\"", dest);
+				}
 				startNewFlagByName(arguments[i].substring(2), dest);
 			} else if (isFlagAlias(arguments[i])) {
+				if (!canSwitchFlag()) {
+					error(
+						"Attempt to switch to flag of alias \"" + arguments[i] +
+						"\" while still supplying arguments for flag \"" + getCurrentFlag().getName() + "\"", dest);
+				}
 				startNewFlagByAlias(arguments[i].substring(1), dest);
-			} else if (isParsingCommand) {
+			} else if (isParsingFlag) {
 				getCurrentArguments().add(new ArgumentImp(arguments[i], message -> error(message, dest)));
 			} else {
 				if (!allowExtra) {
@@ -119,8 +129,14 @@ public class ArgumentParserImp implements ArgumentParser {
 	private void endIfOptionalArgumentsMet() {
 		Flag flag = getCurrentFlag();
 		if (flag.getNumberOptionalArguments() != Flag.INFINITE_ARGUMENTS && getCurrentArguments().size() > flag.getNumberRequiredArguments() + flag.getNumberOptionalArguments()) {
-			isParsingCommand = false;
+			isParsingFlag = false;
 		}
+	}
+	
+	private boolean canSwitchFlag() {
+		return
+			!isParsingFlag ||
+			getCurrentArguments().size() >= getCurrentFlag().getNumberRequiredArguments();
 	}
 
 	private boolean isFlagName(String string) {
@@ -132,7 +148,7 @@ public class ArgumentParserImp implements ArgumentParser {
 	}
 
 	private void onFlagEnd(PrintStream dest) throws ParserFailedException {
-		if (!isParsingCommand) {
+		if (!isParsingFlag) {
 			return;
 		}
 		
@@ -150,7 +166,7 @@ public class ArgumentParserImp implements ArgumentParser {
 		flagEntries.add(flag);
 		argumentEntries.add(new ArrayList<>());
 		
-		isParsingCommand = true;
+		isParsingFlag = true;
 	}
 	
 	private void startNewFlagByName(String name, PrintStream dest) throws ParserFailedException {

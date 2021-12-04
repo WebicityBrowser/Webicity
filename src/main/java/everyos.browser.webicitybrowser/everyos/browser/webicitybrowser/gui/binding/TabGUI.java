@@ -14,14 +14,15 @@ import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.browser.webicitybrowser.ui.Tab;
 import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
-import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.directive.BackgroundDirective;
-import everyos.engine.ribbon.core.directive.PositionDirective;
-import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.components.component.BlockComponent;
+import everyos.engine.ribbon.components.directive.BackgroundDirective;
+import everyos.engine.ribbon.components.directive.PositionDirective;
+import everyos.engine.ribbon.components.directive.SizeDirective;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.shape.Location;
 
 public class TabGUI {
+	
 	private final Tab tab;
 	private final TabEventListener mutationListener;
 	
@@ -190,7 +191,7 @@ public class TabGUI {
 		
 		@Override
 		public void onClose() {
-			tabButton.delete();
+			//tabButton.delete();
 		}
 		
 	}

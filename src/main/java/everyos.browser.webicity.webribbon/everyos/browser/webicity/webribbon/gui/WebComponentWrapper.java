@@ -2,7 +2,7 @@ package everyos.browser.webicity.webribbon.gui;
 
 import everyos.browser.webicity.webribbon.core.component.WebDocumentComponent;
 import everyos.browser.webicity.webribbon.core.ui.Pallete;
-import everyos.engine.ribbon.core.component.BlockComponent;
+import everyos.engine.ribbon.components.component.BlockComponent;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 
 public class WebComponentWrapper extends BlockComponent {

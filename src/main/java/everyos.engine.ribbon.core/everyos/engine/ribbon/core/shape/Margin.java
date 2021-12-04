@@ -11,7 +11,7 @@ public class Margin {
 	}
 	
 	public int calculate(int parent) {
-		return (int) (parent*percent+offset);
+		return (int) (parent * percent + offset);
 	}
 
 	public double getRelative() {

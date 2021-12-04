@@ -6,6 +6,7 @@ import everyos.api.getopts.imp.FlagBuilderImp;
  * Represents a type of flag that the argument parser may accept.
  */
 public interface Flag {
+	
 	/**
 	 * Used to represent an infinite number of optional arguments for a flag.
 	 */
@@ -81,4 +82,5 @@ public interface Flag {
 	static FlagBuilder createBuilder(String name) {
 		return new FlagBuilderImp(name);
 	}
+	
 }

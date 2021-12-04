@@ -8,7 +8,7 @@ import everyos.browser.webicity.webribbon.gui.box.CullingFilter;
 import everyos.browser.webicity.webribbon.gui.box.InlineLevelBox;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class CachedRenderBox extends InlineLevelBoxBase {
 

@@ -5,13 +5,14 @@ import everyos.browser.webicity.webribbon.core.component.WebDocumentComponent;
 import everyos.browser.webicity.webribbon.core.ui.Pallete;
 import everyos.browser.webicity.webribbon.gui.WebComponentWrapper;
 import everyos.browser.webicitybrowser.gui.colors.Colors;
-import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.directive.SizeDirective;
+import everyos.engine.ribbon.components.component.BlockComponent;
+import everyos.engine.ribbon.components.directive.SizeDirective;
+import everyos.engine.ribbon.core.graphics.Component;
 import everyos.engine.ribbon.core.graphics.paintfill.Color;
 import everyos.engine.ribbon.core.shape.Location;
 
 public class HTMLRendererGUI {
+	
 	private final HTMLRenderer renderer;
 	private final Colors colors;
 	private final Component displayPane;
@@ -57,4 +58,5 @@ public class HTMLRendererGUI {
 	public Component getDisplayPane() {
 		return displayPane;
 	}
+	
 }

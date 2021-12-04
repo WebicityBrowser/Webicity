@@ -2,11 +2,12 @@ package everyos.browser.webicitybrowser.gui.renderer;
 
 import everyos.browser.webicity.renderer.plaintext.PlainTextRenderer;
 import everyos.browser.webicitybrowser.gui.colors.Colors;
-import everyos.engine.ribbon.core.component.BlockComponent;
-import everyos.engine.ribbon.core.component.Component;
-import everyos.engine.ribbon.core.component.LabelComponent;
+import everyos.engine.ribbon.components.component.BlockComponent;
+import everyos.engine.ribbon.components.component.LabelComponent;
+import everyos.engine.ribbon.core.graphics.Component;
 
 public class TextRendererGUI {
+	
 	private final PlainTextRenderer renderer;
 	private final Component displayPane;
 
@@ -34,4 +35,5 @@ public class TextRendererGUI {
 	public Component getDisplayPane() {
 		return displayPane;
 	}
+	
 }

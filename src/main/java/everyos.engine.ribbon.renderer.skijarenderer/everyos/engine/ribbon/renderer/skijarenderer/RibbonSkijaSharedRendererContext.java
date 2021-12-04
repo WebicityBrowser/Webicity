@@ -7,7 +7,7 @@ import everyos.engine.ribbon.core.util.TimeSystem;
 
 public class RibbonSkijaSharedRendererContext implements SharedRendererContext {
 
-	private final TimeSystem timeSystem = new TimeSystem();
+	private final TimeSystem timeSystem = new RibbonSkijaTimeSystem();
 	
 	private UIEventTarget focusedTarget;
 	

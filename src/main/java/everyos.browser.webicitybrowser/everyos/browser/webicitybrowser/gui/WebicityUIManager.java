@@ -2,13 +2,13 @@ package everyos.browser.webicitybrowser.gui;
 
 import everyos.browser.webicity.webribbon.gui.WebComponentWrapper;
 import everyos.browser.webicity.webribbon.gui.WebComponentWrapperUI;
-import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.AnimatedComponent;
+import everyos.browser.webicitybrowser.gui.component.CircularText;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.browser.webicitybrowser.gui.component.WebicityButton;
-import everyos.browser.webicitybrowser.gui.ui.CircularTextUI;
 import everyos.browser.webicitybrowser.gui.ui.AnimatedComponentUI;
+import everyos.browser.webicitybrowser.gui.ui.CircularTextUI;
 import everyos.browser.webicitybrowser.gui.ui.TabButtonUI;
 import everyos.browser.webicitybrowser.gui.ui.URLBarUI;
 import everyos.browser.webicitybrowser.gui.ui.WebicityButtonUI;
@@ -20,6 +20,7 @@ public final class WebicityUIManager {
 	
 	public static UIManager createUI() {
 		UIManager ui = SimpleUIManager.createUI();
+		
 		ui.put(CircularText.class, CircularTextUI::new);
 		ui.put(WebicityButton.class, WebicityButtonUI::new);
 		ui.put(AnimatedComponent.class, AnimatedComponentUI::new);

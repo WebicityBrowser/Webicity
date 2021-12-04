@@ -3,7 +3,7 @@ package everyos.browser.webicity.webribbon.gui.box;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Position;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public interface InlineLevelBox extends Box {
 	

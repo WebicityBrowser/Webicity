@@ -3,7 +3,7 @@ package everyos.browser.webicity.webribbon.gui;
 import everyos.browser.webicity.webribbon.gui.box.Box;
 import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.core.shape.SizePosGroup;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public interface Content {
 	
