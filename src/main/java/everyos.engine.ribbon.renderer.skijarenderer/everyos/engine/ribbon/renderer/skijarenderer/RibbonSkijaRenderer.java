@@ -74,7 +74,7 @@ public class RibbonSkijaRenderer implements Renderer {
 	@Override
 	public void drawLine(RendererData data, int x, int y, int l, int h) {
 		beforeDraw(data);
-		if (l < 1 || h < 1) {
+		if (l < 0 || h < 0) {
 			return;
 		}
 		try (Paint paint = createPaint(data)) {

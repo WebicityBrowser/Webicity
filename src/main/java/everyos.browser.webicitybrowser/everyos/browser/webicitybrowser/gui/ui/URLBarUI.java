@@ -22,6 +22,7 @@ import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
 import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class URLBarUI extends SimpleBlockComponentUI {
+	
 	private final Appearence appearence;
 
 	public URLBarUI(Component c, ComponentUI parent) {
@@ -48,9 +49,22 @@ public class URLBarUI extends SimpleBlockComponentUI {
 		private int currentCursorPosition = 0;
 		private RendererData lastRenderer;
 		
+		private String textCache = "";
+		
 		@Override
 		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
 			this.text = getComponent().<URLBar>casted().getText();
+			
+			if (!textCache.equals(text)) {
+				textCache = text;
+				
+				if (currentCursorPosition > text.length()) {
+					currentCursorPosition = text.length();
+				}
+				
+				RibbonFontMetrics font = rd.getState().getFont();
+				computedCursorOffset = StringWrapHelper.stringWidth(font, text.substring(0, currentCursorPosition));		
+			}
 			
 			RibbonFontMetrics font = rd.getState().getFont();
 			

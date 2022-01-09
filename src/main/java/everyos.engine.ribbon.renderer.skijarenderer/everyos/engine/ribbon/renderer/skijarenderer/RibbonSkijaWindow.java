@@ -6,6 +6,7 @@ import org.jetbrains.skija.DirectContext;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
 import everyos.engine.ribbon.core.event.CharEvent;
@@ -37,8 +38,8 @@ import everyos.engine.ribbon.renderer.skijarenderer.event.ListenerRect;
 import everyos.engine.ribbon.renderer.skijarenderer.event.MouseEventBuilder;
 import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil;
 import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil.Image;
-import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 import everyos.engine.ribbon.renderer.skijarenderer.util.KeyLookupUtil;
+import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
 public class RibbonSkijaWindow {
 	
@@ -62,7 +63,7 @@ public class RibbonSkijaWindow {
 			throw new RuntimeException("Running on wrong thread!");
 		}
 		
-		GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, decorated ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);		
+		GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, decorated ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
 		this.window = createWindow(id);
 		
 		this.context = DirectContext.makeGL();
@@ -145,11 +146,18 @@ public class RibbonSkijaWindow {
 	// PUBLIC METHODS END
 	
 	private long createWindow(int id) {
-		long window = GLFW.glfwCreateWindow(800, 600, "Untitled Application", id, MemoryUtil.NULL);
+		int width = 800;
+		int height = 600;
+		long window = GLFW.glfwCreateWindow(width, height, "Untitled Application", id, MemoryUtil.NULL);
 		GLFW.glfwMakeContextCurrent(window);
 		GL.createCapabilities();
 		GLFW.glfwSwapInterval(1);
 		GLFW.glfwSetWindowPos(window, 100, 100);
+		
+		//TODO: Allow adjusting scaling elsewhere
+		//TODO: Detect the actual DPI
+		int dpi = 96;
+		GL30.glViewport(0, 0, (int) (96.0 / dpi), (int) (height * 96.0 / dpi));
 		
 		return window;
 	}

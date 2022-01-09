@@ -31,17 +31,19 @@ public class LegacyDisplayValue {
 	
 	
 	private static final String[] displayValueNames = new String[] {
-		"none",
+		//"none",
 		"contents",
 		"block",
-		"inline"
+		"inline",
+		"inline-block"
 	};
 	
 	private static final DisplayProperty[] displayValueValues = new DisplayProperty[] {
-		new DisplayProperty(OuterDisplayType.NONE, InnerDisplayType.NONE),
+		//new DisplayProperty(OuterDisplayType.NONE, InnerDisplayType.NONE),
 		new DisplayProperty(OuterDisplayType.CONTENTS, InnerDisplayType.NONE),
 		new DisplayProperty(OuterDisplayType.BLOCK, InnerDisplayType.FLOW),
 		new DisplayProperty(OuterDisplayType.INLINE, InnerDisplayType.FLOW),
+		new DisplayProperty(OuterDisplayType.INLINE, InnerDisplayType.FLOW_ROOT),
 	};
 	
 	static {

@@ -7,7 +7,7 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 import everyos.browser.webicity.webribbon.gui.Content;
 import everyos.browser.webicity.webribbon.gui.WebBoxContext;
-import everyos.browser.webicity.webribbon.gui.box.MutableBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.BoxingStageBox;
 import everyos.browser.webicity.webribbon.ui.webui.display.outer.DisplayMode;
 import everyos.browser.webicity.webribbon.ui.webui.helper.ComputedChildrenHelper;
 
@@ -25,16 +25,16 @@ public class FlowDisplayMode implements DisplayMode {
 	}
 	
 	@Override
-	public void recalculateCSSOM(CSSOMNode cssomNode, ApplicablePropertyMap parent, WebUIManager manager) {
+	public void recalculateCSSOM(CSSOMNode cssomNode, ApplicablePropertyMap properties, WebUIManager manager) {
 		computedChildrenHelper.recompute(c->manager.get(c, ui));
 		
 		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
-			c.recalculateCSSOM(cssomNode, parent, manager);
+			c.recalculateCSSOM(cssomNode, properties, manager);
 		}
 	}
 
 	@Override
-	public void box(MutableBox box, WebBoxContext context) {
+	public void box(BoxingStageBox box, WebBoxContext context) {
 		for (WebComponentUI ui: computedChildrenHelper.getChildren()) {
 			ui.box(box, context);
 		}

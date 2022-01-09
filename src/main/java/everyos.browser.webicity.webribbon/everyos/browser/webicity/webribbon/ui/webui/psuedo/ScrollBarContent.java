@@ -5,8 +5,10 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.gui.Content;
 import everyos.browser.webicity.webribbon.gui.WebPaintContext;
 import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.browser.webicity.webribbon.gui.box.BlockLevelBox;
-import everyos.browser.webicity.webribbon.gui.box.Box;
+import everyos.browser.webicity.webribbon.gui.box.stage.MultiBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.PaintStageBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.RenderStageBox;
+import everyos.browser.webicity.webribbon.ui.webui.helper.BoxUtil;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.GUIState;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
@@ -28,7 +30,7 @@ public class ScrollBarContent implements Content {
 	private final WebComponentUI ui;
 	private final Content innerContent;
 	
-	private BlockLevelBox box;
+	private MultiBox box;
 	private Dimension pageSize;
 	
 	private Mode mode;
@@ -42,8 +44,9 @@ public class ScrollBarContent implements Content {
 		this.innerContent = innerContent;
 	}
 	
-	public void render(Box box, RendererData rd, SizePosGroup sizepos, WebRenderContext context) {
-		this.box = (BlockLevelBox) box;
+	public void render(RenderStageBox box, RendererData rd, SizePosGroup sizepos, WebRenderContext context) {
+		//TODO: This is bad
+		this.box = (MultiBox) box;
 		
 		SizePosGroup spg = new SizePosGroup(
 			sizepos.getSize().getWidth(), 0,
@@ -84,11 +87,11 @@ public class ScrollBarContent implements Content {
 		return this.curScrollY;
 	}
 
-	public void paint(Box box_, RendererData rd, Rectangle viewport, WebPaintContext context) {
+	public void paint(PaintStageBox box_, RendererData rd, Rectangle viewport, WebPaintContext context) {
 		paintScrollbar(rd, context);
 		
 		if (useScrollBar) {
-			Dimension size = box.getFinalSize();
+			Dimension size = box.getContentSize();
 			
 			RendererData childRD = rd.getSubcontext(
 				0, 0,
@@ -106,10 +109,10 @@ public class ScrollBarContent implements Content {
 				TRACKBAR_WIDTH, size.getHeight(),
 				ev -> processEvent(ev));
 			
-			Position pos = box.getFinalPos();
-			box.setFinalPos(new Position(0, 0));
+			Position pos = box.getPosition();
+			box.setPosition(new Position(0, 0));
 			innerContent.paint(box, childRD, childViewport, context);
-			box.setFinalPos(pos);
+			box.setPosition(pos);
 		} else {
 			innerContent.paint(box, rd, viewport, context);
 		}
@@ -117,7 +120,7 @@ public class ScrollBarContent implements Content {
 	
 	
 	private void handleScrollbar(UIEvent event) {
-		Dimension outerSize = box.getFinalSize();
+		Dimension outerSize = box.getContentSize();
 		int maxScrollY = getMaxScrollY();
 		
 		if (event instanceof MouseEvent) {
@@ -165,11 +168,11 @@ public class ScrollBarContent implements Content {
 	}
 
 	private int getMaxScrollY() {
-		return pageSize.getHeight() - box.getFinalSize().getHeight();
+		return pageSize.getHeight() - box.getContentSize().getHeight();
 	}
 	
 	private void paintScrollbar(RendererData rd, WebPaintContext context) {
-		Dimension outerSize = box.getFinalSize();
+		Dimension outerSize = box.getContentSize();
 		
 		if (!useScrollBar) {
 			return;
@@ -213,8 +216,8 @@ public class ScrollBarContent implements Content {
 	}
 
 	@Override
-	public Content split() {
-		return new ScrollBarContent(ui, innerContent.split());
+	public MultiBox[] split(MultiBox box, RendererData rd, int width, WebRenderContext context) {
+		return BoxUtil.keepWholeSplitWithContent(box, box.getContent());
 	}
 	
 }

@@ -88,9 +88,10 @@ public class Webicity {
 		if (arguments.getURLs().length == 0) {
 			try {
 				//TODO: Configuration
-				//instance.open(new URL("webicity://csstest"));
-				//instance.open(new URL("https://wpt.live/css/css-color/"));
-				instance.open(new URL("https://www.google.com/"));
+				//instance.open(new URL("webicity://welcome"));
+				instance.open(new URL("webicity://csstest"));
+				//instance.open(new URL("https://wpt.live/css/css-display/display-contents-inline-001.html"));
+				//instance.open(new URL("https://www.google.com/"));
 				//instance.open(new URL("https://www.yahoo.com/"));
 				//instance.open(new URL("https://www.whatismybrowser.com/"));
 				//instance.open(new URL("https://www.example.com/"));
@@ -111,8 +112,8 @@ public class Webicity {
 		boolean useTTY = false;
 		
 		if (!useTTY) {
-			SkijaRenderingThread.run(()->{
-				new InstanceGUI(instance, ()->{
+			SkijaRenderingThread.run(() -> {
+				new InstanceGUI(instance, () -> {
 					try {
 						return SkijaWindow.create();
 					} catch (Exception e) {
@@ -121,7 +122,7 @@ public class Webicity {
 				}).start();
 			});
 		} else {
-			JLineRenderingThread.run(()->{
+			JLineRenderingThread.run(() -> {
 				new InstanceTTY(instance, JLineConsole.get()).start();
 			});
 		}

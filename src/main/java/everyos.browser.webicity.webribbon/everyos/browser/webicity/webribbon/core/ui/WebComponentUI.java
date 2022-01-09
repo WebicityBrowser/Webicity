@@ -4,7 +4,7 @@ import everyos.browser.spec.jcss.cssom.ApplicablePropertyMap;
 import everyos.browser.spec.jcss.cssom.CSSOMNode;
 import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.gui.WebBoxContext;
-import everyos.browser.webicity.webribbon.gui.box.MutableBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.BoxingStageBox;
 import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 
 public interface WebComponentUI {
@@ -13,7 +13,7 @@ public interface WebComponentUI {
 	// (The exception, not the site)
 	
 	void recalculateCSSOM(CSSOMNode cssomNode, ApplicablePropertyMap parent, WebUIManager manager);
-	void box(MutableBox parent, WebBoxContext context);
+	void box(BoxingStageBox parent, WebBoxContext context);
 	
 	WebComponentUI getParent();
 	

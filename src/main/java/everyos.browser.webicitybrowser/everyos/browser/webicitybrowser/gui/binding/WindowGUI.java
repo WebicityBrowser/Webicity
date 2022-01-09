@@ -216,7 +216,7 @@ public class WindowGUI {
 	}
 
 	private void addButtonBehavior(Component button, Runnable handler) {
-		addButtonBehavior(button, handler, ()->false);
+		addButtonBehavior(button, handler, () -> false);
 	}
 	
 	private void addButtonBehavior(Component button, Runnable handler, Supplier<Boolean> activeChecker) {
@@ -228,7 +228,7 @@ public class WindowGUI {
 	private void addDangerousButtonBehavior(Component button, Runnable handler) {
 		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondaryDanger(),
 			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
-			()->false);
+			() -> false);
 	}
 
 	private void selectTab(TabGUI tab) {
@@ -267,6 +267,8 @@ public class WindowGUI {
 	private void closeTab(Tab tab, TabGUI tabGUI) {
 		tab.close();
 		tabs.remove(tabGUI);
+		tabPane.removeChild(tabGUI.getTabButton());
+		tabPane.removeChild(tabGUI.getTabButton().getSpacer());
 		if (selected == tabGUI) {
 			if (tabs.size() == 0) {
 				close();

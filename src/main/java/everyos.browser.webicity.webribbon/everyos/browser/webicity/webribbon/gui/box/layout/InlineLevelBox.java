@@ -1,9 +1,6 @@
-package everyos.browser.webicity.webribbon.gui.box;
+package everyos.browser.webicity.webribbon.gui.box.layout;
 
-import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.engine.ribbon.core.rendering.RendererData;
-import everyos.engine.ribbon.core.shape.Position;
-import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
+import everyos.browser.webicity.webribbon.gui.box.Box;
 
 public interface InlineLevelBox extends Box {
 	
@@ -19,13 +16,13 @@ public interface InlineLevelBox extends Box {
 	 *     would be the final size of a sizeposgroup that would be passed to it had it been rendered,
 	 *     created by arguments (0, 0, width, 0, width, -1).
 	 */
-	InlineLevelBox[] split(RendererData rd, int width, WebRenderContext context, boolean first);
+	/*InlineLevelBox[] split(RendererData rd, int width, WebRenderContext context, boolean first);
 
 	static void autoRenderSplit(InlineLevelBox box, RendererData rd, WebRenderContext context) {
 		SizePosGroup spg = new SizePosGroup(0, 0, 0, 0, -1, -1);
 		box.render(rd, spg, context);
 		box.setFinalPos(new Position(0, 0));
 		box.setFinalSize(spg.getSize());
-	}
+	}*/
 	
 }

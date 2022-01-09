@@ -1,4 +1,4 @@
-package everyos.browser.webicity.webribbon.gui.box;
+package everyos.browser.webicity.webribbon.gui;
 
 import everyos.engine.ribbon.core.shape.Rectangle;
 

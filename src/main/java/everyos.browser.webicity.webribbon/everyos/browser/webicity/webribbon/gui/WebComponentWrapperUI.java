@@ -5,6 +5,7 @@ import java.util.List;
 
 import everyos.browser.spec.javadom.intf.Document;
 import everyos.browser.spec.javadom.intf.inf.ActivationBehaviorContext;
+import everyos.browser.spec.jcss.cssom.ApplicablePropertyMap;
 import everyos.browser.spec.jcss.cssom.CSSOMNode;
 import everyos.browser.spec.jcss.cssom.CSSOMUtil;
 import everyos.browser.spec.jcss.intf.CSSRule;
@@ -14,7 +15,7 @@ import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.Pallete;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 import everyos.browser.webicity.webribbon.core.ui.WebWindowUI;
-import everyos.browser.webicity.webribbon.gui.box.MutableBlockLevelBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.MultiBox;
 import everyos.browser.webicity.webribbon.ui.webui.WebUIWebUIManager;
 import everyos.engine.ribbon.core.event.UIEvent;
 import everyos.engine.ribbon.core.graphics.Component;
@@ -104,7 +105,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 		private WebComponent webComponent;
 		private WebWindowUI documentUI;
 		private Rectangle viewport;
-		private MutableBlockLevelBox base;
+		private MultiBox base;
 		private CSSOMNode cssomRoot;
 		private RibbonFontMetrics font;
 		
@@ -133,11 +134,13 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 				this.viewport = new Rectangle(0, 0, spg.getSize().getWidth(), spg.getSize().getHeight());
 				
 				base = documentUI.createBox();
-				base.setFinalPos(new Position(0, 0));
-				base.setFinalSize(new Dimension(spg.getSize().getWidth(), spg.getSize().getHeight()));
+				base.setProperties(ApplicablePropertyMap.empty());
+				base.setPosition(new Position(0, 0));
+				base.setContentSize(new Dimension(spg.getSize().getWidth(), spg.getSize().getHeight()));
 				documentUI.box(base, new WebBoxContextImp(webUIManager));
 				
-				base.render(rd, spg, new WebRenderContextImp());
+				//TODO: This may not be correct; who knows?
+				base.getContent().render(base, rd, spg, new WebRenderContextImp());
 				
 				// This works on my JVM, and I plan to distribute the JVM with the application
 				// For some reason the garbage collector doesn't seem to automatically run
@@ -153,7 +156,7 @@ public class WebComponentWrapperUI extends SimpleBlockComponentUI {
 			rd.restoreState(state);
 			
 			if (webComponent != null) {
-				base.paint(rd, viewport, new WebPaintContextImp(context.getRenderer(), webComponent.getRenderer().getFrame()));
+				base.getContent().paint(base, rd, viewport, new WebPaintContextImp(context.getRenderer(), webComponent.getRenderer().getFrame()));
 			}
 		}
 

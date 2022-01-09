@@ -9,10 +9,10 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 import everyos.browser.webicity.webribbon.core.ui.WebWindowUI;
 import everyos.browser.webicity.webribbon.gui.WebBoxContext;
-import everyos.browser.webicity.webribbon.gui.box.MutableBlockLevelBox;
-import everyos.browser.webicity.webribbon.gui.box.MutableBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.BoxingStageBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.MultiBox;
 import everyos.browser.webicity.webribbon.ui.webui.display.inner.flow.FlowContent;
-import everyos.browser.webicity.webribbon.ui.webui.display.outer.ContentsDisplayMode;
+import everyos.browser.webicity.webribbon.ui.webui.display.inner.flow.FlowDisplayMode;
 import everyos.browser.webicity.webribbon.ui.webui.display.outer.DisplayMode;
 import everyos.browser.webicity.webribbon.ui.webui.psuedo.ScrollBarContent;
 import everyos.browser.webicity.webribbon.ui.webui.rendering.box.BlockLevelBoxImp;
@@ -27,7 +27,7 @@ public class WebUIWebWindowUI extends WebUIWebComponentUIBase implements WebWind
 	public WebUIWebWindowUI(WebComponent component, WebComponentUI parent) {
 		super(component, parent);
 		
-		displayMode = new ContentsDisplayMode(component, this);
+		displayMode = new FlowDisplayMode(component, this);
 	}
 	
 	@Override
@@ -36,15 +36,17 @@ public class WebUIWebWindowUI extends WebUIWebComponentUIBase implements WebWind
 	}
 	
 	@Override
-	public void box(MutableBox parent, WebBoxContext context) {
+	public void box(BoxingStageBox parent, WebBoxContext context) {
 		displayMode.box(parent, context);
 		parent.finish();
 	}
 
 	@Override
-	public MutableBlockLevelBox createBox() {
+	public MultiBox createBox() {
 		//TODO: Does the scrollbar go here?
-		return new BlockLevelBoxImp(null, new ScrollBarContent(this, new FlowContent()));
+		MultiBox box = new BlockLevelBoxImp(null);
+		box.setContent(new ScrollBarContent(this, new FlowContent()));
+		return box;
 	}
 	
 	@Override

@@ -51,6 +51,7 @@ public class SelectorParser {
 					
 				case BEFORE_KEYWORD:
 					//TODO: Handle colon token
+					//TODO: Handle attribute selectors
 					if (part instanceof WhitespaceToken) {
 						
 					} else if (part instanceof IdentToken) {

@@ -18,6 +18,12 @@ public class Rectangle {
 		this(bounds[0], bounds[1], bounds[2], bounds[3]);
 	}
 
+	public Rectangle(Position position, Dimension size) {
+		this(
+			position.getX(), position.getY(),
+			size.getWidth(), size.getHeight());
+	}
+
 	public boolean intersects(Rectangle r2) {
 		return !(
 			(r2.x+r2.width < x || x+width < r2.x) ||

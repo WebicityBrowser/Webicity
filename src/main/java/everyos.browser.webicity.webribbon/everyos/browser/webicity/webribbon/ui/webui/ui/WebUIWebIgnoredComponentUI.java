@@ -6,7 +6,7 @@ import everyos.browser.webicity.webribbon.core.component.WebComponent;
 import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 import everyos.browser.webicity.webribbon.gui.WebBoxContext;
-import everyos.browser.webicity.webribbon.gui.box.MutableBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.BoxingStageBox;
 
 public class WebUIWebIgnoredComponentUI extends WebUIWebComponentUIBase {
 
@@ -20,7 +20,7 @@ public class WebUIWebIgnoredComponentUI extends WebUIWebComponentUIBase {
 	}
 
 	@Override
-	public void box(MutableBox parent, WebBoxContext context) {
+	public void box(BoxingStageBox parent, WebBoxContext context) {
 		
 	}
 

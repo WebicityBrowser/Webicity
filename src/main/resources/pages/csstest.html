@@ -3,66 +3,20 @@
 	<head>
 		<title>CSS Test</title>
 		<style>
-			span {
+			body > span {
 				color: rebeccapurple;
 			}
-			span > div {
-				color: inherit;
+			
+			html > body > span {
+				color: blue;
 			}
-			div > b {
-				color: rgba(255 0 0 / 1);
-			}
-			#hellomoto {
-				background-color: rgba(0, 255, 255);
-			}
-			.hello {
-				color: rgba(10 175 10 / 100%);
-			}
-			.spandiv {
-				background-color: green;
+		
+			span {
+				color: rgb(255, 0, 0);
 			}
 		</style>
 	<head>
 	<body>
-	AA
-		<div id="hellomoto">
-			CSS applied.
-		</div>
-		<span>
-			CSS applied.
-			<div>CSS applied</div>
-			<span>C</span>SS applied.
-		</span>
-		<div>
-			<b>
-				CSS applied.
-			</b>
-		</div>
-		<div>
-			<i>
-				No CSS applied.
-			</i><br/>
-			<b>
-				CSS applied.
-			</b><br/>
-			<s>
-				No CSS applied.
-			</s><br/>
-			<span>
-				CSS applied.
-			</span><br>
-			<div class="hello world">
-				CSS applied.
-			</div>
-		</div>
-		<b>
-			No CSS applied.
-		</b>
-		<p>
-			This should appear on the <span>same line <span>correctly</span></span>.
-		</p>
-		<div class="spandiv">
-			Hello, World!<br/>Goodbye, cruel world!
-		</div>
+		<span>Hello</span>
 	</body>
 </html>

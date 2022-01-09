@@ -1,4 +1,4 @@
-package everyos.browser.spec.jcss.cssvalue.sizing;
+package everyos.browser.spec.jcss.cssvalue.common;
 
 import everyos.browser.spec.jcss.cssvalue.CSSValueUtil;
 import everyos.browser.spec.jcss.cssvalue.ValueParseInfo;
@@ -11,7 +11,8 @@ public final class LengthPercentageValue {
 	public static ValueParseInfo<Sizing> parse(int off, CSSToken[] cssTokens) {
 		//TODO: Support percentage values
 		return CSSValueUtil.takeLongestValue(
-			LengthValue.parse(off, cssTokens));
+			LengthValue.parse(off, cssTokens),
+			PercentageValue.parse(off, cssTokens));
 	}
 	
 }

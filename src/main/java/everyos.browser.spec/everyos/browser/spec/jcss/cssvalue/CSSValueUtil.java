@@ -4,6 +4,8 @@ public final class CSSValueUtil {
 
 	private CSSValueUtil() {}
 	
+	//TODO: If we make a subclass of Sizing called ZeroSizing, this could be a potential place to ensure that
+	// <number> takes priority over <length> for 0. Preferably, though, a better approach is found
 	//TODO: Not necessarily safe varargs, but without this there are warnings everywhere
 	@SafeVarargs
 	public static <T> ValueParseInfo<T> takeLongestValue(ValueParseInfo<T>... values) {

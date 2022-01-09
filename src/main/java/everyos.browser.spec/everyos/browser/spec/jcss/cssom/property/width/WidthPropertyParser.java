@@ -1,8 +1,8 @@
 package everyos.browser.spec.jcss.cssom.property.width;
 
 import everyos.browser.spec.jcss.cssvalue.ValueParseInfo;
+import everyos.browser.spec.jcss.cssvalue.common.Sizing;
 import everyos.browser.spec.jcss.cssvalue.sizing.SizeValue;
-import everyos.browser.spec.jcss.cssvalue.sizing.Sizing;
 import everyos.browser.spec.jcss.parser.CSSToken;
 
 public class WidthPropertyParser {

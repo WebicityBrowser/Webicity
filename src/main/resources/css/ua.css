@@ -21,3 +21,11 @@ br {
 li, ul {
 	display: block;
 }
+
+span {
+	display: inline;
+}
+
+noscript {
+	display: none;
+}

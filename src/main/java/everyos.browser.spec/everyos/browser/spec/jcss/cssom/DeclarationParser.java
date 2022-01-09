@@ -4,6 +4,9 @@ import everyos.browser.spec.jcss.cssom.property.Property;
 import everyos.browser.spec.jcss.cssom.property.backgroundcolor.BackgroundColorPropertyParser;
 import everyos.browser.spec.jcss.cssom.property.color.ColorPropertyParser;
 import everyos.browser.spec.jcss.cssom.property.display.DisplayPropertyParser;
+import everyos.browser.spec.jcss.cssom.property.fontsize.FontSizePropertyParser;
+import everyos.browser.spec.jcss.cssom.property.height.HeightPropertyParser;
+import everyos.browser.spec.jcss.cssom.property.width.WidthPropertyParser;
 import everyos.browser.spec.jcss.parser.CSSToken;
 import everyos.browser.spec.jcss.parser.Declaration;
 import everyos.browser.spec.jcss.parser.WhitespaceToken;
@@ -15,6 +18,7 @@ public final class DeclarationParser {
 		
 		//TODO: Default parsing for default things like var/inherit/etc
 		
+		//TODO: Make this a HashMap?
 		switch(rule.getName()) {
 			case "color":
 				return ColorPropertyParser.parse(tidyValue);
@@ -25,6 +29,15 @@ public final class DeclarationParser {
 				
 			case "display":
 				return DisplayPropertyParser.parse(tidyValue);
+				
+			case "width":
+				return WidthPropertyParser.parse(tidyValue);
+				
+			case "height":
+				return HeightPropertyParser.parse(tidyValue);
+				
+			case "font-size":
+				return FontSizePropertyParser.parse(tidyValue);
 		
 			default:
 				return null;

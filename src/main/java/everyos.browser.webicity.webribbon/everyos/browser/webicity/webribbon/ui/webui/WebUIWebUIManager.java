@@ -10,7 +10,7 @@ import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 import everyos.browser.webicity.webribbon.ui.webui.ui.WebUIWebComponentUI;
 import everyos.browser.webicity.webribbon.ui.webui.ui.WebUIWebIgnoredComponentUI;
 import everyos.browser.webicity.webribbon.ui.webui.ui.WebUIWebWindowUI;
-import everyos.browser.webicity.webribbon.ui.webui.ui.text.WebUIWebTextComponentUI;
+import everyos.browser.webicity.webribbon.ui.webui.ui.content.text.WebUIWebTextComponentUI;
 
 public class WebUIWebUIManager {
 

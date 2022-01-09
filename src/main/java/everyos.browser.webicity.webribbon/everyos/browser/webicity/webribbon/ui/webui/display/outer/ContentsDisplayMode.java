@@ -7,26 +7,35 @@ import everyos.browser.webicity.webribbon.core.ui.WebComponentUI;
 import everyos.browser.webicity.webribbon.core.ui.WebUIManager;
 import everyos.browser.webicity.webribbon.gui.Content;
 import everyos.browser.webicity.webribbon.gui.WebBoxContext;
-import everyos.browser.webicity.webribbon.gui.box.MutableBox;
-import everyos.browser.webicity.webribbon.ui.webui.display.inner.flow.FlowDisplayMode;
+import everyos.browser.webicity.webribbon.gui.box.stage.BoxingStageBox;
 import everyos.browser.webicity.webribbon.ui.webui.display.inner.none.EmptyContent;
+import everyos.browser.webicity.webribbon.ui.webui.helper.ComputedChildrenHelper;
 
 public class ContentsDisplayMode implements DisplayMode {
 	
-	private final DisplayMode innerDisplayMode;
+	private final WebComponentUI ui;
+	private final ComputedChildrenHelper computedChildrenHelper;
 	
 	public ContentsDisplayMode(WebComponent component, WebComponentUI ui) {
-		this.innerDisplayMode = new FlowDisplayMode(component, ui);
+		this.ui = ui;
+		
+		this.computedChildrenHelper = new ComputedChildrenHelper(component);
 	}
 	
 	@Override
-	public void recalculateCSSOM(CSSOMNode cssomNode,ApplicablePropertyMap parent,  WebUIManager manager) {
-		innerDisplayMode.recalculateCSSOM(cssomNode, parent, manager);
+	public void recalculateCSSOM(CSSOMNode cssomNode, ApplicablePropertyMap properties,  WebUIManager manager) {
+		computedChildrenHelper.recompute(c->manager.get(c, ui));
+		
+		for (WebComponentUI c: computedChildrenHelper.getChildren()) {
+			c.recalculateCSSOM(cssomNode, properties, manager);
+		}
 	}
 
 	@Override
-	public void box(MutableBox parent, WebBoxContext context) {
-		innerDisplayMode.box(parent, context);
+	public void box(BoxingStageBox parent, WebBoxContext context) {
+		for (WebComponentUI ui: computedChildrenHelper.getChildren()) {
+			ui.box(parent, context);
+		}
 	}
 
 	@Override

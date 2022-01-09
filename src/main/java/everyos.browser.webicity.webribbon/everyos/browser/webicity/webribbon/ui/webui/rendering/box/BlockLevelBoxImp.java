@@ -3,43 +3,32 @@ package everyos.browser.webicity.webribbon.ui.webui.rendering.box;
 import java.util.ArrayList;
 import java.util.List;
 
-import everyos.browser.webicity.webribbon.gui.Content;
-import everyos.browser.webicity.webribbon.gui.WebPaintContext;
-import everyos.browser.webicity.webribbon.gui.WebRenderContext;
-import everyos.browser.webicity.webribbon.gui.box.BlockLevelBox;
-import everyos.browser.webicity.webribbon.gui.box.Box;
-import everyos.browser.webicity.webribbon.gui.box.CullingFilter;
-import everyos.browser.webicity.webribbon.gui.box.InlineLevelBox;
-import everyos.browser.webicity.webribbon.gui.box.MutableBlockLevelBox;
-import everyos.browser.webicity.webribbon.gui.box.MutableBox;
+import everyos.browser.spec.jcss.cssom.ApplicablePropertyMap;
+import everyos.browser.webicity.webribbon.gui.box.layout.BlockLevelBox;
+import everyos.browser.webicity.webribbon.gui.box.layout.InlineLevelBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.BoxingStageBox;
+import everyos.browser.webicity.webribbon.gui.box.stage.MultiBox;
 import everyos.browser.webicity.webribbon.ui.webui.display.inner.flow.FlowContent;
-import everyos.engine.ribbon.core.rendering.RendererData;
-import everyos.engine.ribbon.core.shape.Dimension;
-import everyos.engine.ribbon.core.shape.Position;
-import everyos.engine.ribbon.core.shape.Rectangle;
-import everyos.engine.ribbon.ui.simple.helper.RectangleBuilder;
-import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
-public class BlockLevelBoxImp extends MutableBoxBase implements MutableBlockLevelBox {
-
-	private final Content content;
-	private final MutableBox parent;
-	private final List<Box> children;
+public class BlockLevelBoxImp extends MultiBoxBase implements BlockLevelBox {
+	
+	//TODO: Should boxes hold their own content?
+	private final BoxingStageBox parent;
+	private final List<MultiBox> children;
 	
 	private boolean containsBlockElements = false;
-
-	public BlockLevelBoxImp(MutableBox parent, Content content) {
-		this(parent, content, new ArrayList<Box>(1));
+	
+	public BlockLevelBoxImp(BoxingStageBox parent) {
+		this(parent, new ArrayList<MultiBox>(1));
 	}
 	
-	public BlockLevelBoxImp(MutableBox parent, Content content, List<Box> backeningList) {
-		this.content = content;
+	public BlockLevelBoxImp(BoxingStageBox parent, List<MultiBox> children) {
 		this.parent = parent;
-		this.children = backeningList;
+		this.children = children;
 	}
-	
+
 	@Override
-	public void add(Box box) {
+	public void add(MultiBox box) {
 		children.add(box);
 		if (box instanceof BlockLevelBox) {
 			containsBlockElements = true;
@@ -58,66 +47,45 @@ public class BlockLevelBoxImp extends MutableBoxBase implements MutableBlockLeve
 		
 		parent.add(this);
 	}
-	
+
 	@Override
-	public Box[] getChildren() {
-		return children.toArray(new Box[children.size()]);
+	public MultiBox[] getChildren() {
+		return this.children.toArray(new MultiBox[this.children.size()]);
 	}
 	
 	@Override
-	public void render(RendererData rd, SizePosGroup childSize, WebRenderContext context) {
-		content.render(this, rd, childSize, context);
+	public void setChildren(List<MultiBox> children) {
+		children.clear();
+		for (MultiBox child: children) {
+			children.add(child);
+		}
 	}
 	
 	@Override
-	public void paint(RendererData rd, Rectangle viewport, WebPaintContext context) {
-		content.paint(this, rd, intersect(viewport), context);
+	public MultiBox duplicate() {
+		BlockLevelBoxImp box = new BlockLevelBoxImp(parent, new ArrayList<>(children.size()));
+		box.setChildren(children);
+		box.containsBlockElements = containsBlockElements;
+		
+		box.setProperties(getProperties());
+		box.setContent(getContent());
+		//TODO: Clone rest of attributes
+		
+		return box;
 	}
 	
 	private void blockInlineElements() {
 		int listSize = children.size();
 		for (int i = 0; i < listSize; i++) {
-			Box child = children.get(i);
+			MultiBox child = children.get(i);
 			if (children.get(i) instanceof InlineLevelBox) {
-				BlockLevelBox blockBox = new BlockLevelBoxImp(this, new FlowContent(), List.of(child));
-				blockBox.setProperties(getProperties());
+				MultiBox blockBox = new BlockLevelBoxImp(this, List.of(child));
+				blockBox.setContent(new FlowContent());
+				//TODO: Is this correct?
+				blockBox.setProperties(ApplicablePropertyMap.empty());
 				children.set(i, blockBox);
 			}
 		}
 	}
-
-	@Override
-	public CullingFilter getPaintCullingFilter() {
-		// TODO
-		Position pos = getFinalPos();
-		Dimension size = getFinalSize();
-		return vp -> vp.intersects(new Rectangle(
-			pos.getX(), pos.getY(),
-			size.getWidth(), size.getHeight()));
-	}
-
-
-	private Rectangle intersect(Rectangle viewport) {
-		Position pos = getFinalPos();
-		Dimension size = getFinalSize();
-		
-		//AABB based culling
-		RectangleBuilder vpBuilder = new RectangleBuilder(
-			pos.getX(), pos.getY(),
-			size.getWidth(), size.getHeight());
-		
-		// Perform an intersect
-		Rectangle intersected = viewport; //vpBuilder.build().intersect(viewport);
-		vpBuilder.setWidth(intersected.getWidth());
-		vpBuilder.setHeight(intersected.getHeight());
-				
-		// Origin should be 0, 0
-		vpBuilder.setX(intersected.getX() - pos.getX());
-		vpBuilder.setY(intersected.getY() - pos.getY());
-		
-		// And scroll
-		vpBuilder.setY(vpBuilder.getY());
-		
-		return vpBuilder.build();
-	}
+	
 }
