@@ -13,10 +13,12 @@ switch (OperatingSystem.current()) {
 			? "arm64"
 			: "natives-linux"
 		project.ext.skijaNatives = "skija-linux"
+		project.ext.skijaVersion = "0.98.1"
 		break
 	case OperatingSystem.WINDOWS:
 		project.ext.lwjglNatives = "natives-windows"
 		project.ext.skijaNatives = "skija-windows"
+		project.ext.skijaVersion = "0.98.1"
 		break
 }
 
@@ -24,7 +26,6 @@ repositories {
     mavenCentral()
     maven {
     	url 'https://jitpack.io'
-    	url "https://packages.jetbrains.team/maven/p/skija/maven"
 	}
 }
 
@@ -51,7 +52,7 @@ dependencies {
 	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 	
-	implementation "org.jetbrains.skija:${skijaNatives}:0.93.4"
+	implementation "io.github.humbleui:${skijaNatives}:${skijaVersion}"
 	
 	testImplementation "org.junit.jupiter:junit-jupiter-engine:5.8.1"
 }

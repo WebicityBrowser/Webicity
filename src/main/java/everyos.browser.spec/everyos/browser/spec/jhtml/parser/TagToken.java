@@ -9,7 +9,7 @@ public class TagToken extends Token{
 	private StringBuilder attribute_name;
 	private StringBuilder attribute_value;
 	private boolean isEnd;
-	private HashMap<String, String> attributes = new HashMap<>();
+	private HashMap<String, String> attributes = new HashMap<>(4);
 	
 	public TagToken(String name, boolean isEnd) {
 		this.name = new StringBuilder(8);

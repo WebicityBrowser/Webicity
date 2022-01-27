@@ -16,10 +16,10 @@ import everyos.browser.spec.jcss.cssom.selector.simple.SimpleSelectorFastRoute;
 import everyos.browser.spec.jcss.cssom.selector.simple.TypeSelector;
 
 public class CSSOMNode {
-	private final Map<ComplexSelectorPart, CSSOMNode> nodes = new HashMap<>();
-	private final Map<SimpleSelectorFastRoute, CSSOMNode> nodesFastRoute = new HashMap<>();
+	private final Map<ComplexSelectorPart, CSSOMNode> nodes = new HashMap<>(1);
+	private final Map<SimpleSelectorFastRoute, CSSOMNode> nodesFastRoute = new HashMap<>(1);
 	
-	private final Map<PropertyName, Property> properties = new HashMap<>();
+	private final Map<PropertyName, Property> properties = new HashMap<>(1);
 	
 	private ComplexSelectorPart[] selectors = new ComplexSelectorPart[0];
 	

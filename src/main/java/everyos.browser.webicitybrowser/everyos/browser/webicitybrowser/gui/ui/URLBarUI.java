@@ -8,6 +8,7 @@ import everyos.engine.ribbon.core.graphics.InvalidationLevel;
 import everyos.engine.ribbon.core.graphics.PaintContext;
 import everyos.engine.ribbon.core.graphics.RenderContext;
 import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
+import everyos.engine.ribbon.core.graphics.paintfill.Color;
 import everyos.engine.ribbon.core.input.keyboard.Key;
 import everyos.engine.ribbon.core.input.keyboard.KeyboardEvent;
 import everyos.engine.ribbon.core.input.mouse.MouseEvent;
@@ -69,7 +70,7 @@ public class URLBarUI extends SimpleBlockComponentUI {
 			RibbonFontMetrics font = rd.getState().getFont();
 			
 			int width = StringWrapHelper.stringWidth(font, text);
-			sizepos.move(width+10, true);
+			sizepos.move(width, true);
 			sizepos.setMinLineHeight(font.getHeight());
 			
 			this.bounds = sizepos.getSize();
@@ -85,6 +86,23 @@ public class URLBarUI extends SimpleBlockComponentUI {
 			r.drawEllipse(rd, 0, 0, bounds.getHeight(), bounds.getHeight());
 			r.drawEllipse(rd, bounds.getWidth()-bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
 			r.drawFilledRect(rd, bounds.getHeight()/2, 0, bounds.getWidth()-bounds.getHeight(), bounds.getHeight());
+			
+			//TODO: This is just temporary so I don't forget. Change URL bar UI to accept a URL instead
+			// of raw text, and then we can perform the check on only the domain name, and only if the user
+			// has not typed
+			if (!text.matches("[a-z]*://[A-Za-z0-9-_.]+(/.*)?")) {
+				rd.getState().setForeground(Color.RED);
+				
+				int diameter = bounds.getHeight() / 2;
+				rd.useForeground();
+				r.drawEllipse(rd, diameter/2, diameter/2, diameter, diameter);
+				
+				rd.getState().setForeground(Color.WHITE);
+				rd.useForeground();
+				r.drawText(rd, diameter, diameter/2, "!");
+				
+				rd.getState().setForeground(Color.RED);
+			}
 			
 			rd.useForeground();
 			r.drawText(rd, bounds.getHeight(), bounds.getHeight()/2-rd.getState().getFont().getHeight()/2, text);

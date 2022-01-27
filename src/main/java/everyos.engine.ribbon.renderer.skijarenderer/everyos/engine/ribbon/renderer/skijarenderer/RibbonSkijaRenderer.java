@@ -1,17 +1,5 @@
 package everyos.engine.ribbon.renderer.skijarenderer;
 
-import org.jetbrains.skija.BackendRenderTarget;
-import org.jetbrains.skija.Canvas;
-import org.jetbrains.skija.ColorSpace;
-import org.jetbrains.skija.DirectContext;
-import org.jetbrains.skija.FramebufferFormat;
-import org.jetbrains.skija.Paint;
-import org.jetbrains.skija.RRect;
-import org.jetbrains.skija.Rect;
-import org.jetbrains.skija.Surface;
-import org.jetbrains.skija.SurfaceColorFormat;
-import org.jetbrains.skija.SurfaceOrigin;
-import org.jetbrains.skija.TextBlob;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL32;
 
@@ -26,6 +14,18 @@ import everyos.engine.ribbon.core.rendering.RendererData;
 import everyos.engine.ribbon.core.rendering.ResourceGenerator;
 import everyos.engine.ribbon.core.shape.Rectangle;
 import everyos.engine.ribbon.renderer.skijarenderer.event.ListenerPaintListener;
+import io.github.humbleui.skija.BackendRenderTarget;
+import io.github.humbleui.skija.Canvas;
+import io.github.humbleui.skija.ColorSpace;
+import io.github.humbleui.skija.DirectContext;
+import io.github.humbleui.skija.FramebufferFormat;
+import io.github.humbleui.skija.Paint;
+import io.github.humbleui.skija.Surface;
+import io.github.humbleui.skija.SurfaceColorFormat;
+import io.github.humbleui.skija.SurfaceOrigin;
+import io.github.humbleui.skija.TextBlob;
+import io.github.humbleui.types.RRect;
+import io.github.humbleui.types.Rect;
 
 public class RibbonSkijaRenderer implements Renderer {
 	

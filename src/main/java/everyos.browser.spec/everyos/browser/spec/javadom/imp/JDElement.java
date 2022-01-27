@@ -22,7 +22,7 @@ public class JDElement extends JDNode implements Element {
 		this.tagName = factory.getTagName();
 		this.localName = factory.getLocalName();
 		this.namespace = factory.getNamespaceURL();
-		this.attributes = new HashMap<>();
+		this.attributes = new HashMap<>(4);
 	}
 	
 	@Override

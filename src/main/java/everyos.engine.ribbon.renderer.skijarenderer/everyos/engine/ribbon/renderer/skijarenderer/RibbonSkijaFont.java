@@ -1,15 +1,14 @@
 package everyos.engine.ribbon.renderer.skijarenderer;
 
-import org.jetbrains.skija.Font;
-import org.jetbrains.skija.FontMetrics;
-import org.jetbrains.skija.FontMgr;
-import org.jetbrains.skija.FontSlant;
-import org.jetbrains.skija.FontStyle;
-import org.jetbrains.skija.FontWidth;
-import org.jetbrains.skija.Typeface;
-
 import everyos.engine.ribbon.core.graphics.font.FontInfo;
 import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
+import io.github.humbleui.skija.Font;
+import io.github.humbleui.skija.FontMetrics;
+import io.github.humbleui.skija.FontMgr;
+import io.github.humbleui.skija.FontSlant;
+import io.github.humbleui.skija.FontStyle;
+import io.github.humbleui.skija.FontWidth;
+import io.github.humbleui.skija.Typeface;
 
 public class RibbonSkijaFont implements RibbonFontMetrics {
 	

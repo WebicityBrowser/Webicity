@@ -14,6 +14,12 @@ Webicity consists of multiple components:
 
 Thanks to [@Minecraftian14](https://github.com/Minecraftian14) for helping!
 
+## Requirements
+
+Webicity is meant to be compatible with both Windows and Linux distributions with Java support, but is only tested on Windows.
+MacOS and other OSs are not supported. The recommended JDK/JRE version is Zulu JDK 17. Other versions of
+the JDK or JRE are not guaranteed to work.
+
 ## Checking out the code
 ```bash
 git clone https://github.com/jasonthekitten/Webicity-Java.git

@@ -11,7 +11,7 @@ import everyos.browser.spec.jcss.parser.IdentToken;
 public class LegacyDisplayValue {
 	
 	//TODO: Finish
-	private static Map<String, DisplayProperty> displayValues = new HashMap<>();
+	private static Map<String, DisplayProperty> displayValues = new HashMap<>(4);
 	
 	public static ValueParseInfo<DisplayProperty> parse(int off, CSSToken[] cssTokens) {
 		if (!(cssTokens[off] instanceof IdentToken)) {

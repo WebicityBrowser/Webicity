@@ -2,7 +2,6 @@ package everyos.engine.ribbon.renderer.skijarenderer;
 
 import java.util.ArrayList;
 
-import org.jetbrains.skija.DirectContext;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
@@ -40,6 +39,7 @@ import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil;
 import everyos.engine.ribbon.renderer.skijarenderer.util.ImageUtil.Image;
 import everyos.engine.ribbon.renderer.skijarenderer.util.KeyLookupUtil;
 import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
+import io.github.humbleui.skija.DirectContext;
 
 public class RibbonSkijaWindow {
 	
@@ -157,7 +157,7 @@ public class RibbonSkijaWindow {
 		//TODO: Allow adjusting scaling elsewhere
 		//TODO: Detect the actual DPI
 		int dpi = 96;
-		GL30.glViewport(0, 0, (int) (96.0 / dpi), (int) (height * 96.0 / dpi));
+		GL30.glViewport(0, 0, (int) (width * 96.0 / dpi), (int) (height * 96.0 / dpi));
 		
 		return window;
 	}
