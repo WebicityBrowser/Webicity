@@ -24,4 +24,5 @@ public final class PercentageValue {
 			cssTokens.length == 1 &&
 			cssTokens[off] instanceof PercentageToken;
 	}
+	
 }

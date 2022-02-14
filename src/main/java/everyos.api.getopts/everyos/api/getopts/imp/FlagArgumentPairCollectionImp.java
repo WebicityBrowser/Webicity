@@ -28,8 +28,8 @@ public class FlagArgumentPairCollectionImp implements FlagArgumentPairCollection
 	public FlagArgumentPair[] filter(Function<Flag, Boolean> filter) {
 		List<FlagArgumentPair> fin = new ArrayList<>();
 		
-		for (Integer key: arguments.keySet()) {
-			for (FlagArgumentPair pair: arguments.get(key)) {
+		for (List<FlagArgumentPair> pairs: arguments.values()) {
+			for (FlagArgumentPair pair: pairs) {
 				if (!filter.apply(pair.getFlag())) {
 					continue;
 				}

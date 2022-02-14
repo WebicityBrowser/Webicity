@@ -1,15 +1,8 @@
 package everyos.browser.webicity.webribbon.ui.webui.rendering.box;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import everyos.browser.webicity.webribbon.gui.box.layout.BlockLevelBox;
-import everyos.browser.webicity.webribbon.gui.box.stage.MultiBox;
-
 public class InlineLevelBoxImpTest {
 
-	@Test
+	/*@Test
 	@DisplayName("Box initially has no children")
 	public void boxInitiallyHasNoChildren() {
 		InlineLevelBoxImp box = new InlineLevelBoxImp(null);
@@ -49,6 +42,6 @@ public class InlineLevelBoxImpTest {
 		Assertions.assertEquals(generatedBox.getChildren().length, 2);
 		Assertions.assertEquals(generatedBox.getChildren()[0], child2);
 		Assertions.assertEquals(generatedBox.getChildren()[1], child3);
-	}
+	}*/
 	
 }

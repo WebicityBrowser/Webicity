@@ -49,6 +49,7 @@ public class ArgumentParserTest {
 			});
 		
 		parserBuilder.setAllowLooseArguments(true);
+		parserBuilder.setLogStream(StringPrintStream.create());
 		parserWithDefaultAllowed = parserBuilder.build();	
 	}
 	
@@ -56,7 +57,7 @@ public class ArgumentParserTest {
 	@DisplayName("No flags parses correctly")
 	public void checkNoFlagsParsesCorrectly() {			
 		try {
-			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {}, StringPrintStream.create());
+			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {});
 			
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG).length, 1);
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG)[0].getArguments().length, 0);
@@ -72,7 +73,7 @@ public class ArgumentParserTest {
 	@DisplayName("Single flag parses correctly")
 	public void checkSingleFlagParsesCorrectly() {			
 		try {
-			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t1"}, StringPrintStream.create());
+			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t1"});
 			
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG).length, 1);
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG)[0].getArguments().length, 0);
@@ -87,7 +88,7 @@ public class ArgumentParserTest {
 	@DisplayName("Single alias parses correctly")
 	public void checkSingleAliasParsesCorrectly() {			
 		try {
-			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"-1"}, StringPrintStream.create());
+			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"-1"});
 			
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG).length, 1);
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG)[0].getArguments().length, 0);
@@ -102,7 +103,7 @@ public class ArgumentParserTest {
 	@DisplayName("Flag with one argument parses correctly")
 	public void checkOneArgumentFlagParsesCorrectly() {			
 		try {
-			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t2", "hello"}, StringPrintStream.create());
+			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t2", "hello"});
 			
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG).length, 1);
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG)[0].getArguments().length, 0);
@@ -125,7 +126,7 @@ public class ArgumentParserTest {
 	@DisplayName("Alias with one argument parses correctly")
 	public void checkOneArgumentAliasParsesCorrectly() {			
 		try {
-			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"-2", "hello"}, StringPrintStream.create());
+			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"-2", "hello"});
 			
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG).length, 1);
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG)[0].getArguments().length, 0);
@@ -148,7 +149,7 @@ public class ArgumentParserTest {
 	@DisplayName("Flag with two arguments parses correctly")
 	public void checkTwoArgumentFlagParsesCorrectly() {			
 		try {
-			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t3", "hello", "world"}, StringPrintStream.create());
+			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t3", "hello", "world"});
 			
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG).length, 1);
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG)[0].getArguments().length, 0);
@@ -171,7 +172,7 @@ public class ArgumentParserTest {
 	@DisplayName("Flag with two arguments but applied with one argument throws exception")
 	public void checkNotEnoughArgumentsException() {		
 		Assertions.assertThrows(ParserFailedException.class, () -> {
-			parserWithDefaultAllowed.parse(new String[] {"--t3", "hello"}, StringPrintStream.create());
+			parserWithDefaultAllowed.parse(new String[] {"--t3", "hello"});
 		});
 	}
 	
@@ -179,7 +180,7 @@ public class ArgumentParserTest {
 	@DisplayName("Applying flag as argument throws exception")
 	public void checkFlagAsArgumentException() {		
 		Assertions.assertThrows(ParserFailedException.class, () -> {
-			parserWithDefaultAllowed.parse(new String[] {"--t2", "--t1"}, StringPrintStream.create());
+			parserWithDefaultAllowed.parse(new String[] {"--t2", "--t1"});
 		});
 	}
 	
@@ -187,7 +188,7 @@ public class ArgumentParserTest {
 	@DisplayName("Optional arguments are applied as flag arguments instead of loose arguments")
 	public void checkOptionalArgumentsParsesCorrectly() {			
 		try {
-			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t4", "hello"}, StringPrintStream.create());
+			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t4", "hello"});
 			
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG).length, 1);
 			Assertions.assertEquals(arguments.get(Flag.NO_FLAG)[0].getArguments().length, 0);
@@ -201,7 +202,7 @@ public class ArgumentParserTest {
 	@DisplayName("Optional arguments are optional")
 	public void checkOptionalArgumentsAreOptional() {			
 		try {
-			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t4"}, StringPrintStream.create());
+			FlagArgumentPairCollection arguments = parserWithDefaultAllowed.parse(new String[] {"--t4"});
 			
 			Assertions.assertEquals(arguments.get(T4_ID)[0].getArguments().length, 0);
 		} catch (ParserFailedException e) {
@@ -213,7 +214,7 @@ public class ArgumentParserTest {
 	@DisplayName("Duplicatable flags can be duplicated")
 	public void checkDuplicatableFlagsCanBeDuplicated() {			
 		try {
-			parserWithDefaultAllowed.parse(new String[] {"--t1", "--t1"}, StringPrintStream.create());
+			parserWithDefaultAllowed.parse(new String[] {"--t1", "--t1"});
 		} catch (ParserFailedException e) {
 			Assertions.fail(e);
 		}
@@ -223,7 +224,7 @@ public class ArgumentParserTest {
 	@DisplayName("Non-duplicatable flags cannot be duplicated")
 	public void checkNonDuplicatableFlagsCannotBeDuplicated() {			
 		Assertions.assertThrows(ParserFailedException.class, () -> {
-			parserWithDefaultAllowed.parse(new String[] {"--t4", "--t4"}, StringPrintStream.create());
+			parserWithDefaultAllowed.parse(new String[] {"--t4", "--t4"});
 		});
 	}
 	
@@ -232,7 +233,7 @@ public class ArgumentParserTest {
 	@DisplayName("Non-duplicatable flags cannot be duplicated with alias")
 	public void checkNonDuplicatableFlagsCannotBeDuplicatedWithAlias() {			
 		Assertions.assertThrows(ParserFailedException.class, () -> {
-			parserWithDefaultAllowed.parse(new String[] {"--t4", "-4"}, StringPrintStream.create());
+			parserWithDefaultAllowed.parse(new String[] {"--t4", "-4"});
 		});
 	}
 	

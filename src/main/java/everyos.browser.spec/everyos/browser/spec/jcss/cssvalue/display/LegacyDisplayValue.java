@@ -51,4 +51,5 @@ public class LegacyDisplayValue {
 			displayValues.put(displayValueNames[i], displayValueValues[i]);
 		}
 	}
+	
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import everyos.browser.spec.javadom.intf.Node;
 
 public class DescendantCombinator implements Combinator {
+	
 	@Override
 	public Node[] matches(Node node) {
 		List<Node> parents = new ArrayList<>();
@@ -18,4 +19,5 @@ public class DescendantCombinator implements Combinator {
 		
 		return parents.toArray(new Node[parents.size()]);
 	}
+	
 }

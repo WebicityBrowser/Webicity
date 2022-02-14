@@ -21,12 +21,12 @@ public class JCSSTokenizer {
 		}
 	}
 	
-	public CSSToken[] createFromStream(Reader reader_) throws IOException {
+	public CSSToken[] createFromStream(Reader rawReader) throws IOException {
 		//TODO: Replace code points
 		
 		ArrayList<CSSToken> tokens = new ArrayList<>();
 		
-		PushbackReader reader = new PushbackReader(reader_, 4);
+		PushbackReader reader = new PushbackReader(rawReader, 4);
 		
 		while (true) {
 			CSSToken result = consumeAToken(reader);

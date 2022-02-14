@@ -14,51 +14,54 @@ import everyos.browser.spec.jcss.parser.WhitespaceToken;
 public final class DeclarationParser {
 
 	public static Property getPropertyFor(Declaration rule) {
-		CSSToken[] tidyValue = tidy(rule.getValue());
+		CSSToken[] trimmedValue = removeExtraWhitespace(rule.getValue());
 		
 		//TODO: Default parsing for default things like var/inherit/etc
 		
 		//TODO: Make this a HashMap?
 		switch(rule.getName()) {
 			case "color":
-				return ColorPropertyParser.parse(tidyValue);
+				return ColorPropertyParser.parse(trimmedValue);
 				
 			case "background-color":
 			case "background": //Temporary case statement
-				return BackgroundColorPropertyParser.parse(tidyValue);
+				return BackgroundColorPropertyParser.parse(trimmedValue);
 				
 			case "display":
-				return DisplayPropertyParser.parse(tidyValue);
+				return DisplayPropertyParser.parse(trimmedValue);
 				
 			case "width":
-				return WidthPropertyParser.parse(tidyValue);
+				return WidthPropertyParser.parse(trimmedValue);
 				
 			case "height":
-				return HeightPropertyParser.parse(tidyValue);
+				return HeightPropertyParser.parse(trimmedValue);
 				
 			case "font-size":
-				return FontSizePropertyParser.parse(tidyValue);
+				return FontSizePropertyParser.parse(trimmedValue);
 		
 			default:
 				return null;
 		}
 	}
 
-	private static CSSToken[] tidy(CSSToken[] value) {
-		int j = 0;
+	private static CSSToken[] removeExtraWhitespace(CSSToken[] value) {
+		int searchPoint = 0;
 		int len = 0;
 		boolean ignoreWhitespace = true;
 		
-		for (int i = 0; j < value.length;) {
-			if (value[j] instanceof WhitespaceToken && ignoreWhitespace) {
-				j++;
+		for (int insertionPoint = 0; searchPoint < value.length;) {
+			if (value[searchPoint] instanceof WhitespaceToken && ignoreWhitespace) {
+				// We only allow one whitespace character in a row
+				searchPoint++;
 			} else {
-				ignoreWhitespace = value[j] instanceof WhitespaceToken;
+				ignoreWhitespace = value[searchPoint] instanceof WhitespaceToken;
+				//This if statement exists so that we don't include whitespace in the
+				// tail end of the the array 
 				if (!ignoreWhitespace) {
-					len = i + 1;
+					len = insertionPoint + 1;
 				}
 				
-				value[i++] = value[j++];
+				value[insertionPoint++] = value[searchPoint++];
 			}
 		}
 		

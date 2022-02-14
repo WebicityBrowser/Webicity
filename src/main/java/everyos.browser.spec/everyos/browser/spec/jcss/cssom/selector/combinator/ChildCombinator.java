@@ -14,4 +14,5 @@ public class ChildCombinator implements Combinator {
 		
 		return new Node[] { parent };
 	}
+	
 }

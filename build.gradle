@@ -2,8 +2,9 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
 	id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'application'
-    id 'java'
+	id 'application'
+	id 'java'
+	id 'eclipse'
 }
 
 switch (OperatingSystem.current()) {
@@ -23,9 +24,9 @@ switch (OperatingSystem.current()) {
 }
 
 repositories {
-    mavenCentral()
-    maven {
-    	url 'https://jitpack.io'
+	mavenCentral()
+	maven {
+		url 'https://jitpack.io'
 	}
 }
 
@@ -55,27 +56,25 @@ dependencies {
 	implementation "io.github.humbleui:${skijaNatives}:${skijaVersion}"
 	
 	testImplementation "org.junit.jupiter:junit-jupiter-engine:5.8.1"
+	
+	implementation project(":Lace")
+	implementation project(":Lace-Skija-Backend")
+	implementation project(":Lace-SimpleLaF")
+	implementation project(":Lace-Basics")
+	implementation project(":LaceImpUtils")
 }
-
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'eclipse'
 
 sourceSets {
 	main {
 		java {
 			srcDirs = [
+				'src/main/java/everyos.api.getopts',
 				'src/main/java/everyos.browser.spec',
 				'src/main/java/everyos.browser.webicity',
-				'src/main/java/everyos.browser.webicity.webribbon',
 				'src/main/java/everyos.browser.webicity.webttyg',
 				'src/main/java/everyos.browser.webicitybrowser',
-				'src/main/java/everyos.engine.ribbon.core',
-				'src/main/java/everyos.engine.ribbon.renderer.skijarenderer',
-				'src/main/java/everyos.engine.ribbon.ui.simple',
 				'src/main/java/everyos.engine.ttyg.core',
 				'src/main/java/everyos.engine.ttyg.jlinerenderer',
-				'src/main/java/everyos.api.getopts'
 			]
 		}
 	}

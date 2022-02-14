@@ -6,7 +6,7 @@ import everyos.browser.spec.jcss.intf.CSSStyleSheet;
 import everyos.browser.spec.jhtml.browsing.BrowsingContext;
 import everyos.browser.spec.jhtml.browsing.Origin;
 import everyos.browser.spec.jhtml.intf.Window;
-import everyos.browser.webicity.net.URL;
+import everyos.browser.spec.jnet.URL;
 
 public interface Document extends Node {
 	public static final String QUIRKS_MODE = "quirks";

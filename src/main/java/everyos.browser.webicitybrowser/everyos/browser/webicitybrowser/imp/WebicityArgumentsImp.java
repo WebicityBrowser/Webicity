@@ -8,7 +8,7 @@ import everyos.api.getopts.ArgumentParser;
 import everyos.api.getopts.Flag;
 import everyos.api.getopts.FlagArgumentPairCollection;
 import everyos.api.getopts.ParserFailedException;
-import everyos.browser.webicity.net.URL;
+import everyos.browser.spec.jnet.URL;
 import everyos.browser.webicitybrowser.WebicityArguments;
 
 public class WebicityArgumentsImp implements WebicityArguments {
@@ -23,17 +23,17 @@ public class WebicityArgumentsImp implements WebicityArguments {
 	private final URL[] urls;
 	
 	public WebicityArgumentsImp(ArgumentParser parser, FlagArgumentPairCollection arguments) throws ParserFailedException {
-		List<URL> urls = new ArrayList<>();
-		
-		URLArgumentReader urlReader = new URLArgumentReader();
-		
 		if (arguments.get(HELP_FLAG).length > 0) {
-			parser.printHelpScreen(System.out);
+			parser.printHelpScreen();
 			throw new ParserFailedException();
 		}
 		
+		List<URL> urls = new ArrayList<>();
+		URLArgumentReader urlReader = new URLArgumentReader();
+		
 		this.isPrivate = arguments.get(PRIVATE_FLAG).length > 0;
 		this.isVerbose = arguments.get(VERBOSE_FLAG).length > 0;
+		
 		for (Argument argument: arguments.get(Flag.NO_FLAG)[0].getArguments()) {
 			urls.add(argument.read(urlReader));
 		}

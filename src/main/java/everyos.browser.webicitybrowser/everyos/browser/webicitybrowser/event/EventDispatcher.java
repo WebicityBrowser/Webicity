@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class EventDispatcher<T extends EventListener> {
+	
 	List<T> listeners = new ArrayList<>();
 	
 	public void addListener(T listener) {
@@ -16,8 +17,9 @@ public class EventDispatcher<T extends EventListener> {
 	}
 	
 	public void fire(Consumer<T> handler) {
-		for (T listener: listeners) {
+		for (T listener: List.copyOf(listeners)) {
 			handler.accept(listener);
 		}
 	}
+	
 }

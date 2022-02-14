@@ -1,0 +1,34 @@
+Ok. So I had a new idea for a learning platform.
+So you know dependency managers? You have to have the prerequisites before you can install the dependent.
+Or like, you know how some video games have concepts of a "skill tree"
+I wanted to represent learning in a way similar to these
+
+Basically, I wanted to put a ton of small topics into a tree, and (with the exception of roots) each topic depends on previous topics.
+If I wanted to learn about, say, lambdas, I would navigate to the node of the tree called "anonymous inner classes" so that I can start the topic. However, then I might see that "hey! this has a dependency on another node called \"classes\""!
+On the other hand, if I learned about normal classes first, and wanted to see what I can learn next, I might then view nodes/topics that depend on that node/topic, and then go "hey! this \"anonymous inner classes\" node looks interesting!"
+
+You could also set a node/topic as a goal. That way, if you go to work on it's dependency topics next, you can remember which topic you are working towards learning.
+
+The main advantage of this system is that it greatly simplifies learning for users who already have an end goal in mind. For example, say I was learning art, and really wanted to be able to draw, say, a landscape. If I were to go onto YouTube or something, I might find a tutorial on how to do so, but then find that the tutorial uses all sorts of techniques that I've not learned and therefore looks more like magic than a tutorial. This system would fix that. As an added plus, it would also shows users what they could learn in the future, too.
+
+One of the main issues I can see with this system is that, although you can see what *can* be learned next, it doesn't necesarilly tell you what you *should* learn next.
+For example, say you've learned the Spanish grammar, and now you want to learn some Spanish words. There are a ton of Spanish words, and while they might depend on Spanish grammer, they don't depend on eachother - meaning you just have a giant horizontal collection of nodes, and you could learn any of them next, but aren't sure which one you want to.
+My solution to this issue is introducing the concepts of groups and paths. Groups tell you which topics can be considered related, while paths can tell you which order you should learn topics in (going back to my Spanish example, it can say what words would be good for a beginner to learn first). Groups and paths can be created by users and then published for the world to use.
+
+Some other potential problems I can see:
+* Even with groups/paths to help, the tree might still grow disorganized.
+* Doesn't work too well for learning something like music, where you just learn via enough practice.
+* Doesn't account for the fact that, if users learn two topics, they might get them mixed up later. Back to the Spanish example, say a user learns two words. They might then get the two words confused. And since the topics are independent from eachother, you can't really do anything about that. One possible solution to this is to allow paths (which I previously mentioned) to have their own special-purpose nodes that allow you to combine everything learnt. 
+* Say I have a programming topic written in English. Obviously, you need to know English to understand the topic, then. So say I tag English (which would actually be a group, but in this case we're considering it as a node) as a dependency of this topic. Well then, say the topic also uses the "+" sign. Well then, I guess I also tag that as a dependency. This could grow into a mess of dependencies that users already know! (One solution that could work is to allow users to hide certain topics in the dependencies section, since they already know them)
+
+Some other neato features I could build in to add icing:
+* The ability to rate your understanding of a node from 1-5 after completing it. The website can then suggest that you review nodes you didn't understand as well after about a week.
+* The ability to set daily/weekly/monthly learning goals, which you can then get push notifications about.
+* An OAuth2 flow that allows you to authorize applications. A node can then redirect you to an external website, say to take a quiz or something, and then the external website can automatically mark the node that you were working on as completed for you.
+* Also, in addition to that, a simple quizing system built into the site.
+* The ability for users to make "substitute" nodes that teach the same thing but in a different way or at a different level of quality.
+* The ability to rate a node so that users can determine if they should use that node or a substitute.
+
+To maintain quality of the site, any nodes/topics added to the main tree would be manually approved by a moderator. Users can create private trees if they want to share nodes/topics that have not been approved.
+
+As a nice bonus, on your user profile, you would be able to see a little diagram of the parts of the tree you've learned so far.

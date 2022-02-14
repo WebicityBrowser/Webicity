@@ -11,7 +11,7 @@ import everyos.browser.spec.jfetch.intf.Request;
 import everyos.browser.spec.jhtml.enm.HistoryHandlingBehavior;
 import everyos.browser.spec.jhtml.intf.Window;
 import everyos.browser.spec.jhtml.intf.WindowProxy;
-import everyos.browser.webicity.net.URL;
+import everyos.browser.spec.jnet.URL;
 
 public class BrowsingContext {
 	private WindowProxy proxy;

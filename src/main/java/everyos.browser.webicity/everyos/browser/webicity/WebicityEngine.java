@@ -3,12 +3,14 @@ package everyos.browser.webicity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import everyos.browser.spec.jnet.URL;
 import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
-import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.net.protocol.Protocol;
 import everyos.browser.webicity.net.protocol.http.HTTPRequest;
 import everyos.browser.webicity.net.protocol.io.AboutRequest;
@@ -16,8 +18,9 @@ import everyos.browser.webicity.net.protocol.io.FileRequest;
 import everyos.browser.webicity.net.protocol.io.WebicityRequest;
 
 public abstract class WebicityEngine {
-	private final HashMap<String, Protocol> protocols;
-	private final ArrayList<ExecutorService> threads;
+	
+	private final Map<String, Protocol> protocols;
+	private final List<ExecutorService> threads;
 	
 	private boolean stopped = false;
 	
@@ -71,4 +74,5 @@ public abstract class WebicityEngine {
 	public boolean hasQuit() {
 		return stopped;
 	}
+	
 }

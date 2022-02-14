@@ -23,32 +23,26 @@ import everyos.browser.spec.jcss.parser.IdentToken;
 import everyos.browser.spec.jcss.parser.WhitespaceToken;
 
 public class SelectorParser {
+	
+	//TODO: Clean-up
 	public ComplexSelector parse(Object[] prelude, int[] offset) {
 		List<ComplexSelectorPart> selectorParts = new ArrayList<>();
 		PsuedoElementSelector psuedoElementSelector = new PsuedoIdentitySelector();
 		
 		int i = offset[0];
 		
-		State state = State.DEFAULT;
+		State state = State.BEFORE_KEYWORD;
 		boolean spaceEncountered = false;
 		for (; i < prelude.length; i++) {
 			Object part = prelude[i];
 			
 			if (part instanceof CommaToken) {
+				// Indicates that we are done parsing the current selector
 				break;
 			}
 			
 			switch(state) {
 				// TODO: Handle namespaces
-				case DEFAULT:
-					if (part instanceof WhitespaceToken) {
-						
-					} else {
-						state = State.BEFORE_KEYWORD;
-						i--;
-					}
-					break;
-					
 				case BEFORE_KEYWORD:
 					//TODO: Handle colon token
 					//TODO: Handle attribute selectors
@@ -131,6 +125,7 @@ public class SelectorParser {
 			ComplexSelectorPart[] parts = selectorParts.toArray(new ComplexSelectorPart[selectorParts.size()]);
 			return new ComplexSelector(parts, psuedoElementSelector);
 		}
+		
 		return null;
 	}
 	
@@ -147,6 +142,7 @@ public class SelectorParser {
 	}
 	
 	private static enum State {
-		DEFAULT, EARLY_RETURN, AFTER_KEYWORD, BEFORE_KEYWORD, ID_SELECTOR, CLASS_SELECTOR, FINISHED
+		EARLY_RETURN, AFTER_KEYWORD, BEFORE_KEYWORD, ID_SELECTOR, CLASS_SELECTOR, FINISHED
 	}
+	
 }

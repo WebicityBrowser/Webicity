@@ -13,7 +13,7 @@ public class JRoutine {
 	private JRoutine(Runnable r) {
 		JRoutine self = this;
 		
-		new Thread(()->{
+		new Thread(() -> {
 			routine.set(self);
 			
 			try {

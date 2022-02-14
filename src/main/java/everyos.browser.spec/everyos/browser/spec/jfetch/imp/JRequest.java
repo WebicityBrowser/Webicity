@@ -1,6 +1,6 @@
 package everyos.browser.spec.jfetch.imp;
 
-import everyos.browser.webicity.net.URL;
+import everyos.browser.spec.jnet.URL;
 
 public class JRequest {
 	public JRequest(URL resource) {

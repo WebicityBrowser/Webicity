@@ -5,14 +5,15 @@ import java.net.MalformedURLException;
 import java.util.concurrent.ExecutorService;
 
 import everyos.browser.spec.jhtml.browsing.BrowsingContext;
+import everyos.browser.spec.jnet.URL;
 import everyos.browser.webicity.concurrency.jroutine.JRoutine;
 import everyos.browser.webicity.concurrency.jroutine.JRoutineHelper;
 import everyos.browser.webicity.event.FrameCallback;
 import everyos.browser.webicity.net.Response;
-import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.renderer.Renderer;
 
 public class WebicityFrame {
+	
 	//TODO: Move some of this to a "browsing context"
 	private final URL url;
 	private final FrameCallback callback;
@@ -87,4 +88,5 @@ public class WebicityFrame {
 			e.printStackTrace();
 		}
 	}
+	
 }

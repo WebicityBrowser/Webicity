@@ -1,5 +1,7 @@
 package everyos.api.getopts;
 
+import java.io.PrintStream;
+
 /**
  * A builder to create an argument parser.
  */
@@ -39,6 +41,13 @@ public interface ArgumentParserBuilder {
 	 * @return The current builder.
 	 */
 	ArgumentParserBuilder setErrorFooter(String message);
+	
+	/**
+	 * Set the stream that this parser will log output to.
+	 * @param parserLogStream The stream that this parser will log output to.
+	 * @return The current builder.
+	 */
+	ArgumentParserBuilder setLogStream(PrintStream parserLogStream);
 	
 	/**
 	 * Create the final argument parser from the given settings.

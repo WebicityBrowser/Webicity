@@ -40,4 +40,5 @@ public class TypeSelector implements SimpleSelectorFastRoute {
 	public String toString() {
 		return "TypeSelector [type=\""+type+"\"]";
 	}
+	
 }

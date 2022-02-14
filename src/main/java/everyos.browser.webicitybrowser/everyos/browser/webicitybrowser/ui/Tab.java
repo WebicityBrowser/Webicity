@@ -2,8 +2,8 @@ package everyos.browser.webicitybrowser.ui;
 
 import java.io.Closeable;
 
+import everyos.browser.spec.jnet.URL;
 import everyos.browser.webicity.event.NavigateEvent;
-import everyos.browser.webicity.net.URL;
 import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicitybrowser.WebicityInstance;
 import everyos.browser.webicitybrowser.event.EventDispatcher;

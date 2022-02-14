@@ -2,7 +2,6 @@ package everyos.browser.spec.jcss.cssom;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import everyos.browser.spec.javadom.intf.Element;
 import everyos.browser.spec.javadom.intf.Node;
@@ -16,6 +15,9 @@ import everyos.browser.spec.jcss.cssom.selector.simple.SimpleSelectorFastRoute;
 import everyos.browser.spec.jcss.cssom.selector.simple.TypeSelector;
 
 public class CSSOMNode {
+	
+	private static final int BASE_NUMBER_OF_FAST_PATHS = 2;
+	
 	private final Map<ComplexSelectorPart, CSSOMNode> nodes = new HashMap<>(1);
 	private final Map<SimpleSelectorFastRoute, CSSOMNode> nodesFastRoute = new HashMap<>(1);
 	
@@ -23,69 +25,41 @@ public class CSSOMNode {
 	
 	private ComplexSelectorPart[] selectors = new ComplexSelectorPart[0];
 	
+	//
+	
 	public CSSOMNode getNode(ComplexSelectorPart selector) {
 		if (selector instanceof SimpleSelectorFastRoute) {
 			return nodesFastRoute.get((SimpleSelectorFastRoute) selector);
 		}
+		
 		return nodes.get(selector);
 	}
 	
 	public CSSOMNode getOrCreateNode(ComplexSelectorPart selector) {
 		if (selector instanceof SimpleSelectorFastRoute) {
-			return nodesFastRoute.computeIfAbsent((SimpleSelectorFastRoute) selector, (k)->new CSSOMNode());
+			return nodesFastRoute.computeIfAbsent((SimpleSelectorFastRoute) selector, (k) -> new CSSOMNode());
 		}
 		
-		if (!nodes.containsKey(selector)) {
-			nodes.put(selector, new CSSOMNode());
-			
-			Set<ComplexSelectorPart> rawSelectors = nodes.keySet();
-			selectors = rawSelectors.toArray(new ComplexSelectorPart[rawSelectors.size()]);
-		}
-		
+		createNodeIfNotPresent(selector);
 		return nodes.get(selector);
 	}
-	
+
 	public ComplexSelectorPart[] getSelectors(Node node) {
-		int additional = 0;
-		if (node instanceof Element) {
-			additional = ((Element) node).getClassList().getLength();
-		}
+		int numberOfPossibleSelectors = getNumberOfSelectorsToTryMatching(node);
+		ComplexSelectorPart[] selectors = new ComplexSelectorPart[numberOfPossibleSelectors];
 		
-		ComplexSelectorPart[] allSelectors = new ComplexSelectorPart[2 + additional + this.selectors.length];
-		int i = 0;
+		int pos = addNormalSelectors(selectors, 0);
 		
 		if (node instanceof Element) {
-			Element e = (Element) node;
-			SimpleSelector next = new TypeSelector(e.getTagName());
-			if (nodesFastRoute.containsKey(next)) {
-				allSelectors[i++] = next;
-			}
-			
-			String id = e.getId();
-			if (id != null) {
-				next = new IDSelector(id);
-				if (nodesFastRoute.containsKey(next)) {
-					allSelectors[i++] = next;
-				}
-			}
-			
-			for (String clsName: e.getClassList()) {
-				next = new ClassSelector(clsName);
-				if (nodesFastRoute.containsKey(next)) {
-					allSelectors[i++] = next;
-				}
-			}
+			pos = addElementFastRouteSelectors(selectors, (Element) node, pos);
 		}
 		
-		if (this.selectors.length > 0) {
-			System.arraycopy(this.selectors, 0, allSelectors, i, this.selectors.length);
-		}
+		ComplexSelectorPart[] selectorsCopy = new ComplexSelectorPart[pos];
+		System.arraycopy(selectors, 0, selectorsCopy, 0, pos);
 		
-		//TODO: Don't return null elements
-		
-		return allSelectors;
+		return selectorsCopy;
 	}
-	
+
 	public void setProperty(Property property) {
 		properties.put(property.getPropertyName(), property);
 	}
@@ -95,14 +69,89 @@ public class CSSOMNode {
 	}
 
 	public Property[] getProperties() {
-		Property[] propertiesArr = new Property[properties.size()];
-		
-		int i = 0;
-		for (PropertyName key: properties.keySet()) {
-			propertiesArr[i++] = properties.get(key);
+		return properties.values().toArray(new Property[0]);
+	}
+	
+	//
+	
+	private void createNodeIfNotPresent(ComplexSelectorPart selector) {
+		if (!nodes.containsKey(selector)) {
+			nodes.put(selector, new CSSOMNode());
+			updateSelectorCache();
+		}
+	}
+
+	private void updateSelectorCache() {
+		selectors = nodes.keySet().toArray(new ComplexSelectorPart[nodes.size()]);
+	}
+	
+	private int getNumberOfSelectorsToTryMatching(Node relatedNode) {
+		int numberOfExtraFastPaths = 0;
+		if (relatedNode instanceof Element) {
+			numberOfExtraFastPaths = ((Element) relatedNode).getClassList().getLength();
 		}
 		
-		return propertiesArr;
+		return BASE_NUMBER_OF_FAST_PATHS + numberOfExtraFastPaths + this.selectors.length;
+	}
+	
+	private int addNormalSelectors(ComplexSelectorPart[] selectors, int pos) {
+		if (this.selectors.length > 0) {
+			System.arraycopy(this.selectors, 0, selectors, pos, this.selectors.length);
+		}
+		
+		return pos + this.selectors.length;
+	}
+	
+	private int addElementFastRouteSelectors(ComplexSelectorPart[] selectors, Element element, int pos) {
+		int newPos = pos;
+		
+		if (addTypeSelector(selectors, element, newPos)) {
+			newPos++;
+		}
+		if (addIDSelector(selectors, element, newPos)) {
+			newPos++;
+		}
+		newPos += addClassSelectors(selectors, element, newPos);
+		
+		return newPos;
+	}
+
+	private boolean addTypeSelector(ComplexSelectorPart[] selectors, Element element, int pos) {
+		SimpleSelector typeSelector = new TypeSelector(element.getTagName());
+		if (nodesFastRoute.containsKey(typeSelector)) {
+			selectors[pos] = typeSelector;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean addIDSelector(ComplexSelectorPart[] selectors, Element element, int pos) {
+		String id = element.getId();
+		if (id == null) {
+			return false;
+		}
+		
+		SimpleSelector idSelector = new IDSelector(id);
+		if (nodesFastRoute.containsKey(idSelector)) {
+			selectors[pos] = idSelector;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private int addClassSelectors(ComplexSelectorPart[] selectors, Element element, int pos) {
+		int i = 0;
+		for (String className: element.getClassList()) {
+			SimpleSelector classSelector = new ClassSelector(className);
+			if (nodesFastRoute.containsKey(classSelector)) {
+				selectors[pos + i] = classSelector;
+				i++;
+			}
+		}
+		
+		return i;
 	}
 	
 }

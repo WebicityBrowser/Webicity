@@ -6,6 +6,7 @@ public interface Sizing {
 	
 	//TODO: Static values for special size situations
 	//TODO: Pass more parameters
+	//TODO: Should we instead return a float?
 	public int calculateForParent(int parentWidth);
 	
 }

@@ -2,7 +2,7 @@ package everyos.browser.spec.javadom.imp;
 
 import everyos.browser.spec.javadom.intf.Document;
 import everyos.browser.spec.jhtml.browsing.Origin;
-import everyos.browser.webicity.net.URL;
+import everyos.browser.spec.jnet.URL;
 
 public class JDDocumentBuilder {
 	private String type = "xml";

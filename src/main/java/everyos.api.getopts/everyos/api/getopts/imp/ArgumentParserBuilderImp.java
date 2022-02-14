@@ -1,5 +1,7 @@
 package everyos.api.getopts.imp;
 
+import java.io.PrintStream;
+
 import everyos.api.getopts.ArgumentParser;
 import everyos.api.getopts.ArgumentParserBuilder;
 import everyos.api.getopts.Flag;
@@ -11,6 +13,7 @@ public class ArgumentParserBuilderImp implements ArgumentParserBuilder {
 	private String helpHeader;
 	private String helpFooter;
 	private String errorFooter;
+	private PrintStream parserLogStream;
 
 	@Override
 	public ArgumentParserBuilder setFlags(Flag[] flags) {
@@ -46,10 +49,17 @@ public class ArgumentParserBuilderImp implements ArgumentParserBuilder {
 		
 		return this;
 	}
+	
+	@Override
+	public ArgumentParserBuilder setLogStream(PrintStream parserLogStream) {
+		this.parserLogStream = parserLogStream;
+		
+		return this;
+	}
 
 	@Override
 	public ArgumentParser build() {
-		return new ArgumentParserImp(flags, allowLooseArguments, helpHeader, helpFooter, errorFooter);
+		return new ArgumentParserImp(flags, allowLooseArguments, helpHeader, helpFooter, errorFooter, parserLogStream);
 	}
 
 }

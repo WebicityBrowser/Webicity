@@ -5,7 +5,7 @@ import java.net.MalformedURLException;
 import everyos.api.getopts.ArgumentReader;
 import everyos.api.getopts.ErrorHandler;
 import everyos.api.getopts.ParserFailedException;
-import everyos.browser.webicity.net.URL;
+import everyos.browser.spec.jnet.URL;
 
 public class URLArgumentReader implements ArgumentReader<URL> {
 	@Override

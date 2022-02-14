@@ -3,10 +3,11 @@ package everyos.browser.webicity.net.protocol.http;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import everyos.browser.spec.jnet.URL;
+import everyos.browser.spec.jnet.http.HTTPSocket;
+import everyos.browser.spec.jnet.http.http11.HTTP11Request;
 import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
-import everyos.browser.webicity.net.URL;
-import everyos.browser.webicity.net.protocol.http.http11.HTTP11Request;
 
 public class HTTPRequest implements Request {
 	private URL url;
@@ -19,7 +20,7 @@ public class HTTPRequest implements Request {
 		request.setRequestTarget(url);
 		
 		// We include Firefox in our UA string because some sites are not served properly without it
-		request.setUserAgent("Webicity/0.1.0 (WebRibbon/0.1.0); Firefox/93.0 UA styling preferred");
+		request.setUserAgent("Webicity/0.1.0 (LaceWebExtensions/0.1.0); Firefox/93.0 UA styling preferred");
 		request.acceptEncoding("gzip", -1);
 		request.acceptEncoding("deflate", -1);
 		request.acceptEncoding("br", -1);
@@ -42,7 +43,7 @@ public class HTTPRequest implements Request {
 
 	@Override
 	public Response send() throws UnknownHostException, IOException {
-		HTTPSocket socket = HTTPSocket.openSocket(url, true);
+		HTTPSocket socket = HTTPSocket.openHTTPSocket(url, true);
 		
 		socket.sendRequest(request);
 		//TODO: Catch SSLHandshakeException and prompt user to disable TLS

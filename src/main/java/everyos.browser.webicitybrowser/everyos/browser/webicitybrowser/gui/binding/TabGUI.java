@@ -1,198 +1,133 @@
 package everyos.browser.webicitybrowser.gui.binding;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.util.function.Supplier;
+import com.github.anythingide.lace.basics.component.ContainerComponent;
+import com.github.anythingide.lace.basics.component.directive.BackgroundDirective;
+import com.github.anythingide.lace.basics.layout.auto.ChildrenDirective;
+import com.github.anythingide.lace.basics.layout.auto.PositionDirective;
+import com.github.anythingide.lace.basics.layout.auto.SizeDirective;
+import com.github.anythingide.lace.core.component.Component;
+import com.github.anythingide.lace.imputils.shape.PositionImp;
+import com.github.anythingide.lace.imputils.shape.RelativeSizeImp;
+import com.github.anythingide.lace.imputils.shape.SizeImp;
 
-import everyos.browser.webicity.net.URL;
 import everyos.browser.webicitybrowser.gui.Styling;
-import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.colors.Colors;
-import everyos.browser.webicitybrowser.gui.component.CircularText;
+import everyos.browser.webicitybrowser.gui.component.CircularButton;
 import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
+import everyos.browser.webicitybrowser.gui.util.ImageUtil;
 import everyos.browser.webicitybrowser.ui.Tab;
-import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
-import everyos.engine.ribbon.components.component.BlockComponent;
-import everyos.engine.ribbon.components.directive.BackgroundDirective;
-import everyos.engine.ribbon.components.directive.PositionDirective;
-import everyos.engine.ribbon.components.directive.SizeDirective;
-import everyos.engine.ribbon.core.graphics.Component;
-import everyos.engine.ribbon.core.shape.Location;
 
 public class TabGUI {
-	
-	private final Tab tab;
-	private final TabEventListener mutationListener;
-	
+
 	private TabButton tabButton;
 	private Component tabPane;
-	private boolean selected;
-	private URLBar urlBar;
 	private Colors colors;
 
 	public TabGUI(Tab tab) {
-		this.tab = tab;
-		this.mutationListener = new TabEventListener();
+		// TODO Auto-generated constructor stub
 	}
-	
+
 	public void start(Colors colors) {
 		this.colors = colors;
-		this.tabButton = new TabButton();
-		
-		createTabPane();
-		
-		tab.addTabMutationListener(mutationListener);
-		mutationListener.onNavigate(tab.getURL());
+		this.tabButton = createTabButton();
+		this.tabPane = createTabPane();
 	}
 
-	public void cleanup() {
-		tab.removeTabMutationListener(mutationListener);
+	public void setSelected(boolean b) {
+		
 	}
-	
+
+	//TODO: We should have a dedicated tab strip manager, which would be in charge of this type of stuff
 	public TabButton getTabButton() {
-		return this.tabButton;
-	}
-	
-	public Component getTabPane() {
-		return this.tabPane;
-	}
-	
-	private void configureTabButton(TabButton tabButton) {
-		tabButton.text(tab.getName());
+		return tabButton;
 	}
 
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-		if (selected) {
-			tabButton.directive(BackgroundDirective.of(colors.getBackgroundSecondaryActive()));
-		} else {
-			tabButton.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
-		}
+	public Component getTabPane() {
+		return tabPane;
 	}
 	
-	public boolean isSelected() {
-		return this.selected;
-	};
+	private TabButton createTabButton() {
+		TabButton tabButton = new TabButton();
+		tabButton.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
+		
+		return tabButton;
+	}
 	
-	private void createTabPane() {
-		this.tabPane = new BlockComponent();
-		
+	private Component createTabPane() {
 		Component tabDecor = createTabDecorations();
-		int decorHeight = Styling.BUTTON_WIDTH+(int)(Styling.ELEMENT_PADDING*1.5);
-		tabDecor.directive(SizeDirective.of(new Location(1, 0, 0, decorHeight)));
-		tabPane.addChild(tabDecor);
+		float decorHeight = Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING*1.5f;
+		tabDecor.directive(PositionDirective.of(new PositionImp(0, 0)));
+		tabDecor.directive(SizeDirective.of(RelativeSizeImp.of(1, 0, 0, decorHeight)));
 		
-		FrameGUI frame = new FrameGUI(tab.getFrame());
-		frame.start(colors);
-		
-		Component frameComponent = frame.getDisplayPane();
-		frameComponent.directive(SizeDirective.of(new Location(1, 0, 1, -decorHeight)));
-		frameComponent.directive(PositionDirective.of(new Location(0, 0, 0, decorHeight)));
-		tabPane.addChild(frameComponent);
+		Component tabPane = new ContainerComponent();
+		tabPane.directive(ChildrenDirective.of(tabDecor));
+
+		return tabPane;
 	}
 
 	private Component createTabDecorations() {
-		Component tabDecor = new BlockComponent();
+		Component controlButtonsContainer = createTabButtons();
+		float controlButtonsSize = (Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING)*3 - Styling.ELEMENT_PADDING;
+		controlButtonsContainer.directive(PositionDirective.of(new PositionImp(Styling.BORDER_PADDING, Styling.ELEMENT_PADDING/2)));
+		controlButtonsContainer.directive(SizeDirective.of(new SizeImp(controlButtonsSize, Styling.BUTTON_WIDTH)));
+		
+		Component urlBar = createURLBar();
+		float urlBarPosition = Styling.BORDER_PADDING + controlButtonsSize + Styling.ELEMENT_PADDING;
+		urlBar.directive(PositionDirective.of(new PositionImp(urlBarPosition, Styling.ELEMENT_PADDING/2)));
+		urlBar.directive(SizeDirective.of(RelativeSizeImp.of(1, -urlBarPosition-Styling.BORDER_PADDING, 0, Styling.BUTTON_WIDTH)));
+		
+		Component tabDecor = new ContainerComponent();
 		tabDecor.directive(BackgroundDirective.of(colors.getBackgroundPrimary()));
-		
-		// Add the tab action buttons
-		tabDecor.addChild(createBackButton());
-		tabDecor.addChild(createForwardButton());
-		tabDecor.addChild(createReloadButton());
-		
-		this.urlBar = new URLBar();
-		urlBar.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
-		urlBar.directive(PositionDirective.of(new Location(
-			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
-			0, (int) (Styling.ELEMENT_PADDING*.5))));
-		urlBar.directive(SizeDirective.of(new Location(
-			1, -Styling.BORDER_PADDING*2-(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*3,
-			0, Styling.BUTTON_WIDTH)));
-		urlBar.text("about:blank");
-		urlBar.setAction(url->{
-			try {
-				URL finURL = new URL(url);
-				tab.setURL(finURL);
-			} catch (MalformedURLException e) {
-				try {
-					URL finURL = URL.ofSafe("https://www.google.com/search?q="+URLEncoder.encode(url, "UTF-8"));
-					//TODO: Preferred search engine
-					tab.setURL(finURL);
-				} catch (UnsupportedEncodingException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		addButtonBehavior(urlBar, ()->{});
-		
-		tabDecor.addChild(urlBar);
+		tabDecor.directive(ChildrenDirective.of(controlButtonsContainer, urlBar));
 		
 		return tabDecor;
 	}
 
-	private Component createBackButton() {
-		CircularText backButton = new CircularText();
-		backButton.directive(PositionDirective.of(new Location(0, Styling.BORDER_PADDING, 0, (int) (Styling.ELEMENT_PADDING*.5))));
-		backButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
-		backButton.text("<");
-		addButtonBehavior(backButton, ()->tab.back());
+	private Component createTabButtons() {
+		Component[] controlButtons = new Component[] {
+			createBackButton(),
+			createForwardButton(),
+			createReloadButton()
+		};
 		
-		return backButton;
+		for (int i = 0; i < controlButtons.length; i++) {
+			Component button = controlButtons[i];
+			
+			button.directive(PositionDirective.of(new PositionImp((Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING)*i, 0)));
+			button.directive(SizeDirective.of(new SizeImp(Styling.BUTTON_WIDTH, Styling.BUTTON_WIDTH)));
+			button.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
+		}
+		
+		Component controlButtonsContainer = new ContainerComponent();
+		controlButtonsContainer.directive(ChildrenDirective.of(controlButtons));
+		
+		return controlButtonsContainer;
+	}
+
+	private Component createBackButton() {
+		CircularButton reloadButton = new CircularButton(ImageUtil.loadImageFromResource("icons/backward.png"));
+		
+		return reloadButton;
 	}
 
 	private Component createForwardButton() {
-		CircularText forwardButton = new CircularText();
-		forwardButton.directive(PositionDirective.of(new Location(
-			0, Styling.BORDER_PADDING+Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING,
-			0, (int) (Styling.ELEMENT_PADDING*.5))));
-		forwardButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
-		forwardButton.text(">");
-		addButtonBehavior(forwardButton, ()->tab.forward());
+		CircularButton reloadButton = new CircularButton(ImageUtil.loadImageFromResource("icons/forward.png"));
 		
-		return forwardButton;
+		return reloadButton;
 	}
-	
+
 	private Component createReloadButton() {
-		CircularText reloadButton = new CircularText();
-		reloadButton.directive(PositionDirective.of(new Location(
-			0, Styling.BORDER_PADDING+(Styling.BUTTON_WIDTH+Styling.ELEMENT_PADDING)*2,
-			0, (int) (Styling.ELEMENT_PADDING*.5))));
-		reloadButton.directive(SizeDirective.of(new Location(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));
-		reloadButton.text("O");
-		addButtonBehavior(reloadButton, ()->tab.reload());
+		CircularButton reloadButton = new CircularButton(ImageUtil.loadImageFromResource("icons/reload.png"));
 		
 		return reloadButton;
 	}
 	
-	private void addButtonBehavior(Component button, Runnable handler) {
-		addButtonBehavior(button, handler, ()->false);
+	private Component createURLBar() {
+		Component urlBar = new URLBar();
+		urlBar.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
+		
+		return urlBar;
 	}
 	
-	private void addButtonBehavior(Component button, Runnable handler, Supplier<Boolean> activeChecker) {
-		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondary(),
-			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
-			activeChecker);
-	}
-	
-	private class TabEventListener implements TabMutationEventListener {
-		
-		@Override
-		public void onNavigate(URL url) {
-			configureTabButton(tabButton);
-			urlBar.text(url.toString());
-		}
-		
-		@Override
-		public void onTitleChange(String name) {
-			configureTabButton(tabButton);
-		}
-		
-		@Override
-		public void onClose() {
-			//tabButton.delete();
-		}
-		
-	}
 }

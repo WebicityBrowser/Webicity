@@ -1,31 +1,7 @@
 package everyos.browser.webicitybrowser.gui.component;
 
-import java.util.function.Consumer;
+import com.github.anythingide.lace.imputils.ComponentBase;
 
-import everyos.engine.ribbon.components.component.BlockComponent;
-import everyos.engine.ribbon.core.graphics.InvalidationLevel;
+public class URLBar extends ComponentBase {
 
-public class URLBar extends BlockComponent {
-	
-	private String text = "";
-	private Consumer<String> action;
-	
-	public URLBar text(String text) {
-		this.text = text;
-		invalidate(InvalidationLevel.PAINT);
-		
-		return this;
-	}
-	
-	public String getText() {
-		return this.text;
-	}
-
-	public void setAction(Consumer<String> action) {
-		this.action = action;
-	}
-	
-	public Consumer<String> getAction() {
-		return this.action;
-	}
 }

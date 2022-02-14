@@ -1,16 +1,17 @@
 package everyos.browser.webicitybrowser.gui.colors;
 
-import everyos.engine.ribbon.core.graphics.paintfill.Color;
+import com.github.anythingide.lace.basics.color.RGBA16ColorImp;
+import com.github.anythingide.lace.core.color.Color;
 
 public class NormalColors implements Colors {
 	
-	private static final Color BACKGROUND_PRIMARY = Color.of(0, 119, 131);
-	private static final Color BACKGROUND_SECONDARY = Color.of(0, 178, 152);
-	private static final Color BACKGROUND_SECONDARY_HOVER = Color.LIGHT_GRAY;
-	private static final Color BACKGROUND_SECONDARY_SELECTED = Color.DARK_GRAY;
-	private static final Color BACKGROUND_SECONDARY_ACTIVE = Color.of(0, 151, 129);
-	private static final Color BACKGROUND_SECONDARY_DANGER = Color.of(178, 0, 0);
-	private static final Color FOREGROUND_PRIMARY = Color.WHITE;
+	private static final Color BACKGROUND_PRIMARY = RGBA16ColorImp.ofRGB8(0, 119, 131);
+	private static final Color BACKGROUND_SECONDARY = RGBA16ColorImp.ofRGB8(0, 178, 152);
+	private static final Color BACKGROUND_SECONDARY_HOVER = RGBA16ColorImp.LIGHT_GRAY;
+	private static final Color BACKGROUND_SECONDARY_SELECTED = RGBA16ColorImp.DARK_GRAY;
+	private static final Color BACKGROUND_SECONDARY_ACTIVE = RGBA16ColorImp.ofRGB8(0, 151, 129);
+	private static final Color BACKGROUND_SECONDARY_DANGER = RGBA16ColorImp.ofRGB8(178, 0, 0);
+	private static final Color FOREGROUND_PRIMARY = RGBA16ColorImp.WHITE;
 
 	@Override
 	public Color getBackgroundPrimary() {

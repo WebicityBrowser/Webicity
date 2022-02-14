@@ -1,6 +1,6 @@
 package everyos.browser.webicitybrowser;
 
-import everyos.browser.webicity.net.URL;
+import everyos.browser.spec.jnet.URL;
 
 public interface WebicityArguments {
 	URL[] getURLs();

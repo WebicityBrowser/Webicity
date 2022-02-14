@@ -1,78 +1,77 @@
 package everyos.browser.webicitybrowser.gui.ui;
 
+import com.github.anythingide.lace.basics.color.RGBA16ColorImp;
+import com.github.anythingide.lace.basics.component.directive.BackgroundDirective;
+import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.EllipseShape;
+import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.RectShape;
+import com.github.anythingide.lace.basics.pipeline.paint.paint.BasicPaint;
+import com.github.anythingide.lace.core.color.Color;
+import com.github.anythingide.lace.core.component.Component;
+import com.github.anythingide.lace.core.component.directive.DirectiveTarget;
+import com.github.anythingide.lace.core.laf.ComponentUI;
+import com.github.anythingide.lace.core.laf.Content;
+import com.github.anythingide.lace.core.pipeline.paint.LacePaint;
+import com.github.anythingide.lace.core.pipeline.paint.PaintStageBox;
+import com.github.anythingide.lace.core.pipeline.paint.PaintStepContext;
+import com.github.anythingide.lace.core.pipeline.paint.canvas.CanvasItem;
+import com.github.anythingide.lace.core.pipeline.paint.canvas.LaceCanvas;
+import com.github.anythingide.lace.core.shape.Size;
+import com.github.anythingide.lace.imputils.shape.RectangleImp;
+import com.github.anythingide.lace.laf.simple.content.SimpleComponentContent;
+import com.github.anythingide.lace.laf.simple.ui.SimpleComponentUI;
+
 import everyos.browser.webicitybrowser.gui.Styling;
-import everyos.browser.webicitybrowser.gui.component.TabButton;
-import everyos.engine.ribbon.core.event.UIEvent;
-import everyos.engine.ribbon.core.graphics.Component;
-import everyos.engine.ribbon.core.graphics.PaintContext;
-import everyos.engine.ribbon.core.graphics.RenderContext;
-import everyos.engine.ribbon.core.graphics.font.RibbonFontMetrics;
-import everyos.engine.ribbon.core.rendering.Renderer;
-import everyos.engine.ribbon.core.rendering.RendererData;
-import everyos.engine.ribbon.core.shape.Dimension;
-import everyos.engine.ribbon.core.ui.ComponentUI;
-import everyos.engine.ribbon.core.ui.UIDirective;
-import everyos.engine.ribbon.ui.simple.SimpleBlockComponentUI;
-import everyos.engine.ribbon.ui.simple.appearence.Appearence;
-import everyos.engine.ribbon.ui.simple.helper.StringWrapHelper;
-import everyos.engine.ribbon.ui.simple.shape.SizePosGroup;
 
-public class TabButtonUI extends SimpleBlockComponentUI {
-	private final Appearence appearence;
+public class TabButtonUI extends SimpleComponentUI {
 
-	public TabButtonUI(Component c, ComponentUI parent) {
-		super(c, parent);
-		
-		this.appearence = new TabButtonAppearence();
+	public TabButtonUI(Component component, ComponentUI parentUI) {
+		super(component, parentUI);
 	}
-	
 	
 	@Override
-	protected Appearence getAppearence() {
-		return this.appearence;
+	protected Content createContent() {
+		return new TabButtonContent(this);
+	}
+
+}
+
+class TabButtonContent extends SimpleComponentContent {
+	
+	public TabButtonContent(DirectiveTarget directiveProvider) {
+		super(directiveProvider);
+	}
+
+	@Override
+	public void paint(PaintStageBox box, PaintStepContext paintStepContext) {
+		paintBackground(paintStepContext.getCanvas(), box.getSize());
 	}
 	
-	private class TabButtonAppearence implements Appearence {
-		private String text;
-		private int strWidth;
-		private Dimension bounds;
+	private void paintBackground(LaceCanvas canvas, Size size) {
+		//TODO: Directives should probably return an Optional
+		Color backgroundColor =
+			getDirectives().getResolvedDirective(BackgroundDirective.class).map(d -> d.getColor())
+			.orElse(RGBA16ColorImp.TRANSPARENT);
 		
-		@Override
-		public void render(RendererData rd, SizePosGroup sizepos, RenderContext context) {
-			this.bounds = sizepos.getSize();
-			
-			int maxTextWidth = bounds.getWidth() - Styling.BUTTON_WIDTH - 2 * Styling.ELEMENT_PADDING;
-
-			RibbonFontMetrics font = rd.getState().getFont();
-			
-			this.text = StringWrapHelper.trim(font, getComponent().<TabButton>casted().getText(), maxTextWidth);
-			this.strWidth = StringWrapHelper.stringWidth(font, text);
-			sizepos.move(strWidth+font.getPaddingHeight(), true);
-			sizepos.setMinLineHeight(font.getHeight());
-		}
-
-		@Override
-		public void paint(RendererData rd, PaintContext context) {
-			Renderer r = context.getRenderer();
-			
-			rd.useBackground();
-			r.drawEllipse(rd, 0, 0, bounds.getHeight(), bounds.getHeight());
-			r.drawEllipse(rd, bounds.getWidth() - bounds.getHeight(), 0, bounds.getHeight(), bounds.getHeight());
-			r.drawFilledRect(rd, bounds.getHeight() / 2, 0, bounds.getWidth() - bounds.getHeight(), bounds.getHeight());
-			r.drawFilledRect(rd, 0, 0, bounds.getWidth(), bounds.getHeight() / 2);
-
-			rd.useForeground();
-			r.drawText(rd, Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING, Styling.ELEMENT_PADDING, text);
-		}
-
-		@Override
-		public void directive(UIDirective directive) {
-			
-		}
-
-		@Override
-		public void processEvent(UIEvent e) {
-			
-		}
+		float widthBeforeSpacing = size.getWidth() - Styling.ELEMENT_PADDING;
+		
+		LacePaint paint = new BasicPaint()
+				.setColor(backgroundColor);
+		
+		CanvasItem shape = new RectShape()
+				.setBounds(RectangleImp.of(Styling.BUTTON_WIDTH/2, 0, widthBeforeSpacing - Styling.BUTTON_WIDTH, size.getHeight()));
+			canvas.draw(shape, paint);
+		
+		shape = new RectShape()
+			.setBounds(RectangleImp.of(0, 0, widthBeforeSpacing, size.getHeight()/2));
+		canvas.draw(shape, paint);
+		
+		shape = new EllipseShape()
+			.setBounds(RectangleImp.of(0, 0, Styling.BUTTON_WIDTH, size.getHeight()));
+		canvas.draw(shape, paint);
+		
+		shape = new EllipseShape()
+			.setBounds(RectangleImp.of(widthBeforeSpacing - Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH, size.getHeight()));
+		canvas.draw(shape, paint);
 	}
+	
 }

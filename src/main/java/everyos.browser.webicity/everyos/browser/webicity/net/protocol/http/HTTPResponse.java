@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import everyos.browser.spec.jnet.http.HTTPSocket;
+import everyos.browser.spec.jnet.http.http11.HTTP11Response;
 import everyos.browser.webicity.WebicityFrame;
 import everyos.browser.webicity.net.Response;
-import everyos.browser.webicity.net.protocol.http.http11.HTTP11Response;
 import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
 import everyos.browser.webicity.renderer.plaintext.PlainTextRenderer;
 
 public class HTTPResponse implements Response {
+	
 	private final HTTP11Response response;
 
 	public HTTPResponse(HTTPSocket socket) throws IOException {
@@ -28,8 +30,6 @@ public class HTTPResponse implements Response {
 		if (type.indexOf(';') != -1) {
 			type = type.substring(0, type.indexOf(';'));
 		}
-		
-		System.out.println(type);
 		
 		switch(type) {//TODO: Move this to a registry
 			case "text/html":
@@ -71,4 +71,5 @@ public class HTTPResponse implements Response {
 			
 		}
 	}
+	
 }

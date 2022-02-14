@@ -3,57 +3,82 @@ package everyos.browser.spec.jcss.cssvalue.color;
 import everyos.browser.spec.jcss.cssvalue.ValueParseInfo;
 import everyos.browser.spec.jcss.parser.CSSToken;
 import everyos.browser.spec.jcss.parser.HashToken;
-import everyos.engine.ribbon.core.graphics.paintfill.Color;
 
 public class HexColorValue {
 
-	public static ValueParseInfo<Color> parse(int off, CSSToken[] cssTokens) {
+	public static ValueParseInfo<CSSColor> parse(int off, CSSToken[] cssTokens) {
+		// Make sure that we were actually passed a hex value
 		if (!(cssTokens[off] instanceof HashToken)) {
-			return ValueParseInfo.<Color>empty();
+			return ValueParseInfo.<CSSColor>empty();
 		}
 		
 		String hex = ((HashToken) cssTokens[off]).getValue();
-		Color color = null;
-		
 		try {
-			switch (hex.length()) {
-				case 6:
-					color = Color.of(
-						get6Part(hex, 0),
-						get6Part(hex, 2),
-						get6Part(hex, 4));
-					break;
-					
-				case 3:
-					color = Color.of(
-						get3Part(hex, 0),
-						get3Part(hex, 1),
-						get3Part(hex, 2));
-					break;
-					
-				//TODO: 8 and 4 digits
-					
-				default:
-					System.out.println(hex.length());
-					break;
-			}
+			return new ValueParseInfo<CSSColor>(parseHex(hex), 1);
 		} catch (NumberFormatException e) {
-			color = null; // Probably useless
-		}
-		
-		if (color == null) {
-			return ValueParseInfo.<Color>empty();
-		} else {
-			return new ValueParseInfo<Color>(color, 1);
+			return ValueParseInfo.<CSSColor>empty();
 		}
 	}
 
 
-	private static int get6Part(String hex, int i) {
+	private static CSSColor parseHex(String hex) {
+		switch (hex.length()) {
+			case 8:
+				return parse8DigitHex(hex);
+		
+			case 6:
+				return parse6DigitHex(hex);
+				
+			case 4:
+				return parse4DigitHex(hex);
+				
+			case 3:
+				return parse3DigitHex(hex);
+				
+			//TODO: 8 and 4 digits
+				
+			default:
+				throw new NumberFormatException("Could not recognize hex format!");
+		}
+	}
+
+
+	private static CSSColor parse8DigitHex(String hex) {
+		return CSSColor.ofRGBA8(
+			getDoubleHexDigit(hex, 0),
+			getDoubleHexDigit(hex, 2),
+			getDoubleHexDigit(hex, 4),
+			getDoubleHexDigit(hex, 6));
+	}
+	
+	private static CSSColor parse6DigitHex(String hex) {
+		return CSSColor.ofRGB8(
+			getDoubleHexDigit(hex, 0),
+			getDoubleHexDigit(hex, 2),
+			getDoubleHexDigit(hex, 4));
+	}
+	
+	private static CSSColor parse4DigitHex(String hex) {
+		return CSSColor.ofRGBA8(
+			getHexDigit(hex, 0),
+			getHexDigit(hex, 1),
+			getHexDigit(hex, 2),
+			getHexDigit(hex, 3));
+	}
+	
+	private static CSSColor parse3DigitHex(String hex) {
+		return CSSColor.ofRGB8(
+			getHexDigit(hex, 0),
+			getHexDigit(hex, 1),
+			getHexDigit(hex, 2));
+	}
+
+
+	private static int getDoubleHexDigit(String hex, int i) {
 		return fromHex(hex.charAt(i)) * 16 + fromHex(hex.charAt(i+1));
 	}
 	
-	private static int get3Part(String hex, int i) {
+	private static int getHexDigit(String hex, int i) {
 		return fromHex(hex.charAt(i)) * 16 + fromHex(hex.charAt(i));
 	}
 

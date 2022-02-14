@@ -7,6 +7,7 @@ import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
 
 public class WebicityEngineImp extends WebicityEngine {
+	
 	public WebicityEngineImp() {
 		super();
 		this.registerDefaultProtocols();
@@ -16,4 +17,5 @@ public class WebicityEngineImp extends WebicityEngine {
 	public Response processRequest(Request request) throws IOException {
 		return request.send();
 	}
+	
 }

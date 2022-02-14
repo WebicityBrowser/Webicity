@@ -7,6 +7,7 @@ public class GlobSelector implements ComplexSelectorPart {
 
 	@Override
 	public Node[] matches(Node node) {
-		return new Node[] {node};
+		return new Node[] { node };
 	}
+	
 }

@@ -11,7 +11,7 @@ import everyos.browser.spec.jhtml.browsing.Origin;
 import everyos.browser.spec.jhtml.intf.HTMLElement;
 import everyos.browser.spec.jhtml.intf.HTMLTitleElement;
 import everyos.browser.spec.jhtml.intf.Window;
-import everyos.browser.webicity.net.URL;
+import everyos.browser.spec.jnet.URL;
 
 public class JDDocument extends JDNode implements Document {
 	private Origin origin;

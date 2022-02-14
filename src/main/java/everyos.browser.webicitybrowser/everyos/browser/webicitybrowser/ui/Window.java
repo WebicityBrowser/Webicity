@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import everyos.browser.spec.javadom.intf.Document;
-import everyos.browser.webicity.net.URL;
+import everyos.browser.spec.jnet.URL;
 import everyos.browser.webicitybrowser.WebicityInstance;
 import everyos.browser.webicitybrowser.event.EventDispatcher;
 import everyos.browser.webicitybrowser.ui.event.WindowMutationEventListener;
@@ -33,11 +33,13 @@ public class Window implements Closeable {
 		tab.start();
 		tab.setURL(url);
 		tabs.add(tab);
-		mutationEventDispatcher.fire(l->l.onTabAdded(this, tab));
+		mutationEventDispatcher.fire(l -> l.onTabAdded(this, tab));
 	}
 	
 	public void openNewTab() {
-		openTab(URL.ofSafe("https://www.google.com/"));
+		// We can't use Google as the default new tab page
+		// https://about.google/brand-resource-center/products-and-services/search-guidelines/
+		openTab(URL.ofSafe("https://www.duckduckgo.com/"));
 	}
 	
 	public Tab[] getTabs() {
@@ -54,7 +56,7 @@ public class Window implements Closeable {
 	
 	@Override
 	public void close() {
-		mutationEventDispatcher.fire(l->l.onClose(this));
+		mutationEventDispatcher.fire(l -> l.onClose(this));
 		for (Tab tab: tabs) {
 			tab.close();
 		}
@@ -63,6 +65,7 @@ public class Window implements Closeable {
 	public void addWindowMutationListener(WindowMutationEventListener mutationListener) {
 		mutationEventDispatcher.addListener(mutationListener);
 	}
+	
 	public void removeWindowMutationListener(WindowMutationEventListener mutationListener) {
 		mutationEventDispatcher.removeListener(mutationListener);
 	}

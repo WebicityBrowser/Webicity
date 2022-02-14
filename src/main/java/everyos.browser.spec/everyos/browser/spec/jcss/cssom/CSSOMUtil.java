@@ -2,8 +2,10 @@ package everyos.browser.spec.jcss.cssom;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import everyos.browser.spec.javadom.intf.Node;
 import everyos.browser.spec.jcss.cssom.property.Property;
@@ -19,26 +21,27 @@ import everyos.browser.spec.jcss.parser.Tuple;
 
 //TODO: Track whether attributes are from UA or Site
 public class CSSOMUtil {
+	
 	public static CSSOMNode computeCSSOM(List<CSSRule[]> cssRules) {
 		CSSOMNode rootCSSOMNode = new CSSOMNode();
 		
 		for (CSSRule[] ruleSet: cssRules) {
-			mergeCSSOM(rootCSSOMNode, ruleSet);
+			mergeCSSOMWithRuleSet(rootCSSOMNode, ruleSet);
 		}
 		
 		return rootCSSOMNode;
 	}
 
-	private static void mergeCSSOM(CSSOMNode root, CSSRule[] ruleSet) {
+	private static void mergeCSSOMWithRuleSet(CSSOMNode root, CSSRule[] ruleSet) {
 		for (CSSRule rule: ruleSet) {
 			if (rule instanceof QualifiedRule) {
-				mergeCSSOM(root, (QualifiedRule) rule);
+				mergeCSSOMWithRule(root, (QualifiedRule) rule);
 			}
 			//TODO: Handle at-rule
 		}
 	}
 
-	private static void mergeCSSOM(CSSOMNode root, QualifiedRule rule) {
+	private static void mergeCSSOMWithRule(CSSOMNode root, QualifiedRule rule) {
 		Object[] prelude = rule.getPrelude();
 		int[] i = new int[1];
 		while (i[0] < prelude.length) {
@@ -83,38 +86,35 @@ public class CSSOMUtil {
 		}
 	}
 	
-	public static CSSOMNode[] getMatchingNodes(Node baseDomNode, CSSOMNode root) {
-		List<CSSOMNode> fin = new ArrayList<>(2);
-		ArrayDeque<Tuple<CSSOMNode, Node>> next = new ArrayDeque<>();
+	public static CSSOMNode[] getMatchingCSSOMNodesForDomNode(Node baseDomNode, CSSOMNode root) {
+		List<CSSOMNode> matchingCSSOMNodes = new ArrayList<>(2);
+		Deque<Tuple<CSSOMNode, Node>> queuedCSSOMNodesToCheck = new ArrayDeque<>();
+		queuedCSSOMNodesToCheck.add(new Tuple<>(root, baseDomNode));
 		
-		next.add(new Tuple<>(root, baseDomNode));
-		while (!next.isEmpty()) {
-			Tuple<CSSOMNode, Node> nodes = next.pop();
-			CSSOMNode cssNode = nodes.getT1();
-			Node domNode = nodes.getT2();
+		while (!queuedCSSOMNodesToCheck.isEmpty()) {
+			Tuple<CSSOMNode, Node> nodes = queuedCSSOMNodesToCheck.pop();
+			matchingCSSOMNodes.add(nodes.getT1());
 			
-			fin.add(cssNode);
-			
-			for (ComplexSelectorPart selector: cssNode.getSelectors(domNode)) {
-				if (selector == null) {
-					continue;
-				}
-				
-				Node[] matches = selector.matches(domNode);
-				CSSOMNode matched = cssNode.getNode(selector);
-				
-				for (Node match: matches) {
-					next.add(new Tuple<>(matched, match));
-				}
-			}
+			queueMatchingChildCSSOMNodesForProcessing(queuedCSSOMNodesToCheck, nodes.getT1(), nodes.getT2());
 		}
 		
-		return fin.toArray(new CSSOMNode[fin.size()]);
+		return matchingCSSOMNodes.toArray(new CSSOMNode[matchingCSSOMNodes.size()]);
 	}
 	
+	private static void queueMatchingChildCSSOMNodesForProcessing(Deque<Tuple<CSSOMNode, Node>> queuedCSSOMNodesToCheck, CSSOMNode cssNode, Node domNode) {
+		for (ComplexSelectorPart selector: cssNode.getSelectors(domNode)) {
+			Node[] matches = selector.matches(domNode);
+			CSSOMNode matched = cssNode.getNode(selector);
+			
+			for (Node match: matches) {
+				queuedCSSOMNodesToCheck.add(new Tuple<>(matched, match));
+			}
+		}
+	}
+
 	//TODO: This is only a rough, inefficient implementation
 	public static ApplicablePropertyMap calculateProperties(CSSOMNode[] cssomNodes, ApplicablePropertyMap parent) {
-		HashMap<PropertyName, Property> properties = new HashMap<>(8);
+		Map<PropertyName, Property> properties = new HashMap<>(8);
 		
 		for (CSSOMNode cssomNode: cssomNodes) {
 			for (Property property: cssomNode.getProperties()) {

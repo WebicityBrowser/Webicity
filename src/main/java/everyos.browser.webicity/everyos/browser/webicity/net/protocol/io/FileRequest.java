@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import everyos.browser.spec.jnet.URL;
 import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
-import everyos.browser.webicity.net.URL;
 
 public class FileRequest implements Request {
 	private final URL url;

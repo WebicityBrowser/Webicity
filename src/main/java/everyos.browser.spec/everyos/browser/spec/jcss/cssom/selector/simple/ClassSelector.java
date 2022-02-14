@@ -33,4 +33,5 @@ public class ClassSelector implements SimpleSelectorFastRoute {
 	public int hashCode() {
 		return Objects.hash(cls);
 	}
+	
 }
