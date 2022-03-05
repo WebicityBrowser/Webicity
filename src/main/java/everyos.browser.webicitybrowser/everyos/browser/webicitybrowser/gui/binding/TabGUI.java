@@ -10,6 +10,7 @@ import com.github.anythingide.lace.imputils.shape.PositionImp;
 import com.github.anythingide.lace.imputils.shape.RelativeSizeImp;
 import com.github.anythingide.lace.imputils.shape.SizeImp;
 
+import everyos.browser.spec.jnet.URL;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.colors.Colors;
 import everyos.browser.webicitybrowser.gui.component.CircularButton;
@@ -17,14 +18,19 @@ import everyos.browser.webicitybrowser.gui.component.TabButton;
 import everyos.browser.webicitybrowser.gui.component.URLBar;
 import everyos.browser.webicitybrowser.gui.util.ImageUtil;
 import everyos.browser.webicitybrowser.ui.Tab;
+import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
 
 public class TabGUI {
 
+	private final Tab tab;
+	
 	private TabButton tabButton;
 	private Component tabPane;
 	private Colors colors;
+	private TabMutationEventListener mutationListener;
 
 	public TabGUI(Tab tab) {
+		this.tab = tab;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -32,6 +38,8 @@ public class TabGUI {
 		this.colors = colors;
 		this.tabButton = createTabButton();
 		this.tabPane = createTabPane();
+		
+		configureMutationListener();
 	}
 
 	public void setSelected(boolean b) {
@@ -128,6 +136,36 @@ public class TabGUI {
 		urlBar.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
 		
 		return urlBar;
+	}
+	
+	private void configureMutationListener() {
+		this.mutationListener = new TabEventListener();
+		tab.addTabMutationListener(mutationListener);
+		mutationListener.onNavigate(tab.getURL());
+	}
+	
+	private void configureTabButton(TabButton tabButton) {
+		tabButton.setTitle(tab.getName());
+	}
+	
+	private class TabEventListener implements TabMutationEventListener {
+		
+		@Override
+		public void onNavigate(URL url) {
+			configureTabButton(tabButton);
+			//urlBar.text(url.toString());
+		}
+		
+		@Override
+		public void onTitleChange(String name) {
+			configureTabButton(tabButton);
+		}
+		
+		@Override
+		public void onClose() {
+			//tabButton.delete();
+		}
+		
 	}
 	
 }

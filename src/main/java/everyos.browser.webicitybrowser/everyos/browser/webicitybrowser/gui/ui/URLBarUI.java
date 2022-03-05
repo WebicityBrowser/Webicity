@@ -5,6 +5,8 @@ import com.github.anythingide.lace.basics.component.directive.BackgroundDirectiv
 import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.EllipseShape;
 import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.RectShape;
 import com.github.anythingide.lace.basics.pipeline.paint.paint.BasicPaint;
+import com.github.anythingide.lace.core.backend.canvas.CanvasItem;
+import com.github.anythingide.lace.core.backend.canvas.LaceCanvas;
 import com.github.anythingide.lace.core.color.Color;
 import com.github.anythingide.lace.core.component.Component;
 import com.github.anythingide.lace.core.component.directive.DirectiveTarget;
@@ -13,8 +15,6 @@ import com.github.anythingide.lace.core.laf.Content;
 import com.github.anythingide.lace.core.pipeline.paint.LacePaint;
 import com.github.anythingide.lace.core.pipeline.paint.PaintStageBox;
 import com.github.anythingide.lace.core.pipeline.paint.PaintStepContext;
-import com.github.anythingide.lace.core.pipeline.paint.canvas.CanvasItem;
-import com.github.anythingide.lace.core.pipeline.paint.canvas.LaceCanvas;
 import com.github.anythingide.lace.core.shape.Size;
 import com.github.anythingide.lace.imputils.shape.RectangleImp;
 import com.github.anythingide.lace.laf.simple.content.SimpleComponentContent;
