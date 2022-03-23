@@ -8,7 +8,7 @@ import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.TextShape
 import com.github.anythingide.lace.basics.pipeline.paint.paint.BasicPaint;
 import com.github.anythingide.lace.core.backend.ResourceAllocator;
 import com.github.anythingide.lace.core.backend.canvas.CanvasItem;
-import com.github.anythingide.lace.core.backend.canvas.LaceCanvas;
+import com.github.anythingide.lace.core.backend.canvas.Canvas;
 import com.github.anythingide.lace.core.color.Color;
 import com.github.anythingide.lace.core.component.Component;
 import com.github.anythingide.lace.core.component.directive.DirectiveTarget;
@@ -72,7 +72,7 @@ class WebicityMenuButtonContent extends SimpleComponentContent {
 		return font;
 	}
 	
-	private void paintBackground(LaceCanvas canvas, Size size) {
+	private void paintBackground(Canvas canvas, Size size) {
 		//TODO: Directives should probably return an Optional
 		Color backgroundColor =
 			getDirectives().getResolvedDirective(BackgroundDirective.class).map(d -> d.getColor())
@@ -94,7 +94,7 @@ class WebicityMenuButtonContent extends SimpleComponentContent {
 		canvas.draw(shape, paint);
 	}
 	
-	private void paintForeground(LaceCanvas canvas, Size size) {
+	private void paintForeground(Canvas canvas, Size size) {
 		String buttonText = Styling.PRODUCT_NAME;
 		
 		LacePaint paint = new BasicPaint()

@@ -7,7 +7,7 @@ import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.ImageBuff
 import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.ImageShape;
 import com.github.anythingide.lace.basics.pipeline.paint.paint.BasicPaint;
 import com.github.anythingide.lace.core.backend.canvas.CanvasItem;
-import com.github.anythingide.lace.core.backend.canvas.LaceCanvas;
+import com.github.anythingide.lace.core.backend.canvas.Canvas;
 import com.github.anythingide.lace.core.color.Color;
 import com.github.anythingide.lace.core.component.Component;
 import com.github.anythingide.lace.core.component.directive.DirectiveTarget;
@@ -53,7 +53,7 @@ class CircularButtonContent extends SimpleComponentContent {
 		paintImage(paintStepContext.getCanvas(), box.getSize(), imageBuffer);
 	}
 
-	private void paintBackground(LaceCanvas canvas, Size size) {
+	private void paintBackground(Canvas canvas, Size size) {
 		//TODO: Directives should probably return an Optional
 		Color backgroundColor =
 			getDirectives().getResolvedDirective(BackgroundDirective.class).map(d -> d.getColor())
@@ -67,7 +67,7 @@ class CircularButtonContent extends SimpleComponentContent {
 		canvas.draw(shape, paint);
 	}
 	
-	private void paintImage(LaceCanvas canvas, Size size, ImageBuffer buffer) {
+	private void paintImage(Canvas canvas, Size size, ImageBuffer buffer) {
 		CanvasItem shape = new ImageShape(buffer)
 			.setBounds(RectangleImp.of(0, 0, size.getWidth(), size.getHeight()));
 		canvas.draw(shape, new BasicPaint());

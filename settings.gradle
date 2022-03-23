@@ -8,3 +8,18 @@
  */
 
 rootProject.name = 'Webicity'
+
+include ':Lace-Skija-Backend'
+project(':Lace-Skija-Backend').projectDir = new File('../../../Jaan/Lace-Skija-Backend')
+
+include ':Lace-SimpleLaF'
+project(':Lace-SimpleLaF').projectDir = new File('../../../Jaan/Lace-SimpleLaF')
+
+include ':LaceImpUtils'
+project(':LaceImpUtils').projectDir = new File('../../../Jaan/LaceImpUtils')
+
+include ':Lace'
+project(':Lace').projectDir = new File('../../../Jaan/Lace')
+
+include ':Lace-Basics'
+project(':Lace-Basics').projectDir = new File('../../../Jaan/Lace-Basics')

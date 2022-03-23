@@ -16,7 +16,7 @@ Thanks to [@Minecraftian14](https://github.com/Minecraftian14) for helping!
 
 ## Join our Discord server!
 
-Want to talk about Webicity? Consider joining our [Discord server] (https://discord.gg/HxPHHk6N8w).
+Want to talk about Webicity? Consider joining our [Discord server](https://discord.gg/HxPHHk6N8w).
 
 ## Requirements
 
