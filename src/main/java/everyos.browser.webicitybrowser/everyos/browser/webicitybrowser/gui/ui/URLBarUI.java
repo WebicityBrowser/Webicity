@@ -1,24 +1,24 @@
 package everyos.browser.webicitybrowser.gui.ui;
 
-import com.github.anythingide.lace.basics.color.RGBA16ColorImp;
-import com.github.anythingide.lace.basics.component.directive.BackgroundDirective;
-import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.EllipseShape;
-import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.RectShape;
-import com.github.anythingide.lace.basics.pipeline.paint.paint.BasicPaint;
-import com.github.anythingide.lace.core.backend.canvas.CanvasItem;
-import com.github.anythingide.lace.core.backend.canvas.Canvas;
-import com.github.anythingide.lace.core.color.Color;
-import com.github.anythingide.lace.core.component.Component;
-import com.github.anythingide.lace.core.component.directive.DirectiveTarget;
-import com.github.anythingide.lace.core.laf.ComponentUI;
-import com.github.anythingide.lace.core.laf.Content;
-import com.github.anythingide.lace.core.pipeline.paint.LacePaint;
-import com.github.anythingide.lace.core.pipeline.paint.PaintStageBox;
-import com.github.anythingide.lace.core.pipeline.paint.PaintStepContext;
-import com.github.anythingide.lace.core.shape.Size;
-import com.github.anythingide.lace.imputils.shape.RectangleImp;
-import com.github.anythingide.lace.laf.simple.content.SimpleComponentContent;
-import com.github.anythingide.lace.laf.simple.ui.SimpleComponentUI;
+import com.github.webicity.lace.basics.color.RGBA16ColorImp;
+import com.github.webicity.lace.basics.component.directive.BackgroundDirective;
+import com.github.webicity.lace.basics.pipeline.paint.canvas.shapes.EllipseShape;
+import com.github.webicity.lace.basics.pipeline.paint.canvas.shapes.RectShape;
+import com.github.webicity.lace.basics.pipeline.paint.paint.BasicPaint;
+import com.github.webicity.lace.core.backend.canvas.Canvas;
+import com.github.webicity.lace.core.backend.canvas.CanvasItem;
+import com.github.webicity.lace.core.color.Color;
+import com.github.webicity.lace.core.component.Component;
+import com.github.webicity.lace.core.component.directive.DirectiveTarget;
+import com.github.webicity.lace.core.laf.ComponentUI;
+import com.github.webicity.lace.core.laf.Content;
+import com.github.webicity.lace.core.pipeline.paint.LacePaint;
+import com.github.webicity.lace.core.pipeline.paint.PaintStageBox;
+import com.github.webicity.lace.core.pipeline.paint.PaintStepContext;
+import com.github.webicity.lace.core.shape.Size;
+import com.github.webicity.lace.imputils.shape.RectangleImp;
+import com.github.webicity.lace.laf.simple.content.SimpleComponentContent;
+import com.github.webicity.lace.laf.simple.ui.SimpleComponentUI;
 
 import everyos.browser.webicitybrowser.gui.Styling;
 

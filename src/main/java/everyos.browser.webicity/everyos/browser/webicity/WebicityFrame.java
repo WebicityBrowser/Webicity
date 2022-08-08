@@ -41,8 +41,9 @@ public class WebicityFrame {
 
 	private void navigate(URL url) {
 		//TODO: WhatWG specifies how navigation should be done
-		tasks.execute(()->{
-			JRoutineHelper.finish(JRoutine.create(()->{
+		tasks.execute(() -> {
+			//TODO: Smarter coroutine management
+			JRoutineHelper.finish(JRoutine.create(() -> {
 				try {
 					Response response = engine.getDefaultRequest(url).send();
 					Renderer renderer = response.getProbableRenderer();

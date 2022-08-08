@@ -1,7 +1,7 @@
 package everyos.browser.webicitybrowser.gui;
 
-import com.github.anythingide.lace.core.laf.LookAndFeel;
-import com.github.anythingide.lace.laf.simple.SimpleLookAndFeel;
+import com.github.webicity.lace.core.laf.LookAndFeel;
+import com.github.webicity.lace.laf.simple.SimpleLookAndFeel;
 
 import everyos.browser.webicitybrowser.gui.component.CircularButton;
 import everyos.browser.webicitybrowser.gui.component.TabButton;

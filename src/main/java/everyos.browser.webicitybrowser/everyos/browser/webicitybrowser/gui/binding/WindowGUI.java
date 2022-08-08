@@ -3,21 +3,26 @@ package everyos.browser.webicitybrowser.gui.binding;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.function.Supplier;
 
-import com.github.anythingide.lace.basics.color.RGBA16ColorImp;
-import com.github.anythingide.lace.basics.component.ContainerComponent;
-import com.github.anythingide.lace.basics.component.directive.BackgroundDirective;
-import com.github.anythingide.lace.basics.layout.auto.ChildrenDirective;
-import com.github.anythingide.lace.basics.layout.auto.PositionDirective;
-import com.github.anythingide.lace.basics.layout.auto.SizeDirective;
-import com.github.anythingide.lace.core.component.Component;
-import com.github.anythingide.lace.imputils.shape.PositionImp;
-import com.github.anythingide.lace.imputils.shape.RelativePositionImp;
-import com.github.anythingide.lace.imputils.shape.RelativeSizeImp;
-import com.github.anythingide.lace.imputils.shape.SizeImp;
+import com.github.webicity.lace.basics.color.RGBA16ColorImp;
+import com.github.webicity.lace.basics.component.ContainerComponent;
+import com.github.webicity.lace.basics.component.directive.BackgroundDirective;
+import com.github.webicity.lace.basics.layout.auto.ChildrenDirective;
+import com.github.webicity.lace.basics.layout.auto.PositionDirective;
+import com.github.webicity.lace.basics.layout.auto.SizeDirective;
+import com.github.webicity.lace.core.component.Component;
+import com.github.webicity.lace.core.laf.LookAndFeel;
+import com.github.webicity.lace.imputils.shape.PositionImp;
+import com.github.webicity.lace.imputils.shape.RelativePositionImp;
+import com.github.webicity.lace.imputils.shape.RelativeSizeImp;
+import com.github.webicity.lace.imputils.shape.SizeImp;
 
+import everyos.browser.webicity.lacewebextensions.webuilaf.WebUILookAndFeel;
+import everyos.browser.webicity.lacewebextensions.webuilaf.WebUIPalette;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.WebicityLookAndFeel;
+import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
 import everyos.browser.webicitybrowser.gui.colors.Colors;
 import everyos.browser.webicitybrowser.gui.colors.NormalColors;
 import everyos.browser.webicitybrowser.gui.colors.OctoberColors;
@@ -59,7 +64,9 @@ public class WindowGUI {
 		Component windowBorder = createWindowBorder(innerContent);
 		
 		windowHandle.setRootComponent(windowBorder);
-		windowHandle.setLookAndFeel(WebicityLookAndFeel.createLookAndFeel());
+		LookAndFeel lookAndFeel = WebicityLookAndFeel.createLookAndFeel();
+		WebUILookAndFeel.extendLookAndFeel(lookAndFeel, createWebUIPalette());
+		windowHandle.setLookAndFeel(lookAndFeel);
 		
 		setupInitialTabs();
 		
@@ -73,6 +80,12 @@ public class WindowGUI {
 			Calendar.getInstance().get(Calendar.MONTH) == Calendar.OCTOBER ?
 				new OctoberColors() :
 				new NormalColors();
+	}
+	
+	private WebUIPalette createWebUIPalette() {
+		return new WebUIPalette() {
+			
+		};
 	}
 
 	private Component createInnerContent() {
@@ -157,7 +170,7 @@ public class WindowGUI {
 	private Component createMinimizeButton() {
 		Component button = new CircularButton(ImageUtil.loadImageFromResource("icons/minimize.png"));
 		button.directive(SizeDirective.of(new SizeImp(Styling.BUTTON_WIDTH, Styling.BUTTON_WIDTH)));
-		button.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
+		addButtonBehavior(button, () -> windowHandle.minimize());
 		
 		return button;
 	}
@@ -166,7 +179,7 @@ public class WindowGUI {
 		//TODO: Convert to restore button when maximized
 		Component button = new CircularButton(ImageUtil.loadImageFromResource("icons/maximize.png"));
 		button.directive(SizeDirective.of(new SizeImp(Styling.BUTTON_WIDTH, Styling.BUTTON_WIDTH)));
-		button.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
+		addButtonBehavior(button, () -> windowHandle.restore());
 		
 		return button;
 	}
@@ -174,7 +187,7 @@ public class WindowGUI {
 	private Component createXButton() {
 		Component button = new CircularButton(ImageUtil.loadImageFromResource("icons/stop.png"));
 		button.directive(SizeDirective.of(new SizeImp(Styling.BUTTON_WIDTH, Styling.BUTTON_WIDTH)));
-		button.directive(BackgroundDirective.of(colors.getBackgroundSecondaryDanger()));
+		addDangerousButtonBehavior(button, () -> close());
 		
 		return button;
 	}
@@ -242,7 +255,7 @@ public class WindowGUI {
 
 		TabButton tabButton = tabGUI.getTabButton();
 		tabButton.directive(SizeDirective.of(new SizeImp(150 + Styling.ELEMENT_PADDING, Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING)));
-		//addButtonBehavior(tabButton, ()->selectTab(tabGUI), ()->tabGUI.isSelected());
+		addButtonBehavior(tabButton, () -> selectTab(tabGUI), () -> tabGUI.isSelected());
 		//addButtonBehavior(tabButton.getCloseButton(), ()->closeTab(tab, tabGUI), ()->tabGUI.isSelected());
 
 		// Preferably, find a more efficient way to add children to a layout manager
@@ -257,6 +270,22 @@ public class WindowGUI {
 			.toList()
 			.toArray(new Component[tabs.size()]);
 	}
+	
+	private void addButtonBehavior(Component button, Runnable handler) {
+		addButtonBehavior(button, handler, () -> false);
+	}
+	
+	private void addButtonBehavior(Component button, Runnable handler, Supplier<Boolean> activeChecker) {
+		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondary(),
+			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
+			activeChecker);
+	}
+	
+	private void addDangerousButtonBehavior(Component button, Runnable handler) {
+		ActionButtonBehavior.configure(button, handler, colors.getBackgroundSecondaryDanger(),
+			colors.getBackgroundSecondaryHover(), colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
+			() -> false);
+	}
 
 	public void cleanup() {
 		
@@ -264,6 +293,7 @@ public class WindowGUI {
 	
 	private void close() {
 		window.close();
+		windowHandle.close();
 	}
 	
 	private class WindowEventListener implements WindowMutationEventListener {

@@ -5,6 +5,7 @@ package everyos.api.getopts;
  * @param <T> The type of object the procedure converts an argument to.
  */
 public interface ArgumentReader<T> {
+	
 	/**
 	 * Convert an argument to an object of type T.
 	 * @param input The argument to be converted.
@@ -13,4 +14,5 @@ public interface ArgumentReader<T> {
 	 * @throws ParserFailedException An exception that may be thrown if a conversion fails.
 	 */
 	T transform(String input, ErrorHandler errorHandler) throws ParserFailedException;
+	
 }

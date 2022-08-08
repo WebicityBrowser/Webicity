@@ -1,9 +1,9 @@
 package everyos.browser.webicitybrowser.gui.window;
 
-import com.github.anythingide.lace.backend.skija.SkijaWindow;
-import com.github.anythingide.lace.core.component.Component;
-import com.github.anythingide.lace.core.laf.LookAndFeel;
-import com.github.anythingide.lace.core.laf.UnsupportedLookAndFeelException;
+import com.github.webicity.lace.backend.skija.SkijaWindow;
+import com.github.webicity.lace.core.component.Component;
+import com.github.webicity.lace.core.laf.LookAndFeel;
+import com.github.webicity.lace.core.laf.UnsupportedLookAndFeelException;
 
 public class SkijaGUIWindow implements GUIWindow {
 	
@@ -15,7 +15,7 @@ public class SkijaGUIWindow implements GUIWindow {
 
 	@Override
 	public void setRootComponent(Component component) {
-		wrappedWindow.setComponent(component);
+		wrappedWindow.setRootComponent(component);
 	}
 	
 	@Override
@@ -30,6 +30,21 @@ public class SkijaGUIWindow implements GUIWindow {
 	@Override
 	public void addCloseListener(Runnable handler) {
 		wrappedWindow.addShutdownListener(handler);
+	}
+
+	@Override
+	public void minimize() {
+		wrappedWindow.minimize();
+	}
+	
+	@Override
+	public void restore() {
+		wrappedWindow.restore();
+	}
+	
+	@Override
+	public void close() {
+		wrappedWindow.close();
 	}
 
 }

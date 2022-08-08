@@ -4,6 +4,7 @@ package everyos.api.getopts;
  * Represents an argument detected by the argument parser.
  */
 public interface Argument {
+	
 	/**
 	 * Convert the argument to an object of type T.
 	 * @param <T> The type of object that the argument should be converted to.
@@ -12,4 +13,5 @@ public interface Argument {
 	 * @throws ParserFailedException Thrown if the argument cannot be converted to an object of type T.
 	 */
 	<T> T read(ArgumentReader<T> reader) throws ParserFailedException;
+	
 }

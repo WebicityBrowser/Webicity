@@ -3,7 +3,7 @@ package everyos.browser.webicitybrowser.gui.util;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.ImageBuffer;
+import com.github.webicity.lace.basics.pipeline.paint.canvas.shapes.ImageBuffer;
 
 public final class ImageUtil {
 	

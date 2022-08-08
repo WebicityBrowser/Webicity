@@ -30,19 +30,8 @@ public class HTMLRenderer implements Renderer {
 	public void execute(WebicityFrame frame, InputStream stream) throws IOException {
 		this.frame = frame;
 		
-		long time = System.currentTimeMillis();
-		
-		JHTMLParser parser = new JHTMLParser(stream);
-		this.document = parser.parse();
-		stream.close();
-		
-		long millisToParse = System.currentTimeMillis()-time;
-		logger.info("Page (" + frame.getURL().toString() +") parsed in " + (millisToParse) + " millis (" + (int) (millisToParse/1000 + .5) +" seconds).");
-		
-		for (Runnable hook: readyHooks) {
-			hook.run();
-		}
-		readyHooks.clear();
+		parsePage(stream);
+		runReadyHooks();
 	}
 
 	@Override
@@ -67,6 +56,24 @@ public class HTMLRenderer implements Renderer {
 
 	public WebicityFrame getFrame() {
 		return frame;
+	}
+	
+	private void parsePage(InputStream stream) throws IOException {
+		long time = System.currentTimeMillis();
+		
+		JHTMLParser parser = new JHTMLParser(stream);
+		this.document = parser.parse();
+		stream.close();
+		
+		long millisToParse = System.currentTimeMillis()-time;
+		logger.info("Page (" + frame.getURL().toString() +") parsed in " + (millisToParse) + " millis (" + (int) (millisToParse/1000 + .5) +" seconds).");
+	}
+	
+	private void runReadyHooks() {
+		for (Runnable hook: readyHooks) {
+			hook.run();
+		}
+		readyHooks.clear();
 	}
 	
 }

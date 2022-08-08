@@ -7,6 +7,7 @@ import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
 
 public class AboutRequest implements Request {
+	
 	private final URL url;
 
 	public AboutRequest(URL url) {
@@ -24,6 +25,7 @@ public class AboutRequest implements Request {
 
 	@Override
 	public Response send() throws IOException {
-		return new IOResponse(ClassLoader.getSystemClassLoader().getResourceAsStream("about/"+url.getPath()));
+		return new IOResponse(ClassLoader.getSystemClassLoader().getResourceAsStream("about/" + url.getPath()));
 	}
+	
 }

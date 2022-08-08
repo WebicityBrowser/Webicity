@@ -14,12 +14,12 @@ switch (OperatingSystem.current()) {
 			? "arm64"
 			: "natives-linux"
 		project.ext.skijaNatives = "skija-linux"
-		project.ext.skijaVersion = "0.98.1"
+		project.ext.skijaVersion = "0.102.0"
 		break
 	case OperatingSystem.WINDOWS:
 		project.ext.lwjglNatives = "natives-windows"
 		project.ext.skijaNatives = "skija-windows"
-		project.ext.skijaVersion = "0.98.1"
+		project.ext.skijaVersion = "0.102.0"
 		break
 }
 
@@ -71,6 +71,7 @@ sourceSets {
 				'src/main/java/everyos.api.getopts',
 				'src/main/java/everyos.browser.spec',
 				'src/main/java/everyos.browser.webicity',
+				'src/main/java/everyos.browser.webicity.lacewebextensions',
 				'src/main/java/everyos.browser.webicity.webttyg',
 				'src/main/java/everyos.browser.webicitybrowser',
 				'src/main/java/everyos.engine.ttyg.core',

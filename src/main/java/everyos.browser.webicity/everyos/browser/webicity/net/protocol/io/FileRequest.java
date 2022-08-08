@@ -9,6 +9,7 @@ import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
 
 public class FileRequest implements Request {
+	
 	private final URL url;
 
 	public FileRequest(URL url) {
@@ -28,4 +29,5 @@ public class FileRequest implements Request {
 	public Response send() throws IOException {
 		return new IOResponse(new FileInputStream(new File(url.getPath())));
 	}
+	
 }

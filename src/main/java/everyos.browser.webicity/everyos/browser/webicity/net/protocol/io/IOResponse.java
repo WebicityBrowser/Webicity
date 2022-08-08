@@ -8,6 +8,7 @@ import everyos.browser.webicity.renderer.Renderer;
 import everyos.browser.webicity.renderer.html.HTMLRenderer;
 
 public class IOResponse implements Response {
+	
 	private final InputStream stream;
 
 	public IOResponse(InputStream stream) {
@@ -29,4 +30,5 @@ public class IOResponse implements Response {
 		//return new PlainTextRenderer();
 		return new HTMLRenderer();
 	}
+	
 }

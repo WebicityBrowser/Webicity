@@ -1,7 +1,7 @@
 package everyos.browser.webicitybrowser.gui.component;
 
-import com.github.anythingide.lace.basics.pipeline.paint.canvas.shapes.ImageBuffer;
-import com.github.anythingide.lace.imputils.ComponentBase;
+import com.github.webicity.lace.basics.pipeline.paint.canvas.shapes.ImageBuffer;
+import com.github.webicity.lace.imputils.ComponentBase;
 
 public class CircularButton extends ComponentBase {
 	

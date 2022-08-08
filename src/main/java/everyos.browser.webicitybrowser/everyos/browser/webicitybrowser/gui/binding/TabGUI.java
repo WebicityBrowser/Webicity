@@ -1,14 +1,15 @@
 package everyos.browser.webicitybrowser.gui.binding;
 
-import com.github.anythingide.lace.basics.component.ContainerComponent;
-import com.github.anythingide.lace.basics.component.directive.BackgroundDirective;
-import com.github.anythingide.lace.basics.layout.auto.ChildrenDirective;
-import com.github.anythingide.lace.basics.layout.auto.PositionDirective;
-import com.github.anythingide.lace.basics.layout.auto.SizeDirective;
-import com.github.anythingide.lace.core.component.Component;
-import com.github.anythingide.lace.imputils.shape.PositionImp;
-import com.github.anythingide.lace.imputils.shape.RelativeSizeImp;
-import com.github.anythingide.lace.imputils.shape.SizeImp;
+import com.github.webicity.lace.basics.component.ContainerComponent;
+import com.github.webicity.lace.basics.component.directive.BackgroundDirective;
+import com.github.webicity.lace.basics.layout.auto.ChildrenDirective;
+import com.github.webicity.lace.basics.layout.auto.PositionDirective;
+import com.github.webicity.lace.basics.layout.auto.SizeDirective;
+import com.github.webicity.lace.core.component.Component;
+import com.github.webicity.lace.imputils.shape.PositionImp;
+import com.github.webicity.lace.imputils.shape.RelativePositionImp;
+import com.github.webicity.lace.imputils.shape.RelativeSizeImp;
+import com.github.webicity.lace.imputils.shape.SizeImp;
 
 import everyos.browser.spec.jnet.URL;
 import everyos.browser.webicitybrowser.gui.Styling;
@@ -29,9 +30,10 @@ public class TabGUI {
 	private Colors colors;
 	private TabMutationEventListener mutationListener;
 
+	private boolean selected;
+
 	public TabGUI(Tab tab) {
 		this.tab = tab;
-		// TODO Auto-generated constructor stub
 	}
 
 	public void start(Colors colors) {
@@ -43,7 +45,11 @@ public class TabGUI {
 	}
 
 	public void setSelected(boolean b) {
-		
+		this.selected = b;
+	}
+	
+	public boolean isSelected() {
+		return this.selected;
 	}
 
 	//TODO: We should have a dedicated tab strip manager, which would be in charge of this type of stuff
@@ -68,8 +74,12 @@ public class TabGUI {
 		tabDecor.directive(PositionDirective.of(new PositionImp(0, 0)));
 		tabDecor.directive(SizeDirective.of(RelativeSizeImp.of(1, 0, 0, decorHeight)));
 		
+		Component tabFrame = createTabFrame();
+		tabFrame.directive(SizeDirective.of(RelativeSizeImp.of(1, 0, 1, -decorHeight)));
+		tabFrame.directive(PositionDirective.of(RelativePositionImp.of(0, 0, 0, decorHeight)));
+		
 		Component tabPane = new ContainerComponent();
-		tabPane.directive(ChildrenDirective.of(tabDecor));
+		tabPane.directive(ChildrenDirective.of(tabDecor, tabFrame));
 
 		return tabPane;
 	}
@@ -136,6 +146,13 @@ public class TabGUI {
 		urlBar.directive(BackgroundDirective.of(colors.getBackgroundSecondary()));
 		
 		return urlBar;
+	}
+	
+	private Component createTabFrame() {
+		FrameGUI frame = new FrameGUI(tab.getFrame());
+		frame.start(colors);
+		
+		return frame.getDisplayPane();
 	}
 	
 	private void configureMutationListener() {

@@ -11,4 +11,5 @@ public interface ErrorHandler {
 	 * @throws ParserFailedException An exception that may be thrown depending on the error handling style.
 	 */
 	void error(String message) throws ParserFailedException;
+	
 }

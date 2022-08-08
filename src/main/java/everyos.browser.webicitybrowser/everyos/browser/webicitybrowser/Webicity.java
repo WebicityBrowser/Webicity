@@ -2,9 +2,9 @@ package everyos.browser.webicitybrowser;
 
 import java.net.MalformedURLException;
 
-import com.github.anythingide.lace.backend.skija.SkijaWindow;
-import com.github.anythingide.lace.backend.skija.SkijaWindowCreationSettings;
-import com.github.anythingide.lace.backend.skija.SkijaWindowCreationSettingsBuilder;
+import com.github.webicity.lace.backend.skija.SkijaWindow;
+import com.github.webicity.lace.backend.skija.SkijaWindowCreationSettings;
+import com.github.webicity.lace.backend.skija.SkijaWindowCreationSettingsBuilder;
 
 import everyos.api.getopts.ArgumentParser;
 import everyos.api.getopts.Flag;

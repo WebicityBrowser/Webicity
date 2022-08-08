@@ -1,7 +1,7 @@
 package everyos.browser.webicitybrowser.gui.colors;
 
-import com.github.anythingide.lace.basics.color.RGBA16ColorImp;
-import com.github.anythingide.lace.core.color.Color;
+import com.github.webicity.lace.basics.color.RGBA16ColorImp;
+import com.github.webicity.lace.core.color.Color;
 
 public class PrivateColors implements Colors {
 	

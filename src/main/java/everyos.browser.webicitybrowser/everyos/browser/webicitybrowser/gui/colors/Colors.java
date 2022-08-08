@@ -1,6 +1,6 @@
 package everyos.browser.webicitybrowser.gui.colors;
 
-import com.github.anythingide.lace.core.color.Color;
+import com.github.webicity.lace.core.color.Color;
 
 public interface Colors {
 	Color getBackgroundPrimary();

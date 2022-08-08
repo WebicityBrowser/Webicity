@@ -4,6 +4,7 @@ package everyos.api.getopts;
  * A builder used to build a type of flag used by the argument parser.
  */
 public interface FlagBuilder {
+	
 	/**
 	 * Sets whether or not this flag is mandatory.
 	 * A mandatory flag must be present in the arguments passed to the argument parser.
@@ -62,4 +63,5 @@ public interface FlagBuilder {
 	 * @return The flag created from the settings in this builder.
 	 */
 	Flag build();
+	
 }

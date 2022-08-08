@@ -12,6 +12,11 @@ Webicity consists of multiple components:
 * Lace: Provides a GUI component system, and interfaces with the preferred drawing system.
 * Lace web extensions: Part of Webicity. Allows for rendering web pages with Lace.
 
+In previous versions of Webicity, Ribbon was bundled with Webicity's source code.
+This was to make updating the library at the same time as Webicity easier.
+Ribbon has been replaced with Lace.
+In an attempt to better separate Lace from Webicity, Lace will not be bundled with Webicity's source code.
+
 Thanks to [@Minecraftian14](https://github.com/Minecraftian14) for helping!
 
 ## Join our Discord server!

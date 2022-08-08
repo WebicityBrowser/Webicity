@@ -10,6 +10,7 @@ import everyos.browser.webicity.net.Request;
 import everyos.browser.webicity.net.Response;
 
 public class HTTPRequest implements Request {
+	
 	private URL url;
 	private HTTP11Request request;
 
@@ -50,4 +51,5 @@ public class HTTPRequest implements Request {
 		
 		return new HTTPResponse(socket);
 	}
+	
 }

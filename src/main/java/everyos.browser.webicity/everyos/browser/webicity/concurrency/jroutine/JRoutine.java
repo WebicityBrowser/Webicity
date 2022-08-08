@@ -3,6 +3,7 @@ package everyos.browser.webicity.concurrency.jroutine;
 import java.util.concurrent.Semaphore;
 
 public class JRoutine {
+	
 	private static final ThreadLocal<JRoutine> routine = new ThreadLocal<>();
 
 	private final Semaphore lockA = new Semaphore(0);
@@ -56,4 +57,5 @@ public class JRoutine {
 	public static JRoutine create(Runnable r) {
 		return new JRoutine(r);
 	}
+	
 }
