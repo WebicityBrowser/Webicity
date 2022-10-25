@@ -1,0 +1,42 @@
+plugins {
+	id 'com.github.johnrengelman.shadow' version '7.1.2'
+	id 'application'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs = [
+				'src/main/java/everyos.desktop.thready.core',
+				'src/main/java/everyos.desktop.thready.renderer.skija',
+				'src/main/java/everyos.desktop.thready.laf.simple',
+				'src/main/java/everyos.browser.webicity',
+				'src/main/java/everyos.browser.webicitybrowser',
+				'src/main/java/everyos.web.spec.http',
+				'src/main/java/everyos.web.spec.css'
+			]
+		}
+	}
+}
+
+mainClassName = "everyos.browser.webicitybrowser.Webicity"
+
+jar {
+	manifest {
+		attributes(
+			"Main-Class": mainClassName
+		)
+	}
+}
