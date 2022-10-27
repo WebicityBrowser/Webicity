@@ -1,6 +1,24 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
 	id 'com.github.johnrengelman.shadow' version '7.1.2'
 	id 'application'
+}
+
+switch (OperatingSystem.current()) {
+	case OperatingSystem.LINUX:
+		def osArch = System.getProperty("os.arch")
+		project.ext.lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
+			? "arm64"
+			: "natives-linux"
+		project.ext.skijaNatives = "skija-linux"
+		project.ext.skijaVersion = "0.106.0"
+		break
+	case OperatingSystem.WINDOWS:
+		project.ext.lwjglNatives = "natives-windows"
+		project.ext.skijaNatives = "skija-windows"
+		project.ext.skijaVersion = "0.106.0"
+		break
 }
 
 repositories {
@@ -8,6 +26,21 @@ repositories {
 }
 
 dependencies {
+	implementation platform("org.lwjgl:lwjgl-bom:3.3.1")
+
+	implementation "org.lwjgl:lwjgl"
+	implementation "org.lwjgl:lwjgl-glfw"
+	implementation "org.lwjgl:lwjgl-openal"
+	implementation "org.lwjgl:lwjgl-opengl"
+	implementation "org.lwjgl:lwjgl-stb"
+	runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+	
+	implementation "io.github.humbleui:${skijaNatives}:${skijaVersion}"
+
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
 	testImplementation 'org.mockito:mockito-core:4.8.1'
 }
