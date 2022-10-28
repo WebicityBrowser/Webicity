@@ -35,8 +35,8 @@ public class AttributeSelectorParserTest {
 			leftBracketToken, attrNameToken, rightBracketToken	
 		};
 		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 3));
-		Assertions.assertEquals("attr", selector.getAttributeName());
-		Assertions.assertEquals(AttributeSelectorOperation.NOT_EQUALS, selector.getOperation());
+		Assertions.assertEquals("attr", selector.getAttributeName().getName());
+		Assertions.assertEquals(AttributeSelectorOperation.ONE_OF, selector.getOperation());
 		Assertions.assertEquals("", selector.getComparisonValue());
 	}
 	
@@ -55,7 +55,7 @@ public class AttributeSelectorParserTest {
 			leftBracketToken, attrNameToken, equalsToken, attrValueToken, rightBracketToken	
 		};
 		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 5));
-		Assertions.assertEquals("attr", selector.getAttributeName());
+		Assertions.assertEquals("attr", selector.getAttributeName().getName());
 		Assertions.assertEquals(AttributeSelectorOperation.EQUALS, selector.getOperation());
 		Assertions.assertEquals("val", selector.getComparisonValue());
 	}
@@ -77,8 +77,8 @@ public class AttributeSelectorParserTest {
 			leftBracketToken, attrNameToken, comparisonToken, equalsToken, attrValueToken, rightBracketToken	
 		};
 		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 6));
-		Assertions.assertEquals("attr", selector.getAttributeName());
-		Assertions.assertEquals(AttributeSelectorOperation.NOT_EQUALS, selector.getOperation());
+		Assertions.assertEquals("attr", selector.getAttributeName().getName());
+		Assertions.assertEquals(AttributeSelectorOperation.ONE_OF, selector.getOperation());
 		Assertions.assertEquals("val", selector.getComparisonValue());
 	}
 	

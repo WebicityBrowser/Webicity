@@ -1,7 +1,9 @@
 package everyos.web.spec.css.parser.selectors.selector;
 
+import everyos.web.spec.css.QualifiedName;
 import everyos.web.spec.css.parser.ParseFormatException;
 import everyos.web.spec.css.parser.selectors.SelectorParser;
+import everyos.web.spec.css.parser.selectors.misc.QualifiedNameParser;
 import everyos.web.spec.css.parser.tokens.DelimToken;
 import everyos.web.spec.css.parser.tokens.IdentToken;
 import everyos.web.spec.css.parser.tokens.LSBrackToken;
@@ -13,42 +15,59 @@ import everyos.web.spec.css.selectors.selector.AttributeSelector.AttributeSelect
 
 public class AttributeSelectorParser implements SelectorParser {
 
+	private final QualifiedNameParser qualifiedNameParser = new QualifiedNameParser();
+	
 	@Override
 	public AttributeSelector parse(Token[] tokens, int offset, int length) throws ParseFormatException {
 		checkSelectorFormat(tokens, offset, length);
 		
-		switch(length) {
+		int attrNameLength = getAttrNameLength(tokens, offset + 1, length - 2);
+		QualifiedName attrName = qualifiedNameParser.parse(tokens, offset + 1, attrNameLength);
+		
+		int remainingParseOffset = offset + 1 + attrNameLength;
+		switch(length - 2 - attrNameLength) {
+		case 0:
+			return parseAttributePresentSelector(attrName, tokens, remainingParseOffset);
+		case 2:
+			return parseAttributeEqualsSelector(attrName, tokens, remainingParseOffset);
 		case 3:
-			return parseAttributePresentSelector(tokens, offset + 1);
-		case 5:
-			return parseAttributeEqualsSelector(tokens, offset + 1);
-		case 6:
-			return parseAttributeComparisonSelector(tokens, offset + 1);
+			return parseAttributeComparisonSelector(attrName, tokens, remainingParseOffset);
 		default:
 			throw new ParseFormatException("Invalid attribute selector format", offset);
 		}
 	}
 
-	private AttributeSelector parseAttributePresentSelector(Token[] tokens, int offset) throws ParseFormatException {
-		ensureIdentToken(tokens, offset);
-		String attrName = ((IdentToken) tokens[offset]).getValue();
-		return createAttributeSelector(attrName, AttributeSelectorOperation.NOT_EQUALS, "");
+	private int getAttrNameLength(Token[] tokens, int offset, int length) {
+		int totalLength = 0;
+		for (int i = 0; i < length && !isEqualsToken(tokens, offset + i); i++) {
+			totalLength++;
+		}
+		int attrNameEnd = offset + totalLength;
+		if (
+			!(tokens[totalLength] instanceof IdentToken) &&
+			!(isCharToken(tokens, attrNameEnd, offset, '*') && isCharToken(tokens, attrNameEnd - 1, offset, '|'))
+		) {
+			totalLength--;
+		}
+		
+		System.out.println(totalLength);
+		return totalLength;
+	}
+
+	private AttributeSelector parseAttributePresentSelector(QualifiedName attrName, Token[] tokens, int offset) throws ParseFormatException {
+		return createAttributeSelector(attrName, AttributeSelectorOperation.ONE_OF, "");
 	}
 	
-	private AttributeSelector parseAttributeEqualsSelector(Token[] tokens, int offset) throws ParseFormatException {
-		ensureIdentToken(tokens, offset);
-		String attrName = ((IdentToken) tokens[offset]).getValue();
-		ensureEqualsToken(tokens, offset + 1);
-		String attrVal = parseAttrVal(tokens, offset + 2);
+	private AttributeSelector parseAttributeEqualsSelector(QualifiedName attrName, Token[] tokens, int offset) throws ParseFormatException {
+		ensureEqualsToken(tokens, offset);
+		String attrVal = parseAttrVal(tokens, offset + 1);
 		return createAttributeSelector(attrName, AttributeSelectorOperation.EQUALS, attrVal);
 	}
 	
-	private AttributeSelector parseAttributeComparisonSelector(Token[] tokens, int offset) throws ParseFormatException {
-		ensureIdentToken(tokens, offset);
-		String attrName = ((IdentToken) tokens[offset]).getValue();
-		AttributeSelectorOperation operation = parseOperation(tokens, offset + 1);
-		ensureEqualsToken(tokens, offset + 2);
-		String attrVal = parseAttrVal(tokens, offset + 3);
+	private AttributeSelector parseAttributeComparisonSelector(QualifiedName attrName, Token[] tokens, int offset) throws ParseFormatException {
+		AttributeSelectorOperation operation = parseOperation(tokens, offset);
+		ensureEqualsToken(tokens, offset + 1);
+		String attrVal = parseAttrVal(tokens, offset + 2);
 		return createAttributeSelector(attrName, operation, attrVal);
 	}
 
@@ -69,7 +88,7 @@ public class AttributeSelectorParser implements SelectorParser {
 		}
 		switch(((DelimToken) tokens[offset]).getValue()) {
 		case '~':
-			return AttributeSelectorOperation.NOT_EQUALS;
+			return AttributeSelectorOperation.ONE_OF;
 		case '|':
 			return AttributeSelectorOperation.HAS_SUBCODE;
 		case '^':
@@ -79,12 +98,6 @@ public class AttributeSelectorParser implements SelectorParser {
 		case '*':
 			return AttributeSelectorOperation.CONTAINS;
 		default:
-			throw new ParseFormatException("Invalid attribute selector format", offset);
-		}
-	}
-
-	private void ensureIdentToken(Token[] tokens, int offset) throws ParseFormatException {
-		if (!(tokens[offset] instanceof IdentToken)) {
 			throw new ParseFormatException("Invalid attribute selector format", offset);
 		}
 	}
@@ -100,6 +113,13 @@ public class AttributeSelectorParser implements SelectorParser {
 			tokens[offset] instanceof DelimToken &&
 			((DelimToken) tokens[offset]).getValue() == '=';
 	}
+	
+	private boolean isCharToken(Token[] tokens, int offset, int minOffset, char ch) {
+		return
+			offset >= minOffset &&
+			tokens[offset] instanceof DelimToken &&
+			((DelimToken) tokens[offset]).getValue() == ch;
+	}
 
 	private void checkSelectorFormat(Token[] tokens, int offset, int length) throws ParseFormatException {
 		if (
@@ -111,7 +131,7 @@ public class AttributeSelectorParser implements SelectorParser {
 		}
 	}
 	
-	private AttributeSelector createAttributeSelector(String attrName, AttributeSelectorOperation operation, String comparison) {
+	private AttributeSelector createAttributeSelector(QualifiedName attrName, AttributeSelectorOperation operation, String comparison) {
 		return new AttributeSelector() {
 			@Override
 			public AttributeSelectorOperation getOperation() {
@@ -124,7 +144,7 @@ public class AttributeSelectorParser implements SelectorParser {
 			}
 			
 			@Override
-			public String getAttributeName() {
+			public QualifiedName getAttributeName() {
 				return attrName;
 			}
 		};

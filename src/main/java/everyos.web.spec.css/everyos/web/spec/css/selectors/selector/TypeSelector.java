@@ -1,14 +1,9 @@
 package everyos.web.spec.css.selectors.selector;
 
+import everyos.web.spec.css.QualifiedName;
+
 public interface TypeSelector extends SimpleSelector {
 
-	public static final String NO_NAMESPACE = "";
-	public static final String ANY_NAMESPACE = "*";
-	public static final String DEFAULT_NAMESPACE = "**";
-	public static final String ANY_ELEMENT = "*";
-	
-	String getNamespace();
-	
-	String getElementName();
+	QualifiedName getQualifiedName();
 	
 }

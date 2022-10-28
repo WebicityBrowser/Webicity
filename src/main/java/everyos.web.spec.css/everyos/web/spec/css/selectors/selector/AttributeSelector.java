@@ -1,15 +1,17 @@
 package everyos.web.spec.css.selectors.selector;
 
+import everyos.web.spec.css.QualifiedName;
+
 public interface AttributeSelector extends SimpleSelector {
 
-	String getAttributeName();
+	QualifiedName getAttributeName();
 	
 	AttributeSelectorOperation getOperation();
 	
 	String getComparisonValue();
 	
 	public static enum AttributeSelectorOperation {
-		EQUALS, NOT_EQUALS, HAS_SUBCODE, BEGINS_WITH, ENDS_WITH, CONTAINS
+		EQUALS, ONE_OF, HAS_SUBCODE, BEGINS_WITH, ENDS_WITH, CONTAINS
 	}
 	
 }

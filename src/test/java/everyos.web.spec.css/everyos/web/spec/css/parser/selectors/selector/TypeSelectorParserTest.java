@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import everyos.web.spec.css.QualifiedName;
 import everyos.web.spec.css.parser.tokens.DelimToken;
 import everyos.web.spec.css.parser.tokens.IdentToken;
 import everyos.web.spec.css.parser.tokens.Token;
@@ -27,8 +28,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(nameToken.getValue()).thenReturn("name");
 		Token[] tokens = new Token[] { nameToken };
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
-		Assertions.assertEquals(TypeSelector.DEFAULT_NAMESPACE, selector.getNamespace());
-		Assertions.assertEquals("name", selector.getElementName());
+		QualifiedName name = selector.getQualifiedName();
+		Assertions.assertEquals(QualifiedName.DEFAULT_NAMESPACE, name.getNamespace());
+		Assertions.assertEquals("name", name.getName());
 	}
 	
 	@Test
@@ -38,8 +40,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(nameToken.getValue()).thenReturn('*');
 		Token[] tokens = new Token[] { nameToken };
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
-		Assertions.assertEquals(TypeSelector.DEFAULT_NAMESPACE, selector.getNamespace());
-		Assertions.assertEquals(TypeSelector.ANY_ELEMENT, selector.getElementName());
+		QualifiedName name = selector.getQualifiedName();
+		Assertions.assertEquals(QualifiedName.DEFAULT_NAMESPACE, name.getNamespace());
+		Assertions.assertEquals(QualifiedName.ANY_NAME, name.getName());
 	}
 	
 	@Test
@@ -51,8 +54,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(nameToken.getValue()).thenReturn("name");
 		Token[] tokens = new Token[] { delimToken, nameToken };
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 2));
-		Assertions.assertEquals(TypeSelector.NO_NAMESPACE, selector.getNamespace());
-		Assertions.assertEquals("name", selector.getElementName());
+		QualifiedName name = selector.getQualifiedName();
+		Assertions.assertEquals(QualifiedName.NO_NAMESPACE, name.getNamespace());
+		Assertions.assertEquals("name", name.getName());
 	}
 	
 	@Test
@@ -66,8 +70,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(nameToken.getValue()).thenReturn("name");
 		Token[] tokens = new Token[] { namespaceToken, delimToken, nameToken };
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 3));
-		Assertions.assertEquals("namespace", selector.getNamespace());
-		Assertions.assertEquals("name", selector.getElementName());
+		QualifiedName name = selector.getQualifiedName();
+		Assertions.assertEquals("namespace", name.getNamespace());
+		Assertions.assertEquals("name", name.getName());
 	}
 	
 	@Test
@@ -81,8 +86,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(nameToken.getValue()).thenReturn("name");
 		Token[] tokens = new Token[] { namespaceToken, delimToken, nameToken };
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 3));
-		Assertions.assertEquals(TypeSelector.ANY_NAMESPACE, selector.getNamespace());
-		Assertions.assertEquals("name", selector.getElementName());
+		QualifiedName name = selector.getQualifiedName();
+		Assertions.assertEquals(QualifiedName.ANY_NAMESPACE, name.getNamespace());
+		Assertions.assertEquals("name", name.getName());
 	}
 	
 }
