@@ -66,6 +66,7 @@ sourceSets {
 	test {
 		java {
 			srcDirs = [
+				'src/test/java/everyos.web.spec.http',
 				'src/test/java/everyos.web.spec.css'
 			]
 		}

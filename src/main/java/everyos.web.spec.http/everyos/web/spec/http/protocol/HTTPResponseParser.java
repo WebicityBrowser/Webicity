@@ -1,4 +1,4 @@
-package everyos.web.spec.http;
+package everyos.web.spec.http.protocol;
 
 import java.io.InputStream;
 
