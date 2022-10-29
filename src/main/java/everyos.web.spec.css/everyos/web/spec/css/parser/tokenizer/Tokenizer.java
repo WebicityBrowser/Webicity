@@ -1,0 +1,12 @@
+package everyos.web.spec.css.parser.tokenizer;
+
+import java.io.IOException;
+import java.io.Reader;
+
+import everyos.web.spec.css.parser.tokens.Token;
+
+public interface Tokenizer {
+
+	Token[] tokenize(Reader input) throws IOException;
+	
+}
