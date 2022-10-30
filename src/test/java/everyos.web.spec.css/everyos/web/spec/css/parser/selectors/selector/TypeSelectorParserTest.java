@@ -37,7 +37,7 @@ public class TypeSelectorParserTest {
 	@DisplayName("Can parse wildcard element")
 	public void canParseWildcardElement() {
 		DelimToken nameToken = Mockito.mock(DelimToken.class);
-		Mockito.when(nameToken.getValue()).thenReturn('*');
+		Mockito.when(nameToken.getValue()).thenReturn((int) '*');
 		Token[] tokens = new Token[] { nameToken };
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
 		QualifiedName name = selector.getQualifiedName();
@@ -49,7 +49,7 @@ public class TypeSelectorParserTest {
 	@DisplayName("Can parse element without namespace")
 	public void canParseElementWithoutNamespace() {
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn('|');
+		Mockito.when(delimToken.getValue()).thenReturn((int) '|');
 		IdentToken nameToken = Mockito.mock(IdentToken.class);
 		Mockito.when(nameToken.getValue()).thenReturn("name");
 		Token[] tokens = new Token[] { delimToken, nameToken };
@@ -65,7 +65,7 @@ public class TypeSelectorParserTest {
 		IdentToken namespaceToken = Mockito.mock(IdentToken.class);
 		Mockito.when(namespaceToken.getValue()).thenReturn("namespace");
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn('|');
+		Mockito.when(delimToken.getValue()).thenReturn((int) '|');
 		IdentToken nameToken = Mockito.mock(IdentToken.class);
 		Mockito.when(nameToken.getValue()).thenReturn("name");
 		Token[] tokens = new Token[] { namespaceToken, delimToken, nameToken };
@@ -79,9 +79,9 @@ public class TypeSelectorParserTest {
 	@DisplayName("Can parse element with glob namespace")
 	public void canParseElementWithGlobNamespace() {
 		DelimToken namespaceToken = Mockito.mock(DelimToken.class);
-		Mockito.when(namespaceToken.getValue()).thenReturn('*');
+		Mockito.when(namespaceToken.getValue()).thenReturn((int) '*');
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn('|');
+		Mockito.when(delimToken.getValue()).thenReturn((int) '|');
 		IdentToken nameToken = Mockito.mock(IdentToken.class);
 		Mockito.when(nameToken.getValue()).thenReturn("name");
 		Token[] tokens = new Token[] { namespaceToken, delimToken, nameToken };

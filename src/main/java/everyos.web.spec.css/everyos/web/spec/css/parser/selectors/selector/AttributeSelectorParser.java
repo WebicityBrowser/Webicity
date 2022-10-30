@@ -6,8 +6,8 @@ import everyos.web.spec.css.parser.selectors.SelectorParser;
 import everyos.web.spec.css.parser.selectors.misc.QualifiedNameParser;
 import everyos.web.spec.css.parser.tokens.DelimToken;
 import everyos.web.spec.css.parser.tokens.IdentToken;
-import everyos.web.spec.css.parser.tokens.LSBrackToken;
-import everyos.web.spec.css.parser.tokens.RSBrackToken;
+import everyos.web.spec.css.parser.tokens.LSBracketToken;
+import everyos.web.spec.css.parser.tokens.RSBracketToken;
 import everyos.web.spec.css.parser.tokens.StringToken;
 import everyos.web.spec.css.parser.tokens.Token;
 import everyos.web.spec.css.selectors.selector.AttributeSelector;
@@ -124,8 +124,8 @@ public class AttributeSelectorParser implements SelectorParser {
 	private void checkSelectorFormat(Token[] tokens, int offset, int length) throws ParseFormatException {
 		if (
 			length < 3 ||
-			!(tokens[offset] instanceof LSBrackToken) ||
-			!(tokens[offset + length - 1] instanceof RSBrackToken)
+			!(tokens[offset] instanceof LSBracketToken) ||
+			!(tokens[offset + length - 1] instanceof RSBracketToken)
 		) {
 			throw new ParseFormatException("Invalid attribute selector format", offset);
 		}

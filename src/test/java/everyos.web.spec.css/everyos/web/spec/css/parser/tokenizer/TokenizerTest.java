@@ -10,11 +10,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import everyos.web.spec.css.parser.tokens.AtKeywordToken;
+import everyos.web.spec.css.parser.tokens.CDCToken;
+import everyos.web.spec.css.parser.tokens.CDOToken;
+import everyos.web.spec.css.parser.tokens.DimensionToken;
 import everyos.web.spec.css.parser.tokens.EOFToken;
+import everyos.web.spec.css.parser.tokens.FunctionToken;
 import everyos.web.spec.css.parser.tokens.HashToken;
-import everyos.web.spec.css.parser.tokens.HashToken.TypeFlag;
+import everyos.web.spec.css.parser.tokens.HashToken.HashTypeFlag;
+import everyos.web.spec.css.parser.tokens.IdentToken;
+import everyos.web.spec.css.parser.tokens.NumberToken;
+import everyos.web.spec.css.parser.tokens.NumberTypeFlag;
+import everyos.web.spec.css.parser.tokens.PercentageToken;
 import everyos.web.spec.css.parser.tokens.StringToken;
 import everyos.web.spec.css.parser.tokens.Token;
+import everyos.web.spec.css.parser.tokens.URLToken;
 import everyos.web.spec.css.parser.tokens.WhitespaceToken;
 
 public class TokenizerTest {
@@ -90,7 +100,142 @@ public class TokenizerTest {
 		Assertions.assertInstanceOf(HashToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
 		Assertions.assertEquals("hello", ((HashToken) tokens[0]).getValue());
-		Assertions.assertEquals(TypeFlag.ID, ((HashToken) tokens[0]).getTypeFlag());
+		Assertions.assertEquals(HashTypeFlag.ID, ((HashToken) tokens[0]).getTypeFlag());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize an integer")
+	public void canTokenizeAnInteger() {
+		Reader source = reader("+123");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(NumberToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals(123, ((NumberToken) tokens[0]).getValue());
+		Assertions.assertEquals(NumberTypeFlag.INTEGER, ((NumberToken) tokens[0]).getTypeFlag());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize a floating point number")
+	public void canTokenizeAFloatingPointNumber() {
+		Reader source = reader("-1.5e3");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(NumberToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals(-1.5e3, ((NumberToken) tokens[0]).getValue());
+		Assertions.assertEquals(NumberTypeFlag.NUMBER, ((NumberToken) tokens[0]).getTypeFlag());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize a small floating point number")
+	public void canTokenizeASmallFloatingPointNumber() {
+		Reader source = reader(".5");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(NumberToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals(.5, ((NumberToken) tokens[0]).getValue());
+		Assertions.assertEquals(NumberTypeFlag.NUMBER, ((NumberToken) tokens[0]).getTypeFlag());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize a dimension")
+	public void canTokenizeADimension() {
+		Reader source = reader("5px");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(DimensionToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals(5, ((DimensionToken) tokens[0]).getValue());
+		Assertions.assertEquals(NumberTypeFlag.INTEGER, ((DimensionToken) tokens[0]).getTypeFlag());
+		Assertions.assertEquals("px", ((DimensionToken) tokens[0]).getUnit());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize a percentage")
+	public void canTokenizeAPercentage() {
+		Reader source = reader("9%");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(PercentageToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals(9, ((PercentageToken) tokens[0]).getValue());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize cdc")
+	public void canTokenizeCDC() {
+		Reader source = reader("-->");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(CDCToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+	}
+	
+	@Test
+	@DisplayName("Can tokenize cdo")
+	public void canTokenizeCDO() {
+		Reader source = reader("<!--");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(CDOToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+	}
+	
+	@Test
+	@DisplayName("Can tokenize an ident token")
+	public void canTokenizeAnIdentToken() {
+		Reader source = reader("--hello");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(IdentToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals("--hello", ((IdentToken) tokens[0]).getValue());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize a function token")
+	public void canTokenizeAFunctionToken() {
+		Reader source = reader("calc(");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(FunctionToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals("calc", ((FunctionToken) tokens[0]).getValue());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize a URL token")
+	public void canTokenizeAURLToken() {
+		Reader source = reader("url(https://google.com/)");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(URLToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals("https://google.com/", ((URLToken) tokens[0]).getValue());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize an at-keyword token")
+	public void canTokenizeAnAtKeywordToken() {
+		Reader source = reader("@media");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(AtKeywordToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals("media", ((AtKeywordToken) tokens[0]).getValue());
+	}
+	
+	@Test
+	@DisplayName("Can tokenize an escaped ident token")
+	public void canTokenizeAnEscapedIdentToken() {
+		Reader source = reader("\\{hello");
+		Token[] tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(2, tokens.length);
+		Assertions.assertInstanceOf(IdentToken.class, tokens[0]);
+		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
+		Assertions.assertEquals("{hello", ((IdentToken) tokens[0]).getValue());
 	}
 	
 	//

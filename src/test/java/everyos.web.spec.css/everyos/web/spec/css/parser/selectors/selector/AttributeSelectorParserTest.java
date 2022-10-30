@@ -8,8 +8,8 @@ import org.mockito.Mockito;
 
 import everyos.web.spec.css.parser.tokens.DelimToken;
 import everyos.web.spec.css.parser.tokens.IdentToken;
-import everyos.web.spec.css.parser.tokens.LSBrackToken;
-import everyos.web.spec.css.parser.tokens.RSBrackToken;
+import everyos.web.spec.css.parser.tokens.LSBracketToken;
+import everyos.web.spec.css.parser.tokens.RSBracketToken;
 import everyos.web.spec.css.parser.tokens.StringToken;
 import everyos.web.spec.css.parser.tokens.Token;
 import everyos.web.spec.css.selectors.selector.AttributeSelector;
@@ -27,8 +27,8 @@ public class AttributeSelectorParserTest {
 	@Test
 	@DisplayName("Can parse attribute present selector")
 	public void canParseAttributePresentSelector() {
-		LSBrackToken leftBracketToken = Mockito.mock(LSBrackToken.class);
-		RSBrackToken rightBracketToken = Mockito.mock(RSBrackToken.class);
+		LSBracketToken leftBracketToken = Mockito.mock(LSBracketToken.class);
+		RSBracketToken rightBracketToken = Mockito.mock(RSBracketToken.class);
 		IdentToken attrNameToken = Mockito.mock(IdentToken.class);
 		Mockito.when(attrNameToken.getValue()).thenReturn("attr");
 		Token[] tokens = new Token[] {
@@ -43,14 +43,14 @@ public class AttributeSelectorParserTest {
 	@Test
 	@DisplayName("Can parse attribute equals selector")
 	public void canParseAttributeEqualsSelector() {
-		LSBrackToken leftBracketToken = Mockito.mock(LSBrackToken.class);
-		RSBrackToken rightBracketToken = Mockito.mock(RSBrackToken.class);
+		LSBracketToken leftBracketToken = Mockito.mock(LSBracketToken.class);
+		RSBracketToken rightBracketToken = Mockito.mock(RSBracketToken.class);
 		IdentToken attrNameToken = Mockito.mock(IdentToken.class);
 		Mockito.when(attrNameToken.getValue()).thenReturn("attr");
 		IdentToken attrValueToken = Mockito.mock(IdentToken.class);
 		Mockito.when(attrValueToken.getValue()).thenReturn("val");
 		DelimToken equalsToken = Mockito.mock(DelimToken.class);
-		Mockito.when(equalsToken.getValue()).thenReturn('=');
+		Mockito.when(equalsToken.getValue()).thenReturn((int) '=');
 		Token[] tokens = new Token[] {
 			leftBracketToken, attrNameToken, equalsToken, attrValueToken, rightBracketToken	
 		};
@@ -63,16 +63,16 @@ public class AttributeSelectorParserTest {
 	@Test
 	@DisplayName("Can parse attribute comparison selector")
 	public void canParseAttributeComparisonSelector() {
-		LSBrackToken leftBracketToken = Mockito.mock(LSBrackToken.class);
-		RSBrackToken rightBracketToken = Mockito.mock(RSBrackToken.class);
+		LSBracketToken leftBracketToken = Mockito.mock(LSBracketToken.class);
+		RSBracketToken rightBracketToken = Mockito.mock(RSBracketToken.class);
 		IdentToken attrNameToken = Mockito.mock(IdentToken.class);
 		Mockito.when(attrNameToken.getValue()).thenReturn("attr");
 		StringToken attrValueToken = Mockito.mock(StringToken.class);
 		Mockito.when(attrValueToken.getValue()).thenReturn("val");
 		DelimToken equalsToken = Mockito.mock(DelimToken.class);
-		Mockito.when(equalsToken.getValue()).thenReturn('=');
+		Mockito.when(equalsToken.getValue()).thenReturn((int) '=');
 		DelimToken comparisonToken = Mockito.mock(DelimToken.class);
-		Mockito.when(comparisonToken.getValue()).thenReturn('~');
+		Mockito.when(comparisonToken.getValue()).thenReturn((int) '~');
 		Token[] tokens = new Token[] {
 			leftBracketToken, attrNameToken, comparisonToken, equalsToken, attrValueToken, rightBracketToken	
 		};

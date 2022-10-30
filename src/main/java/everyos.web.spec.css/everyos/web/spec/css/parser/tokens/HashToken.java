@@ -4,9 +4,9 @@ public interface HashToken extends Token {
 
 	String getValue();
 	
-	TypeFlag getTypeFlag();
+	HashTypeFlag getTypeFlag();
 	
-	public static enum TypeFlag {
+	public static enum HashTypeFlag {
 		ID, UNRESTRICTED
 	}
 	

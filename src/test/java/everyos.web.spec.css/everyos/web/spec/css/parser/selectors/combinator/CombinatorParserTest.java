@@ -37,7 +37,7 @@ public class CombinatorParserTest {
 	@DisplayName("Can parse child combinator")
 	public void canParseChildCombinator() {
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn('>');
+		Mockito.when(delimToken.getValue()).thenReturn((int) '>');
 		Token[] tokens = new Token[] { delimToken };
 		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
 		Assertions.assertInstanceOf(ChildCombinator.class, combinator);
@@ -47,7 +47,7 @@ public class CombinatorParserTest {
 	@DisplayName("Can parse next sibling combinator")
 	public void canParseNextSiblingCombinator() {
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn('+');
+		Mockito.when(delimToken.getValue()).thenReturn((int) '+');
 		Token[] tokens = new Token[] { delimToken };
 		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
 		Assertions.assertInstanceOf(NextSiblingCombinator.class, combinator);
@@ -57,7 +57,7 @@ public class CombinatorParserTest {
 	@DisplayName("Can parse sebsequent sibling combinator")
 	public void canParseSubsequentSiblingCombinator() {
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn('~');
+		Mockito.when(delimToken.getValue()).thenReturn((int) '~');
 		Token[] tokens = new Token[] { delimToken };
 		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
 		Assertions.assertInstanceOf(SubsequentSiblingCombinator.class, combinator);
@@ -68,7 +68,7 @@ public class CombinatorParserTest {
 	public void canParseSpaceWrappedCombinator() {
 		WhitespaceToken spaceToken = Mockito.mock(WhitespaceToken.class);
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn('~');
+		Mockito.when(delimToken.getValue()).thenReturn((int) '~');
 		Token[] tokens = new Token[] { spaceToken, delimToken, spaceToken };
 		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 3));
 		Assertions.assertInstanceOf(SubsequentSiblingCombinator.class, combinator);

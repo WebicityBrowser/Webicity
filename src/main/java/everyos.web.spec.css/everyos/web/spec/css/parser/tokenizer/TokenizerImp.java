@@ -6,15 +6,33 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import everyos.web.spec.css.parser.tokens.AtKeywordToken;
 import everyos.web.spec.css.parser.tokens.BadStringToken;
+import everyos.web.spec.css.parser.tokens.BadURLToken;
+import everyos.web.spec.css.parser.tokens.CDCToken;
+import everyos.web.spec.css.parser.tokens.CDOToken;
+import everyos.web.spec.css.parser.tokens.ColonToken;
+import everyos.web.spec.css.parser.tokens.CommaToken;
 import everyos.web.spec.css.parser.tokens.DelimToken;
+import everyos.web.spec.css.parser.tokens.DimensionToken;
 import everyos.web.spec.css.parser.tokens.EOFToken;
+import everyos.web.spec.css.parser.tokens.FunctionToken;
 import everyos.web.spec.css.parser.tokens.HashToken;
-import everyos.web.spec.css.parser.tokens.HashToken.TypeFlag;
+import everyos.web.spec.css.parser.tokens.HashToken.HashTypeFlag;
+import everyos.web.spec.css.parser.tokens.IdentToken;
+import everyos.web.spec.css.parser.tokens.LCBracketToken;
 import everyos.web.spec.css.parser.tokens.LParenToken;
+import everyos.web.spec.css.parser.tokens.LSBracketToken;
+import everyos.web.spec.css.parser.tokens.NumberToken;
+import everyos.web.spec.css.parser.tokens.NumberTypeFlag;
+import everyos.web.spec.css.parser.tokens.PercentageToken;
+import everyos.web.spec.css.parser.tokens.RCBracketToken;
 import everyos.web.spec.css.parser.tokens.RParenToken;
+import everyos.web.spec.css.parser.tokens.RSBracketToken;
+import everyos.web.spec.css.parser.tokens.SemicolonToken;
 import everyos.web.spec.css.parser.tokens.StringToken;
 import everyos.web.spec.css.parser.tokens.Token;
+import everyos.web.spec.css.parser.tokens.URLToken;
 import everyos.web.spec.css.parser.tokens.WhitespaceToken;
 
 public class TokenizerImp implements Tokenizer {
@@ -55,10 +73,44 @@ public class TokenizerImp implements Tokenizer {
 			return new LParenToken() {};
 		case ')':
 			return new RParenToken() {};
+		case '+':
+			return consumePlusSign(reader);
+		case ',':
+			return new CommaToken() {};
+		case '-':
+			return consumeMinusSign(reader);
+		case '.':
+			return consumeFullStopSign(reader);
+		case ':':
+			return new ColonToken() {};
+		case ';':
+			return new SemicolonToken() {};
+		case '<':
+			return consumeLessThanSign(reader);
+		case '@':
+			return consumeCommercialAtSign(reader);
+		case '[':
+			return new LSBracketToken() {};
+		case '\\':
+			return consumeReverseSolidusSign(reader);
+		case ']':
+			return new RSBracketToken() {};
+		case '{':
+			return new LCBracketToken() {};
+		case '}':
+			return new RCBracketToken() {};
 		case -1:
 			return new EOFToken() {};
 		default:
-			return null;
+			if (isDigit(ch)) {
+				unread(reader, ch);
+				return consumeANumericToken(reader);
+			}
+			if (isIdentStartCodePoint(ch)) {
+				unread(reader, ch);
+				return consumeAnIdentLikeToken(reader);
+			}
+			return createDelimToken(ch);
 		}
 	}
 
@@ -107,20 +159,280 @@ public class TokenizerImp implements Tokenizer {
 	}
 	
 	private Token consumeHashSign(PushbackReader reader) throws IOException {
-		if (isIdentCodePoint(peek(reader)) || isValidEscapeSequence(reader)) {
+		if (isIdentCodePoint(peek(reader)) || wouldStartValidEscapeSequence(reader)) {
 			return consumeHashToken(reader);
 		}
 		
 		return createDelimToken('#');
 	}
+	
+	private Token consumePlusSign(PushbackReader reader) throws IOException {
+		if (isDigit(peek(reader))) {
+			unread(reader, '+');
+			return consumeANumericToken(reader);
+		} else {
+			return createDelimToken('+');
+		}
+	}
+	
+	private Token consumeMinusSign(PushbackReader reader) throws IOException {
+		if (isDigit(peek(reader))) {
+			unread(reader, '-');
+			return consumeANumericToken(reader);
+			//TODO
+		}
+		
+		{
+			int ch1 = read(reader);
+			int ch2 = read(reader);
+			if (ch1 == '-' && ch2 == '>') {
+				return new CDCToken() {};
+			}
+			unread(reader, ch2);
+			unread(reader, ch1);
+		}
+		
+		if (isValidIdentSequence('-', reader)) {
+			unread(reader, '-');
+			return consumeAnIdentLikeToken(reader);
+		}
+		
+		return createDelimToken('-');
+	}
+	
+	private Token consumeFullStopSign(PushbackReader reader) throws IOException {
+		if (wouldStartANumber('.', reader)) {
+			unread(reader, '.');
+			return consumeANumericToken(reader);
+		}
+		return createDelimToken('.');
+	}
+	
+	private Token consumeLessThanSign(PushbackReader reader) throws IOException {
+		int ch1 = read(reader);
+		int ch2 = read(reader);
+		int ch3 = read(reader);
+		
+		if (ch1 == '!' && ch2 == '-' && ch3 == '-') {
+			return new CDOToken() {};
+		}
+		
+		unread(reader, ch3);
+		unread(reader, ch2);
+		unread(reader, ch1);
+		
+		return createDelimToken('<');
+	}
+	
+	private Token consumeCommercialAtSign(PushbackReader reader) throws IOException {
+		if (wouldStartAnIdentSequence(reader)) {
+			String value = consumeAnIdentSequence(reader);
+			return createAtKeywordToken(value);
+		}
+		
+		return createDelimToken('@');
+	}
+	
+	private Token consumeReverseSolidusSign(PushbackReader reader) throws IOException {
+		if (isValidEscapeSequence('\\', reader)) {
+			unread(reader, '\\');
+			return consumeAnIdentLikeToken(reader);
+		}
+		
+		//TODO: Parse error
+		return createDelimToken('\\');
+	}
 
 	private Token consumeHashToken(PushbackReader reader) throws IOException {
-		TypeFlag flag = wouldStartAnIdentSequence(reader) ?
-			TypeFlag.ID :
-			TypeFlag.UNRESTRICTED;
+		HashTypeFlag flag = wouldStartAnIdentSequence(reader) ?
+			HashTypeFlag.ID :
+			HashTypeFlag.UNRESTRICTED;
 		String value = consumeAnIdentSequence(reader);
 		
 		return createHashToken(value, flag);
+	}
+	
+	private Token consumeANumericToken(PushbackReader reader) throws IOException {
+		Number number = consumeANumber(reader);
+		
+		if (wouldStartAnIdentSequence(reader)) {
+			String unit = consumeAnIdentSequence(reader);
+			return createDimensionToken(number, unit);
+		}
+		
+		if (peek(reader) == '%') {
+			read(reader);
+			return createPercentageToken(number);
+		}
+		
+		return createNumberToken(number);
+	}
+	
+	private Token consumeAnIdentLikeToken(PushbackReader reader) throws IOException {
+		String string = consumeAnIdentSequence(reader);
+		
+		if (string.equalsIgnoreCase("url") && peek(reader) == '(') {
+			read(reader);
+			while (true) {
+				int ch1 = read(reader);
+				int ch2 = peek(reader);
+				unread(reader, ch1);
+				if (isWhitespace(ch1) && isWhitespace(ch2)) {
+					read(reader);
+				} else {
+					break;
+				}
+			}
+			
+			int ch1 = read(reader);
+			int ch2 = peek(reader);
+			unread(reader, ch1);
+			if (
+				ch1 == '"' ||
+				ch1 == '\'' ||
+				(isWhitespace(ch1) && ch2 == '"') ||
+				(isWhitespace(ch1) && ch2 == '\'')
+			) {
+				return createFunctionToken(string);
+			} else {
+				return consumeAURLToken(reader);
+			}
+		}
+		
+		if (peek(reader) == '(') {
+			read(reader);
+			return createFunctionToken(string);
+		}
+		
+		return createIdentToken(string);
+	}
+
+	private Token consumeAURLToken(PushbackReader reader) throws IOException {
+		StringBuilder url = new StringBuilder();
+		while (isWhitespace(peek(reader))) {
+			read(reader);
+		}
+		while (true) {
+			int ch = read(reader);
+			switch(ch) {
+			case ')':
+				return createURLToken(url.toString());
+			case -1:
+				// TODO: Parse Error
+				return createURLToken(url.toString());
+			case '"':
+			case '\'':
+			case '(':
+				// TODO: Parse Error
+				consumeTheRemnantsOfABadUrl(reader);
+				return new BadURLToken() {};
+			case '\\':
+				if (isValidEscapeSequence(ch, reader)) {
+					int escapedCodePoint = consumeAnEscapedCodePoint(reader);
+					url.appendCodePoint(escapedCodePoint);
+				} else {
+					// TODO: Parse Error
+					consumeTheRemnantsOfABadUrl(reader);
+					return new BadURLToken() {};
+				}
+			default:
+				if (isWhitespace(ch)) {
+					while (isWhitespace(peek(reader))) {
+						read(reader);
+					}
+					if (peek(reader) == ')') {
+						read(reader);
+						return createURLToken(url.toString());
+					}
+					if (peek(reader) == -1) {
+						// TODO: Parse Error
+						read(reader);
+						return createURLToken(url.toString());
+					} else {
+						// TODO: (Implied) Parse Error
+						// The spec does not actually define this as a parse error
+						consumeTheRemnantsOfABadUrl(reader);
+						return new BadURLToken() {};
+					}
+				}
+				url.appendCodePoint(ch);
+			}	
+		}
+	}
+
+	private void consumeTheRemnantsOfABadUrl(PushbackReader reader) throws IOException {
+		while (true) {
+			int ch = read(reader);
+			if (ch == ')' || ch == -1) {
+				return;
+			} else if (isValidEscapeSequence(ch, reader)) {
+				consumeAnEscapedCodePoint(reader);
+			}
+		}
+	}
+
+	private Number consumeANumber(PushbackReader reader) throws IOException {
+		NumberTypeFlag type = NumberTypeFlag.INTEGER;
+		StringBuilder repr = new StringBuilder();
+		if (peek(reader) == '+' || peek(reader) == '-') {
+			repr.appendCodePoint(read(reader));
+		}
+		
+		while (isDigit(peek(reader))) {
+			repr.appendCodePoint(read(reader));
+		}
+		
+		{
+			int ch1 = read(reader);
+			int ch2 = read(reader);
+			if (ch1 == '.' && isDigit(ch2)) {
+				repr.appendCodePoint(ch1);
+				repr.appendCodePoint(ch2);
+				type = NumberTypeFlag.NUMBER;
+				while (isDigit(peek(reader))) {
+					repr.appendCodePoint(read(reader));
+				}
+			} else {
+				unread(reader, ch2);
+				unread(reader, ch1);
+			}
+		}
+		
+		{
+			int ch1 = read(reader);
+			int ch2 = read(reader);
+			int ch3 = read(reader);
+			if (
+				(ch1 == 'e' || ch1 == 'E') &&
+				(
+					((ch2 == '+' || ch2 == '-') && isDigit(ch3)) ||
+					isDigit(ch2)
+				)
+			) {
+				if (!(ch2 == '+' || ch2 == '-')) {
+					unread(reader, ch3);
+					ch3 = ch2;
+					ch2 = '+';
+				}
+				repr.appendCodePoint(ch1);
+				repr.appendCodePoint(ch2);
+				repr.appendCodePoint(ch3);
+				type = NumberTypeFlag.NUMBER;
+				while (isDigit(peek(reader))) {
+					repr.appendCodePoint(read(reader));
+				}
+			} else {
+				unread(reader, ch3);
+				unread(reader, ch2);
+				unread(reader, ch1);
+			}
+		}
+		
+		if (type == NumberTypeFlag.INTEGER) {
+			return Integer.valueOf(repr.toString());
+		} else {
+			return Double.parseDouble(repr.toString());
+		}
 	}
 
 	private String consumeAnIdentSequence(PushbackReader reader) throws IOException {
@@ -130,7 +442,7 @@ public class TokenizerImp implements Tokenizer {
 			if (isIdentCodePoint(ch)) {
 				read(reader);
 				result.appendCodePoint(ch);
-			} else if (isValidEscapeSequence(reader)) {
+			} else if (isValidEscapeSequence(ch, reader)) {
 				read(reader);
 				result.appendCodePoint(consumeAnEscapedCodePoint(reader));
 			} else {
@@ -177,11 +489,72 @@ public class TokenizerImp implements Tokenizer {
 		return () -> value;
 	}
 	
-	private DelimToken createDelimToken(char ch) {
+	private DelimToken createDelimToken(int ch) {
 		return () -> ch;
 	}
 	
-	private HashToken createHashToken(String value, TypeFlag flag) {
+	private IdentToken createIdentToken(String value) {
+		return () -> value;
+	}
+	
+	private FunctionToken createFunctionToken(String value) {
+		return () -> value;
+	}
+	
+	private URLToken createURLToken(String value) {
+		return () -> value;
+	}
+	
+	private AtKeywordToken createAtKeywordToken(String value) {
+		return () -> value;
+	}
+	
+	private NumberToken createNumberToken(Number number) {
+		NumberTypeFlag flag = number instanceof Integer ?
+			NumberTypeFlag.INTEGER :
+			NumberTypeFlag.NUMBER;
+		
+		return new NumberToken() {
+			@Override
+			public Number getValue() {
+				return number;
+			}
+
+			@Override
+			public NumberTypeFlag getTypeFlag() {
+				return flag;
+			}	
+		};
+	}
+	
+	private DimensionToken createDimensionToken(Number number, String unit) {
+		NumberTypeFlag flag = number instanceof Integer ?
+			NumberTypeFlag.INTEGER :
+			NumberTypeFlag.NUMBER;
+		
+		return new DimensionToken() {
+			@Override
+			public Number getValue() {
+				return number;
+			}
+
+			@Override
+			public NumberTypeFlag getTypeFlag() {
+				return flag;
+			}
+
+			@Override
+			public String getUnit() {
+				return unit;
+			}	
+		};
+	}
+	
+	private PercentageToken createPercentageToken(Number number) {
+		return () -> number;
+	}
+	
+	private HashToken createHashToken(String value, HashTypeFlag flag) {
 		return new HashToken() {
 			
 			@Override
@@ -190,7 +563,7 @@ public class TokenizerImp implements Tokenizer {
 			}
 			
 			@Override
-			public TypeFlag getTypeFlag() {
+			public HashTypeFlag getTypeFlag() {
 				return flag;
 			}
 			
@@ -208,31 +581,65 @@ public class TokenizerImp implements Tokenizer {
 		}
 	}
 	
-	private boolean wouldStartAnIdentSequence(PushbackReader reader) throws IOException {
-		int ch = peek(reader);
+	private boolean wouldStartANumber(int ch1, PushbackReader reader) throws IOException {
+		int ch2 = read(reader);
+		int ch3 = peek(reader);
+		unread(reader, ch2);
 		
+		switch(ch1) {
+		case '+':
+		case '-':
+			if (isDigit(ch2)) {
+				return true;
+			}
+			return
+				ch2 == '.' &&
+				isDigit(ch3);
+		case '.':
+			return isDigit(ch2);
+		default:
+			return isDigit(ch1);
+		}
+	}
+	
+	private boolean wouldStartAnIdentSequence(PushbackReader reader) throws IOException {
+		int ch = read(reader);
+		boolean wouldStart = isValidIdentSequence(ch, reader);
+		unread(reader, ch);
+		
+		return wouldStart;
+	}
+	
+	private boolean isValidIdentSequence(int ch, PushbackReader reader) throws IOException {
 		switch(ch) {
 		case '-':
 			read(reader);
 			if (
 				isIdentStartCodePoint(peek(reader)) ||
 				peek(reader) == '-' ||
-				isValidEscapeSequence(reader)
+				wouldStartValidEscapeSequence(reader)
 			) {
 				unread(reader, ch);
 				return true;
 			}
 		case '/':
-			return isValidEscapeSequence(reader);
+			return isValidEscapeSequence(ch, reader);
 		default:
 			return isIdentStartCodePoint(ch);
 		}
 	}
 	
-	private boolean isValidEscapeSequence(PushbackReader reader) throws IOException {
+	private boolean isValidEscapeSequence(int ch1, PushbackReader reader) throws IOException {
+		int ch2 = peek(reader);
+		
+		return
+			ch1 == '\\' &&
+			ch2 != '\n';
+	}
+	
+	private boolean wouldStartValidEscapeSequence(PushbackReader reader) throws IOException {
 		int ch1 = read(reader);
-		int ch2 = read(reader);
-		unread(reader, ch2);
+		int ch2 = peek(reader);
 		unread(reader, ch1);
 		
 		return
