@@ -6,6 +6,8 @@ public interface DirectivePool extends Iterable<Directive> {
 	
 	<T extends Directive> T getDirective(Class<T> directiveClass);
 	
+	<T extends Directive> T getDirectiveOrDefault(Class<T> directiveClass, T def);
+	
 	<T extends Directive> T getRawDirective(Class<T> directiveClass);
 	
 	Directive[] getCurrentDirectives();

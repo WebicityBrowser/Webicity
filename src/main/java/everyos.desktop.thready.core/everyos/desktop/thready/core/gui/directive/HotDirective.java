@@ -6,4 +6,6 @@ public interface HotDirective extends Directive {
 	
 	void unbind(DirectivePool pool);
 	
+	Directive getCurrentDirective();
+	
 }

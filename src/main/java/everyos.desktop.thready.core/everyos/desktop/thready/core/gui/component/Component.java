@@ -6,9 +6,12 @@ import everyos.desktop.thready.core.gui.directive.DirectivePool;
 import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
 
 public interface Component {
+	
+	// This interface does not define how components hold children
 
 	DirectivePool getDirectivePool();
 	
+	// A chain-able shortcut for getDirectivePool().directive(...)
 	Component directive(Directive directive);
 	
 	void invalidate(InvalidationLevel level);
