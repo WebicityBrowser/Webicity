@@ -50,7 +50,6 @@ public class AttributeSelectorParser implements SelectorParser {
 			totalLength--;
 		}
 		
-		System.out.println(totalLength);
 		return totalLength;
 	}
 

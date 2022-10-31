@@ -330,6 +330,7 @@ public class TokenizerImp implements Tokenizer {
 				if (isValidEscapeSequence(ch, reader)) {
 					int escapedCodePoint = consumeAnEscapedCodePoint(reader);
 					url.appendCodePoint(escapedCodePoint);
+					continue;
 				} else {
 					// TODO: Parse Error
 					consumeTheRemnantsOfABadUrl(reader);
@@ -622,6 +623,8 @@ public class TokenizerImp implements Tokenizer {
 				unread(reader, ch);
 				return true;
 			}
+			unread(reader, ch);
+			return false;
 		case '/':
 			return isValidEscapeSequence(ch, reader);
 		default:

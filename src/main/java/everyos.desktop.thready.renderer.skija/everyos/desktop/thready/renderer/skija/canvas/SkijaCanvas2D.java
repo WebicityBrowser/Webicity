@@ -85,7 +85,7 @@ public class SkijaCanvas2D implements Canvas2D {
 		return null;
 	}
 	
-	private Paint createPaint(Paint2D paint2) {
+	private Paint createPaint(Paint2D paint) {
 		// TODO Auto-generated method stub
 		return null;
 	}
