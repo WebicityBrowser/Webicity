@@ -20,4 +20,6 @@ public interface Component {
 	
 	boolean unbindUI(ComponentUI ui);
 	
+	// Method to pass events directly to the ComponentUI?
+	
 }

@@ -1,9 +1,9 @@
 package everyos.desktop.thready.core.gui.laf.component.composite;
 
-import java.util.Optional;
-
 public interface Compositor {
+	
+	void addChild(CompositeLayer child);
 
-	Optional<CompositeLayer> getCompositeLayer();
+	CompositeLayer createCompositeLayer();
 	
 }

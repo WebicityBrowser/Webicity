@@ -1,5 +1,5 @@
 package everyos.desktop.thready.core.gui.laf.component.event;
 
-public interface EventManager {
+public interface EventHandler {
 
 }

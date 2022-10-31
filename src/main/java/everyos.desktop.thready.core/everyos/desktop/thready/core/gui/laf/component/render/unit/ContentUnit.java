@@ -5,9 +5,8 @@ import everyos.desktop.thready.core.positioning.AbsoluteSize;
 
 public interface ContentUnit extends Unit {
 
-	AbsoluteSize getSize();
+	AbsoluteSize getMinimumSize();
 	
-	//TODO: It might be better if painters are static
 	ContentUnitPainter createPainter();
 	
 }
