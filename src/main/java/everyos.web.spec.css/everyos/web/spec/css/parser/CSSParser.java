@@ -9,4 +9,6 @@ public interface CSSParser {
 	
 	CSSRule[] parseAListOfRules(Token[] tokens);
 	
+	CSSRule[] parseAListOfDeclarations(Token[] tokens);
+	
 }

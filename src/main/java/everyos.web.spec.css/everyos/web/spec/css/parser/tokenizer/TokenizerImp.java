@@ -57,6 +57,7 @@ public class TokenizerImp implements Tokenizer {
 	}
 	
 	private Token consumeAToken(PushbackReader reader) throws IOException {
+		// TODO: Consume comments
 		int ch = read(reader);
 		switch (ch) {
 		case '\n':

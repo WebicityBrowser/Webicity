@@ -1,5 +1,7 @@
 package everyos.web.spec.css.parser;
 
+import everyos.web.spec.css.parser.tokens.EOFToken;
+
 public class TokenStreamImp implements TokenStream {
 
 	private final TokenLike[] tokens;
@@ -14,8 +16,7 @@ public class TokenStreamImp implements TokenStream {
 	@Override
 	public TokenLike read() {
 		if (position >= tokens.length) {
-			// This will hopefully be an EOFToken
-			return tokens[tokens.length - 1];
+			return new EOFToken() {};
 		}
 		return tokens[position++];
 	}
