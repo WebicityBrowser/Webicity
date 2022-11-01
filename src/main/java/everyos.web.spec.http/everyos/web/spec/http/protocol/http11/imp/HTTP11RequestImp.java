@@ -1,13 +1,13 @@
 package everyos.web.spec.http.protocol.http11.imp;
 
+import everyos.web.spec.http.protocol.HTTPRequestMethod;
 import everyos.web.spec.http.protocol.HTTPHeader;
 import everyos.web.spec.http.protocol.http11.HTTP11Request;
-import everyos.web.spec.http.protocol.http11.HTTP11RequestMethod;
 
 public class HTTP11RequestImp implements HTTP11Request {
 
 	@Override
-	public HTTP11RequestMethod getMethod() {
+	public HTTPRequestMethod getMethod() {
 		// TODO Auto-generated method stub
 		return null;
 	}

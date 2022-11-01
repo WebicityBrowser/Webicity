@@ -59,6 +59,7 @@ sourceSets {
 				'src/main/java/everyos.desktop.thready.threadyweb',
 				'src/main/java/everyos.browser.webicity',
 				'src/main/java/everyos.browser.webicitybrowser',
+				'src/main/java/everyos.web.spec.uri',
 				'src/main/java/everyos.web.spec.http',
 				'src/main/java/everyos.web.spec.css'
 			]

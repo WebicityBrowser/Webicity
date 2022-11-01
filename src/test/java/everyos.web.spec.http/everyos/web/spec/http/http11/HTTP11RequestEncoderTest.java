@@ -9,10 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import everyos.web.spec.http.protocol.HTTPRequestMethod;
 import everyos.web.spec.http.protocol.HTTPHeader;
 import everyos.web.spec.http.protocol.http11.HTTP11Request;
 import everyos.web.spec.http.protocol.http11.HTTP11RequestEncoder;
-import everyos.web.spec.http.protocol.http11.HTTP11RequestMethod;
 import everyos.web.spec.http.protocol.http11.encoder.HTTP11RequestEncoderImp;
 
 public class HTTP11RequestEncoderTest {
@@ -28,7 +28,7 @@ public class HTTP11RequestEncoderTest {
 	@DisplayName("Can encode simple get request")
 	public void canEncodeSimpleGetRequest() {
 		HTTP11Request getRequest = Mockito.mock(HTTP11Request.class);
-		Mockito.when(getRequest.getMethod()).thenReturn(HTTP11RequestMethod.GET);
+		Mockito.when(getRequest.getMethod()).thenReturn(HTTPRequestMethod.GET);
 		Mockito.when(getRequest.getRequestURI()).thenReturn("/index.html");
 		Mockito.when(getRequest.getHeaders()).thenReturn(new HTTPHeader[] {});
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
