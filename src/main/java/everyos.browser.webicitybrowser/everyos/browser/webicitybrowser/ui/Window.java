@@ -1,12 +1,12 @@
 package everyos.browser.webicitybrowser.ui;
 
-import java.io.Closeable;
-
 import everyos.browser.webicitybrowser.ui.event.WindowMutationEventListener;
 
-public interface Window extends Closeable {
+public interface Window {
 	
 	void start();
+	
+	void close();
 
 	boolean isPrivate();
 	

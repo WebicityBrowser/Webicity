@@ -1,13 +1,13 @@
 package everyos.browser.webicitybrowser.ui;
 
-import java.io.Closeable;
-
 import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
 import everyos.web.spec.uri.URL;
 
-public interface Tab extends Closeable {
+public interface Tab {
 	
 	void start();
+	
+	void close();
 	
 	String getName();
 	

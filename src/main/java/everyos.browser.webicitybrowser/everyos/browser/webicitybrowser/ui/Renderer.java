@@ -1,9 +1,9 @@
 package everyos.browser.webicitybrowser.ui;
 
-import java.io.Closeable;
-
-public interface Renderer extends Closeable {
+public interface Renderer {
 
 	void start();
+	
+	void close();
 	
 }

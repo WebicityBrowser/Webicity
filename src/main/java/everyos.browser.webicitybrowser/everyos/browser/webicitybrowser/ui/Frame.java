@@ -1,13 +1,13 @@
 package everyos.browser.webicitybrowser.ui;
 
-import java.io.Closeable;
-
 import everyos.browser.webicitybrowser.ui.event.FrameMutationEventListener;
 import everyos.web.spec.uri.URL;
 
-public interface Frame extends Closeable {
+public interface Frame {
 
 	void start();
+	
+	void close();
 	
 	String getName();
 	

@@ -1,15 +1,14 @@
 package everyos.browser.webicitybrowser.ui;
 
-import java.awt.Window;
-import java.io.Closeable;
-
 import everyos.browser.webicitybrowser.ui.Window.WindowOptions;
 import everyos.browser.webicitybrowser.ui.event.WindowSetMutationEventListener;
 import everyos.web.spec.uri.URL;
 
-public interface WindowSet extends Closeable {
+public interface WindowSet {
 
 	void start();
+	
+	void close();
 	
 	void open(URL url);
 	
