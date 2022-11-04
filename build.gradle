@@ -61,7 +61,8 @@ sourceSets {
 				'src/main/java/everyos.browser.webicitybrowser',
 				'src/main/java/everyos.web.spec.uri',
 				'src/main/java/everyos.web.spec.http',
-				'src/main/java/everyos.web.spec.css'
+				'src/main/java/everyos.web.spec.css',
+				'src/main/java/everyos.web.spec.idl'
 			]
 		}
 	}
@@ -69,7 +70,8 @@ sourceSets {
 		java {
 			srcDirs = [
 				'src/test/java/everyos.web.spec.http',
-				'src/test/java/everyos.web.spec.css'
+				'src/test/java/everyos.web.spec.css',
+				'src/test/java/everyos.web.spec.idl'
 			]
 		}
 	}
