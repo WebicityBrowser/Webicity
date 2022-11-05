@@ -7,40 +7,40 @@ public class RGBA8Color implements RGBA8ColorFormat {
 	private final int color;
 
 	public RGBA8Color(int r, int g, int b, int a) {
-		color = (a << 24) + (r << 16) + (g << 8) + b;
+		color = (r << 24) + (g << 16) + (b << 8) + a;
 	}
 	
 	public RGBA8Color(int r, int g, int b) {
-		this(255, r, g, b);
+		this(r, g, b, 255);
 	}
 	
 	// Thanks to joeyjoejoe from Discord for suggesting these constructors!
 	public RGBA8Color(int rgb) {
-		color = (255 << 24) + rgb;
+		this(rgb, 255);
 	}
 	
 	public RGBA8Color(int rgb, int alpha) {
-		color = (alpha << 24) + rgb;
+		color = (rgb << 8) + alpha;
 	}
 	//
-
+	
 	@Override
-	public int getAlpha() {
+	public int getRed() {
 		return (color >>> 24) & 0xFF;
 	}
 	
 	@Override
-	public int getRed() {
+	public int getGreen() {
 		return (color >>> 16) & 255;
 	}
 	
 	@Override
-	public int getGreen() {
+	public int getBlue() {
 		return (color >>> 8) & 255;
 	}
 	
 	@Override
-	public int getBlue() {
+	public int getAlpha() {
 		return color & 255;
 	}
 	

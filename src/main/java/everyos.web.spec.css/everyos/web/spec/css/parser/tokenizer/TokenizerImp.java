@@ -57,7 +57,8 @@ public class TokenizerImp implements Tokenizer {
 	}
 	
 	private Token consumeAToken(PushbackReader reader) throws IOException {
-		// TODO: Consume comments
+		consumeComments(reader);
+		
 		int ch = read(reader);
 		switch (ch) {
 		case '\n':
@@ -112,6 +113,23 @@ public class TokenizerImp implements Tokenizer {
 				return consumeAnIdentLikeToken(reader);
 			}
 			return createDelimToken(ch);
+		}
+	}
+
+	private void consumeComments(PushbackReader reader) throws IOException {
+		int ch1 = read(reader);
+		int ch2 = peek(reader);
+		unread(reader, ch1);
+		
+		if (ch1 == '/' && ch2 == '*') {
+			read(reader);
+			read(reader);
+			ch1 = read(reader);
+			ch2 = read(reader);
+			while (ch2 != -1 && !(ch1 == '*' && ch2 == '/')) {
+				ch1 = ch2;
+				ch2 = read(reader);
+			}
 		}
 	}
 
