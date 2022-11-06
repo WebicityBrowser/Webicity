@@ -1,17 +1,20 @@
 package everyos.desktop.thready.renderer.skija;
 
-import org.lwjgl.glfw.GLFW;
+import java.util.function.Consumer;
 
-import everyos.desktop.thready.core.graphics.Screen;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
+
+import everyos.desktop.thready.core.gui.Screen;
 
 public class SkijaWindow {
 	
 	private final long windowId;
 	private final Screen screen;
 
-	public SkijaWindow(long glfwWindowId) {
+	private SkijaWindow(long glfwWindowId) {
 		this.windowId = glfwWindowId;
-		this.screen = new GLFWScreen(glfwWindowId);
+		this.screen = new SkijaScreen(glfwWindowId);
 	}
 
 	public Screen getScreen() {
@@ -34,12 +37,20 @@ public class SkijaWindow {
 		return bool ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE;
 	}
 	
-	public static SkijaWindow createWindow() {
-		//TODO: Ensure that we are on a dedicated thread
-		initGlfw();
-		long windowId = GLFW.glfwCreateWindow(800, 600, "Untitled Application", GLFW.GLFW_DONT_CARE, GLFW.GLFW_DONT_CARE);
-		
-		return new SkijaWindow(windowId);
+	public static void createWindow(Consumer<SkijaWindow> threadFunc) {
+		SkijaThread.addScreen(() -> {
+			initGlfw();
+			long windowId = GLFW.glfwCreateWindow(800, 600, "Untitled Application", 0, 0);
+			GLFW.glfwMakeContextCurrent(windowId);
+			GL.createCapabilities();
+			GLFW.glfwSetWindowPos(windowId, 100, 100);
+			GLFW.glfwSwapInterval(1);
+			
+			SkijaWindow window = new SkijaWindow(windowId);
+			threadFunc.accept(window);
+			
+			return (SkijaScreen) window.getScreen();
+		});
 	}
 
 	private static void initGlfw() {

@@ -1,4 +1,4 @@
-package everyos.desktop.thready.core.graphics;
+package everyos.desktop.thready.core.gui;
 
 import everyos.desktop.thready.core.gui.component.Component;
 import everyos.desktop.thready.core.gui.laf.LookAndFeel;
