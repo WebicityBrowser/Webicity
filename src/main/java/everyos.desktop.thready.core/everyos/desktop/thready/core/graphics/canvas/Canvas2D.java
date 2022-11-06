@@ -1,6 +1,6 @@
 package everyos.desktop.thready.core.graphics.canvas;
 
-import everyos.desktop.thready.core.graphics.image.Texture;
+import everyos.desktop.thready.core.graphics.image.LoadedImage;
 
 public interface Canvas2D {
 
@@ -12,9 +12,9 @@ public interface Canvas2D {
 	
 	void drawTriangle(float p1x, float p1y, float p2ox, float p2oy, float p3ox, float p3oy);
 	
-	void drawTexture(float x, float y, Texture image);
+	void drawTexture(float x, float y, LoadedImage image);
 	
-	void drawTexture(float x, float y, float l, float h, Texture image);
+	void drawTexture(float x, float y, float l, float h, LoadedImage image);
 	
 	void drawText(float x, float y, String text);
 	

@@ -3,7 +3,7 @@ package everyos.desktop.thready.renderer.skija.canvas;
 import everyos.desktop.thready.core.graphics.canvas.Canvas2D;
 import everyos.desktop.thready.core.graphics.canvas.Canvas2DSettings;
 import everyos.desktop.thready.core.graphics.canvas.Paint2D;
-import everyos.desktop.thready.core.graphics.image.Texture;
+import everyos.desktop.thready.core.graphics.image.LoadedImage;
 import io.github.humbleui.skija.Canvas;
 import io.github.humbleui.skija.DirectContext;
 import io.github.humbleui.skija.Paint;
@@ -43,12 +43,12 @@ public class SkijaCanvas2D implements Canvas2D {
 	}
 	
 	@Override
-	public void drawTexture(float x, float y, Texture image) {
+	public void drawTexture(float x, float y, LoadedImage image) {
 		drawTexture(x, y, image.getNaturalWidth(), image.getNaturalHeight(), image);
 	}
 
 	@Override
-	public void drawTexture(float x, float y, float l, float h, Texture image) {
+	public void drawTexture(float x, float y, float l, float h, LoadedImage image) {
 		// TODO Auto-generated method stub
 	}
 

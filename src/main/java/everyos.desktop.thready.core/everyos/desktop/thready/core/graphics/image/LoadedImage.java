@@ -1,6 +1,6 @@
 package everyos.desktop.thready.core.graphics.image;
 
-public interface Texture {
+public interface LoadedImage {
 
 	float getNaturalWidth();
 	

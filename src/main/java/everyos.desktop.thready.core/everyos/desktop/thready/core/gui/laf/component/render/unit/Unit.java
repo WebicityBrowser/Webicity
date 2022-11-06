@@ -3,8 +3,8 @@ package everyos.desktop.thready.core.gui.laf.component.render.unit;
 import java.util.Optional;
 
 import everyos.desktop.thready.core.gui.laf.component.composite.Compositor;
-import everyos.desktop.thready.core.gui.laf.component.event.EventHandler;
 import everyos.desktop.thready.core.gui.laf.component.paint.Painter;
+import everyos.desktop.thready.core.gui.message.MessageHandler;
 import everyos.desktop.thready.core.positioning.Rectangle;
 
 public interface Unit {
@@ -13,7 +13,7 @@ public interface Unit {
 	
 	Painter getPainter();
 	
-	EventHandler getEventHandler();
+	MessageHandler getMessageHandler();
 	
 	ContextSwitch[] getContextSwitches();
 	
