@@ -5,6 +5,6 @@ import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
 
 public interface LookAndFeel {
 
-	ComponentUI createUIFor(Component component);
+	ComponentUI createUIFor(Component component, ComponentUI parent);
 	
 }

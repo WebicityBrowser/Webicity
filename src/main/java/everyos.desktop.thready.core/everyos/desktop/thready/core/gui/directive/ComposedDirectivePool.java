@@ -1,13 +1,13 @@
 package everyos.desktop.thready.core.gui.directive;
 
-public interface ComposedDirectivePool extends DirectivePool {
+public interface ComposedDirectivePool<T extends DirectivePool> extends DirectivePool {
 
-	void addDirectivePool(DirectivePool pool);
+	void addDirectivePool(T pool);
 	
-	void removeDirectivePool(DirectivePool pool);
+	void removeDirectivePool(T pool);
 	
 	// Includes self
-	DirectivePool[] getCurrentDirectivePools();
+	T[] getCurrentDirectivePools();
 	
 	// Note: A composed directive pool's own set of directives typically
 	// take priority over those of any other pools added to it,

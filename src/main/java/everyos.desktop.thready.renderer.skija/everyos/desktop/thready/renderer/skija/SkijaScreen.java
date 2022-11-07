@@ -9,15 +9,17 @@ import everyos.desktop.thready.core.gui.component.Component;
 import everyos.desktop.thready.core.gui.laf.LookAndFeel;
 import everyos.desktop.thready.core.positioning.AbsoluteSize;
 import everyos.desktop.thready.core.positioning.imp.AbsoluteSizeImp;
+import everyos.desktop.thready.renderer.skija.canvas.SkijaRootCanvas2D;
+import io.github.humbleui.skija.DirectContext;
 
 public class SkijaScreen implements Screen {
 
-	private final SkijaRenderingPipeline renderingPipeline = new SkijaRenderingPipeline();
 	private final long windowId;
+	private final DirectContext directContext = DirectContext.makeGL();
 	
 	private AbsoluteSize oldSize = new AbsoluteSizeImp(0, 0);
-	private Component rootComponent;
-	private LookAndFeel lookAndFeel;
+	private SkijaRenderingPipeline renderingPipeline;
+	private SkijaRootCanvas2D currentCanvas;
 	
 	public SkijaScreen(long glfwWindowId) {
 		this.windowId = glfwWindowId;
@@ -25,9 +27,7 @@ public class SkijaScreen implements Screen {
 
 	@Override
 	public void setGUI(Component component, LookAndFeel lookAndFeel) {
-		renderingPipeline.invalidate(InvalidationLevel.BOX);
-		this.rootComponent = component;
-		this.lookAndFeel = lookAndFeel;
+		renderingPipeline = new SkijaRenderingPipeline(component, lookAndFeel);
 	}
 	
 	public boolean isDone() {
@@ -48,8 +48,7 @@ public class SkijaScreen implements Screen {
 	
 	private boolean canRenderGui() {
 		return
-			rootComponent != null &&
-			lookAndFeel != null &&
+			renderingPipeline != null &&
 			windowIsVisible();
 	}
 
@@ -59,12 +58,13 @@ public class SkijaScreen implements Screen {
 	
 	private void updateWindow() {
 		AbsoluteSize windowSize = getWindowSize();
-		if (windowSize.equals(oldSize)) {
+		if (!windowSize.equals(oldSize)) {
 			oldSize = windowSize;
 			rescaleViewport(windowSize);
-			renderingPipeline.invalidate(InvalidationLevel.BOX);
+			renderingPipeline.invalidatePipeline(InvalidationLevel.BOX);
+			regenerateCanvas(windowSize);
 		}
-		renderingPipeline.tick(rootComponent, lookAndFeel, windowSize);
+		renderingPipeline.tick(currentCanvas, windowSize);
 	}
 
 	private AbsoluteSize getWindowSize() {
@@ -76,13 +76,17 @@ public class SkijaScreen implements Screen {
 	}
 
 	private void rescaleViewport(AbsoluteSize windowSize) {
-		//TODO: Allow adjusting scaling elsewhere
-		//TODO: Detect the actual DPI
-		
-		int dpi = 96;
+		// TODO: Allow adjusting scaling elsewhere
+		// TODO: Detect the actual system DPI
+		int systemDPI = 96;
+		int targetDPI = 96;
 		GL11.glViewport(0, 0,
-			(int) (windowSize.getWidth() * 96.0 / dpi),
-			(int) (windowSize.getHeight() * 96.0 / dpi));
+			(int) ((float) windowSize.getWidth() * targetDPI / systemDPI),
+			(int) ((float) windowSize.getHeight() * targetDPI / systemDPI));
+	}
+	
+	private void regenerateCanvas(AbsoluteSize size) {
+		this.currentCanvas = SkijaRootCanvas2D.create(directContext, size);
 	}
 	
 	private boolean glfwBool(int bool) {

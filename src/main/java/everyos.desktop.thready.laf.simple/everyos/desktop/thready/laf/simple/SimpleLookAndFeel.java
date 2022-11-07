@@ -7,7 +7,7 @@ import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
 public class SimpleLookAndFeel implements LookAndFeel {
 
 	@Override
-	public ComponentUI createUIFor(Component component) {
+	public ComponentUI createUIFor(Component component, ComponentUI parent) {
 		// TODO Auto-generated method stub
 		return null;
 	}

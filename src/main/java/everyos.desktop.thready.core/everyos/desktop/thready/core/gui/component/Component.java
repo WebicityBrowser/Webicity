@@ -16,9 +16,9 @@ public interface Component {
 	
 	void invalidate(InvalidationLevel level);
 	
-	boolean bindUI(ComponentUI ui);
+	void bindUI(ComponentUI ui);
 	
-	boolean unbindUI(ComponentUI ui);
+	void unbindUI(ComponentUI ui);
 	
 	// Method to pass events directly to the ComponentUI?
 	
