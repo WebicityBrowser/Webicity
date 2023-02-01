@@ -1,6 +1,8 @@
 package everyos.desktop.thready.core.graphics.color.colors;
 
+import everyos.desktop.thready.core.graphics.color.RawColor;
 import everyos.desktop.thready.core.graphics.color.formats.RGBA8ColorFormat;
+import everyos.desktop.thready.core.graphics.color.imp.InternalColorImp;
 
 public class RGBA8Color implements RGBA8ColorFormat {
 
@@ -45,8 +47,18 @@ public class RGBA8Color implements RGBA8ColorFormat {
 	}
 	
 	@Override
+	public RawColor toRawColor() {
+		return InternalColorImp.ofRGBA8(getRed(), getGreen(), getBlue(), getAlpha());
+	}
+	
+	@Override
 	public String toString() {
 		return "Color [a=" + getAlpha() + ", r="+getRed() + ", g=" + getGreen() + ", b=" + getBlue() + "]";
+	}
+	
+	public static RGBA8Color fromRawColor(RawColor rawColor) {
+		InternalColorImp color = (InternalColorImp) rawColor;
+		return new RGBA8Color(color.getRed8(), color.getGreen8(), color.getBlue8(), color.getAlpha8());
 	}
 	
 }

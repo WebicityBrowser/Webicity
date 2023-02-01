@@ -1,0 +1,31 @@
+@namespace url(http://www.w3.org/1999/xhtml);
+
+html, head, body {
+	display: block;
+}
+
+div, p {
+	display: block;
+}
+
+a {
+	color: #0000EE;
+}
+
+/* TODO: Go back to handling <br>s via code instead */
+br {
+	display: block;
+}
+
+/* TODO: Definitely not how tables are handled */
+li, ul {
+	display: block;
+}
+
+span {
+	display: inline;
+}
+
+noscript {
+	display: none;
+}

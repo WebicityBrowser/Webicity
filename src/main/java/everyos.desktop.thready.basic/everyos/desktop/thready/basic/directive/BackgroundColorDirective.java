@@ -1,13 +1,13 @@
 package everyos.desktop.thready.basic.directive;
 
-import everyos.desktop.thready.core.graphics.color.RawColor;
+import everyos.desktop.thready.core.graphics.color.formats.ColorFormat;
 import everyos.desktop.thready.core.gui.directive.Directive;
 
 public interface BackgroundColorDirective extends Directive {
 
-	RawColor getColor();
+	ColorFormat getColor();
 
-	public static Directive of(RawColor color) {
+	public static Directive of(ColorFormat color) {
 		return new BackgroundColorDirective() {
 			
 			@Override
@@ -16,7 +16,7 @@ public interface BackgroundColorDirective extends Directive {
 			}
 			
 			@Override
-			public RawColor getColor() {
+			public ColorFormat getColor() {
 				return color;
 			}
 			

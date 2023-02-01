@@ -24,7 +24,7 @@ public class RelativeDimensionImp implements RelativeDimension {
 
 	@Override
 	public float resolveAbsoluteDimensions(float parentDimension) {
-		if (relativeComponent == RelativeDimension.UNBOUNDED || absoluteComponent == RelativeDimension.UNBOUNDED) {
+		if (relativeComponent == RelativeDimension.UNBOUNDED) {
 			return RelativeDimension.UNBOUNDED;
 		}
 		

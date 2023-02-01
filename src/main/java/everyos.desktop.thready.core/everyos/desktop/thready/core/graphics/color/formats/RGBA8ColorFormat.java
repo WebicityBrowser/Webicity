@@ -1,6 +1,6 @@
 package everyos.desktop.thready.core.graphics.color.formats;
 
-public interface RGBA8ColorFormat {
+public interface RGBA8ColorFormat extends ColorFormat {
 
 	int getRed();
 	

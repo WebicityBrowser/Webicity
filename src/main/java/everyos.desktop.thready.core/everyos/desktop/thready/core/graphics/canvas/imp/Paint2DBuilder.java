@@ -1,22 +1,22 @@
 package everyos.desktop.thready.core.graphics.canvas.imp;
 
 import everyos.desktop.thready.core.graphics.canvas.Paint2D;
-import everyos.desktop.thready.core.graphics.color.RawColor;
+import everyos.desktop.thready.core.graphics.color.formats.ColorFormat;
 import everyos.desktop.thready.core.graphics.text.LoadedFont;
 
 public class Paint2DBuilder {
 	
-	private RawColor color;
+	private ColorFormat color;
 
 	private LoadedFont loadedFont;
 	
-	public Paint2DBuilder setColor(RawColor color) {
+	public Paint2DBuilder setColor(ColorFormat color) {
 		this.color = color;
 
 		return this;
 	}
 	
-	public RawColor getColor() {
+	public ColorFormat getColor() {
 		return this.color;
 	}
 	

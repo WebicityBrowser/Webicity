@@ -6,7 +6,7 @@ import everyos.desktop.thready.core.graphics.canvas.Canvas2D;
 import everyos.desktop.thready.core.graphics.canvas.Canvas2DSettings;
 import everyos.desktop.thready.core.graphics.canvas.Paint2D;
 import everyos.desktop.thready.core.graphics.color.Colors;
-import everyos.desktop.thready.core.graphics.color.RawColor;
+import everyos.desktop.thready.core.graphics.color.formats.ColorFormat;
 import everyos.desktop.thready.core.graphics.color.imp.InternalColorImp;
 import everyos.desktop.thready.core.graphics.image.LoadedImage;
 import everyos.desktop.thready.core.graphics.text.FontMetrics;
@@ -24,6 +24,7 @@ import io.github.humbleui.skija.Surface;
 import io.github.humbleui.skija.SurfaceColorFormat;
 import io.github.humbleui.skija.SurfaceOrigin;
 import io.github.humbleui.skija.TextBlob;
+import io.github.humbleui.types.RRect;
 import io.github.humbleui.types.Rect;
 
 public class SkijaRootCanvas2D implements Canvas2D {
@@ -49,7 +50,7 @@ public class SkijaRootCanvas2D implements Canvas2D {
 
 	@Override
 	public void drawEllipse(float x, float y, float l, float h) {
-		canvas.drawArc(x, y, x + l, y + h, 0, 2 * (float) Math.PI, false, rawPaint);
+		canvas.drawRRect(RRect.makeOvalXYWH(x, y, l, h), rawPaint);
 	}
 
 	@Override
@@ -130,8 +131,8 @@ public class SkijaRootCanvas2D implements Canvas2D {
 		return rawPaint;
 	}
 
-	private int convertColorToInt(RawColor color) {
-		InternalColorImp colorInternals = ((InternalColorImp) color);
+	private int convertColorToInt(ColorFormat color) {
+		InternalColorImp colorInternals = ((InternalColorImp) color.toRawColor());
 		
 		return
 			(colorInternals.getAlpha8() << 24) +
@@ -167,7 +168,7 @@ public class SkijaRootCanvas2D implements Canvas2D {
 			}
 			
 			@Override
-			public RawColor getColor() {
+			public ColorFormat getColor() {
 				return Colors.WHITE;
 			}
 		};

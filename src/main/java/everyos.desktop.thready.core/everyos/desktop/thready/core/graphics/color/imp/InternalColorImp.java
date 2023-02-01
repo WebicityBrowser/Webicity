@@ -13,7 +13,7 @@ public class InternalColorImp implements RawColor {
 
 	
 	public int getRed16() {
-		return (int) ((color >>> 48) % 65536);
+		return (int) ((color >>> 48) & 0xFFFF);
 	}
 
 	
@@ -23,7 +23,7 @@ public class InternalColorImp implements RawColor {
 
 	
 	public int getGreen16() {
-		return (int) (color >>> 32) % 65536;
+		return (int) ((color >>> 32) & 0xFFFF);
 	}
 
 	
@@ -33,7 +33,7 @@ public class InternalColorImp implements RawColor {
 
 	
 	public int getBlue16() {
-		return (int) (color >>> 16) % 65536;
+		return (int) ((color >>> 16) & 0xFFFF);
 	}
 
 	
@@ -43,7 +43,7 @@ public class InternalColorImp implements RawColor {
 
 	
 	public int getAlpha16() {
-		return (int) color % 65536;
+		return (int) (color & 0xFFFF);
 	}
 
 	

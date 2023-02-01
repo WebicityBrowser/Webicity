@@ -1,4 +1,4 @@
-package everyos.desktop.thready.laf.simple.component.paint;
+package everyos.browser.webicitybrowser.gui.ui.button;
 
 import everyos.desktop.thready.basic.directive.BackgroundColorDirective;
 import everyos.desktop.thready.core.graphics.canvas.Canvas2D;
@@ -9,37 +9,33 @@ import everyos.desktop.thready.core.graphics.color.formats.ColorFormat;
 import everyos.desktop.thready.core.gui.stage.box.Box;
 import everyos.desktop.thready.core.gui.stage.paint.PaintContext;
 import everyos.desktop.thready.core.gui.stage.paint.Painter;
-import everyos.desktop.thready.core.gui.stage.render.unit.Unit;
 import everyos.desktop.thready.core.positioning.Rectangle;
 
-public class BlockWrappingPainter implements Painter {
-	
+public class CircularButtonPainter implements Painter {
+
 	private final Box box;
 	private final Rectangle documentRect;
-	private final Unit innerUnit;
 
-	public BlockWrappingPainter(Box box, Rectangle documentRect, Unit innerUnit) {
+	public CircularButtonPainter(Box box, Rectangle documentRect) {
 		this.box = box;
 		this.documentRect = documentRect;
-		this.innerUnit = innerUnit;
 	}
 
 	@Override
 	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewportRect) {
 		paintBackground(canvas);
-		innerUnit.getPainter(documentRect).paint(context, canvas, viewportRect);
 	}
 
 	private void paintBackground(Canvas2D canvas) {
-		ColorFormat backgroundColor = getBackgroundColor();
-		
-		Paint2D paint = Paint2DBuilder.clone(canvas.getPaint())
-			.setColor(backgroundColor)
+		ColorFormat color = getBackgroundColor();
+		Paint2D paint = Paint2DBuilder
+			.clone(canvas.getPaint())
+			.setColor(color)
 			.build();
 		
 		canvas
 			.withPaint(paint)
-			.drawRect(
+			.drawEllipse(
 				documentRect.getPosition().getX(),
 				documentRect.getPosition().getY(),
 				documentRect.getSize().getWidth(),

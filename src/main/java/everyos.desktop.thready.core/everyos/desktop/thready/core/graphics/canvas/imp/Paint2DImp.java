@@ -1,12 +1,12 @@
 package everyos.desktop.thready.core.graphics.canvas.imp;
 
 import everyos.desktop.thready.core.graphics.canvas.Paint2D;
-import everyos.desktop.thready.core.graphics.color.RawColor;
+import everyos.desktop.thready.core.graphics.color.formats.ColorFormat;
 import everyos.desktop.thready.core.graphics.text.LoadedFont;
 
 public class Paint2DImp implements Paint2D {
 	
-	private final RawColor color;
+	private final ColorFormat color;
 	
 	private final LoadedFont loadedFont;
 
@@ -16,7 +16,7 @@ public class Paint2DImp implements Paint2D {
 	}
 
 	@Override
-	public RawColor getColor() {
+	public ColorFormat getColor() {
 		return this.color;
 	}
 

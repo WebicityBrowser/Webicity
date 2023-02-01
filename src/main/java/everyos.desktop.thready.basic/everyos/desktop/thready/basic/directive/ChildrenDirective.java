@@ -7,7 +7,7 @@ public interface ChildrenDirective extends Directive {
 
 	Component[] getChildren();
 
-	public static Directive of(Component[] children) {
+	public static Directive of(Component... children) {
 		return new ChildrenDirective() {
 			
 			@Override

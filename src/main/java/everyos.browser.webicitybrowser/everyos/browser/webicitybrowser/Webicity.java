@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 
 import everyos.api.getopts.ParserFailedException;
 import everyos.browser.webicitybrowser.gui.binding.WindowSetGUI;
+import everyos.browser.webicitybrowser.gui.ui.WebicityLookAndFeel;
 import everyos.browser.webicitybrowser.gui.window.SkijaGUIWindow;
 import everyos.browser.webicitybrowser.startup.WebicityArgumentReader;
 import everyos.browser.webicitybrowser.ui.Tab;
@@ -11,6 +12,8 @@ import everyos.browser.webicitybrowser.ui.Window;
 import everyos.browser.webicitybrowser.ui.WindowSet;
 import everyos.browser.webicitybrowser.ui.imp.TabImp;
 import everyos.browser.webicitybrowser.ui.imp.WindowSetImp;
+import everyos.desktop.thready.core.gui.laf.LookAndFeelBuilder;
+import everyos.desktop.thready.laf.simple.SimpleLookAndFeel;
 import everyos.desktop.thready.renderer.skija.SkijaWindow;
 import everyos.web.spec.uri.URL;
 
@@ -74,7 +77,15 @@ public class Webicity {
 
 	private static void startUIFor(WindowSet windowSet) {
 		new WindowSetGUI(windowSet, (rootComponent, callback) -> {
-			SkijaWindow.createWindow(window -> callback.accept(new SkijaGUIWindow(window)));
+			SkijaWindow.createWindow(window -> {
+				window.setTitle("Webicity");
+				window.setDecorated(false);
+				LookAndFeelBuilder lookAndFeelBuilder = LookAndFeelBuilder.create();
+				SimpleLookAndFeel.installTo(lookAndFeelBuilder);
+				WebicityLookAndFeel.installTo(lookAndFeelBuilder);
+				window.getScreen().setGUI(rootComponent, lookAndFeelBuilder.build());
+				callback.accept(new SkijaGUIWindow(window));
+			});
 		}).start();
 	}
 
