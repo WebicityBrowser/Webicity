@@ -7,17 +7,14 @@ plugins {
 
 switch (OperatingSystem.current()) {
 	case OperatingSystem.LINUX:
-		def osArch = System.getProperty("os.arch")
-		project.ext.lwjglNatives = osArch.startsWith("arm") || osArch.startsWith("aarch64")
-			? "arm64"
-			: "natives-linux"
-		project.ext.skijaNatives = "skija-linux"
-		project.ext.skijaVersion = "0.106.0"
+		project.ext.lwjglNatives = "natives-linux"
+		project.ext.skijaNatives = "skija-linux-x64"
+		project.ext.skijaVersion = "0.109.1"
 		break
 	case OperatingSystem.WINDOWS:
 		project.ext.lwjglNatives = "natives-windows"
-		project.ext.skijaNatives = "skija-windows"
-		project.ext.skijaVersion = "0.106.0"
+		project.ext.skijaNatives = "skija-windows-x64"
+		project.ext.skijaVersion = "0.109.1"
 		break
 }
 
@@ -41,8 +38,8 @@ dependencies {
 	
 	implementation "io.github.humbleui:${skijaNatives}:${skijaVersion}"
 
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.1'
-	testImplementation 'org.mockito:mockito-core:4.8.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+	testImplementation 'org.mockito:mockito-core:5.1.1'
 }
 
 test {
@@ -63,7 +60,8 @@ sourceSets {
 				'src/main/java/everyos.web.spec.uri',
 				'src/main/java/everyos.web.spec.http',
 				'src/main/java/everyos.web.spec.css',
-				'src/main/java/everyos.web.spec.idl'
+				'src/main/java/everyos.web.spec.idl',
+				'src/main/java/everyos.api.getopts'
 			]
 		}
 	}
@@ -72,7 +70,8 @@ sourceSets {
 			srcDirs = [
 				'src/test/java/everyos.web.spec.http',
 				'src/test/java/everyos.web.spec.css',
-				'src/test/java/everyos.web.spec.idl'
+				'src/test/java/everyos.web.spec.idl',
+				'src/test/java/everyos.api.getopts'
 			]
 		}
 	}
