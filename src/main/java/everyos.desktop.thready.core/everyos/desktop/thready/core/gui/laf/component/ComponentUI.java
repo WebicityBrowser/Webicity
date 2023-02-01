@@ -1,8 +1,10 @@
 package everyos.desktop.thready.core.gui.laf.component;
 
 import everyos.desktop.thready.core.gui.InvalidationLevel;
+import everyos.desktop.thready.core.gui.component.Component;
 import everyos.desktop.thready.core.gui.directive.ComposedDirectivePool;
-import everyos.desktop.thready.core.gui.laf.component.box.Box;
+import everyos.desktop.thready.core.gui.stage.box.Box;
+import everyos.desktop.thready.core.gui.stage.box.BoxContext;
 
 public interface ComponentUI {
 	
@@ -14,6 +16,8 @@ public interface ComponentUI {
 	// decide.
 	ComposedDirectivePool<?> getComputedDirectives();
 
-	Box[] getBoxes();
+	Box[] generateBoxes(BoxContext context);
+
+	Component getComponent();
 	
 }

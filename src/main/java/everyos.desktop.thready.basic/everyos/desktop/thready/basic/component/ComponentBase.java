@@ -3,7 +3,7 @@ package everyos.desktop.thready.basic.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import everyos.desktop.thready.basic.directive.BasicDirectivePool;
+import everyos.desktop.thready.basic.directive.pool.BasicDirectivePool;
 import everyos.desktop.thready.core.gui.InvalidationLevel;
 import everyos.desktop.thready.core.gui.component.Component;
 import everyos.desktop.thready.core.gui.directive.Directive;

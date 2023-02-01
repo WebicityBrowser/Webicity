@@ -1,15 +1,13 @@
 package everyos.desktop.thready.laf.simple;
 
-import everyos.desktop.thready.core.gui.component.Component;
-import everyos.desktop.thready.core.gui.laf.LookAndFeel;
-import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
+import everyos.desktop.thready.basic.component.ContainerComponent;
+import everyos.desktop.thready.core.gui.laf.LookAndFeelBuilder;
+import everyos.desktop.thready.laf.simple.component.SimpleContainerComponentUI;
 
-public class SimpleLookAndFeel implements LookAndFeel {
+public class SimpleLookAndFeel {
 
-	@Override
-	public ComponentUI createUIFor(Component component, ComponentUI parent) {
-		// TODO Auto-generated method stub
-		return null;
+	public static void installTo(LookAndFeelBuilder builder) {
+		builder.registerComponentUI(ContainerComponent.class, SimpleContainerComponentUI::new);
 	}
 
 }

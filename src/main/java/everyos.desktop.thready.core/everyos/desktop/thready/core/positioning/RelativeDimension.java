@@ -1,11 +1,13 @@
 package everyos.desktop.thready.core.positioning;
 
 public interface RelativeDimension {
-
-	float getAbsoluteComponent();
+	
+	public static float UNBOUNDED = -1;
 	
 	float getRelativeComponent();
 	
-	float resolveAbsoluteDimentions(float parentDimension);
+	float getAbsoluteComponent();
+	
+	float resolveAbsoluteDimensions(float parentDimension);
 	
 }

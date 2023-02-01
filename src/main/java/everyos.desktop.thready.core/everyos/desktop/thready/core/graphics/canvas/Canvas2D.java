@@ -20,7 +20,7 @@ public interface Canvas2D {
 	
 	void drawCharacters(float x, float y, char[] chars);
 	
-	Canvas2D createChildCanvas(float x, float y, float l, float h, Canvas2DSettings settings);
+	Canvas2D createIntersectionClippedCanvas(float x, float y, float l, float h, Canvas2DSettings settings);
 	
 	Canvas2D withPaint(Paint2D paint);
 	

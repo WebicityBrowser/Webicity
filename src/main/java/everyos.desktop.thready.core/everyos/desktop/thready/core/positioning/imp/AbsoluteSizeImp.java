@@ -6,6 +6,9 @@ import everyos.desktop.thready.core.positioning.AbsoluteSize;
 
 public class AbsoluteSizeImp implements AbsoluteSize {
 	
+	public static final AbsoluteSize ZERO_SIZE = new AbsoluteSizeImp(0, 0);
+	public static final AbsoluteSize UNBOUNDED_SIZE = new AbsoluteSizeImp(-1, -1);
+	
 	private final float width;
 	private final float height;
 

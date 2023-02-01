@@ -1,6 +1,6 @@
 package everyos.desktop.thready.laf.simple.component;
 
-import everyos.desktop.thready.basic.directive.NestingDirectivePool;
+import everyos.desktop.thready.basic.directive.pool.NestingDirectivePool;
 import everyos.desktop.thready.core.gui.InvalidationLevel;
 import everyos.desktop.thready.core.gui.component.Component;
 import everyos.desktop.thready.core.gui.directive.ComposedDirectivePool;
@@ -29,13 +29,16 @@ public abstract class SimpleComponentUIBase<T extends Component> implements Comp
 		return directivePool;
 	}
 	
-	protected T getComponent() {
+	@Override
+	public T getComponent() {
 		return this.component;
 	}
 	
 	private ComposedDirectivePool<DirectivePool> setupComposedDirectivePool() {
-		// TODO: Add event listener
-		return new NestingDirectivePool();
+		ComposedDirectivePool<DirectivePool> pool = new NestingDirectivePool();
+		pool.addDirectivePool(component.getDirectivePool());
+		
+		return pool;
 	}
 
 }

@@ -5,17 +5,25 @@ import org.lwjgl.opengl.GL32;
 import everyos.desktop.thready.core.graphics.canvas.Canvas2D;
 import everyos.desktop.thready.core.graphics.canvas.Canvas2DSettings;
 import everyos.desktop.thready.core.graphics.canvas.Paint2D;
+import everyos.desktop.thready.core.graphics.color.Colors;
+import everyos.desktop.thready.core.graphics.color.RawColor;
+import everyos.desktop.thready.core.graphics.color.imp.InternalColorImp;
 import everyos.desktop.thready.core.graphics.image.LoadedImage;
+import everyos.desktop.thready.core.graphics.text.FontMetrics;
+import everyos.desktop.thready.core.graphics.text.LoadedFont;
 import everyos.desktop.thready.core.positioning.AbsoluteSize;
+import everyos.desktop.thready.renderer.skija.SkijaLoadedFont;
 import io.github.humbleui.skija.BackendRenderTarget;
 import io.github.humbleui.skija.Canvas;
 import io.github.humbleui.skija.ColorSpace;
 import io.github.humbleui.skija.DirectContext;
+import io.github.humbleui.skija.Font;
 import io.github.humbleui.skija.FramebufferFormat;
 import io.github.humbleui.skija.Paint;
 import io.github.humbleui.skija.Surface;
 import io.github.humbleui.skija.SurfaceColorFormat;
 import io.github.humbleui.skija.SurfaceOrigin;
+import io.github.humbleui.skija.TextBlob;
 import io.github.humbleui.types.Rect;
 
 public class SkijaRootCanvas2D implements Canvas2D {
@@ -66,24 +74,38 @@ public class SkijaRootCanvas2D implements Canvas2D {
 
 	@Override
 	public void drawText(float x, float y, String text) {
-		drawCharacters(x, y, text.toCharArray());
+		SkijaLoadedFont loadedFont = (SkijaLoadedFont) paint.getLoadedFont();
+		Font font = loadedFont.getRaw();
+		FontMetrics metrics = loadedFont.getMetrics();
+		
+		short[] glyphs = font.getStringGlyphs(text);
+		float[] widths = font.getWidths(glyphs);
+		float[] xpos = new float[glyphs.length];
+		int distance = 0;
+		for (int i = 0; i < xpos.length; i++) {
+			xpos[i] = distance;
+			distance += widths[i];
+		}
+		
+		TextBlob textBlob = TextBlob.makeFromPosH(glyphs, xpos, 0, font);
+		float adjustedY = y + metrics.getHeight() - metrics.getLeading();
+		canvas.drawTextBlob(textBlob, x, adjustedY, rawPaint);
 	}
 
 	@Override
 	public void drawCharacters(float x, float y, char[] chars) {
-		// TODO Auto-generated method stub
+		drawText(x, y, new String(chars));
 	}
 
 	@Override
-	public Canvas2D createChildCanvas(float x, float y, float l, float h, Canvas2DSettings settings) {
+	public Canvas2D createIntersectionClippedCanvas(float x, float y, float l, float h, Canvas2DSettings settings) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Canvas2D withPaint(Paint2D paint) {
-		// TODO Auto-generated method stub
-		return null;
+		return new SkijaRootCanvas2D(canvas, directContext, paint);
 	}
 
 	@Override
@@ -103,9 +125,19 @@ public class SkijaRootCanvas2D implements Canvas2D {
 	
 	private Paint createPaint(Paint2D paint) {
 		Paint rawPaint = new Paint();
-		rawPaint.setColor(0xFFFF00FF);
+		rawPaint.setColor(convertColorToInt(paint.getColor()));
 		
 		return rawPaint;
+	}
+
+	private int convertColorToInt(RawColor color) {
+		InternalColorImp colorInternals = ((InternalColorImp) color);
+		
+		return
+			(colorInternals.getAlpha8() << 24) +
+			(colorInternals.getRed8() << 16) +
+			(colorInternals.getGreen8() << 8) +
+			colorInternals.getBlue8();
 	}
 
 	public static SkijaRootCanvas2D create(DirectContext directContext, AbsoluteSize size) {
@@ -124,7 +156,21 @@ public class SkijaRootCanvas2D implements Canvas2D {
 				
 		Canvas canvas = surface.getCanvas();
 		
-		return new SkijaRootCanvas2D(canvas, directContext, null);
+		return new SkijaRootCanvas2D(canvas, directContext, createDefaultPaint());
+	}
+
+	private static Paint2D createDefaultPaint() {
+		return new Paint2D() {
+			@Override
+			public LoadedFont getLoadedFont() {
+				return null;
+			}
+			
+			@Override
+			public RawColor getColor() {
+				return Colors.WHITE;
+			}
+		};
 	}
 
 }
