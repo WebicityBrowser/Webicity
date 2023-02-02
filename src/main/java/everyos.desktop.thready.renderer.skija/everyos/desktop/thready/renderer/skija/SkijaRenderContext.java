@@ -7,9 +7,11 @@ import everyos.desktop.thready.core.positioning.AbsoluteSize;
 public class SkijaRenderContext implements RenderContext {
 
 	private final AbsoluteSize viewportSize;
+	private final ResourceGenerator resourceGenerator;
 
-	public SkijaRenderContext(AbsoluteSize viewportSize) {
+	public SkijaRenderContext(AbsoluteSize viewportSize, ResourceGenerator resourceGenerator) {
 		this.viewportSize = viewportSize;
+		this.resourceGenerator = resourceGenerator;
 	}
 
 	@Override
@@ -19,8 +21,7 @@ public class SkijaRenderContext implements RenderContext {
 
 	@Override
 	public ResourceGenerator getResourceGenerator() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.resourceGenerator;
 	}
 
 }

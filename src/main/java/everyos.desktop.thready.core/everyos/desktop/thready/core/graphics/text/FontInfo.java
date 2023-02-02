@@ -1,13 +1,27 @@
 package everyos.desktop.thready.core.graphics.text;
 
-public interface FontInfo {
+import java.util.Arrays;
+import java.util.Objects;
 
-	Font getFont();
+public record FontInfo(Font font, int fontSize, int fontWeight, FontDecoration[] fontDecorations) {
 	
-	int getFontSize();
+	@Override
+	public int hashCode() {
+		return Objects.hash(font, fontSize, fontWeight);
+	}
 	
-	int getFontWeight();
-	
-	FontDecoration[] getFontDecorations();
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof FontInfo)) {
+			return false;
+		}
+		
+		FontInfo other = (FontInfo) o;
+		return
+			other.font().equals(font) &&
+			other.fontSize() == fontSize &&
+			other.fontWeight() == fontWeight &&
+			Arrays.compare(other.fontDecorations(), fontDecorations) == 0;
+	}
 	
 }

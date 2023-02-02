@@ -1,4 +1,4 @@
-package everyos.desktop.thready.laf.simple.component.render.unit;
+package everyos.desktop.thready.laf.simple.component.ui.container.fluid;
 
 import java.util.Optional;
 
@@ -8,11 +8,17 @@ import everyos.desktop.thready.core.gui.stage.paint.Painter;
 import everyos.desktop.thready.core.gui.stage.render.unit.Unit;
 import everyos.desktop.thready.core.positioning.AbsoluteSize;
 import everyos.desktop.thready.core.positioning.Rectangle;
-import everyos.desktop.thready.core.positioning.imp.AbsoluteSizeImp;
-import everyos.desktop.thready.laf.simple.component.message.EmptyMessageHandler;
-import everyos.desktop.thready.laf.simple.component.paint.EmptyPainter;
+import everyos.desktop.thready.laf.simple.component.message.DefaultMessageHandler;
 
-public class EmptyUnit implements Unit {
+public class HorizontalFluidChildrenUnit implements Unit {
+
+	private final AbsoluteSize size;
+	private final FluidChildrenResult[] renderResults;
+
+	public HorizontalFluidChildrenUnit(AbsoluteSize size, FluidChildrenResult[] renderResults) {
+		this.size = size;
+		this.renderResults = renderResults;
+	}
 
 	@Override
 	public Optional<Compositor> createCompositor(Rectangle documentRect) {
@@ -21,17 +27,17 @@ public class EmptyUnit implements Unit {
 
 	@Override
 	public Painter getPainter(Rectangle documentRect) {
-		return new EmptyPainter();
+		return new HorizontalFluidChildrenPainter(documentRect, renderResults);
 	}
 
 	@Override
 	public MessageHandler getMessageHandler(Rectangle documentRect) {
-		return new EmptyMessageHandler();
+		return new DefaultMessageHandler();
 	}
 
 	@Override
 	public AbsoluteSize getMinimumSize() {
-		return AbsoluteSizeImp.ZERO_SIZE;
+		return this.size;
 	}
 
 }

@@ -18,7 +18,7 @@ public class CircularButtonComponentUI extends SimpleComponentUIBase<CircularBut
 	@Override
 	public Box[] generateBoxes(BoxContext context) {
 		return SimpleBoxGenerator.generateBoxes(getComputedDirectives(), () -> new Box[] {
-			new BasicSolidBox(getComputedDirectives(), (box, children) -> new CircularButtonComponentRenderer(box))
+			new BasicSolidBox(getComponent(), (box, children) -> new CircularButtonComponentRenderer(box))
 		});
 	}
 

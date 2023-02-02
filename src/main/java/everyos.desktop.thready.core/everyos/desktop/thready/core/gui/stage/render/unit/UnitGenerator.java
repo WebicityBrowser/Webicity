@@ -5,5 +5,7 @@ public interface UnitGenerator {
 	NextUnitInfo getNextUnitInfo(ContextSwitch[] contextSwitches);
 	
 	Unit getMergedUnits();
+
+	boolean completed();
 	
 }

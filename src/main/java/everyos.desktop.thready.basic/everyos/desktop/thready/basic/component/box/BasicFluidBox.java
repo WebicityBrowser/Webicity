@@ -7,16 +7,16 @@ import java.util.function.BiFunction;
 import everyos.desktop.thready.core.gui.component.Component;
 import everyos.desktop.thready.core.gui.directive.DirectivePool;
 import everyos.desktop.thready.core.gui.stage.box.Box;
-import everyos.desktop.thready.core.gui.stage.box.SolidBox;
-import everyos.desktop.thready.core.gui.stage.render.SolidRenderer;
+import everyos.desktop.thready.core.gui.stage.box.FluidBox;
+import everyos.desktop.thready.core.gui.stage.render.FluidRenderer;
 
-public class BasicSolidBox implements SolidBox {
+public class BasicFluidBox implements FluidBox {
 	
 	private final List<Box> children = new ArrayList<>();
-	private final BiFunction<Box, Box[], SolidRenderer> rendererGenerator;
+	private final BiFunction<Box, Box[], FluidRenderer> rendererGenerator;
 	private final Component component;
 	
-	public BasicSolidBox(Component component, BiFunction<Box, Box[], SolidRenderer> rendererGenerator) {
+	public BasicFluidBox(Component component, BiFunction<Box, Box[], FluidRenderer> rendererGenerator) {
 		this.component = component;
 		this.rendererGenerator = rendererGenerator;
 	}
@@ -32,10 +32,10 @@ public class BasicSolidBox implements SolidBox {
 	}
 
 	@Override
-	public SolidRenderer createRenderer() {
+	public FluidRenderer createRenderer() {
 		return rendererGenerator.apply(this, children.toArray(new Box[0]));
 	}
-
+	
 	@Override
 	public Component getOwningComponent() {
 		return this.component;

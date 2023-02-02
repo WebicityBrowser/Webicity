@@ -79,13 +79,14 @@ public class SkijaRootCanvas2D implements Canvas2D {
 		Font font = loadedFont.getRaw();
 		FontMetrics metrics = loadedFont.getMetrics();
 		
-		short[] glyphs = font.getStringGlyphs(text);
-		float[] widths = font.getWidths(glyphs);
+		short[] glyphs = new short[text.length()];
 		float[] xpos = new float[glyphs.length];
 		int distance = 0;
 		for (int i = 0; i < xpos.length; i++) {
+			int codePoint = text.codePointAt(i);
+			glyphs[i] = loadedFont.getCharacterGlyph(codePoint);
 			xpos[i] = distance;
-			distance += widths[i];
+			distance += metrics.getCharacterWidth(codePoint);
 		}
 		
 		TextBlob textBlob = TextBlob.makeFromPosH(glyphs, xpos, 0, font);

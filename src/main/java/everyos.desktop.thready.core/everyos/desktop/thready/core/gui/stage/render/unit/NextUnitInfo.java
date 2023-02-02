@@ -8,8 +8,4 @@ public interface NextUnitInfo {
 	
 	AbsoluteSize sizeAfterAppend();
 	
-	void skip();
-	
-	boolean completed();
-	
 }

@@ -1,4 +1,4 @@
-package everyos.desktop.thready.laf.simple.component;
+package everyos.desktop.thready.laf.simple.component.ui.container;
 
 import everyos.desktop.thready.basic.component.box.BasicSolidBox;
 import everyos.desktop.thready.basic.directive.ChildrenDirective;
@@ -8,9 +8,9 @@ import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
 import everyos.desktop.thready.core.gui.stage.box.Box;
 import everyos.desktop.thready.core.gui.stage.box.BoxContext;
 import everyos.desktop.thready.core.gui.stage.render.SolidRenderer;
+import everyos.desktop.thready.laf.simple.component.SimpleComponentUIBase;
 import everyos.desktop.thready.laf.simple.component.cache.ChildComponentUICache;
 import everyos.desktop.thready.laf.simple.component.cache.imp.ChildComponentUICacheImp;
-import everyos.desktop.thready.laf.simple.component.render.ContainerComponentRenderer;
 import everyos.desktop.thready.laf.simple.util.SimpleBoxGenerator;
 
 public class SimpleContainerComponentUI extends SimpleComponentUIBase<Component> {
@@ -28,7 +28,7 @@ public class SimpleContainerComponentUI extends SimpleComponentUIBase<Component>
 
 	private Box[] performBoxing(BoxContext context) {
 		Box rootBox = new BasicSolidBox(
-			getComputedDirectives(),
+			getComponent(),
 			(box, children) -> createRenderer(box, children));
 		
 		for (ComponentUI child: getChildren(context.getLookAndFeel())) {

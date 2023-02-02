@@ -1,5 +1,6 @@
 package everyos.desktop.thready.renderer.skija;
 
+import everyos.desktop.thready.core.graphics.ResourceGenerator;
 import everyos.desktop.thready.core.gui.InvalidationLevel;
 import everyos.desktop.thready.core.gui.component.Component;
 import everyos.desktop.thready.core.gui.laf.LookAndFeel;
@@ -17,6 +18,8 @@ import everyos.desktop.thready.renderer.skija.canvas.SkijaRootCanvas2D;
 import everyos.desktop.thready.renderer.skija.rootui.RootUI;
 
 public class SkijaRenderingPipeline {
+	
+	private final ResourceGenerator resourceGenerator = new SkijaResourceGenerator();
 	
 	private final ComponentUI rootUI;
 	private final LookAndFeel lookAndFeel;
@@ -93,7 +96,7 @@ public class SkijaRenderingPipeline {
 	}
 	
 	private void performRenderCycle(AbsoluteSize windowSize) {
-		RenderContext renderContext = new SkijaRenderContext(windowSize);
+		RenderContext renderContext = new SkijaRenderContext(windowSize, resourceGenerator);
 		SolidRenderer rootRenderer = rootBox.createRenderer();
 		this.rootUnit = rootRenderer.render(renderContext, windowSize);
 	}
