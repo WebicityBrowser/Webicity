@@ -5,28 +5,26 @@ import everyos.desktop.thready.core.gui.InvalidationLevel;
 import everyos.desktop.thready.core.gui.component.Component;
 import everyos.desktop.thready.core.gui.directive.ComposedDirectivePool;
 import everyos.desktop.thready.core.gui.directive.DirectivePool;
-import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
+import everyos.desktop.thready.core.gui.directive.style.StyleGenerator;
+import everyos.desktop.thready.core.gui.laf.ComponentUI;
 
 public abstract class SimpleComponentUIBase<T extends Component> implements ComponentUI {
+	
+	// Move directive pool creation to boxing?
 
 	private final T component;
 	private final ComponentUI parent;
-	private final ComposedDirectivePool<DirectivePool> directivePool;
+	
+	private ComposedDirectivePool<DirectivePool> directivePool;
 
 	public SimpleComponentUIBase(T component, ComponentUI parent) {
 		this.component = component;
 		this.parent = parent;
-		this.directivePool = setupComposedDirectivePool();
 	}
 
 	@Override
 	public void invalidate(InvalidationLevel level) {
 		parent.invalidate(level);
-	}
-
-	@Override
-	public ComposedDirectivePool<?> getComputedDirectives() {
-		return directivePool;
 	}
 	
 	@Override
@@ -34,11 +32,25 @@ public abstract class SimpleComponentUIBase<T extends Component> implements Comp
 		return this.component;
 	}
 	
-	private ComposedDirectivePool<DirectivePool> setupComposedDirectivePool() {
-		ComposedDirectivePool<DirectivePool> pool = new NestingDirectivePool();
-		pool.addDirectivePool(component.getDirectivePool());
+	@Override
+	public void release() {
+		if (directivePool != null) {
+			directivePool.release();
+		}
+	}
+	
+	protected ComposedDirectivePool<DirectivePool> setupComposedDirectivePool(DirectivePool parentPool, StyleGenerator generator) {
+		if (directivePool != null) {
+			directivePool.release();
+		}
 		
-		return pool;
+		directivePool = new NestingDirectivePool(parentPool);
+		directivePool.addDirectivePool(component.getDirectivePool());
+		for (DirectivePool pool: generator.getDirectivePools()) {
+			directivePool.addDirectivePool(pool);
+		}
+		
+		return directivePool;
 	}
 
 }

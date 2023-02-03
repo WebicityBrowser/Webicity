@@ -1,6 +1,6 @@
 package everyos.desktop.thready.core.gui;
 
-import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
+import everyos.desktop.thready.core.gui.laf.ComponentUI;
 
 public interface FocusManager {
 

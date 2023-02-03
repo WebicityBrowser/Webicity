@@ -15,10 +15,12 @@ public class BasicSolidBox implements SolidBox {
 	private final List<Box> children = new ArrayList<>();
 	private final BiFunction<Box, Box[], SolidRenderer> rendererGenerator;
 	private final Component component;
+	private final DirectivePool directives;
 	
-	public BasicSolidBox(Component component, BiFunction<Box, Box[], SolidRenderer> rendererGenerator) {
+	public BasicSolidBox(Component component, DirectivePool directives, BiFunction<Box, Box[], SolidRenderer> rendererGenerator) {
 		this.component = component;
 		this.rendererGenerator = rendererGenerator;
+		this.directives = directives;
 	}
 
 	@Override
@@ -43,7 +45,7 @@ public class BasicSolidBox implements SolidBox {
 
 	@Override
 	public DirectivePool getDirectivePool() {
-		return component.getDirectivePool();
+		return this.directives;
 	}
 
 }

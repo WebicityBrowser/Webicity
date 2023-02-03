@@ -3,9 +3,9 @@ package everyos.desktop.thready.core.gui.laf.imp;
 import java.util.Map;
 
 import everyos.desktop.thready.core.gui.component.Component;
+import everyos.desktop.thready.core.gui.laf.ComponentUI;
 import everyos.desktop.thready.core.gui.laf.ComponentUIFactory;
 import everyos.desktop.thready.core.gui.laf.LookAndFeel;
-import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
 
 public class LookAndFeelImp implements LookAndFeel {
 

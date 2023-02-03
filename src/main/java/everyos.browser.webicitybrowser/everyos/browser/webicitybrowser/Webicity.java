@@ -12,6 +12,7 @@ import everyos.browser.webicitybrowser.ui.Window;
 import everyos.browser.webicitybrowser.ui.WindowSet;
 import everyos.browser.webicitybrowser.ui.imp.TabImp;
 import everyos.browser.webicitybrowser.ui.imp.WindowSetImp;
+import everyos.desktop.thready.basic.directive.generator.noop.NoopStyleGeneratorRoot;
 import everyos.desktop.thready.core.gui.laf.LookAndFeelBuilder;
 import everyos.desktop.thready.laf.simple.SimpleLookAndFeel;
 import everyos.desktop.thready.renderer.skija.SkijaWindow;
@@ -80,10 +81,12 @@ public class Webicity {
 			SkijaWindow.createWindow(window -> {
 				window.setTitle("Webicity");
 				window.setDecorated(false);
+				
 				LookAndFeelBuilder lookAndFeelBuilder = LookAndFeelBuilder.create();
 				SimpleLookAndFeel.installTo(lookAndFeelBuilder);
 				WebicityLookAndFeel.installTo(lookAndFeelBuilder);
-				window.getScreen().setGUI(rootComponent, lookAndFeelBuilder.build());
+				
+				window.getScreen().setGUI(rootComponent, lookAndFeelBuilder.build(), new NoopStyleGeneratorRoot());
 				callback.accept(new SkijaGUIWindow(window));
 			});
 		}).start();

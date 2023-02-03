@@ -15,9 +15,11 @@ public class BasicFluidBox implements FluidBox {
 	private final List<Box> children = new ArrayList<>();
 	private final BiFunction<Box, Box[], FluidRenderer> rendererGenerator;
 	private final Component component;
+	private final DirectivePool directives;
 	
-	public BasicFluidBox(Component component, BiFunction<Box, Box[], FluidRenderer> rendererGenerator) {
+	public BasicFluidBox(Component component, DirectivePool directives, BiFunction<Box, Box[], FluidRenderer> rendererGenerator) {
 		this.component = component;
+		this.directives = directives;
 		this.rendererGenerator = rendererGenerator;
 	}
 
@@ -43,7 +45,7 @@ public class BasicFluidBox implements FluidBox {
 
 	@Override
 	public DirectivePool getDirectivePool() {
-		return component.getDirectivePool();
+		return this.directives;
 	}
 
 }

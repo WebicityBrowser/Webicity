@@ -11,14 +11,28 @@ import java.util.Optional;
 import everyos.desktop.thready.core.gui.directive.ComposedDirectivePool;
 import everyos.desktop.thready.core.gui.directive.Directive;
 import everyos.desktop.thready.core.gui.directive.DirectivePool;
+import everyos.desktop.thready.core.gui.directive.DirectivePoolListener;
+import everyos.desktop.thready.core.gui.directive.InheritDirective;
 
 public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool> {
 	
+	//TODO: Some sort of cache
+	
+	private final DirectivePool parent;
 	private final DirectivePool defaultPool = new BasicDirectivePool();
 	private final List<DirectivePool> subpools = new ArrayList<>(4);
+	private final List<DirectivePoolListener> subpoolListeners = new ArrayList<>(4);
+	private final List<DirectivePoolListener> listeners = new ArrayList<>(1);
 	
 	{
 		subpools.add(defaultPool);
+	}
+
+	public NestingDirectivePool(DirectivePool parent) {
+		if (parent != null && parent instanceof BasicDirectivePool) {
+			throw new RuntimeException();
+		}
+		this.parent = parent;
 	}
 
 	@Override
@@ -29,18 +43,27 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 	}
 
 	@Override
-	// TODO: Ability to inherit
-	public <T extends Directive> T getDirective(Class<T> directiveClass) {
-		return searchForDirective(directiveClass);
+	public Optional<Directive> getUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass) {
+		Directive directive = searchForDirective(directiveClass);
+		if (directive instanceof InheritDirective) {
+			return inherit(null, directiveClass);
+		}
+		
+		return Optional.ofNullable(directive);
 	}
 
 	@Override
-	public <T extends Directive> Optional<T> getDirectiveOrEmpty(Class<T> directiveClass) {
-		return Optional.ofNullable(searchForDirective(directiveClass));
+	public Optional<Directive> inheritUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass) {
+		Directive directive = searchForDirective(directiveClass);
+		if (directive instanceof InheritDirective) {
+			directive = null;
+		}
+		
+		return inherit(directive, directiveClass);
 	}
 
 	@Override
-	public <T extends Directive> T getRawDirective(Class<T> directiveClass) {
+	public Directive getUnresolvedDirective(Class<? extends Directive> directiveClass) {
 		return searchForDirective(directiveClass);
 	}
 
@@ -56,12 +79,18 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 
 	@Override
 	public void addDirectivePool(DirectivePool pool) {
+		DirectivePoolListener listener = new SubpoolListener();
 		subpools.add(pool);
+		subpoolListeners.add(listener);
+		fireMassChangeListeners();
 	}
 
 	@Override
 	public void removeDirectivePool(DirectivePool pool) {
-		subpools.remove(pool);
+		int removalIndex = subpools.indexOf(pool);
+		subpools.remove(removalIndex);
+		subpoolListeners.remove(removalIndex);
+		fireMassChangeListeners();
 	}
 
 	@Override
@@ -69,9 +98,26 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 		return subpools.toArray(new DirectivePool[0]);
 	}
 	
-	private <T extends Directive> T searchForDirective(Class<T> directiveClass) {
+	@Override
+	public void addEventListener(DirectivePoolListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeEventListener(DirectivePoolListener listener) {
+		listeners.remove(listener);
+	}
+	
+	@Override
+	public void release() {
+		for (int i = 0; i < subpoolListeners.size(); i++) {
+			subpools.get(i).removeEventListener(subpoolListeners.get(i));
+		}
+	}
+	
+	private Directive searchForDirective(Class<? extends Directive> directiveClass) {
 		for (DirectivePool pool: subpools) {
-			T directive = pool.getDirective(directiveClass);
+			Directive directive = pool.getUnresolvedDirective(directiveClass);
 			if (directive != null) {
 				return directive;
 			}
@@ -90,5 +136,39 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 		
 		return resolved.values();
 	}
+	
+	private Optional<Directive> inherit(Directive directive, Class<? extends Directive> directiveClass) {
+		Optional<Directive> optOrEmpty = Optional.ofNullable(directive);
+		if (parent == null) {
+			return optOrEmpty;
+		} else {
+			return optOrEmpty
+				.or(() -> parent.inheritDirectiveOrEmpty(directiveClass));
+		}
+	}
+	
+	private void fireChangeListeners(Class<? extends Directive> directiveCls) {
+		for (DirectivePoolListener listener: listeners) {
+			listener.onDirective(directiveCls);
+		}
+	}
+	
+	private void fireMassChangeListeners() {
+		for (DirectivePoolListener listener: listeners) {
+			listener.onMassChange();
+		}
+	}
+	
+	private class SubpoolListener implements DirectivePoolListener {
+		@Override
+		public void onMassChange() {
+			fireMassChangeListeners();
+		}
+		
+		@Override
+		public void onDirective(Class<? extends Directive> directiveCls) {
+			fireChangeListeners(directiveCls);
+		}
+	};
 
 }

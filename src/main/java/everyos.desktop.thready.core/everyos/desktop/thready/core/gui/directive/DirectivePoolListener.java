@@ -1,11 +1,9 @@
 package everyos.desktop.thready.core.gui.directive;
 
-import javax.lang.model.element.ModuleElement.Directive;
-
 public interface DirectivePoolListener {
 
-	void onDirective(Directive directive);
+	void onDirective(Class<? extends Directive> directiveCls);
 	
-	void onDelete();
+	void onMassChange();
 	
 }

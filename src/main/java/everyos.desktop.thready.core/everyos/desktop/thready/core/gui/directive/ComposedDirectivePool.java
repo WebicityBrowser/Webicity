@@ -8,6 +8,8 @@ public interface ComposedDirectivePool<T extends DirectivePool> extends Directiv
 	
 	// Includes self
 	T[] getCurrentDirectivePools();
+
+	void release();
 	
 	// Note: A composed directive pool's own set of directives typically
 	// take priority over those of any other pools added to it,

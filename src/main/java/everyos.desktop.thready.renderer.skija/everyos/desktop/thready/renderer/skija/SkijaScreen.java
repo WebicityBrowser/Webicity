@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 import everyos.desktop.thready.core.gui.InvalidationLevel;
 import everyos.desktop.thready.core.gui.Screen;
 import everyos.desktop.thready.core.gui.component.Component;
+import everyos.desktop.thready.core.gui.directive.style.StyleGeneratorRoot;
 import everyos.desktop.thready.core.gui.laf.LookAndFeel;
 import everyos.desktop.thready.core.positioning.AbsoluteSize;
 import everyos.desktop.thready.core.positioning.imp.AbsoluteSizeImp;
@@ -26,8 +27,8 @@ public class SkijaScreen implements Screen {
 	}
 
 	@Override
-	public void setGUI(Component component, LookAndFeel lookAndFeel) {
-		renderingPipeline = new SkijaRenderingPipeline(component, lookAndFeel);
+	public void setGUI(Component component, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot) {
+		renderingPipeline = new SkijaRenderingPipeline(component, lookAndFeel, styleGeneratorRoot);
 	}
 	
 	public boolean isDone() {

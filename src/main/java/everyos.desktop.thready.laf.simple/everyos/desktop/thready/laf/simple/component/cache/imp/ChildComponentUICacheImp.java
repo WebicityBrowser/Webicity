@@ -3,7 +3,7 @@ package everyos.desktop.thready.laf.simple.component.cache.imp;
 import java.util.function.Function;
 
 import everyos.desktop.thready.core.gui.component.Component;
-import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
+import everyos.desktop.thready.core.gui.laf.ComponentUI;
 import everyos.desktop.thready.laf.simple.component.cache.ChildComponentUICache;
 
 public class ChildComponentUICacheImp implements ChildComponentUICache {
@@ -40,6 +40,14 @@ public class ChildComponentUICacheImp implements ChildComponentUICache {
 	}
 
 	private CacheNode<ComponentUI> removeCachedUIsBetween(CacheNode<ComponentUI> lastNode, CacheNode<ComponentUI> nextNode) {
+		CacheNode<ComponentUI> currentNode = lastNode;
+		while (currentNode.getNext() != null && currentNode.getNext() != nextNode) {
+			currentNode = currentNode.getNext();
+			ComponentUI ui = currentNode.getValue();
+			ui.getComponent().unbindUI(ui);
+			ui.release();
+		}
+			
 		lastNode.setNext(nextNode);
 		
 		return nextNode;

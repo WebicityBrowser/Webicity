@@ -3,8 +3,10 @@ package everyos.desktop.thready.laf.simple.component.ui.container;
 import everyos.desktop.thready.basic.component.box.BasicSolidBox;
 import everyos.desktop.thready.basic.directive.ChildrenDirective;
 import everyos.desktop.thready.core.gui.component.Component;
+import everyos.desktop.thready.core.gui.directive.DirectivePool;
+import everyos.desktop.thready.core.gui.directive.style.StyleGenerator;
+import everyos.desktop.thready.core.gui.laf.ComponentUI;
 import everyos.desktop.thready.core.gui.laf.LookAndFeel;
-import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
 import everyos.desktop.thready.core.gui.stage.box.Box;
 import everyos.desktop.thready.core.gui.stage.box.BoxContext;
 import everyos.desktop.thready.core.gui.stage.render.SolidRenderer;
@@ -22,17 +24,21 @@ public class SimpleContainerComponentUI extends SimpleComponentUIBase<Component>
 	}
 
 	@Override
-	public Box[] generateBoxes(BoxContext context) {
-		return SimpleBoxGenerator.generateBoxes(getComputedDirectives(), () -> performBoxing(context));
+	public Box[] generateBoxes(BoxContext context, DirectivePool parentDirectives, StyleGenerator generator) {
+		DirectivePool directives = setupComposedDirectivePool(parentDirectives, generator);
+		return SimpleBoxGenerator.generateBoxes(directives, () -> performBoxing(context, directives, generator));
 	}
 
-	private Box[] performBoxing(BoxContext context) {
+	private Box[] performBoxing(BoxContext context, DirectivePool directives, StyleGenerator generator) {
 		Box rootBox = new BasicSolidBox(
 			getComponent(),
+			directives,
 			(box, children) -> createRenderer(box, children));
 		
-		for (ComponentUI child: getChildren(context.getLookAndFeel())) {
-			addChildBoxes(rootBox, child, context);
+		ComponentUI[] children = getChildren(context.getLookAndFeel(), directives);
+		StyleGenerator[] childGenerators = generator.createChildStyleGenerators(children);
+		for (int i = 0; i < children.length; i++) {
+			addChildBoxes(rootBox, children[i], context, directives, childGenerators[i]);
 		}
 		
 		return new Box[] { rootBox };
@@ -42,8 +48,8 @@ public class SimpleContainerComponentUI extends SimpleComponentUIBase<Component>
 		return new ContainerComponentRenderer(box, children);
 	}
 
-	private ComponentUI[] getChildren(LookAndFeel lookAndFeel) {
-		Component[] componentChildren = getComputedDirectives()
+	private ComponentUI[] getChildren(LookAndFeel lookAndFeel, DirectivePool directives) {
+		Component[] componentChildren = directives
 			.getDirectiveOrEmpty(ChildrenDirective.class)
 			.map(directive -> directive.getChildren())
 			.orElse(new Component[0]);
@@ -53,8 +59,10 @@ public class SimpleContainerComponentUI extends SimpleComponentUIBase<Component>
 		return childCache.getChildrenUI();
 	}
 	
-	private void addChildBoxes(Box rootBox, ComponentUI child, BoxContext context) {
-		for (Box box: child.generateBoxes(context)) {
+	private void addChildBoxes(
+		Box rootBox, ComponentUI child, BoxContext context, DirectivePool directives, StyleGenerator generator
+	) {
+		for (Box box: child.generateBoxes(context, directives, generator)) {
 			for (Box adjustedBox: box.getAdjustedBoxTree()) {
 				rootBox.addChild(adjustedBox);
 			}

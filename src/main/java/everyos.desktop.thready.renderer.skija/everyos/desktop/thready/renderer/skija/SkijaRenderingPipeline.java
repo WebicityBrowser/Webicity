@@ -3,9 +3,12 @@ package everyos.desktop.thready.renderer.skija;
 import everyos.desktop.thready.core.graphics.ResourceGenerator;
 import everyos.desktop.thready.core.gui.InvalidationLevel;
 import everyos.desktop.thready.core.gui.component.Component;
+import everyos.desktop.thready.core.gui.directive.style.StyleGenerator;
+import everyos.desktop.thready.core.gui.directive.style.StyleGeneratorRoot;
+import everyos.desktop.thready.core.gui.laf.ComponentUI;
 import everyos.desktop.thready.core.gui.laf.LookAndFeel;
-import everyos.desktop.thready.core.gui.laf.component.ComponentUI;
 import everyos.desktop.thready.core.gui.stage.box.Box;
+import everyos.desktop.thready.core.gui.stage.box.BoxContext;
 import everyos.desktop.thready.core.gui.stage.box.SolidBox;
 import everyos.desktop.thready.core.gui.stage.render.RenderContext;
 import everyos.desktop.thready.core.gui.stage.render.SolidRenderer;
@@ -23,6 +26,7 @@ public class SkijaRenderingPipeline {
 	
 	private final ComponentUI rootUI;
 	private final LookAndFeel lookAndFeel;
+	private final StyleGenerator styleGenerator;
 
 	private InvalidationLevel invalidationLevel = InvalidationLevel.BOX;
 	private boolean doSecondFramePaint = false;
@@ -30,9 +34,11 @@ public class SkijaRenderingPipeline {
 	private SolidBox rootBox;
 	private Unit rootUnit;
 	
-	public SkijaRenderingPipeline(Component rootComponent, LookAndFeel lookAndFeel) {
+	public SkijaRenderingPipeline(Component rootComponent, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot) {
 		this.rootUI = createRootUI(rootComponent, lookAndFeel);
 		this.lookAndFeel = lookAndFeel;
+		this.styleGenerator = styleGeneratorRoot.generateChildStyleGenerator(rootUI);
+		styleGeneratorRoot.onMassChange(() -> invalidatePipeline(InvalidationLevel.BOX));
 	}
 
 	public void invalidatePipeline(InvalidationLevel invalidationLevel) {
@@ -87,8 +93,9 @@ public class SkijaRenderingPipeline {
 	}
 	
 	private void performBoxCycle() {
-		Box rootBox = rootUI.generateBoxes(() -> lookAndFeel)[0]
-			.getAdjustedBoxTree()[0];
+		BoxContext boxContext = () -> lookAndFeel;
+		Box[] generatedBoxes = rootUI.generateBoxes(boxContext, null, styleGenerator);
+		Box rootBox = generatedBoxes[0].getAdjustedBoxTree()[0];
 		if (!(rootBox instanceof SolidBox)) {
 			throw new RuntimeException("The root component must be solid!");
 		}

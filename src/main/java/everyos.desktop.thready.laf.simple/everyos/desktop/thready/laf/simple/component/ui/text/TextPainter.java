@@ -44,7 +44,7 @@ public class TextPainter implements Painter {
 	private ColorFormat getForegroundColor() {
 		return box
 			.getDirectivePool()
-			.getDirectiveOrEmpty(ForegroundColorDirective.class)
+			.inheritDirectiveOrEmpty(ForegroundColorDirective.class)
 			.map(directive -> directive.getColor())
 			.orElse(Colors.BLACK);
 	}
