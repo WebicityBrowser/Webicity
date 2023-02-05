@@ -10,7 +10,7 @@ import everyos.desktop.thready.core.gui.stage.paint.Painter;
 import everyos.desktop.thready.core.gui.stage.render.unit.Unit;
 import everyos.desktop.thready.core.positioning.AbsoluteSize;
 import everyos.desktop.thready.core.positioning.Rectangle;
-import everyos.desktop.thready.laf.simple.component.message.DefaultMessageHandler;
+import everyos.desktop.thready.laf.simple.component.message.DefaultContentMessageHandler;
 
 public class TextUnit implements Unit {
 
@@ -38,7 +38,7 @@ public class TextUnit implements Unit {
 
 	@Override
 	public MessageHandler getMessageHandler(Rectangle documentRect) {
-		return new DefaultMessageHandler();
+		return new DefaultContentMessageHandler(documentRect, box);
 	}
 
 	@Override

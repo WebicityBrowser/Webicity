@@ -24,6 +24,7 @@ public class SkijaRenderingPipeline {
 	
 	private final ResourceGenerator resourceGenerator = new SkijaResourceGenerator();
 	
+	private final long windowId;
 	private final ComponentUI rootUI;
 	private final LookAndFeel lookAndFeel;
 	private final StyleGenerator styleGenerator;
@@ -34,7 +35,8 @@ public class SkijaRenderingPipeline {
 	private SolidBox rootBox;
 	private Unit rootUnit;
 	
-	public SkijaRenderingPipeline(Component rootComponent, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot) {
+	public SkijaRenderingPipeline(long windowId, Component rootComponent, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot) {
+		this.windowId = windowId;
 		this.rootUI = createRootUI(rootComponent, lookAndFeel);
 		this.lookAndFeel = lookAndFeel;
 		this.styleGenerator = styleGeneratorRoot.generateChildStyleGenerator(rootUI);
@@ -62,7 +64,6 @@ public class SkijaRenderingPipeline {
 		case RENDER:
 			performRenderCycle(windowSize);
 		case COMPOSITE:
-		case EVENT_SETUP:
 		case PAINT:
 			performPaintCycle(currentCanvas, windowSize);
 			invalidationLevel = InvalidationLevel.NONE;
@@ -106,6 +107,7 @@ public class SkijaRenderingPipeline {
 		RenderContext renderContext = new SkijaRenderContext(windowSize, resourceGenerator);
 		SolidRenderer rootRenderer = rootBox.createRenderer();
 		this.rootUnit = rootRenderer.render(renderContext, windowSize);
+		SkijaEventListeners.setupEventListeners(windowId, rootUnit);
 	}
 
 	private void performPaintCycle(SkijaRootCanvas2D currentCanvas, AbsoluteSize windowSize) {
@@ -113,7 +115,7 @@ public class SkijaRenderingPipeline {
 		
 		Rectangle viewportRect = createDocumentRect(windowSize);
 		rootUnit.getPainter(createDocumentRect(windowSize))
-			.paint(new SkijaPaintContext(), currentCanvas, viewportRect);
+			.paint(new SkijaPaintContext(resourceGenerator), currentCanvas, viewportRect);
 		
 		currentCanvas.flush();
 	}

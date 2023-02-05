@@ -80,6 +80,7 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 	@Override
 	public void addDirectivePool(DirectivePool pool) {
 		DirectivePoolListener listener = new SubpoolListener();
+		pool.addEventListener(listener);
 		subpools.add(pool);
 		subpoolListeners.add(listener);
 		fireMassChangeListeners();

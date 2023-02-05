@@ -12,7 +12,7 @@ import everyos.desktop.thready.core.positioning.AbsoluteSize;
 import everyos.desktop.thready.core.positioning.Rectangle;
 import everyos.desktop.thready.core.positioning.imp.AbsoluteSizeImp;
 import everyos.desktop.thready.core.positioning.util.AbsoluteSizeMath;
-import everyos.desktop.thready.laf.simple.component.message.DefaultMessageHandler;
+import everyos.desktop.thready.laf.simple.component.message.DefaultContentMessageHandler;
 import everyos.desktop.thready.laf.simple.component.paint.BlockWrappingPainter;
 
 public class BlockWrappingUnit implements Unit {
@@ -32,14 +32,18 @@ public class BlockWrappingUnit implements Unit {
 		return Optional.empty();
 	}
 
+	
 	@Override
 	public Painter getPainter(Rectangle documentRect) {
-		return new BlockWrappingPainter(box, documentRect, innerUnit);
+		Rectangle innerUnitDocumentRect = getInnerUnitDocumentRect(documentRect);
+		return new BlockWrappingPainter(box, documentRect, innerUnit, innerUnitDocumentRect);
 	}
 
 	@Override
 	public MessageHandler getMessageHandler(Rectangle documentRect) {
-		return new DefaultMessageHandler();
+		Rectangle innerUnitDocumentRect = getInnerUnitDocumentRect(documentRect);
+		MessageHandler innerUnitMessageHandler = innerUnit.getMessageHandler(innerUnitDocumentRect);
+		return new DefaultContentMessageHandler(documentRect, box, innerUnitMessageHandler);
 	}
 
 	@Override
@@ -69,4 +73,8 @@ public class BlockWrappingUnit implements Unit {
 		return precomputedSize;
 	}
 
+	private Rectangle getInnerUnitDocumentRect(Rectangle documentRect) {
+		// TODO Method stub
+		return documentRect;
+	}
 }

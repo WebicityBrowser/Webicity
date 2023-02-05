@@ -6,6 +6,8 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
 import everyos.desktop.thready.core.gui.Screen;
+import everyos.desktop.thready.core.positioning.AbsolutePosition;
+import everyos.desktop.thready.core.positioning.imp.AbsolutePositionImp;
 
 public class SkijaWindow {
 	
@@ -21,6 +23,8 @@ public class SkijaWindow {
 		return this.screen;
 	}
 	
+	//
+	
 	public void setVisible(boolean visible) {
 		GLFW.glfwSetWindowAttrib(windowId, GLFW.GLFW_VISIBLE, glfwBool(visible));
 	}
@@ -31,6 +35,42 @@ public class SkijaWindow {
 	
 	public void setTitle(String title) {
 		GLFW.glfwSetWindowTitle(windowId, title);
+	}
+	
+	//
+	
+	public void minimize() {
+		GLFW.glfwIconifyWindow(windowId);
+	}
+	
+	public void restore() {
+		if (isMaximized()) {
+			GLFW.glfwRestoreWindow(windowId);
+		} else {
+			GLFW.glfwMaximizeWindow(windowId);
+		}
+	}
+
+	public void close() {
+		GLFW.glfwSetWindowShouldClose(windowId, true);
+	}
+	
+	//
+	
+	public void setPosition(AbsolutePosition position) {
+		GLFW.glfwSetWindowPos(windowId, (int) position.getX(), (int) position.getY());
+	}
+	
+	public AbsolutePosition getPosition() {
+		int[] xpos = new int[1], ypos = new int[1];
+		GLFW.glfwGetWindowPos(windowId, xpos, ypos);
+		return new AbsolutePositionImp(xpos[0], ypos[0]);
+	}
+	
+	//
+	
+	private boolean isMaximized() {
+		return GLFW.glfwGetWindowAttrib(windowId, GLFW.GLFW_MAXIMIZED) == GLFW.GLFW_TRUE;
 	}
 
 	private int glfwBool(boolean bool) {
@@ -43,7 +83,7 @@ public class SkijaWindow {
 			long windowId = GLFW.glfwCreateWindow(800, 600, "Untitled Application", 0, 0);
 			GLFW.glfwMakeContextCurrent(windowId);
 			GL.createCapabilities();
-			GLFW.glfwSetWindowPos(windowId, 100, 100);
+			GLFW.glfwSetWindowPos(windowId, 200, 100);
 			GLFW.glfwSwapInterval(1);
 			
 			SkijaWindow window = new SkijaWindow(windowId);

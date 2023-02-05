@@ -1,5 +1,8 @@
 package everyos.browser.webicitybrowser.gui.ui.button;
 
+import everyos.browser.webicitybrowser.component.CircularButtonComponent;
+import everyos.desktop.thready.core.graphics.image.Image;
+import everyos.desktop.thready.core.graphics.image.LoadedImage;
 import everyos.desktop.thready.core.gui.stage.box.Box;
 import everyos.desktop.thready.core.gui.stage.render.RenderContext;
 import everyos.desktop.thready.core.gui.stage.render.SolidRenderer;
@@ -16,7 +19,15 @@ public class CircularButtonComponentRenderer implements SolidRenderer {
 
 	@Override
 	public Unit render(RenderContext renderContext, AbsoluteSize precomputedSize) {
-		return new CircularButtonUnit(box);
+		LoadedImage image = loadImage(renderContext);
+		return new CircularButtonUnit(box, image);
+	}
+
+	private LoadedImage loadImage(RenderContext renderContext) {
+		Image image = ((CircularButtonComponent) box.getOwningComponent()).getImage();
+		return renderContext
+			.getResourceGenerator()
+			.loadImage(image);
 	}
 
 }

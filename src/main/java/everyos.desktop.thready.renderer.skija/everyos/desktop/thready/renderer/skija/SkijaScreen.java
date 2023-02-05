@@ -28,7 +28,7 @@ public class SkijaScreen implements Screen {
 
 	@Override
 	public void setGUI(Component component, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot) {
-		renderingPipeline = new SkijaRenderingPipeline(component, lookAndFeel, styleGeneratorRoot);
+		renderingPipeline = new SkijaRenderingPipeline(windowId, component, lookAndFeel, styleGeneratorRoot);
 	}
 	
 	public boolean isDone() {
@@ -54,7 +54,9 @@ public class SkijaScreen implements Screen {
 	}
 
 	private boolean windowIsVisible() {
-		return glfwBool(GLFW.glfwGetWindowAttrib(windowId, GLFW.GLFW_VISIBLE));
+		return
+			glfwBool(GLFW.glfwGetWindowAttrib(windowId, GLFW.GLFW_VISIBLE)) &&
+			!glfwBool(GLFW.glfwGetWindowAttrib(windowId, GLFW.GLFW_ICONIFIED));
 	}
 	
 	private void updateWindow() {

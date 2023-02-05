@@ -65,7 +65,7 @@ public class ContainerComponentRenderer implements SolidRenderer {
 	
 	private Unit renderFluidChildren(RenderContext renderContext, AbsoluteSize precomputedInnerSize, FluidBox[] fluidChildren) {
 		return new FluidChildrenRenderer()
-				.render(renderContext, precomputedInnerSize, fluidChildren);
+			.render(renderContext, precomputedInnerSize, fluidChildren);
 	}
 
 	private FluidBox[] toFluidBoxArray(Box[] array) {

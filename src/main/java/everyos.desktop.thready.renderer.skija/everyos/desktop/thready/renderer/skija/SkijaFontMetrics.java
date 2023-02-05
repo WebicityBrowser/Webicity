@@ -29,6 +29,16 @@ public class SkijaFontMetrics implements everyos.desktop.thready.core.graphics.t
 		
 		return width;
 	}
+	
+	@Override
+	public float getStringWidth(String text) {
+		float totalSize = 0;
+		for (int i = 0; i < text.length(); i++) {
+			totalSize += getCharacterWidth(text.codePointAt(i));
+		}
+		
+		return totalSize;
+	}
 
 	@Override
 	public float getHeight() {

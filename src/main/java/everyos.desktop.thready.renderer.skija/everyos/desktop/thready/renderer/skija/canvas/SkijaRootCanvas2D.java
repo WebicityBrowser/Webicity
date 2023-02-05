@@ -13,12 +13,14 @@ import everyos.desktop.thready.core.graphics.text.FontMetrics;
 import everyos.desktop.thready.core.graphics.text.LoadedFont;
 import everyos.desktop.thready.core.positioning.AbsoluteSize;
 import everyos.desktop.thready.renderer.skija.SkijaLoadedFont;
+import everyos.desktop.thready.renderer.skija.SkijaLoadedImage;
 import io.github.humbleui.skija.BackendRenderTarget;
 import io.github.humbleui.skija.Canvas;
 import io.github.humbleui.skija.ColorSpace;
 import io.github.humbleui.skija.DirectContext;
 import io.github.humbleui.skija.Font;
 import io.github.humbleui.skija.FramebufferFormat;
+import io.github.humbleui.skija.Image;
 import io.github.humbleui.skija.Paint;
 import io.github.humbleui.skija.Surface;
 import io.github.humbleui.skija.SurfaceColorFormat;
@@ -70,7 +72,9 @@ public class SkijaRootCanvas2D implements Canvas2D {
 
 	@Override
 	public void drawTexture(float x, float y, float l, float h, LoadedImage image) {
-		// TODO Auto-generated method stub
+		Image rawImage = ((SkijaLoadedImage) image).getRawImage();
+		Rect rect = Rect.makeXYWH(x, y, l, h);
+		canvas.drawImageRect(rawImage, rect, rawPaint);
 	}
 
 	@Override

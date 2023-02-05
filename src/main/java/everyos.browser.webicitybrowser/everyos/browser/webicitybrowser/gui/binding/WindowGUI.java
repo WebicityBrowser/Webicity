@@ -9,6 +9,7 @@ import everyos.browser.webicitybrowser.component.CircularButtonComponent;
 import everyos.browser.webicitybrowser.component.MenuButtonComponent;
 import everyos.browser.webicitybrowser.gui.Styling;
 import everyos.browser.webicitybrowser.gui.behaviour.ActionButtonBehavior;
+import everyos.browser.webicitybrowser.gui.behaviour.WindowDragBehavior;
 import everyos.browser.webicitybrowser.gui.binding.component.TabPickerComponent;
 import everyos.browser.webicitybrowser.gui.colors.ColorPalette;
 import everyos.browser.webicitybrowser.gui.colors.NormalColors;
@@ -20,9 +21,14 @@ import everyos.browser.webicitybrowser.ui.Window;
 import everyos.desktop.thready.basic.component.ContainerComponent;
 import everyos.desktop.thready.basic.directive.BackgroundColorDirective;
 import everyos.desktop.thready.basic.directive.ChildrenDirective;
+import everyos.desktop.thready.basic.directive.FontDirective;
 import everyos.desktop.thready.basic.layout.flowing.directive.PositionDirective;
 import everyos.desktop.thready.basic.layout.flowing.directive.SizeDirective;
 import everyos.desktop.thready.core.graphics.color.Colors;
+import everyos.desktop.thready.core.graphics.text.FontDecoration;
+import everyos.desktop.thready.core.graphics.text.FontInfo;
+import everyos.desktop.thready.core.graphics.text.FontWeight;
+import everyos.desktop.thready.core.graphics.text.NamedFont;
 import everyos.desktop.thready.core.gui.component.Component;
 import everyos.desktop.thready.core.positioning.imp.RelativePositionImp;
 import everyos.desktop.thready.core.positioning.imp.RelativeSizeImp;
@@ -47,7 +53,10 @@ public class WindowGUI {
 		windowCreator.accept(createRootContent(), handle -> nativeWindow = handle);
 	}
 	
-	private void close() {}
+	private void close() {
+		nativeWindow.close();
+		window.close();
+	}
 
 	private ColorPalette createColors() {
 		return window.isPrivate() ?
@@ -72,8 +81,10 @@ public class WindowGUI {
 			.directive(PositionDirective.of(new RelativePositionImp(0, 0, 0, decorHeight)))
 			.directive(SizeDirective.of(new RelativeSizeImp(1, 0, 1, -decorHeight)));
 		
+		FontInfo font = new FontInfo(new NamedFont("Open Sans"), 16, FontWeight.NORMAL, new FontDecoration[0]);
 		return new ContainerComponent()
 			.directive(BackgroundColorDirective.of(Colors.WHITE))
+			.directive(FontDirective.of(font))
 			.directive(ChildrenDirective.of(windowDecorations, tabContentPane));
 	}
 
@@ -118,11 +129,15 @@ public class WindowGUI {
 			.directive(SizeDirective.of(new RelativeSizeImp(
 				0, windowActionButtonsSize, 0, Styling.BUTTON_WIDTH)));
 		
-		return new ContainerComponent()
+		Component windowDecor = new ContainerComponent()
 			.directive(BackgroundColorDirective.of(colors.getBackgroundPrimary()))
 			.directive(ChildrenDirective.of(
 				menuButton, tabPickerComponent, actionButtonsContainer
 			));
+		
+		WindowDragBehavior.addDragBehavior(windowDecor, () -> nativeWindow);
+		
+		return windowDecor;
 	}
 
 	private Component createActionButtonsContainer() {
@@ -188,8 +203,12 @@ public class WindowGUI {
 	}
 
 	private Component createMenuButtonComponent() {
-		return new MenuButtonComponent()
+		Component menuButton = new MenuButtonComponent()
 			.directive(BackgroundColorDirective.of(colors.getBackgroundSecondary()));
+		
+		addButtonBehavior(menuButton, () -> {});
+		
+		return menuButton;
 	}
 
 }

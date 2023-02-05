@@ -15,6 +15,13 @@ public final class AbsolutePositionMath {
 		);
 	}
 	
+	public static AbsolutePosition diff(AbsolutePosition posA, AbsolutePosition posB) {
+		return new AbsolutePositionImp(
+			sumComponent(posA.getX(), -posB.getX()),
+			sumComponent(posA.getY(), -posB.getY())
+		);
+	}
+	
 	public static float sumComponent(float dimA, float dimB) {
 		return
 			dimA == RelativeDimension.UNBOUNDED ? dimA :

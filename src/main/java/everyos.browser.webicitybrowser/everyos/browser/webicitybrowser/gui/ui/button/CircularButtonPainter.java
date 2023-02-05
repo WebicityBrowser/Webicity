@@ -6,6 +6,7 @@ import everyos.desktop.thready.core.graphics.canvas.Paint2D;
 import everyos.desktop.thready.core.graphics.canvas.imp.Paint2DBuilder;
 import everyos.desktop.thready.core.graphics.color.Colors;
 import everyos.desktop.thready.core.graphics.color.formats.ColorFormat;
+import everyos.desktop.thready.core.graphics.image.LoadedImage;
 import everyos.desktop.thready.core.gui.stage.box.Box;
 import everyos.desktop.thready.core.gui.stage.paint.PaintContext;
 import everyos.desktop.thready.core.gui.stage.paint.Painter;
@@ -15,10 +16,12 @@ public class CircularButtonPainter implements Painter {
 
 	private final Box box;
 	private final Rectangle documentRect;
+	private final LoadedImage image;
 
-	public CircularButtonPainter(Box box, Rectangle documentRect) {
+	public CircularButtonPainter(Box box, Rectangle documentRect, LoadedImage image) {
 		this.box = box;
 		this.documentRect = documentRect;
+		this.image = image;
 	}
 
 	@Override
@@ -33,13 +36,19 @@ public class CircularButtonPainter implements Painter {
 			.setColor(color)
 			.build();
 		
+		float docX = documentRect.getPosition().getX();
+		float docY = documentRect.getPosition().getY();
+		float docW = documentRect.getSize().getWidth();
+		float docH = documentRect.getSize().getHeight();
+		
 		canvas
 			.withPaint(paint)
-			.drawEllipse(
-				documentRect.getPosition().getX(),
-				documentRect.getPosition().getY(),
-				documentRect.getSize().getWidth(),
-				documentRect.getSize().getHeight());
+			.drawEllipse(docX, docY, docW, docH);
+		
+		canvas.drawTexture(
+			docX + docW / 2 - 10,
+			docY + docH / 2 - 10,
+			20, 20, image);
 	}
 
 	private ColorFormat getBackgroundColor() {

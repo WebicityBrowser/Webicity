@@ -24,4 +24,9 @@ public class RectangleImp implements Rectangle {
 		return this.size;
 	}
 
+	@Override
+	public String toString() {
+		return "Rectangle [position=" + position + ", size=" + size + "]";
+	}
+
 }

@@ -1,16 +1,14 @@
 package everyos.desktop.thready.laf.simple.component.ui.text;
 
 import everyos.desktop.thready.basic.component.TextComponent;
-import everyos.desktop.thready.core.graphics.text.FontDecoration;
 import everyos.desktop.thready.core.graphics.text.FontInfo;
 import everyos.desktop.thready.core.graphics.text.FontMetrics;
-import everyos.desktop.thready.core.graphics.text.FontWeight;
 import everyos.desktop.thready.core.graphics.text.LoadedFont;
-import everyos.desktop.thready.core.graphics.text.NamedFont;
 import everyos.desktop.thready.core.gui.stage.box.Box;
 import everyos.desktop.thready.core.gui.stage.render.FluidRenderer;
 import everyos.desktop.thready.core.gui.stage.render.RenderContext;
 import everyos.desktop.thready.core.gui.stage.render.unit.UnitGenerator;
+import everyos.desktop.thready.laf.simple.util.DirectiveUtil;
 
 public class TextComponentRenderer implements FluidRenderer {
 
@@ -32,7 +30,7 @@ public class TextComponentRenderer implements FluidRenderer {
 	}
 
 	private FontInfo getFontInfo() {
-		return new FontInfo(new NamedFont("Times New Roman"), 16, FontWeight.NORMAL, new FontDecoration[0]);
+		return DirectiveUtil.getFont(box.getDirectivePool());
 	}
 	
 	private float[] calculateCharWidths(String text, FontMetrics metrics) {

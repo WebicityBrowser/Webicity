@@ -17,17 +17,20 @@ public class BlockWrappingPainter implements Painter {
 	private final Box box;
 	private final Rectangle documentRect;
 	private final Unit innerUnit;
+	private final Rectangle innerUnitDocumentRect;
+	
 
-	public BlockWrappingPainter(Box box, Rectangle documentRect, Unit innerUnit) {
+	public BlockWrappingPainter(Box box, Rectangle documentRect, Unit innerUnit, Rectangle innerUnitDocumentRect) {
 		this.box = box;
 		this.documentRect = documentRect;
 		this.innerUnit = innerUnit;
+		this.innerUnitDocumentRect = innerUnitDocumentRect;
 	}
 
 	@Override
 	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewportRect) {
 		paintBackground(canvas);
-		innerUnit.getPainter(documentRect).paint(context, canvas, viewportRect);
+		innerUnit.getPainter(innerUnitDocumentRect).paint(context, canvas, viewportRect);
 	}
 
 	private void paintBackground(Canvas2D canvas) {

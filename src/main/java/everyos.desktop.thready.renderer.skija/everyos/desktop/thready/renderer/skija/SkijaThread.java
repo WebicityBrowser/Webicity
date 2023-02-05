@@ -29,7 +29,7 @@ public final class SkijaThread {
 				startQueuedScreens();
 				continueRunningScreens();
 			}
-		}).run();
+		}).start();
 	}
 
 	private static boolean continueRunning() {
