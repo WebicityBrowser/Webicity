@@ -39,4 +39,8 @@ public class RelativePositionImp implements RelativePosition {
 			relativeY.resolveAbsoluteDimensions(parentSize.getHeight()));
 	}
 
+	public static RelativePosition convertFrom(AbsolutePosition position) {
+		return new RelativePositionImp(0, position.getX(), 0, position.getY());
+	}
+	
 }

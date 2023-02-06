@@ -1,4 +1,4 @@
-package everyos.browser.webicitybrowser.gui.behaviour;
+package everyos.browser.webicitybrowser.gui.behavior;
 
 import java.util.function.Supplier;
 

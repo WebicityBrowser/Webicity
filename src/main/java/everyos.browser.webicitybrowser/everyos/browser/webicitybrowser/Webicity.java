@@ -64,6 +64,7 @@ public class Webicity {
 		try {
 			//TODO: Configuration
 			openURL(window, URL.createFromString("webicity://welcome"));
+			openURL(window, URL.createFromString("webicity://welcome"));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

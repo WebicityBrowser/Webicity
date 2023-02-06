@@ -8,16 +8,21 @@ import java.util.function.Supplier;
 import everyos.browser.webicitybrowser.component.CircularButtonComponent;
 import everyos.browser.webicitybrowser.component.MenuButtonComponent;
 import everyos.browser.webicitybrowser.gui.Styling;
-import everyos.browser.webicitybrowser.gui.behaviour.ActionButtonBehavior;
-import everyos.browser.webicitybrowser.gui.behaviour.WindowDragBehavior;
-import everyos.browser.webicitybrowser.gui.binding.component.TabPickerComponent;
+import everyos.browser.webicitybrowser.gui.behavior.ActionButtonBehavior;
+import everyos.browser.webicitybrowser.gui.behavior.WindowDragBehavior;
+import everyos.browser.webicitybrowser.gui.binding.component.tab.TabDisplayComponent;
+import everyos.browser.webicitybrowser.gui.binding.component.tab.TabPickerComponent;
+import everyos.browser.webicitybrowser.gui.binding.component.tab.TabSystemConfiguration;
 import everyos.browser.webicitybrowser.gui.colors.ColorPalette;
 import everyos.browser.webicitybrowser.gui.colors.NormalColors;
 import everyos.browser.webicitybrowser.gui.colors.OctoberColors;
 import everyos.browser.webicitybrowser.gui.colors.PrivateColors;
 import everyos.browser.webicitybrowser.gui.util.ImageUtil;
 import everyos.browser.webicitybrowser.gui.window.GUIWindow;
+import everyos.browser.webicitybrowser.ui.Tab;
 import everyos.browser.webicitybrowser.ui.Window;
+import everyos.browser.webicitybrowser.ui.event.WindowMutationEventListener;
+import everyos.browser.webicitybrowser.ui.imp.TabImp;
 import everyos.desktop.thready.basic.component.ContainerComponent;
 import everyos.desktop.thready.basic.directive.BackgroundColorDirective;
 import everyos.desktop.thready.basic.directive.ChildrenDirective;
@@ -38,8 +43,6 @@ public class WindowGUI {
 	private final Window window;
 	private final BiConsumer<Component, Consumer<GUIWindow>> windowCreator;
 	private final ColorPalette colors;
-	
-	private Component tabContentPane = new ContainerComponent();
 	
 	private GUIWindow nativeWindow;
 
@@ -73,13 +76,17 @@ public class WindowGUI {
 	private Component createInnerContent() {
 		float decorHeight = Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING * 1.5f;
 		
-		Component windowDecorations = createWindowDecorations()
+		TabPickerComponent tabPickerComponent = new TabPickerComponent(createTabPickerConfig(), true);
+		
+		Component windowDecorations = createWindowDecorations(tabPickerComponent)
 			.directive(PositionDirective.of(new RelativePositionImp(0, 0, 0, 0)))
 			.directive(SizeDirective.of(new RelativeSizeImp(1, 0, 0, decorHeight)));
 		
-		tabContentPane
+		Component tabContentPane = tabPickerComponent.getDisplayPane()
 			.directive(PositionDirective.of(new RelativePositionImp(0, 0, 0, decorHeight)))
 			.directive(SizeDirective.of(new RelativeSizeImp(1, 0, 1, -decorHeight)));
+		
+		addWindowListener(window, tabPickerComponent);
 		
 		FontInfo font = new FontInfo(new NamedFont("Open Sans"), 16, FontWeight.NORMAL, new FontDecoration[0]);
 		return new ContainerComponent()
@@ -107,14 +114,14 @@ public class WindowGUI {
 		return outerBorder;
 	}
 	
-	private Component createWindowDecorations() {
+	private Component createWindowDecorations(Component tabPickerComponent) {
 		Component menuButton = createMenuButtonComponent()
 			.directive(PositionDirective.of(new RelativePositionImp(0, 0, 0, 0)))
 			.directive(SizeDirective.of(new RelativeSizeImp(
 				0, Styling.BUTTON_WIDTH*3 + Styling.ELEMENT_PADDING*2 + Styling.BORDER_PADDING,
 				0, Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING)));
 		
-		Component tabPickerComponent = new TabPickerComponent(colors)
+		tabPickerComponent
 			.directive(PositionDirective.of(new RelativePositionImp(
 				0, Styling.BORDER_PADDING + Styling.BUTTON_WIDTH*3 + Styling.ELEMENT_PADDING*3,
 				0, 0)))
@@ -209,6 +216,38 @@ public class WindowGUI {
 		addButtonBehavior(menuButton, () -> {});
 		
 		return menuButton;
+	}
+	
+	private void addWindowListener(Window window, TabPickerComponent tabs) {
+		window.addWindowMutationEventListener(new WindowMutationEventListener() {
+			
+			@Override
+			public void onTabAdded(Window window, Tab tab) {
+				tabs.addTab(tab);
+			}
+			
+		}, true);
+	}
+	
+	private TabSystemConfiguration createTabPickerConfig() {
+		return new TabSystemConfiguration() {		
+			@Override
+			public ColorPalette getColors() {
+				return colors;
+			}
+			
+			@Override
+			public TabDisplayComponent createTabDisplay(Tab tab) {
+				TabGUI gui = new TabGUI(tab, colors);
+				gui.start();
+				return gui.getComponent();
+			}
+
+			@Override
+			public Tab createTab() {
+				return new TabImp();
+			}
+		};
 	}
 
 }

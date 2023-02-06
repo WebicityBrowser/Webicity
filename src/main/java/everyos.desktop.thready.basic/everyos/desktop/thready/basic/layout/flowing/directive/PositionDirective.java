@@ -1,7 +1,9 @@
 package everyos.desktop.thready.basic.layout.flowing.directive;
 
 import everyos.desktop.thready.core.gui.directive.Directive;
+import everyos.desktop.thready.core.positioning.AbsolutePosition;
 import everyos.desktop.thready.core.positioning.RelativePosition;
+import everyos.desktop.thready.core.positioning.imp.RelativePositionImp;
 
 public interface PositionDirective extends Directive {
 
@@ -21,6 +23,10 @@ public interface PositionDirective extends Directive {
 			}
 			
 		};
+	}
+	
+	public static Directive of(AbsolutePosition position) {
+		return of(RelativePositionImp.convertFrom(position));
 	}
 	
 }

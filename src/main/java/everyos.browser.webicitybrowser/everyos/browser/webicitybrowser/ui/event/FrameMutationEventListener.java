@@ -1,8 +1,8 @@
 package everyos.browser.webicitybrowser.ui.event;
 
+import everyos.browser.webicity.ui.Frame;
+import everyos.browser.webicity.ui.renderer.Renderer;
 import everyos.browser.webicitybrowser.event.EventListener;
-import everyos.browser.webicitybrowser.ui.Frame;
-import everyos.browser.webicitybrowser.ui.Renderer;
 import everyos.web.spec.uri.URL;
 
 public interface FrameMutationEventListener extends EventListener {

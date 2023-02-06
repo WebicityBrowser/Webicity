@@ -37,5 +37,9 @@ public class RelativeSizeImp implements RelativeSize {
 			relativeWidth.resolveAbsoluteDimensions(parentSize.getWidth()),
 			relativeHeight.resolveAbsoluteDimensions(parentSize.getHeight()));
 	}
+	
+	public static RelativeSize convertFrom(AbsoluteSize size) {
+		return new RelativeSizeImp(0, size.getWidth(), 0, size.getHeight());
+	}
 
 }

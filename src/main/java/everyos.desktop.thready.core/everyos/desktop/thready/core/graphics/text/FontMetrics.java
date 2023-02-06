@@ -10,4 +10,10 @@ public interface FontMetrics {
 
 	float getStringWidth(String productName);
 
+	float getDescent();
+
+	float getAscent();
+
+	float getCapHeight();
+
 }

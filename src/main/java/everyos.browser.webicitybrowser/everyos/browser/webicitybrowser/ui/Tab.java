@@ -1,5 +1,6 @@
 package everyos.browser.webicitybrowser.ui;
 
+import everyos.browser.webicity.ui.Frame;
 import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
 import everyos.web.spec.uri.URL;
 

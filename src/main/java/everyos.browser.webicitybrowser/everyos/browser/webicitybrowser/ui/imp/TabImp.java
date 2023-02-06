@@ -1,11 +1,18 @@
 package everyos.browser.webicitybrowser.ui.imp;
 
-import everyos.browser.webicitybrowser.ui.Frame;
+import everyos.browser.webicity.ui.Frame;
+import everyos.browser.webicity.ui.imp.FrameImp;
 import everyos.browser.webicitybrowser.ui.Tab;
 import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
 import everyos.web.spec.uri.URL;
 
 public class TabImp implements Tab {
+	
+	private final Frame frame;
+
+	public TabImp() {
+		this.frame = new FrameImp();
+	}
 
 	@Override
 	public void start() {
@@ -21,44 +28,37 @@ public class TabImp implements Tab {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return frame.getName();
 	}
 
 	@Override
 	public Frame getFrame() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.frame;
 	}
 
 	@Override
 	public URL getURL() {
-		// TODO Auto-generated method stub
-		return null;
+		return frame.getURL();
 	}
 
 	@Override
 	public void navigate(URL url) {
-		// TODO Auto-generated method stub
-
+		frame.navigate(url);
 	}
 
 	@Override
 	public void reload() {
-		// TODO Auto-generated method stub
-
+		frame.reload();
 	}
 
 	@Override
 	public void back() {
-		// TODO Auto-generated method stub
-
+		frame.back();
 	}
 
 	@Override
 	public void forward() {
-		// TODO Auto-generated method stub
-
+		frame.forward();
 	}
 
 	@Override

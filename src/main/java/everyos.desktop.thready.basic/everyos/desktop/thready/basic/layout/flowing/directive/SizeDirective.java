@@ -1,7 +1,9 @@
 package everyos.desktop.thready.basic.layout.flowing.directive;
 
 import everyos.desktop.thready.core.gui.directive.Directive;
+import everyos.desktop.thready.core.positioning.AbsoluteSize;
 import everyos.desktop.thready.core.positioning.RelativeSize;
+import everyos.desktop.thready.core.positioning.imp.RelativeSizeImp;
 
 public interface SizeDirective extends Directive {
 
@@ -21,6 +23,10 @@ public interface SizeDirective extends Directive {
 			}
 			
 		};
+	}
+	
+	public static Directive of(AbsoluteSize size) {
+		return of(RelativeSizeImp.convertFrom(size));
 	}
 	
 }

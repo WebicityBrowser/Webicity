@@ -1,4 +1,4 @@
-package everyos.browser.webicitybrowser.gui.behaviour;
+package everyos.browser.webicitybrowser.gui.behavior;
 
 import java.util.function.Supplier;
 
@@ -40,6 +40,7 @@ public final class WindowDragBehavior {
 					isSelected = false;
 				}
 			}
+			
 		};
 		
 		windowDecor.directive(MouseListenerDirective.of(mouseListener));

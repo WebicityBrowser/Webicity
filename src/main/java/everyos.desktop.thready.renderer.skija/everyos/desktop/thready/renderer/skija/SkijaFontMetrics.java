@@ -49,5 +49,22 @@ public class SkijaFontMetrics implements everyos.desktop.thready.core.graphics.t
 	public float getLeading() {
 		return metrics.getLeading();
 	}
+	
+	@Override
+	public float getDescent() {
+		return metrics.getDescent();
+	}
+	
+	@Override
+	public float getAscent() {
+		return metrics.getAscent();
+	}
+	
+	@Override
+	public float getCapHeight() {
+		return metrics.getCapHeight();
+	}
+	
+	
 
 }
