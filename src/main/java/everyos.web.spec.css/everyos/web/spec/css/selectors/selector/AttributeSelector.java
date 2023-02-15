@@ -11,7 +11,7 @@ public interface AttributeSelector extends SimpleSelector {
 	String getComparisonValue();
 	
 	public static enum AttributeSelectorOperation {
-		EQUALS, ONE_OF, HAS_SUBCODE, BEGINS_WITH, ENDS_WITH, CONTAINS
+		PRESENT, EQUALS, ONE_OF, HAS_SUBCODE, BEGINS_WITH, ENDS_WITH, CONTAINS
 	}
 	
 }

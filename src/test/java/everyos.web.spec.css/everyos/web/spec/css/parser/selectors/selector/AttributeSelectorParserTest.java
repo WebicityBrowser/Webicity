@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import everyos.web.spec.css.parser.TokenStream;
+import everyos.web.spec.css.parser.imp.TokenStreamImp;
 import everyos.web.spec.css.parser.tokens.DelimToken;
 import everyos.web.spec.css.parser.tokens.IdentToken;
 import everyos.web.spec.css.parser.tokens.LSBracketToken;
@@ -31,12 +33,12 @@ public class AttributeSelectorParserTest {
 		RSBracketToken rightBracketToken = Mockito.mock(RSBracketToken.class);
 		IdentToken attrNameToken = Mockito.mock(IdentToken.class);
 		Mockito.when(attrNameToken.getValue()).thenReturn("attr");
-		Token[] tokens = new Token[] {
+		TokenStream tokenStream = new TokenStreamImp(new Token[] {
 			leftBracketToken, attrNameToken, rightBracketToken	
-		};
-		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 3));
+		});
+		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertEquals("attr", selector.getAttributeName().getName());
-		Assertions.assertEquals(AttributeSelectorOperation.ONE_OF, selector.getOperation());
+		Assertions.assertEquals(AttributeSelectorOperation.PRESENT, selector.getOperation());
 		Assertions.assertEquals("", selector.getComparisonValue());
 	}
 	
@@ -51,10 +53,10 @@ public class AttributeSelectorParserTest {
 		Mockito.when(attrValueToken.getValue()).thenReturn("val");
 		DelimToken equalsToken = Mockito.mock(DelimToken.class);
 		Mockito.when(equalsToken.getValue()).thenReturn((int) '=');
-		Token[] tokens = new Token[] {
+		TokenStream tokenStream = new TokenStreamImp(new Token[] {
 			leftBracketToken, attrNameToken, equalsToken, attrValueToken, rightBracketToken	
-		};
-		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 5));
+		});
+		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertEquals("attr", selector.getAttributeName().getName());
 		Assertions.assertEquals(AttributeSelectorOperation.EQUALS, selector.getOperation());
 		Assertions.assertEquals("val", selector.getComparisonValue());
@@ -73,10 +75,10 @@ public class AttributeSelectorParserTest {
 		Mockito.when(equalsToken.getValue()).thenReturn((int) '=');
 		DelimToken comparisonToken = Mockito.mock(DelimToken.class);
 		Mockito.when(comparisonToken.getValue()).thenReturn((int) '~');
-		Token[] tokens = new Token[] {
+		TokenStream tokenStream = new TokenStreamImp(new Token[] {
 			leftBracketToken, attrNameToken, comparisonToken, equalsToken, attrValueToken, rightBracketToken	
-		};
-		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 6));
+		});
+		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertEquals("attr", selector.getAttributeName().getName());
 		Assertions.assertEquals(AttributeSelectorOperation.ONE_OF, selector.getOperation());
 		Assertions.assertEquals("val", selector.getComparisonValue());

@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 
 import everyos.web.spec.css.componentvalue.FunctionValue;
 import everyos.web.spec.css.componentvalue.SimpleBlock;
+import everyos.web.spec.css.parser.imp.CSSParserImp;
 import everyos.web.spec.css.parser.tokens.AtKeywordToken;
 import everyos.web.spec.css.parser.tokens.EOFToken;
 import everyos.web.spec.css.parser.tokens.FunctionToken;

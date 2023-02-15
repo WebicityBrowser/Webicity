@@ -1,17 +1,16 @@
 package everyos.web.spec.css.parser.property.color;
 
-import everyos.web.spec.css.parser.ParseFormatException;
+import everyos.web.spec.css.parser.TokenLike;
 import everyos.web.spec.css.parser.property.PropertyValueParseResult;
-import everyos.web.spec.css.parser.property.PropertyValueParseResultImp;
 import everyos.web.spec.css.parser.property.PropertyValueParser;
+import everyos.web.spec.css.parser.property.imp.PropertyValueParseResultImp;
 import everyos.web.spec.css.parser.tokens.HashToken;
-import everyos.web.spec.css.parser.tokens.Token;
 import everyos.web.spec.css.property.color.ColorValue;
 
 public class HexColorValueParser implements PropertyValueParser<ColorValue> {
 
 	@Override
-	public PropertyValueParseResult<ColorValue> parse(Token[] tokens, int offset, int length) throws ParseFormatException {
+	public PropertyValueParseResult<ColorValue> parse(TokenLike[] tokens, int offset, int length) {
 		if (!checkSelectorFormat(tokens, offset, length)) {
 			return PropertyValueParseResultImp.empty();
 		}
@@ -94,7 +93,7 @@ public class HexColorValueParser implements PropertyValueParser<ColorValue> {
 		throw new NumberFormatException("Could not convert character '" + ch + "' from hex!");
 	}
 
-	private boolean checkSelectorFormat(Token[] tokens, int offset, int length) throws ParseFormatException {
+	private boolean checkSelectorFormat(TokenLike[] tokens, int offset, int length) {
 		return (length == 1 && tokens[offset] instanceof HashToken);
 	}
 

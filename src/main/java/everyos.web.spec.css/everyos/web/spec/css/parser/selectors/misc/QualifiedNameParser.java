@@ -2,97 +2,97 @@ package everyos.web.spec.css.parser.selectors.misc;
 
 import everyos.web.spec.css.QualifiedName;
 import everyos.web.spec.css.parser.ParseFormatException;
+import everyos.web.spec.css.parser.TokenLike;
+import everyos.web.spec.css.parser.TokenStream;
 import everyos.web.spec.css.parser.tokens.DelimToken;
 import everyos.web.spec.css.parser.tokens.IdentToken;
-import everyos.web.spec.css.parser.tokens.Token;
 
 public class QualifiedNameParser {
 
-	public QualifiedName parse(Token[] tokens, int offset, int length) throws ParseFormatException {
-		checkSelectorFormat(tokens, offset, length);
-		
-		switch(length) {
-		case 1:
-			return parseDefaultQualifiedName(tokens, offset);
-		case 2:
-			return parseNoQualifiedName(tokens, offset);
-		case 3:
-			return parseNamespaceSelector(tokens, offset);
-		default:
-			throw new ParseFormatException("Invalid qualified name format", offset);
+	public QualifiedName parse(TokenStream stream) throws ParseFormatException {
+		TokenLike nextToken = stream.peek();
+		if (isBarToken(nextToken)) {
+			return parseNoNamespaceQualifiedName(stream);
+		} else if (isGlobToken(nextToken)) {
+			return parseAnyNamespaceQualifiedName(stream);
+		} else if (nextToken instanceof IdentToken) {
+			return parseNamespaceQualifiedToken(stream);
 		}
+		
+		fail(stream);
+		return null;
 	}
 
-	private void checkSelectorFormat(Token[] tokens, int offset, int length) throws ParseFormatException {
-		if (length == 0) {
-			throw new ParseFormatException("Invalid qualified name format", offset);
+	private QualifiedName parseNoNamespaceQualifiedName(TokenStream stream) throws ParseFormatException {
+		if (!isBarToken(stream.read())) {
+			fail(stream);
 		}
-	}
-	
-	private QualifiedName parseDefaultQualifiedName(Token[] tokens, int offset) throws ParseFormatException {
-		String name = parseElementName(tokens, offset);
 		
-		return createQualifiedName(QualifiedName.DEFAULT_NAMESPACE, name);
-	}
-	
-	private QualifiedName parseNoQualifiedName(Token[] tokens, int offset) throws ParseFormatException {
-		checkIsBarToken(tokens, offset);
-		String name = parseElementName(tokens, offset + 1);
+		TokenLike token = stream.read();
+		if (!(token instanceof IdentToken)) {
+			fail(stream);
+		}
+		String name = ((IdentToken) token).getValue();
 		
 		return createQualifiedName(QualifiedName.NO_NAMESPACE, name);
 	}
 	
-	private QualifiedName parseNamespaceSelector(Token[] tokens, int offset) throws ParseFormatException {
-		if (tokens[offset] instanceof IdentToken) {
-			return parseNamedNamespaceSelector(tokens, offset);
-		} else if (isGlobToken(tokens, offset)) {
-			return parseAnyNamespaceSelector(tokens, offset);
-		} else {
-			throw new ParseFormatException("Invalid qualified name format", offset);
+	private QualifiedName parseAnyNamespaceQualifiedName(TokenStream stream) throws ParseFormatException {
+		if (!isGlobToken(stream.read())) {
+			fail(stream);
 		}
+		
+		if (!isBarToken(stream.read())) {
+			fail(stream);
+		}
+		
+		TokenLike token = stream.read();
+		if (!(token instanceof IdentToken)) {
+			fail(stream);
+		}
+		String elementName = ((IdentToken) token).getValue();
+		
+		return createQualifiedName(QualifiedName.ANY_NAMESPACE, elementName);
 	}
 	
-	private QualifiedName parseNamedNamespaceSelector(Token[] tokens, int offset) throws ParseFormatException {
-		checkIsBarToken(tokens, offset + 1);
-		String namespace = ((IdentToken) tokens[offset]).getValue();
-		String name = parseElementName(tokens, offset + 2);
+	private QualifiedName parseNamespaceQualifiedToken(TokenStream stream) throws ParseFormatException {
+		String namespace = QualifiedName.DEFAULT_NAMESPACE;
 		
-		return createQualifiedName(namespace, name);
-	}
-	
-	private QualifiedName parseAnyNamespaceSelector(Token[] tokens, int offset) throws ParseFormatException {
-		checkIsBarToken(tokens, offset + 1);
-		String name = parseElementName(tokens, offset + 2);
+		TokenLike token = stream.read();
+		if (!(token instanceof IdentToken)) {
+			fail(stream);
+		}
 		
-		return createQualifiedName(QualifiedName.ANY_NAMESPACE, name);
+		String elementName = ((IdentToken) token).getValue();
+		
+		if (isBarToken(stream.peek())) {
+			stream.read();
+			namespace = elementName;
+			
+			token = stream.read();
+			if (!(token instanceof IdentToken)) {
+				fail(stream);
+			}
+			elementName = ((IdentToken) token).getValue();
+		}
+		
+		return createQualifiedName(namespace, elementName);
 	}
 
-	private void checkIsBarToken(Token[] tokens, int offset) throws ParseFormatException {
-		if (!isBarToken(tokens, offset)) {
-			throw new ParseFormatException("Invalid qualified name format", offset);
-		}
-	}
-
-	private String parseElementName(Token[] tokens, int offset) throws ParseFormatException {
-		if (tokens[offset] instanceof IdentToken) {
-			return ((IdentToken) tokens[offset]).getValue();
-		} else if (isGlobToken(tokens, offset)) {
-			return QualifiedName.ANY_NAME;
-		} else {
-			throw new ParseFormatException("Invalid qualified name format", offset);
-		}
+	private boolean isBarToken(TokenLike token) {
+		return
+			token instanceof DelimToken &&
+			((DelimToken) token).getValue() == '|';
 	}
 	
-	private boolean isBarToken(Token[] tokens, int offset) {
+	private boolean isGlobToken(TokenLike token) {
 		return
-			tokens[offset] instanceof DelimToken &&
-			((DelimToken) tokens[offset]).getValue() == '|';
+			token instanceof DelimToken &&
+			((DelimToken) token).getValue() == '*';
 	}
 	
-	private boolean isGlobToken(Token[] tokens, int offset) {
-		return
-			tokens[offset] instanceof DelimToken &&
-			((DelimToken) tokens[offset]).getValue() == '*';
+	private void fail(TokenStream stream) throws ParseFormatException {
+		throw new ParseFormatException("Invalid qualified name format", stream.position());
 	}
 	
 	private QualifiedName createQualifiedName(String namespace, String name) {

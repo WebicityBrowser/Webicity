@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import everyos.web.spec.css.parser.TokenStream;
+import everyos.web.spec.css.parser.imp.TokenStreamImp;
 import everyos.web.spec.css.parser.tokens.DelimToken;
 import everyos.web.spec.css.parser.tokens.Token;
 import everyos.web.spec.css.parser.tokens.WhitespaceToken;
@@ -28,8 +30,8 @@ public class CombinatorParserTest {
 	@DisplayName("Can parse descendant combinator")
 	public void canParseDescendantCombinator() {
 		WhitespaceToken spaceToken = Mockito.mock(WhitespaceToken.class);
-		Token[] tokens = new Token[] { spaceToken };
-		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
+		TokenStream tokenStream = new TokenStreamImp(new Token[] { spaceToken });
+		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(DescendantCombinator.class, combinator);
 	}
 	
@@ -38,8 +40,8 @@ public class CombinatorParserTest {
 	public void canParseChildCombinator() {
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
 		Mockito.when(delimToken.getValue()).thenReturn((int) '>');
-		Token[] tokens = new Token[] { delimToken };
-		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
+		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken });
+		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(ChildCombinator.class, combinator);
 	}
 	
@@ -48,8 +50,8 @@ public class CombinatorParserTest {
 	public void canParseNextSiblingCombinator() {
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
 		Mockito.when(delimToken.getValue()).thenReturn((int) '+');
-		Token[] tokens = new Token[] { delimToken };
-		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
+		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken });
+		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(NextSiblingCombinator.class, combinator);
 	}
 	
@@ -58,8 +60,8 @@ public class CombinatorParserTest {
 	public void canParseSubsequentSiblingCombinator() {
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
 		Mockito.when(delimToken.getValue()).thenReturn((int) '~');
-		Token[] tokens = new Token[] { delimToken };
-		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 1));
+		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken });
+		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(SubsequentSiblingCombinator.class, combinator);
 	}
 	
@@ -69,8 +71,8 @@ public class CombinatorParserTest {
 		WhitespaceToken spaceToken = Mockito.mock(WhitespaceToken.class);
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
 		Mockito.when(delimToken.getValue()).thenReturn((int) '~');
-		Token[] tokens = new Token[] { spaceToken, delimToken, spaceToken };
-		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokens, 0, 3));
+		TokenStream tokenStream = new TokenStreamImp(new Token[] { spaceToken, delimToken, spaceToken });
+		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(SubsequentSiblingCombinator.class, combinator);
 	}
 	

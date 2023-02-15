@@ -1,7 +1,7 @@
 package everyos.browser.webicitybrowser.ui.imp;
 
-import everyos.browser.webicity.ui.Frame;
-import everyos.browser.webicity.ui.imp.FrameImp;
+import everyos.browser.webicity.core.ui.Frame;
+import everyos.browser.webicity.core.ui.imp.FrameImp;
 import everyos.browser.webicitybrowser.ui.Tab;
 import everyos.browser.webicitybrowser.ui.event.TabMutationEventListener;
 import everyos.web.spec.uri.URL;

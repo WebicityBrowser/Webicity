@@ -2,6 +2,8 @@ package everyos.web.spec.css.parser.selectors.selector;
 
 import everyos.web.spec.css.QualifiedName;
 import everyos.web.spec.css.parser.ParseFormatException;
+import everyos.web.spec.css.parser.TokenLike;
+import everyos.web.spec.css.parser.TokenStream;
 import everyos.web.spec.css.parser.selectors.SelectorParser;
 import everyos.web.spec.css.parser.selectors.misc.QualifiedNameParser;
 import everyos.web.spec.css.parser.tokens.DelimToken;
@@ -9,7 +11,6 @@ import everyos.web.spec.css.parser.tokens.IdentToken;
 import everyos.web.spec.css.parser.tokens.LSBracketToken;
 import everyos.web.spec.css.parser.tokens.RSBracketToken;
 import everyos.web.spec.css.parser.tokens.StringToken;
-import everyos.web.spec.css.parser.tokens.Token;
 import everyos.web.spec.css.selectors.selector.AttributeSelector;
 import everyos.web.spec.css.selectors.selector.AttributeSelector.AttributeSelectorOperation;
 
@@ -18,74 +19,36 @@ public class AttributeSelectorParser implements SelectorParser {
 	private final QualifiedNameParser qualifiedNameParser = new QualifiedNameParser();
 	
 	@Override
-	public AttributeSelector parse(Token[] tokens, int offset, int length) throws ParseFormatException {
-		checkSelectorFormat(tokens, offset, length);
-		
-		int attrNameLength = getAttrNameLength(tokens, offset + 1, length - 2);
-		QualifiedName attrName = qualifiedNameParser.parse(tokens, offset + 1, attrNameLength);
-		
-		int remainingParseOffset = offset + 1 + attrNameLength;
-		switch(length - 2 - attrNameLength) {
-		case 0:
-			return parseAttributePresentSelector(attrName, tokens, remainingParseOffset);
-		case 2:
-			return parseAttributeEqualsSelector(attrName, tokens, remainingParseOffset);
-		case 3:
-			return parseAttributeComparisonSelector(attrName, tokens, remainingParseOffset);
-		default:
-			throw new ParseFormatException("Invalid attribute selector format", offset);
-		}
-	}
-
-	private int getAttrNameLength(Token[] tokens, int offset, int length) {
-		int totalLength = 0;
-		for (int i = 0; i < length && !isEqualsToken(tokens, offset + i); i++) {
-			totalLength++;
-		}
-		int attrNameEnd = offset + totalLength;
-		if (
-			!(tokens[totalLength] instanceof IdentToken) &&
-			!(isCharToken(tokens, attrNameEnd, offset, '*') && isCharToken(tokens, attrNameEnd - 1, offset, '|'))
-		) {
-			totalLength--;
+	public AttributeSelector parse(TokenStream stream) throws ParseFormatException {
+		if (!(stream.read() instanceof LSBracketToken)) {
+			fail(stream);
 		}
 		
-		return totalLength;
-	}
-
-	private AttributeSelector parseAttributePresentSelector(QualifiedName attrName, Token[] tokens, int offset) throws ParseFormatException {
-		return createAttributeSelector(attrName, AttributeSelectorOperation.ONE_OF, "");
-	}
-	
-	private AttributeSelector parseAttributeEqualsSelector(QualifiedName attrName, Token[] tokens, int offset) throws ParseFormatException {
-		ensureEqualsToken(tokens, offset);
-		String attrVal = parseAttrVal(tokens, offset + 1);
-		return createAttributeSelector(attrName, AttributeSelectorOperation.EQUALS, attrVal);
-	}
-	
-	private AttributeSelector parseAttributeComparisonSelector(QualifiedName attrName, Token[] tokens, int offset) throws ParseFormatException {
-		AttributeSelectorOperation operation = parseOperation(tokens, offset);
-		ensureEqualsToken(tokens, offset + 1);
-		String attrVal = parseAttrVal(tokens, offset + 2);
-		return createAttributeSelector(attrName, operation, attrVal);
-	}
-
-	private String parseAttrVal(Token[] tokens, int offset) throws ParseFormatException {
-		Token token = tokens[offset];
-		if (token instanceof IdentToken) {
-			return ((IdentToken) token).getValue();
-		} else if (token instanceof StringToken) {
-			return ((StringToken) token).getValue();
-		} else {
-			throw new ParseFormatException("Invalid attribute selector format", offset);
+		QualifiedName attribName = qualifiedNameParser.parse(stream);
+		
+		AttributeSelectorOperation operation = AttributeSelectorOperation.PRESENT;
+		String opParameter = "";
+		
+		if (!(stream.peek() instanceof RSBracketToken)) {
+			operation = parseOperation(stream);
+			parseEquals(stream);
+			opParameter = parseAttribValue(stream);
 		}
+		
+		if (!(stream.read() instanceof RSBracketToken)) {
+			fail(stream);
+		}
+		
+		return createAttributeSelector(attribName, operation, opParameter);
 	}
 	
-	private AttributeSelectorOperation parseOperation(Token[] tokens, int offset) throws ParseFormatException {
-		if (!(tokens[offset] instanceof DelimToken)) {
-			throw new ParseFormatException("Invalid attribute selector format", offset);
+	private AttributeSelectorOperation parseOperation(TokenStream stream) throws ParseFormatException {
+		TokenLike token = stream.read();
+		if (!(token instanceof DelimToken)) {
+			fail(stream);
 		}
-		switch(((DelimToken) tokens[offset]).getValue()) {
+		
+		switch(((DelimToken) token).getValue()) {
 		case '~':
 			return AttributeSelectorOperation.ONE_OF;
 		case '|':
@@ -96,38 +59,41 @@ public class AttributeSelectorParser implements SelectorParser {
 			return AttributeSelectorOperation.ENDS_WITH;
 		case '*':
 			return AttributeSelectorOperation.CONTAINS;
+		case '=':
+			stream.unread();
+			return AttributeSelectorOperation.EQUALS;
 		default:
-			throw new ParseFormatException("Invalid attribute selector format", offset);
+			fail(stream);
+			return null;
 		}
 	}
 	
-	private void ensureEqualsToken(Token[] tokens, int offset) throws ParseFormatException {
-		if (!isEqualsToken(tokens, offset)) {
-			throw new ParseFormatException("Invalid attribute selector format", offset);
+	private void parseEquals(TokenStream stream) throws ParseFormatException {
+		if (!isDelimToken(stream.read(), '=')) {
+			fail(stream);
 		}
-	}
-
-	private boolean isEqualsToken(Token[] tokens, int offset) {
-		return
-			tokens[offset] instanceof DelimToken &&
-			((DelimToken) tokens[offset]).getValue() == '=';
 	}
 	
-	private boolean isCharToken(Token[] tokens, int offset, int minOffset, char ch) {
-		return
-			offset >= minOffset &&
-			tokens[offset] instanceof DelimToken &&
-			((DelimToken) tokens[offset]).getValue() == ch;
+	private String parseAttribValue(TokenStream stream) throws ParseFormatException {
+		TokenLike token = stream.read();
+		if (token instanceof IdentToken identToken) {
+			return identToken.getValue();
+		} else if (token instanceof StringToken stringToken) {
+			return stringToken.getValue();
+		} else {
+			fail(stream);
+			return null;
+		}
 	}
 
-	private void checkSelectorFormat(Token[] tokens, int offset, int length) throws ParseFormatException {
-		if (
-			length < 3 ||
-			!(tokens[offset] instanceof LSBracketToken) ||
-			!(tokens[offset + length - 1] instanceof RSBracketToken)
-		) {
-			throw new ParseFormatException("Invalid attribute selector format", offset);
-		}
+	private boolean isDelimToken(TokenLike token, int ch) {
+		return
+			token instanceof DelimToken &&
+			((DelimToken) token).getValue() == ch;
+	}
+	
+	private void fail(TokenStream stream) throws ParseFormatException {
+		throw new ParseFormatException("Invalid attribute selector format", stream.position());
 	}
 	
 	private AttributeSelector createAttributeSelector(QualifiedName attrName, AttributeSelectorOperation operation, String comparison) {
