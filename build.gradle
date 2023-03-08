@@ -60,6 +60,7 @@ sourceSets {
 				'src/main/java/everyos.browser.webicity.threadygui.core',
 				'src/main/java/everyos.browser.webicity.threadygui.renderer.html',
 				'src/main/java/everyos.browser.webicitybrowser',
+				'src/main/java/everyos.parser.portalhtml',
 				'src/main/java/everyos.web.spec.dom',
 				'src/main/java/everyos.web.spec.uri',
 				'src/main/java/everyos.web.spec.http',
