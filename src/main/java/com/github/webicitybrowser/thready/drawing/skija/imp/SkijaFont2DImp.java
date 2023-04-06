@@ -1,11 +1,11 @@
-package com.github.webicitybrowser.thready.windowing.skija.imp;
+package com.github.webicitybrowser.thready.drawing.skija.imp;
 
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
 import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
-import com.github.webicitybrowser.thready.windowing.skija.SkijaFont2D;
+import com.github.webicitybrowser.thready.drawing.skija.SkijaFont2D;
 
 import io.github.humbleui.skija.Font;
 import io.github.humbleui.skija.FontMgr;

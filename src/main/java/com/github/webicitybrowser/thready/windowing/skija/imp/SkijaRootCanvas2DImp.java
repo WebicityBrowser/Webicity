@@ -1,12 +1,14 @@
-package com.github.webicitybrowser.thready.drawing.skija.imp;
+package com.github.webicitybrowser.thready.windowing.skija.imp;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
+import com.github.webicitybrowser.thready.color.format.ColorFormat;
+import com.github.webicitybrowser.thready.color.imp.InternalColorImp;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
-import com.github.webicitybrowser.thready.windowing.skija.SkijaFont2D;
+import com.github.webicitybrowser.thready.drawing.skija.SkijaFont2D;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaRootCanvas2D;
 
 import io.github.humbleui.skija.BackendRenderTarget;
@@ -75,11 +77,21 @@ public class SkijaRootCanvas2DImp implements SkijaRootCanvas2D {
 		directContext.flush();
 	}
 	
-	private Paint createPaint(Paint2D paint2) {
+	private Paint createPaint(Paint2D paint) {
 		Paint rawPaint = new Paint();
-		rawPaint.setColor(0xFFFF00FF);
+		rawPaint.setColor(convertColorToInt(paint.getColor()));
 		
 		return rawPaint;
+	}
+	
+	private int convertColorToInt(ColorFormat color) {
+		InternalColorImp colorInternals = ((InternalColorImp) color.toRawColor());
+		
+		return
+			(colorInternals.getAlpha8() << 24) +
+			(colorInternals.getRed8() << 16) +
+			(colorInternals.getGreen8() << 8) +
+			colorInternals.getBlue8();
 	}
 
 	public static SkijaRootCanvas2D create(DirectContext directContext, AbsoluteSize size) {

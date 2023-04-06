@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.windowing.skija;
+package com.github.webicitybrowser.thready.drawing.skija;
 
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 

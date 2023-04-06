@@ -3,6 +3,7 @@ package com.github.webicitybrowser.thready.windowing.skija.imp;
 import java.util.function.Consumer;
 
 import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
+import com.github.webicitybrowser.thready.drawing.skija.imp.SkijaResourceLoaderImp;
 import com.github.webicitybrowser.thready.windowing.core.Window;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindowingThread;

@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.windowing.skija.imp;
+package com.github.webicitybrowser.thready.drawing.skija.imp;
 
 import java.util.Map;
 import java.util.WeakHashMap;

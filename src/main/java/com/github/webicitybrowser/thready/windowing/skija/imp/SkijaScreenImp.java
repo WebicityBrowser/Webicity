@@ -2,7 +2,6 @@ package com.github.webicitybrowser.thready.windowing.skija.imp;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.github.webicitybrowser.thready.drawing.skija.imp.SkijaRootCanvas2DImp;
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaRootCanvas2D;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaScreen;

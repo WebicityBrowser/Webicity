@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.webicitybrowser;
 
+import com.github.webicitybrowser.thready.color.Colors;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
@@ -20,9 +21,6 @@ public class Main {
 		
 		FontSettings settings = new FontSettings(12, FontWeight.NORMAL, new FontDecoration[] {});
 		Font2D font = graphicsSystem.getResourceLoader().loadFont(new NamedFontSource("Times New Roman"), settings);
-		Paint2D paint = new Paint2DBuilder()
-			.setLoadedFont(font)
-			.build();
 		
 		graphicsSystem.createWindow(window -> {
 			window
@@ -36,6 +34,16 @@ public class Main {
 
 					@Override
 					public void redraw(Canvas2D canvas, AbsoluteSize size) {
+						Paint2D paint = new Paint2DBuilder()
+							.setColor(Colors.WHITE)
+							.build();
+						canvas.setPaint(paint);
+						canvas.drawRect(0, 0, size.getWidth(), size.getHeight());
+						
+						paint = new Paint2DBuilder()
+								.setColor(Colors.BLACK)
+								.setLoadedFont(font)
+								.build();
 						canvas.setPaint(paint);
 						canvas.drawText(0, 0, "Hello, World!");
 					}

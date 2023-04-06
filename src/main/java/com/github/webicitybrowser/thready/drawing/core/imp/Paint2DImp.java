@@ -1,6 +1,6 @@
 package com.github.webicitybrowser.thready.drawing.core.imp;
 
-import com.github.webicitybrowser.thready.color.ColorFormat;
+import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 
