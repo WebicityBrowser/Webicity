@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.thready.drawing.core.text;
 
-public interface FontSource {
+public interface Font2D {
+
+	FontMetrics getMetrics();
 
 }

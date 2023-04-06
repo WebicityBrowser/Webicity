@@ -1,11 +1,11 @@
 package com.github.webicitybrowser.thready.windowing.skija;
 
-import com.github.webicitybrowser.thready.windowing.core.WindowingSystem;
+import com.github.webicitybrowser.thready.windowing.core.GraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.imp.SkijaWindowingSystemImp;
 
-public interface SkijaWindowingSystem extends WindowingSystem {
+public interface SkijaGraphicsSystem extends GraphicsSystem {
 	
-	public static SkijaWindowingSystem createDefault() {
+	public static SkijaGraphicsSystem createDefault() {
 		return new SkijaWindowingSystemImp();
 	}
 	

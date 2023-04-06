@@ -4,17 +4,22 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.drawing.core.Paint2D;
+import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
+import com.github.webicitybrowser.thready.windowing.skija.SkijaFont2D;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaRootCanvas2D;
 
 import io.github.humbleui.skija.BackendRenderTarget;
 import io.github.humbleui.skija.Canvas;
 import io.github.humbleui.skija.ColorSpace;
 import io.github.humbleui.skija.DirectContext;
+import io.github.humbleui.skija.Font;
 import io.github.humbleui.skija.FramebufferFormat;
 import io.github.humbleui.skija.Paint;
 import io.github.humbleui.skija.Surface;
 import io.github.humbleui.skija.SurfaceColorFormat;
 import io.github.humbleui.skija.SurfaceOrigin;
+import io.github.humbleui.skija.TextBlob;
 import io.github.humbleui.types.Rect;
 
 public class SkijaRootCanvas2DImp implements SkijaRootCanvas2D {
@@ -24,12 +29,13 @@ public class SkijaRootCanvas2DImp implements SkijaRootCanvas2D {
 	private final Canvas canvas;
 	private final DirectContext directContext;
 	
+	private Paint2D paint;
 	private Paint rawPaint;
 
-	public SkijaRootCanvas2DImp(Canvas canvas, DirectContext directContext) {
+	public SkijaRootCanvas2DImp(Canvas canvas, Paint2D paint, DirectContext directContext) {
 		this.canvas = canvas;
 		this.directContext = directContext;
-		this.rawPaint = createPaint();
+		setPaint(paint);
 	}
 
 	@Override
@@ -38,11 +44,38 @@ public class SkijaRootCanvas2DImp implements SkijaRootCanvas2D {
 	}
 	
 	@Override
+	public void drawText(float x, float y, String text) {
+		SkijaFont2D loadedFont = (SkijaFont2D) paint.getLoadedFont();
+		Font font = loadedFont.getRaw();
+		FontMetrics metrics = loadedFont.getMetrics();
+		
+		short[] glyphs = new short[text.length()];
+		float[] xpos = new float[glyphs.length];
+		int distance = 0;
+		for (int i = 0; i < xpos.length; i++) {
+			int codePoint = text.codePointAt(i);
+			glyphs[i] = loadedFont.getCharacterGlyph(codePoint);
+			xpos[i] = distance;
+			distance += metrics.getCharacterWidth(codePoint);
+		}
+		
+		TextBlob textBlob = TextBlob.makeFromPosH(glyphs, xpos, 0, font);
+		float adjustedY = y + metrics.getHeight() - metrics.getLeading();
+		canvas.drawTextBlob(textBlob, x, adjustedY, rawPaint);
+	}
+	
+	@Override
+	public void setPaint(Paint2D paint) {
+		this.paint = paint;
+		this.rawPaint = createPaint(paint);
+	}
+	
+	@Override
 	public void flush() {
 		directContext.flush();
 	}
 	
-	private Paint createPaint() {
+	private Paint createPaint(Paint2D paint2) {
 		Paint rawPaint = new Paint();
 		rawPaint.setColor(0xFFFF00FF);
 		
@@ -54,7 +87,7 @@ public class SkijaRootCanvas2DImp implements SkijaRootCanvas2D {
 		Surface surface = createSurface(directContext, renderTarget);	
 		Canvas canvas = surface.getCanvas();
 		
-		return new SkijaRootCanvas2DImp(canvas, directContext);
+		return new SkijaRootCanvas2DImp(canvas, new SkijaDefaultPaint2D(), directContext);
 	}
 
 	private static Surface createSurface(DirectContext directContext, BackendRenderTarget renderTarget) {
