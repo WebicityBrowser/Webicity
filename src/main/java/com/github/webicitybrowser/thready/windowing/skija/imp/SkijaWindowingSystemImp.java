@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.renderer.skija.imp;
+package com.github.webicitybrowser.thready.windowing.skija.imp;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,24 +1,28 @@
-package com.github.webicitybrowser.thready.renderer.skija.imp;
+package com.github.webicitybrowser.thready.windowing.skija.imp;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
+import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.dimensions.imp.AbsoluteSizeImp;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaScreen;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindow;
 
 public class SkijaWindowImp implements SkijaWindow {
 
 	private final long windowId;
+	private final SkijaScreen screen;
 	
 	private boolean windowClosed = false;
 
 	public SkijaWindowImp(long windowId) {
 		this.windowId = windowId;
+		this.screen = new SkijaScreenImp(this, windowId);
 	}
 	
 	@Override
 	public SkijaScreen getScreen() {
-		return new SkijaScreenImp();
+		return this.screen;
 	}
 	
 	@Override
@@ -31,6 +35,15 @@ public class SkijaWindowImp implements SkijaWindow {
 	public void setVisible(boolean visible) {
 		GLFW.glfwSetWindowAttrib(windowId, GLFW.GLFW_VISIBLE, glfwBool(visible));
 	}
+	
+	@Override
+	public AbsoluteSize getSize() {
+		int[] width = new int[1];
+		int[] height = new int[1];
+		GLFW.glfwGetWindowSize(windowId, width, height);
+		
+		return new AbsoluteSizeImp((float) width[0], (float) height[0]);
+	}
 
 	//
 	
@@ -42,6 +55,7 @@ public class SkijaWindowImp implements SkijaWindow {
 	@Override
 	public void tick() {
 		closeWindowIfShouldClose();
+		screen.tick();
 	}
 	
 	//
