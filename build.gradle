@@ -1,0 +1,25 @@
+plugins {
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+mainClassName = "com.github.webicitybrowser.webicitybrowser.Main"
+
+jar {
+	manifest {
+		attributes(
+			"Main-Class": mainClassName
+		)
+	}
+}
