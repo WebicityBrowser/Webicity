@@ -1,5 +1,20 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'application'
+}
+
+switch (OperatingSystem.current()) {
+	case OperatingSystem.LINUX:
+		project.ext.lwjglNatives = "natives-linux"
+		project.ext.skijaNatives = "skija-linux-x64"
+		project.ext.skijaVersion = "0.109.2"
+		break
+	case OperatingSystem.WINDOWS:
+		project.ext.lwjglNatives = "natives-windows"
+		project.ext.skijaNatives = "skija-windows-x64"
+		project.ext.skijaVersion = "0.109.2"
+		break
 }
 
 repositories {
@@ -7,6 +22,19 @@ repositories {
 }
 
 dependencies {
+	implementation platform("org.lwjgl:lwjgl-bom:3.3.2")
+
+	implementation "org.lwjgl:lwjgl"
+	implementation "org.lwjgl:lwjgl-glfw"
+	implementation "org.lwjgl:lwjgl-opengl"
+	runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+	
+	implementation "io.github.humbleui:${skijaNatives}:${skijaVersion}"
+
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
 
