@@ -4,7 +4,6 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.dimensions.imp.AbsoluteSizeImp;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaScreen;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindow;
 
@@ -42,7 +41,7 @@ public class SkijaWindowImp implements SkijaWindow {
 		int[] height = new int[1];
 		GLFW.glfwGetWindowSize(windowId, width, height);
 		
-		return new AbsoluteSizeImp((float) width[0], (float) height[0]);
+		return new AbsoluteSize((float) width[0], (float) height[0]);
 	}
 
 	//

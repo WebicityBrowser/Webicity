@@ -114,7 +114,7 @@ public class SkijaRootCanvas2DImp implements SkijaRootCanvas2D {
 	private static BackendRenderTarget createRenderTarget(AbsoluteSize size) {
 		int framebufferId = GL11.glGetInteger(GL30.GL_FRAMEBUFFER_BINDING);
 		return BackendRenderTarget.makeGL(
-			(int) size.getWidth(), (int) size.getHeight(),
+			(int) size.width(), (int) size.height(),
 			0, 8, framebufferId,
 			FramebufferFormat.GR_GL_RGBA8);
 	}
