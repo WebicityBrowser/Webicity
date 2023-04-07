@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicitybrowser;
 
+import com.github.webicitybrowser.thready.color.Colors;
+import com.github.webicitybrowser.thready.gui.directive.basic.directive.BackgroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
@@ -16,6 +18,7 @@ public class Main {
 		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
 		
 		Component rootComponent = ContainerComponent.create();
+		rootComponent.directive(BackgroundColorDirective.of(Colors.RED));
 		
 		LookAndFeelBuilder lookAndFeelBuilder = LookAndFeelBuilder.create();
 		SimpleLookAndFeel.installTo(lookAndFeelBuilder);

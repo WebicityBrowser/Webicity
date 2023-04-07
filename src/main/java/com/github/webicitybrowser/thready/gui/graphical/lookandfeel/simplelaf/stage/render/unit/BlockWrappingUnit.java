@@ -9,13 +9,15 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.st
 
 public class BlockWrappingUnit implements Unit {
 
+	private final Box box;
+
 	public BlockWrappingUnit(AbsoluteSize finalSize, Box box) {
-		
+		this.box = box;
 	}
 
 	@Override
 	public Painter getPainter(Rectangle documentRect) {
-		return new BlockWrappingPainter(documentRect);
+		return new BlockWrappingPainter(box, documentRect);
 	}
 	
 	public static Unit render(AbsoluteSize precomputedSize, Box box) {

@@ -10,8 +10,10 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class ContainerUI implements ComponentUI {
 
+	private final Component component;
+
 	public ContainerUI(Component component, ComponentUI parent) {
-		
+		this.component = component;
 	}
 	
 	@Override
@@ -20,7 +22,7 @@ public class ContainerUI implements ComponentUI {
 	}
 
 	private Box[] performBoxing(BoxContext context) {
-		Box rootBox = new BasicSolidBox(box -> createRenderer(box));
+		Box rootBox = new BasicSolidBox(component.getStyleDirectives(), box -> createRenderer(box));
 		return new Box[] { rootBox };
 	}
 	
