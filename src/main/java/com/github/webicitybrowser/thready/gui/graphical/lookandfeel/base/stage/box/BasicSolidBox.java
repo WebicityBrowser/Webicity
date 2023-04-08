@@ -1,6 +1,8 @@
 package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box;
 
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
 
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -10,15 +12,17 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 public class BasicSolidBox implements SolidBox {
 	
 	private final DirectivePool directives;
-	private final Function<Box, SolidRenderer> rendererGenerator;
+	private final BiFunction<Box, Box[], SolidRenderer> rendererGenerator;
+	
+	private final List<Box> children = new ArrayList<>();
 
-	public BasicSolidBox(DirectivePool directives, Function<Box,  SolidRenderer> rendererGenerator) {
+	public BasicSolidBox(DirectivePool directives, BiFunction<Box, Box[], SolidRenderer> rendererGenerator) {
 		this.directives = directives;
 		this.rendererGenerator = rendererGenerator;
 	}
 	@Override
 	public void addChild(Box child) {
-		// TODO Auto-generated method stub
+		children.add(child);
 	}
 
 	@Override
@@ -28,7 +32,7 @@ public class BasicSolidBox implements SolidBox {
 
 	@Override
 	public SolidRenderer createRenderer() {
-		return rendererGenerator.apply(this);
+		return rendererGenerator.apply(this, children.toArray(new Box[0]));
 	}
 
 	@Override

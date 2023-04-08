@@ -6,7 +6,7 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.imp.Paint2DBuilder;
-import com.github.webicitybrowser.thready.gui.directive.basic.directive.BackgroundColorDirective;
+import com.github.webicitybrowser.thready.gui.graphical.directive.directive.BackgroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
@@ -15,15 +15,18 @@ public class BlockWrappingPainter implements Painter {
 
 	private final Box box;
 	private final Rectangle documentRect;
+	private final Painter innerPainter;
 
-	public BlockWrappingPainter(Box box, Rectangle documentRect) {
+	public BlockWrappingPainter(Box box, Rectangle documentRect, Painter innerPainter) {
 		this.box = box;
 		this.documentRect = documentRect;
+		this.innerPainter = innerPainter;
 	}
 
 	@Override
 	public void paint(PaintContext context, Canvas2D canvas) {
 		paintBackground(canvas);
+		paintInnerContent(context, canvas);
 	}
 
 	private void paintBackground(Canvas2D canvas) {
@@ -36,6 +39,10 @@ public class BlockWrappingPainter implements Painter {
 			documentRect.position().y(),
 			documentRect.size().width(),
 			documentRect.size().height());
+	}
+	
+	private void paintInnerContent(PaintContext context, Canvas2D canvas) {
+		innerPainter.paint(context, canvas);
 	}
 	
 	private ColorFormat getBackgroundColor() {

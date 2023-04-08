@@ -76,7 +76,7 @@ public class GUIContentImp implements GUIContent {
 	}
 
 	private void performBoxCycle() {
-		BoxContext context = new BoxContext() {};
+		BoxContext context = new BoxContextImp(lookAndFeel);
 		Box[] generatedBoxes = rootUI.generateBoxes(context);
 		Box rootBox = generatedBoxes[0].getAdjustedBoxTree()[0];
 		if (!(rootBox instanceof SolidBox)) {

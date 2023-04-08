@@ -7,7 +7,7 @@ public interface Component extends UINode {
 
 	Class<? extends Component> getPrimaryType();
 
-	void directive(Directive directive);
+	Component directive(Directive directive);
 
 	DirectivePool getStyleDirectives();
 	

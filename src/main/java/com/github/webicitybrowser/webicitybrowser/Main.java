@@ -1,9 +1,10 @@
 package com.github.webicitybrowser.webicitybrowser;
 
 import com.github.webicitybrowser.thready.color.Colors;
-import com.github.webicitybrowser.thready.gui.directive.basic.directive.BackgroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
+import com.github.webicitybrowser.thready.gui.graphical.directive.directive.BackgroundColorDirective;
+import com.github.webicitybrowser.thready.gui.graphical.directive.directive.ChildrenDirective;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeelBuilder;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.SimpleLookAndFeel;
@@ -17,8 +18,13 @@ public class Main {
 	public static void main(String[] args) {
 		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
 		
+		Component childComponent = ContainerComponent.create();
+		childComponent.directive(BackgroundColorDirective.of(Colors.GREEN));
+		
 		Component rootComponent = ContainerComponent.create();
-		rootComponent.directive(BackgroundColorDirective.of(Colors.RED));
+		rootComponent
+			.directive(BackgroundColorDirective.of(Colors.RED))
+			.directive(ChildrenDirective.of(childComponent));
 		
 		LookAndFeelBuilder lookAndFeelBuilder = LookAndFeelBuilder.create();
 		SimpleLookAndFeel.installTo(lookAndFeelBuilder);
