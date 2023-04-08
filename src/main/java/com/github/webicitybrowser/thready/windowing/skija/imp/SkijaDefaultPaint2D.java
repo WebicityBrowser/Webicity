@@ -13,7 +13,7 @@ public class SkijaDefaultPaint2D implements Paint2D {
 	}
 
 	@Override
-	public Font2D getLoadedFont() {
+	public Font2D getFont() {
 		return null;
 	}
 

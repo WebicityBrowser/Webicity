@@ -47,7 +47,7 @@ public class SkijaRootCanvas2DImp implements SkijaRootCanvas2D {
 	
 	@Override
 	public void drawText(float x, float y, String text) {
-		SkijaFont2D loadedFont = (SkijaFont2D) paint.getLoadedFont();
+		SkijaFont2D loadedFont = (SkijaFont2D) paint.getFont();
 		Font font = loadedFont.getRaw();
 		FontMetrics metrics = loadedFont.getMetrics();
 		

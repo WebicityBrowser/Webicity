@@ -3,6 +3,9 @@ package com.github.webicitybrowser.thready.color;
 import com.github.webicitybrowser.thready.color.colors.RGBA8Color;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 
+/**
+ * A convenient palette of commonly used colors.
+ */
 public final class Colors {
 	
 	private Colors() {}

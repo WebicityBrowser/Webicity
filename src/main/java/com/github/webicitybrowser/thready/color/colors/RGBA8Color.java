@@ -4,6 +4,11 @@ import com.github.webicitybrowser.thready.color.RawColor;
 import com.github.webicitybrowser.thready.color.format.RGBA8ColorFormat;
 import com.github.webicitybrowser.thready.color.imp.InternalColorImp;
 
+/**
+ * An implementation of the RGBA8ColorFormat.
+ * You can set 8-bit values for the red, green, blue
+ * and alpha components of an RGBA8-scheme color scheme.
+ */
 public class RGBA8Color implements RGBA8ColorFormat {
 
 	private final int color;
