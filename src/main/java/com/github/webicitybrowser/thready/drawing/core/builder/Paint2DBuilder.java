@@ -13,22 +13,40 @@ public class Paint2DBuilder {
 	private ColorFormat color;
 	private Font2D font;
 	
+	/**
+	 * Set the color of the paint to be created.
+	 * @param color The color of the paint to be created.
+	 * @return This builder.
+	 */
 	public Paint2DBuilder setColor(ColorFormat color) {
 		this.color = color;
 
 		return this;
 	}
 	
+	/**
+	 * Get the color of the paint to be created.
+	 * @return The color of the paint to be created.
+	 */
 	public ColorFormat getColor() {
 		return this.color;
 	}
 	
-	public Paint2DBuilder setLoadedFont(Font2D font) {
+	/**
+	 * Set the font of the paint to be created.
+	 * @param font The font of the paint to be created.
+	 * @return This builder.
+	 */
+	public Paint2DBuilder setFont(Font2D font) {
 		this.font = font;
 
 		return this;
 	}
 	
+	/**
+	 * Get the font of the paint to be created.
+	 * @return The font of the paint to be created.
+	 */
 	public Font2D getFont() {
 		return this.font;
 	}
@@ -50,7 +68,7 @@ public class Paint2DBuilder {
 	public static Paint2DBuilder clone(Paint2D paint) {
 		return new Paint2DBuilder()
 			.setColor(paint.getColor())
-			.setLoadedFont(paint.getFont());
+			.setFont(paint.getFont());
 	}
 	
 }

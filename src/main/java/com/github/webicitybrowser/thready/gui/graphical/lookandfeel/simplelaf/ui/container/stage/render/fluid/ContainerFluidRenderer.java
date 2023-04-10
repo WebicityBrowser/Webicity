@@ -6,9 +6,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 
-public interface ContainerFluidRenderer {
+public final class ContainerFluidRenderer {
 	
-	Unit render();
+	private ContainerFluidRenderer() {}
 
 	public static Unit render(RenderContext renderContext, AbsoluteSize precomputedInnerSize, Box[] children) {
 		FluidBox[] fluidChildren = toFluidBoxArray(children);

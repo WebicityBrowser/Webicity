@@ -30,7 +30,7 @@ public class TextPainter implements Painter {
 	public void paint(PaintContext context, Canvas2D canvas) {
 		Paint2D paint = Paint2DBuilder.clone(canvas.getPaint())
 			.setColor(getForegroundColor())
-			.setLoadedFont(font)
+			.setFont(font)
 			.build();
 		
 		canvas

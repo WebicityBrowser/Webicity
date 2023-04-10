@@ -33,7 +33,7 @@ public class BasicSolidBox implements SolidBox {
 
 	@Override
 	public SolidRenderer createRenderer() {
-		return rendererGenerator.apply(this, children.toArray(new Box[0]));
+		return rendererGenerator.apply(this, children.toArray(Box[]::new));
 	}
 
 	@Override

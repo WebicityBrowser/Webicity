@@ -38,9 +38,9 @@ public class HorizontalFluidLines implements FluidLines {
 		while (!unitGenerator.completed()) { // A fluid box has multiple units to add to the line
 			PartialUnitPreview partialUnitPreview = unitGenerator.previewNextUnit(switches);
 			startNewLineIfNeeded(unitGenerator, partialUnitPreview);
-			partialUnitPreview.append(); // Appends to the current line
+			partialUnitPreview.append(); // Appends to the current merged unit
 		}
-		appendUnit(unitGenerator.getMergedUnits());
+		addMergedUnitToLine(unitGenerator.getMergedUnits());
 	}
 
 	@Override
@@ -50,17 +50,17 @@ public class HorizontalFluidLines implements FluidLines {
 	
 	@Override
 	public FluidChildrenResult[] getRenderResults() {
-		return rendered.toArray(new FluidChildrenResult[0]);
+		return rendered.toArray(FluidChildrenResult[]::new);
 	}
 	
 	private void startNewLineIfNeeded(UnitGenerator unitGenerator, PartialUnitPreview partialUnitPreview) {
-		if (shouldStartNewLine(partialUnitPreview)) {
-			appendUnit(unitGenerator.getMergedUnits());
+		if (lineCanNotFit(partialUnitPreview)) {
+			addMergedUnitToLine(unitGenerator.getMergedUnits());
 			goToNextLine();
 		}
 	}
 
-	private boolean shouldStartNewLine(PartialUnitPreview PartialUnitPreview) {
+	private boolean lineCanNotFit(PartialUnitPreview PartialUnitPreview) {
 		if (maxBounds.width() == -1) {
 			return false;
 		}
@@ -69,7 +69,7 @@ public class HorizontalFluidLines implements FluidLines {
 		return unitEndX > maxBounds.width();
 	}
 
-	private void appendUnit(Unit unit) {
+	private void addMergedUnitToLine(Unit unit) {
 		AbsoluteSize size = unit.getMinimumSize();
 		curLineHeight = Math.max(size.height(), curLineHeight);
 		

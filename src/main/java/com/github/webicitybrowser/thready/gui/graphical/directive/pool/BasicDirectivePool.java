@@ -7,6 +7,10 @@ import java.util.Optional;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 
+/**
+ * A simple directive pool with no inheritance or other
+ * additional features.
+ */
 public class BasicDirectivePool implements DirectivePool {
 
 	private final Map<Class<? extends Directive>, Directive> directives = new HashMap<>();
