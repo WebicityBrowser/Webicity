@@ -1,16 +1,18 @@
 package com.github.webicitybrowser.webicitybrowser;
 
-import com.github.webicitybrowser.thready.color.Colors;
+import com.github.webicitybrowser.spec.dom.node.Document;
+import com.github.webicitybrowser.spec.dom.node.imp.DocumentImp;
+import com.github.webicitybrowser.spec.dom.node.imp.DocumentTypeImp;
+import com.github.webicitybrowser.spec.html.node.HTMLHtmlElement;
+import com.github.webicitybrowser.spec.html.node.imp.HTMLBodyElementImp;
+import com.github.webicitybrowser.spec.html.node.imp.HTMLHeadElementImp;
+import com.github.webicitybrowser.spec.html.node.imp.HTMLHtmlElementImp;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
-import com.github.webicitybrowser.thready.gui.graphical.directive.directive.BackgroundColorDirective;
-import com.github.webicitybrowser.thready.gui.graphical.directive.directive.ChildrenDirective;
-import com.github.webicitybrowser.thready.gui.graphical.directive.directive.ForegroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeelBuilder;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.SimpleLookAndFeel;
 import com.github.webicitybrowser.thready.gui.tree.basics.ContainerComponent;
-import com.github.webicitybrowser.thready.gui.tree.basics.TextComponent;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.GraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
@@ -18,16 +20,18 @@ import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 public class Main {
 
 	public static void main(String[] args) {
+		Document document = new DocumentImp();
+		document.appendChild(new DocumentTypeImp("html"));
+		HTMLHtmlElement htmlElement = new HTMLHtmlElementImp();
+		document.appendChild(htmlElement);
+		htmlElement.appendChild(new HTMLHeadElementImp());
+		htmlElement.appendChild(new HTMLBodyElementImp());
+		
+		System.out.println(document);
+		
 		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
 		
-		Component textComponent = TextComponent.create()
-			.text("Hello, World!")
-			.directive(ForegroundColorDirective.of(Colors.GREEN));
-		
 		Component rootComponent = ContainerComponent.create();
-		rootComponent
-			.directive(BackgroundColorDirective.of(Colors.RED))
-			.directive(ChildrenDirective.of(textComponent));
 		
 		LookAndFeelBuilder lookAndFeelBuilder = LookAndFeelBuilder.create();
 		SimpleLookAndFeel.installTo(lookAndFeelBuilder);
