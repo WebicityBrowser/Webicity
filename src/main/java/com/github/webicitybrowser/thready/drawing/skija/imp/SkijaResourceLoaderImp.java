@@ -8,7 +8,6 @@ import com.github.webicitybrowser.thready.drawing.core.image.Image;
 import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
-import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 
 public class SkijaResourceLoaderImp implements ResourceLoader {
 	
@@ -22,8 +21,8 @@ public class SkijaResourceLoaderImp implements ResourceLoader {
 	}
 
 	@Override
-	public Font2D loadFont(FontSource source, FontSettings settings) {
-		return fonts.computeIfAbsent(settings, _1 -> SkijaFont2DImp.createFor(source, settings));
+	public Font2D loadFont(FontSettings settings) {
+		return fonts.computeIfAbsent(settings, _1 -> SkijaFont2DImp.createFor(settings));
 	}
 
 }

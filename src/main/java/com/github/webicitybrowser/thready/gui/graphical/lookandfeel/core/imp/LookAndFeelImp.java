@@ -21,11 +21,9 @@ public class LookAndFeelImp implements LookAndFeel {
 		while (componentClass != null && registeredComponentUIs.get(componentClass) == null) {
 			componentClass = componentClass.getSuperclass();
 		}
-		if (componentClass == null) {
-			return null;
-		}
-		if (!Component.class.isAssignableFrom(componentClass)) {
-			return null;
+		
+		if (componentClass == null || !Component.class.isAssignableFrom(componentClass)) {
+			throw new RuntimeException("No component UI available for " + component);
 		}
 		
 		return registeredComponentUIs

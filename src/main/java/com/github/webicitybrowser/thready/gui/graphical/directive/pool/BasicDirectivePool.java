@@ -24,4 +24,9 @@ public class BasicDirectivePool implements DirectivePool {
 		return Optional.ofNullable((T) directives.get(directiveCls));
 	}
 
+	@Override
+	public <T extends Directive> Optional<T> inheritDirectiveOrEmpty(Class<T> directiveCls) {
+		return getDirectiveOrEmpty(directiveCls);
+	}
+
 }

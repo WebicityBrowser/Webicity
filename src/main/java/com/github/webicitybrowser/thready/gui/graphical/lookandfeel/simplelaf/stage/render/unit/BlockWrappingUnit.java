@@ -12,11 +12,18 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.st
 public class BlockWrappingUnit implements Unit {
 
 	private final Box box;
+	private final AbsoluteSize finalSize;
 	private final Unit innerUnit;
 
 	public BlockWrappingUnit(Box box, AbsoluteSize finalSize, Unit innerUnit) {
 		this.box = box;
+		this.finalSize = finalSize;
 		this.innerUnit = innerUnit;
+	}
+	
+	@Override
+	public AbsoluteSize getMinimumSize() {
+		return this.finalSize;
 	}
 
 	@Override

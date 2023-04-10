@@ -24,11 +24,18 @@ public interface Canvas2D {
 	 * @param string The text to be drawn.
 	 */
 	void drawText(float x, float y, String string);
+	
+	/**
+	 * Get the paint used to draw figures.
+	 * @return paint The paint used when drawing figures.
+	 */
+	Paint2D getPaint();
 
 	/**
-	 * Set the paint used to draw figures.
-	 * @param paint The paint to be used when drawing figures.
+	 * Get a copy of this canvas that uses a specific paint.
+	 * @param paint The paint to be used.
+	 * @return The canvas using the specific paint
 	 */
-	void setPaint(Paint2D paint);
+	Canvas2D withPaint(Paint2D paint);
 
 }

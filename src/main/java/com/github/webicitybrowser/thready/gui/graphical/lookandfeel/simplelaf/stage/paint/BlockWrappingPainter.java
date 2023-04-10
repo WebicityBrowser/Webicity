@@ -33,12 +33,13 @@ public class BlockWrappingPainter implements Painter {
 		Paint2D paint = new Paint2DBuilder()
 			.setColor(getBackgroundColor())
 			.build();
-		canvas.setPaint(paint);
-		canvas.drawRect(
-			documentRect.position().x(),
-			documentRect.position().y(),
-			documentRect.size().width(),
-			documentRect.size().height());
+		canvas
+			.withPaint(paint)
+			.drawRect(
+				documentRect.position().x(),
+				documentRect.position().y(),
+				documentRect.size().width(),
+				documentRect.size().height());
 	}
 	
 	private void paintInnerContent(PaintContext context, Canvas2D canvas) {

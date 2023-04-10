@@ -4,6 +4,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
+import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -18,6 +19,8 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class GUIContentImp implements GUIContent {
 	
+	private final ResourceLoader resourceLoader;
+	
 	private InvalidationLevel invalidationLevel = InvalidationLevel.NONE;
 	
 	private ComponentUI rootUI;
@@ -26,6 +29,10 @@ public class GUIContentImp implements GUIContent {
 	private boolean redrawRequested = false;
 	private SolidBox rootBox;
 	private Unit rootUnit;
+	
+	public GUIContentImp(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
+	}
 
 	@Override
 	public void setRoot(Component component, LookAndFeel lookAndFeel) {
@@ -86,7 +93,7 @@ public class GUIContentImp implements GUIContent {
 	}
 
 	private void performRenderCycle(AbsoluteSize contentSize) {
-		RenderContext renderContext = new RenderContextImp();
+		RenderContext renderContext = new RenderContextImp(resourceLoader);
 		SolidRenderer rootRenderer = rootBox.createRenderer();
 		this.rootUnit = rootRenderer.render(renderContext, contentSize);
 	}

@@ -20,6 +20,7 @@ public class BasicSolidBox implements SolidBox {
 		this.directives = directives;
 		this.rendererGenerator = rendererGenerator;
 	}
+	
 	@Override
 	public void addChild(Box child) {
 		children.add(child);

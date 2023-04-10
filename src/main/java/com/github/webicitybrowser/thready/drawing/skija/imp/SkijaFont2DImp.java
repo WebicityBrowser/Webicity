@@ -3,7 +3,6 @@ package com.github.webicitybrowser.thready.drawing.skija.imp;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
-import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.drawing.skija.SkijaFont2D;
 
@@ -50,18 +49,18 @@ public class SkijaFont2DImp implements SkijaFont2D {
 		return this.font;
 	}
 
-	public static Font2D createFor(FontSource source, FontSettings settings) {
-		Font font = loadNamedFont(source, settings);
+	public static Font2D createFor(FontSettings settings) {
+		Font font = loadNamedFont(settings);
 		FontMetrics metrics = new SkijaFontMetricsImp(font, font.getMetrics());
 		
 		return new SkijaFont2DImp(font, metrics);
 	}
 
-	private static Font loadNamedFont(FontSource source, FontSettings info) {
-		FontStyle style = new FontStyle(info.fontWeight(), FontWidth.NORMAL, FontSlant.UPRIGHT);
-		String fontName = ((NamedFontSource) source).getName();
+	private static Font loadNamedFont(FontSettings settings) {
+		FontStyle style = new FontStyle(settings.fontWeight(), FontWidth.NORMAL, FontSlant.UPRIGHT);
+		String fontName = ((NamedFontSource) settings.fontSource()).getName();
 		Typeface typeface = manager.matchFamilyStyle(fontName, style);
-		Font font = new Font(typeface, info.fontSize());
+		Font font = new Font(typeface, settings.fontSize());
 		
 		return font;
 	}

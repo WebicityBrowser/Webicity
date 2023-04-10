@@ -5,10 +5,12 @@ import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
 import com.github.webicitybrowser.thready.gui.graphical.directive.directive.BackgroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.directive.ChildrenDirective;
+import com.github.webicitybrowser.thready.gui.graphical.directive.directive.ForegroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeelBuilder;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.SimpleLookAndFeel;
 import com.github.webicitybrowser.thready.gui.tree.basics.ContainerComponent;
+import com.github.webicitybrowser.thready.gui.tree.basics.TextComponent;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.GraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
@@ -18,19 +20,20 @@ public class Main {
 	public static void main(String[] args) {
 		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
 		
-		Component childComponent = ContainerComponent.create();
-		childComponent.directive(BackgroundColorDirective.of(Colors.GREEN));
+		Component textComponent = TextComponent.create()
+			.text("Hello, World!")
+			.directive(ForegroundColorDirective.of(Colors.GREEN));
 		
 		Component rootComponent = ContainerComponent.create();
 		rootComponent
 			.directive(BackgroundColorDirective.of(Colors.RED))
-			.directive(ChildrenDirective.of(childComponent));
+			.directive(ChildrenDirective.of(textComponent));
 		
 		LookAndFeelBuilder lookAndFeelBuilder = LookAndFeelBuilder.create();
 		SimpleLookAndFeel.installTo(lookAndFeelBuilder);
 		LookAndFeel lookAndFeel = lookAndFeelBuilder.build();
 		
-		GUIContent content = new GUIContentImp();
+		GUIContent content = new GUIContentImp(graphicsSystem.getResourceLoader());
 		content.setRoot(rootComponent, lookAndFeel);
 		
 		graphicsSystem.createWindow(window -> {

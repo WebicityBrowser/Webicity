@@ -23,5 +23,14 @@ public interface DirectivePool {
 	 *  or empty if the directive has not been set.
 	 */
 	<T extends Directive> Optional<T> getDirectiveOrEmpty(Class<T> directiveCls);
+
+	/**
+	 * Get a directive by it's type. Inherit if not set.
+	 * @param <T> The interface of the directive to be gotten.
+	 * @param directiveCls The type of directive to be gotten.
+	 * @return An optional with the directive that has been gotten,
+	 *  or empty if the directive has not been set or inherited.
+	 */
+	<T extends Directive> Optional<T> inheritDirectiveOrEmpty(Class<T> directiveCls);
 	
 }

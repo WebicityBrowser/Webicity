@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL30;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.color.imp.InternalColorImp;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.skija.SkijaFont2D;
@@ -67,14 +68,23 @@ public class SkijaRootCanvas2DImp implements SkijaRootCanvas2D {
 	}
 	
 	@Override
-	public void setPaint(Paint2D paint) {
-		this.paint = paint;
-		this.rawPaint = createPaint(paint);
+	public Paint2D getPaint() {
+		return this.paint;
+	}
+
+	@Override
+	public Canvas2D withPaint(Paint2D paint) {
+		return new SkijaRootCanvas2DImp(canvas, paint, directContext);
 	}
 	
 	@Override
 	public void flush() {
 		directContext.flush();
+	}
+	
+	private void setPaint(Paint2D paint) {
+		this.paint = paint;
+		this.rawPaint = createPaint(paint);
 	}
 	
 	private Paint createPaint(Paint2D paint) {

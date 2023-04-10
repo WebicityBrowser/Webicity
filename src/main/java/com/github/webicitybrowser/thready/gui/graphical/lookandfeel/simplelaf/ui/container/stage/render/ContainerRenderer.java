@@ -4,10 +4,13 @@ import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.SolidBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.SolidRenderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.stage.render.unit.BlockWrappingUnit;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.container.stage.render.fluid.ContainerFluidRenderer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.container.stage.render.solid.ContainerSolidRenderer;
 
 public class ContainerRenderer implements SolidRenderer {
 
@@ -27,6 +30,10 @@ public class ContainerRenderer implements SolidRenderer {
 	}
 	
 	private Unit renderChildren(RenderContext renderContext, AbsoluteSize precomputedInnerSize) {
-		return ContainerSolidRenderer.render(renderContext, precomputedInnerSize, children);
+		if (children.length == 0 || children[0] instanceof SolidBox) {
+			return ContainerSolidRenderer.render(renderContext, precomputedInnerSize, children);
+		} else {
+			return ContainerFluidRenderer.render(renderContext, precomputedInnerSize, children);
+		}
 	}
 }
