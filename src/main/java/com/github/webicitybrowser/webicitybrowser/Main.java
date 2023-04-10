@@ -26,7 +26,7 @@ public class Main {
 		Document document = new DocumentImp();
 		document.appendChild(new DocumentTypeImp("html"));
 		HTMLHtmlElement htmlElement = new HTMLHtmlElementImp();
-		//document.appendChild(htmlElement);
+		document.appendChild(htmlElement);
 		htmlElement.appendChild(new HTMLHeadElementImp());
 		htmlElement.appendChild(new HTMLBodyElementImp());
 		

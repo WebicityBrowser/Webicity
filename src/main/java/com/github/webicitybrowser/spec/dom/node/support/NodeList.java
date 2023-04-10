@@ -5,6 +5,8 @@ import com.github.webicitybrowser.spec.dom.node.Node;
 public interface NodeList extends Iterable<Node> {
 
 	Node get(int index);
+	
+	Node[] toArray();
 
 	int getLength();
 

@@ -7,7 +7,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.FluidRenderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.UnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.DirectiveUtil;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
 import com.github.webicitybrowser.thready.gui.tree.basics.TextComponent;
 
 public class TextComponentRenderer implements FluidRenderer {
@@ -32,7 +32,7 @@ public class TextComponentRenderer implements FluidRenderer {
 	}
 
 	private FontSettings getFontSettings() {
-		return DirectiveUtil.getFontSettings(box.getStyleDirectives());
+		return SimpleDirectiveUtil.getFontSettings(box.getStyleDirectives());
 	}
 	
 	private float[] calculateCharWidths(String text, FontMetrics metrics) {

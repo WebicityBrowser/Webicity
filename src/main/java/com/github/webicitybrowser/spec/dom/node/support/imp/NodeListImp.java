@@ -20,6 +20,11 @@ public class NodeListImp implements NodeList {
 	}
 	
 	@Override
+	public Node[] toArray() {
+		return backingList.toArray(Node[]::new);
+	}
+	
+	@Override
 	public int getLength() {
 		return backingList.size();
 	}

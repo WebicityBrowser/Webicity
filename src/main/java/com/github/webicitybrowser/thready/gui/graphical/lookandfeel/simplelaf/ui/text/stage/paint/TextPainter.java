@@ -10,7 +10,7 @@ import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.DirectiveUtil;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
 
 public class TextPainter implements Painter {
 
@@ -43,7 +43,7 @@ public class TextPainter implements Painter {
 
 	private ColorFormat getForegroundColor() {
 		DirectivePool styleDirectives = box.getStyleDirectives();
-		return DirectiveUtil.getForegroundColor(styleDirectives);
+		return SimpleDirectiveUtil.getForegroundColor(styleDirectives);
 	}
 
 }

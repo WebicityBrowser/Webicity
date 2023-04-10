@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util;
 
 import com.github.webicitybrowser.thready.color.Colors;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
@@ -8,15 +8,15 @@ import com.github.webicitybrowser.thready.gui.graphical.directive.directive.Back
 import com.github.webicitybrowser.thready.gui.graphical.directive.directive.FontDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.directive.ForegroundColorDirective;
 
-public final class DirectiveUtil {
+public final class WebDirectiveUtil {
 
-private DirectiveUtil() {}
+private WebDirectiveUtil() {}
 	
 	public static FontSettings getFontSettings(DirectivePool directives) {
 		return directives
 			.inheritDirectiveOrEmpty(FontDirective.class)
 			.map(directive -> directive.getFontSettings())
-			.orElse(SimpleDefaults.FONT);
+			.orElse(WebDefaults.FONT);
 	}
 
 	public static ColorFormat getForegroundColor(DirectivePool directives) {

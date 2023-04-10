@@ -24,6 +24,11 @@ public class DocumentComponentImp extends BaseWebComponent implements DocumentCo
 	public Class<? extends Component> getPrimaryType() {
 		return DocumentComponent.class;
 	}
+	
+	@Override
+	public Node getNode() {
+		return document;
+	}
 
 	@Override
 	public Optional<ElementComponent> getVisibleChild() {
