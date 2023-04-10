@@ -1,9 +1,9 @@
-package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.cache.imp;
+package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.cache.imp;
 
 import java.util.function.Function;
 
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.cache.ChildComponentUICache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.cache.ChildComponentUICache;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.gui.tree.core.UINode;
 

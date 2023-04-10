@@ -4,14 +4,14 @@ import java.util.function.BiFunction;
 
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.directive.directive.ChildrenDirective;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.cache.ChildComponentUICache;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.cache.imp.ChildComponentUICacheImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicSolidBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.SolidRenderer;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.cache.ChildComponentUICache;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.cache.imp.ChildComponentUICacheImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleBoxGenerator;
 import com.github.webicitybrowser.thready.gui.tree.core.UINode;
 

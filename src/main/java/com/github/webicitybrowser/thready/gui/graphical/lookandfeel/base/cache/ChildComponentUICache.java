@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.cache;
+package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.cache;
 
 import java.util.function.Function;
 

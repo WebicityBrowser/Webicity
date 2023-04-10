@@ -62,9 +62,15 @@ public class GUIContentImp implements GUIContent {
 	}
 
 	private void performRenderPipeline(Canvas2D canvas, AbsoluteSize contentSize) {
+		if (invalidationLevel == InvalidationLevel.BOX) {
+			performBoxCycle();
+		}
+		if (this.rootBox == null) {
+			return;
+		}
+		
 		switch (invalidationLevel) {
 		case BOX:
-			performBoxCycle();
 		case RENDER:
 			performRenderCycle(contentSize);
 		case COMPOSITE:
@@ -85,7 +91,16 @@ public class GUIContentImp implements GUIContent {
 	private void performBoxCycle() {
 		BoxContext context = new BoxContextImp(lookAndFeel);
 		Box[] generatedBoxes = rootUI.generateBoxes(context);
-		Box rootBox = generatedBoxes[0].getAdjustedBoxTree()[0];
+		if (generatedBoxes.length == 0) {
+			this.rootBox = null;
+			return;
+		}
+		Box[] adjustedBoxes = generatedBoxes[0].getAdjustedBoxTree();
+		if (adjustedBoxes.length == 0) {
+			this.rootBox = null;
+			return;
+		}
+		Box rootBox = adjustedBoxes[0];
 		if (!(rootBox instanceof SolidBox)) {
 			throw new RuntimeException("The root component must be solid!");
 		}
