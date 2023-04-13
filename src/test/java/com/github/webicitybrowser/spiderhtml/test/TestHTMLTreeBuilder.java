@@ -2,6 +2,7 @@ package com.github.webicitybrowser.spiderhtml.test;
 
 import com.github.webicitybrowser.spec.html.parse.ElementCreationOptions;
 import com.github.webicitybrowser.spec.html.parse.tree.HTMLDocumentLeaf;
+import com.github.webicitybrowser.spec.html.parse.tree.HTMLDocumentTypeLeaf;
 import com.github.webicitybrowser.spec.html.parse.tree.HTMLElementLeaf;
 import com.github.webicitybrowser.spec.html.parse.tree.HTMLHtmlElementLeaf;
 import com.github.webicitybrowser.spec.html.parse.tree.HTMLTreeBuilder;
@@ -23,6 +24,12 @@ public class TestHTMLTreeBuilder implements HTMLTreeBuilder {
 	@Override
 	public HTMLElementLeaf createHtmlElementLeaf(ElementCreationOptions creationOptions) {
 		return TestHTMLElementLeafCreator.create(creationOptions);
+	}
+
+	@Override
+	public HTMLDocumentTypeLeaf createDocumentTypeLeaf(String name, String publicId, String systemId) {
+		// TODO: Should nodeDocument be passed as an argument? The spec doesn't explicitly specify the nodeDocument
+		return new TestHTMLDocumentTypeLeaf(documentLeaf, name);
 	}
 
 }

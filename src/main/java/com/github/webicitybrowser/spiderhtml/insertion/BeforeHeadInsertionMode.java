@@ -22,10 +22,34 @@ public class BeforeHeadInsertionMode implements InsertionMode {
 	@Override
 	public void emit(SharedContext context, InsertionContext insertionContext, Token token) {
 		// TODO
-		HTMLElementLeaf headLeaf = InsertionLogic.insertHTMLElement(insertionContext, new StartTagToken("head"));
-		insertionContext.setHeadElementPointer(headLeaf);
-		context.setInsertionMode(inHeadInsertionMode);
-		context.emit(token);
+		if (
+			token instanceof StartTagToken startTagToken &&
+			handleStartTagToken(context, insertionContext, startTagToken)
+		) {
+			return;
+		} else {
+			HTMLElementLeaf headLeaf = InsertionLogic.insertHTMLElement(insertionContext, new StartTagToken("head"));
+			insertionContext.setHeadElementPointer(headLeaf);
+			context.setInsertionMode(inHeadInsertionMode);
+			context.emit(token);
+		}
 	}
 
+	private boolean handleStartTagToken(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		switch (token.getName()) {
+		case "head":
+			handleHeadStartTag(context, insertionContext, token);
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	private void handleHeadStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		HTMLElementLeaf headElement = InsertionLogic.insertHTMLElement(insertionContext, token);
+		insertionContext.setHeadElementPointer(headElement);
+		
+		context.setInsertionMode(inHeadInsertionMode);
+	}
+	
 }

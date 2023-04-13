@@ -9,5 +9,7 @@ public interface HTMLTreeBuilder {
 	HTMLHtmlElementLeaf createHtmlElementLeaf(HTMLDocumentLeaf nodeDocument);
 
 	HTMLElementLeaf createHtmlElementLeaf(ElementCreationOptions creationOptions);
+
+	HTMLDocumentTypeLeaf createDocumentTypeLeaf(String name, String publicId, String systemId);
 	
 }

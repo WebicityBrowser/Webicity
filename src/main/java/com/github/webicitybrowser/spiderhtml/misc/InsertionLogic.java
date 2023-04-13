@@ -34,7 +34,7 @@ public final class InsertionLogic {
 			.insertLeaf(insertionLocation.index(), element);
 	}
 
-	private static HTMLElementLeaf createElementForToken(
+	public static HTMLElementLeaf createElementForToken(
 		InsertionContext insertionContext, StartTagToken token, String namespace, HTMLLeaf intendedParent
 	) {
 		ElementCreationOptions creationOptions = new ElementCreationOptions(

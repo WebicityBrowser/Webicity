@@ -22,7 +22,7 @@ public class SpiderHTMLParserImp implements HTMLParser {
 		PushbackReader reader = new PushbackReader(inputReader, 16);
 		ParsingInitializer parsingInitializer = new ParsingInitializer();
 		SharedContext sharedContext = new SharedContext(c -> new InsertionContext(c, treeBuilder));
-		ParsingContext parsingContext = new ParsingContext();
+		ParsingContext parsingContext = new ParsingContext(reader);
 		
 		initializeContext(parsingInitializer, sharedContext);
 		
