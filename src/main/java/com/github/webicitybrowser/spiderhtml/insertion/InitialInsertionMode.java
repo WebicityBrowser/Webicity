@@ -34,7 +34,7 @@ public class InitialInsertionMode implements InsertionMode {
 		// TODO
 		HTMLTreeBuilder treeBuilder = insertionContext.getTreeBuilder();
 		HTMLDocumentTypeLeaf doctypeLeaf = treeBuilder.createDocumentTypeLeaf(token.getName(), "", "");
-		treeBuilder.getDocument().appendLeaf(doctypeLeaf);
+		treeBuilder.getDocumentLeaf().appendLeaf(doctypeLeaf);
 		
 		context.setInsertionMode(beforeHTMLInsertionMode);
 	}

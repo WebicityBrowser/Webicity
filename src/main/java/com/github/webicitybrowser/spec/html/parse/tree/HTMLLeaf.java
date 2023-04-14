@@ -2,7 +2,7 @@ package com.github.webicitybrowser.spec.html.parse.tree;
 
 public interface HTMLLeaf {
 
-	void insertLeaf(int location, HTMLLeaf element);
+	void insertBeforeLeaf(HTMLLeaf node, HTMLLeaf child);
 	
 	void appendLeaf(HTMLLeaf htmlLeaf);
 	

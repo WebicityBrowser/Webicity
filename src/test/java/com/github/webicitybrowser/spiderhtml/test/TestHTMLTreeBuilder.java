@@ -12,7 +12,7 @@ public class TestHTMLTreeBuilder implements HTMLTreeBuilder {
 	private final TestHTMLDocumentLeaf documentLeaf = new TestHTMLDocumentLeaf();
 
 	@Override
-	public TestHTMLDocumentLeaf getDocument() {
+	public TestHTMLDocumentLeaf getDocumentLeaf() {
 		return documentLeaf;
 	}
 

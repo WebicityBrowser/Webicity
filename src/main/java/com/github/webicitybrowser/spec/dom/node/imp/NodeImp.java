@@ -13,6 +13,11 @@ public class NodeImp implements Node {
 	public NodeList getChildNodes() {
 		return new NodeListImp(List.of());
 	}
+	
+	@Override
+	public void insertBefore(Node rawBefore, Node rawChild) {
+		throw new HierarchyRequestError();
+	}
 
 	@Override
 	public void appendChild(Node node) {

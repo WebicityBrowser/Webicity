@@ -21,8 +21,14 @@ public class TestHTMLLeaf implements HTMLLeaf {
 	}
 	
 	@Override
-	public void insertLeaf(int location, HTMLLeaf element) {
-		children.add(location, (TestHTMLLeaf) element);
+	public void insertBeforeLeaf(HTMLLeaf node, HTMLLeaf child) {
+		if (node == null) {
+			children.add((TestHTMLLeaf) child);
+		} else {
+			int pos = children.indexOf(node);
+			assert pos != -1;
+			children.add(pos, (TestHTMLLeaf) child);
+		}
 	}
 
 	@Override

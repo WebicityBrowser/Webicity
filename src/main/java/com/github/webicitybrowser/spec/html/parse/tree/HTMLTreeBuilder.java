@@ -4,7 +4,7 @@ import com.github.webicitybrowser.spec.html.parse.ElementCreationOptions;
 
 public interface HTMLTreeBuilder {
 
-	HTMLDocumentLeaf getDocument();
+	HTMLDocumentLeaf getDocumentLeaf();
 
 	HTMLHtmlElementLeaf createHtmlElementLeaf(HTMLDocumentLeaf nodeDocument);
 

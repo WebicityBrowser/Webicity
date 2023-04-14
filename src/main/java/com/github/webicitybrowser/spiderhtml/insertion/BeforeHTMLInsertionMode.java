@@ -40,7 +40,7 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 
 	private void pushHtmlLeafToStack(InsertionContext insertionContext) {
 		HTMLTreeBuilder treeBuilder = insertionContext.getTreeBuilder();
-		HTMLDocumentLeaf nodeDocument = treeBuilder.getDocument();
+		HTMLDocumentLeaf nodeDocument = treeBuilder.getDocumentLeaf();
 		HTMLHtmlElementLeaf htmlLeaf = treeBuilder.createHtmlElementLeaf(nodeDocument);
 		nodeDocument.appendLeaf(htmlLeaf);
 		insertionContext.getOpenElementStack().push(htmlLeaf);
@@ -59,8 +59,8 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 	private void handleHtmlStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		HTMLTreeBuilder treeBuilder = insertionContext.getTreeBuilder();
 		HTMLElementLeaf htmlElement = InsertionLogic.createElementForToken(
-			insertionContext, token, Namespace.HTML_NAMESPACE, treeBuilder.getDocument());
-		treeBuilder.getDocument().appendLeaf(htmlElement);
+			insertionContext, token, Namespace.HTML_NAMESPACE, treeBuilder.getDocumentLeaf());
+		treeBuilder.getDocumentLeaf().appendLeaf(htmlElement);
 		insertionContext.getOpenElementStack().push(htmlElement);
 		
 		context.setInsertionMode(beforeHeadInsertionMode);

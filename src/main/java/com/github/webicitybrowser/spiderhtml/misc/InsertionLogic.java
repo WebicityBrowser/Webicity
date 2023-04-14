@@ -31,7 +31,7 @@ public final class InsertionLogic {
 	private static void insertElement(InsertionLocation insertionLocation, HTMLLeaf element) {
 		insertionLocation
 			.parent()
-			.insertLeaf(insertionLocation.index(), element);
+			.insertBeforeLeaf(insertionLocation.before(), element);
 	}
 
 	public static HTMLElementLeaf createElementForToken(
@@ -49,7 +49,7 @@ public final class InsertionLogic {
 	private static InsertionLocation getAppropriatePlaceForInsertingNode(InsertionContext insertionContext, HTMLLeaf targetOverride) {
 		// TODO
 		HTMLLeaf target = targetOverride != null ? targetOverride : getCurrentNode(insertionContext);
-		InsertionLocation adjustedInsertionLocation = new InsertionLocation(target, target.getLength());
+		InsertionLocation adjustedInsertionLocation = new InsertionLocation(target, null);
 		
 		return adjustedInsertionLocation;
 	}

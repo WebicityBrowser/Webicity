@@ -24,7 +24,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("");
 		TestHTMLTreeBuilder treeBuilder = new TestHTMLTreeBuilder();
 		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
-		TestHTMLDocumentLeaf document = treeBuilder.getDocument();
+		TestHTMLDocumentLeaf document = treeBuilder.getDocumentLeaf();
 		List<TestHTMLLeaf> documentChildren = document.getChildren();
 		Assertions.assertEquals(1, documentChildren.size());
 		TestHTMLElementLeaf htmlLeaf = (TestHTMLHtmlElementLeaf) documentChildren.get(0);
@@ -46,7 +46,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body></body></html>");
 		TestHTMLTreeBuilder treeBuilder = new TestHTMLTreeBuilder();
 		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
-		TestHTMLDocumentLeaf document = treeBuilder.getDocument();
+		TestHTMLDocumentLeaf document = treeBuilder.getDocumentLeaf();
 		List<TestHTMLLeaf> documentChildren = document.getChildren();
 		Assertions.assertEquals(2, documentChildren.size());
 		TestHTMLLeaf doctypeLeaf = documentChildren.get(0);

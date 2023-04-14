@@ -1,12 +1,13 @@
 package com.github.webicitybrowser.webicitybrowser;
 
+import java.io.IOException;
+import java.io.StringReader;
+
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.imp.DocumentImp;
-import com.github.webicitybrowser.spec.dom.node.imp.DocumentTypeImp;
-import com.github.webicitybrowser.spec.html.node.HTMLHtmlElement;
-import com.github.webicitybrowser.spec.html.node.imp.HTMLBodyElementImp;
-import com.github.webicitybrowser.spec.html.node.imp.HTMLHeadElementImp;
-import com.github.webicitybrowser.spec.html.node.imp.HTMLHtmlElementImp;
+import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
+import com.github.webicitybrowser.spec.html.parse.tree.HTMLTreeBuilder;
+import com.github.webicitybrowser.spiderhtml.SpiderHTMLParserImp;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
 import com.github.webicitybrowser.thready.gui.graphical.directive.directive.ChildrenDirective;
@@ -23,15 +24,25 @@ import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 public class Main {
 
 	public static void main(String[] args) {
-		Document document = new DocumentImp();
-		document.appendChild(new DocumentTypeImp("html"));
-		HTMLHtmlElement htmlElement = new HTMLHtmlElementImp();
-		document.appendChild(htmlElement);
-		htmlElement.appendChild(new HTMLHeadElementImp());
-		htmlElement.appendChild(new HTMLBodyElementImp());
-		
+		String html = "<!doctype html><html><head></head><body></body></html>";
+		Document document = parseHTML(html);
 		System.out.println(document);
+		createGUIFor(document);
+	}
+
+	private static Document parseHTML(String html) {
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		try {
+			new SpiderHTMLParserImp().parse(new StringReader(html), treeBuilder);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		};
 		
+		return document;
+	}
+	
+	private static void createGUIFor(Document document) {
 		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
 		
 		Component documentComponent = DocumentComponent.create(document);
@@ -51,7 +62,6 @@ public class Main {
 				.getScreen()
 				.setScreenContent(content);
 		});
-		
 	}
 	
 }

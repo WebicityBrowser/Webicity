@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
+import com.github.webicitybrowser.spec.dom.node.imp.util.InsertUtil;
 import com.github.webicitybrowser.spec.dom.node.imp.util.StringifyUtil;
 import com.github.webicitybrowser.spec.dom.node.support.NodeList;
 import com.github.webicitybrowser.spec.dom.node.support.imp.NodeListImp;
@@ -26,6 +27,12 @@ public class ElementImp extends NodeImp implements Element {
 	@Override
 	public NodeList getChildNodes() {
 		return new NodeListImp(childNodes);
+	}
+	
+	@Override
+	public void insertBefore(Node node, Node child) {
+		// TODO: Run prechecks
+		InsertUtil.insertBefore(childNodes, node, child);
 	}
 
 	@Override

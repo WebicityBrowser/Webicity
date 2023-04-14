@@ -6,6 +6,10 @@ public interface Node {
 
 	NodeList getChildNodes();
 	
+	//
+	
+	void insertBefore(Node rawBefore, Node rawChild);
+	
 	void appendChild(Node node);
 	
 }
