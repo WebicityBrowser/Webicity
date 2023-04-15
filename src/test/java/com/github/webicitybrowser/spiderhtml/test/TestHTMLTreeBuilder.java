@@ -5,6 +5,7 @@ import com.github.webicitybrowser.spec.html.parse.tree.HTMLDocumentLeaf;
 import com.github.webicitybrowser.spec.html.parse.tree.HTMLDocumentTypeLeaf;
 import com.github.webicitybrowser.spec.html.parse.tree.HTMLElementLeaf;
 import com.github.webicitybrowser.spec.html.parse.tree.HTMLHtmlElementLeaf;
+import com.github.webicitybrowser.spec.html.parse.tree.HTMLTextLeaf;
 import com.github.webicitybrowser.spec.html.parse.tree.HTMLTreeBuilder;
 
 public class TestHTMLTreeBuilder implements HTMLTreeBuilder {
@@ -30,6 +31,11 @@ public class TestHTMLTreeBuilder implements HTMLTreeBuilder {
 	public HTMLDocumentTypeLeaf createDocumentTypeLeaf(String name, String publicId, String systemId) {
 		// TODO: Should nodeDocument be passed as an argument? The spec doesn't explicitly specify the nodeDocument
 		return new TestHTMLDocumentTypeLeaf(documentLeaf, name);
+	}
+
+	@Override
+	public HTMLTextLeaf createTextLeaf() {
+		return new TestHTMLTextLeaf(documentLeaf);
 	}
 
 }

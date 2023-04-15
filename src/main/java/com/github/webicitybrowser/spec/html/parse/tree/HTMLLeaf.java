@@ -9,5 +9,9 @@ public interface HTMLLeaf {
 	int getLength();
 
 	HTMLDocumentLeaf getNodeDocument();
+
+	HTMLLeaf getPreviousSibling();
+	
+	HTMLLeaf getLastChild();
 	
 }

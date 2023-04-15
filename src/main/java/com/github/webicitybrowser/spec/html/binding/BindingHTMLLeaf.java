@@ -13,6 +13,16 @@ public class BindingHTMLLeaf implements HTMLLeaf {
 		this.nodeDocument = nodeDocument;
 		this.node = node;
 	}
+	
+	@Override
+	public HTMLLeaf getPreviousSibling() {
+		return BindingHTMLLeafConverter.createLeafFor(nodeDocument, node.getPreviousSibling());
+	}
+	
+	@Override
+	public HTMLLeaf getLastChild() {
+		return BindingHTMLLeafConverter.createLeafFor(nodeDocument, node.getLastChild());
+	}
 
 	@Override
 	public void insertBeforeLeaf(HTMLLeaf node, HTMLLeaf child) {

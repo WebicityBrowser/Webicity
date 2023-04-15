@@ -4,7 +4,13 @@ import com.github.webicitybrowser.spec.dom.node.support.NodeList;
 
 public interface Node {
 
+	Node getParentNode();
+	
 	NodeList getChildNodes();
+	
+	Node getPreviousSibling();
+	
+	Node getLastChild();
 	
 	//
 	

@@ -2,9 +2,11 @@ package com.github.webicitybrowser.spiderhtml.tokenize;
 
 import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.html.parse.ParseError;
 import com.github.webicitybrowser.spiderhtml.context.ParsingContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
+import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.EOFToken;
 
 public class DataState implements TokenizeState {
@@ -19,6 +21,9 @@ public class DataState implements TokenizeState {
 	@Override
 	public void process(SharedContext context, ParsingContext parsingContext, int ch) {
 		switch (ch) {
+		case '&':
+			// TODO
+			throw new UnsupportedOperationException();
 		case '<':
 			context.setTokenizeState(tagOpenState);
 			break;
@@ -26,8 +31,11 @@ public class DataState implements TokenizeState {
 			context.emit(new EOFToken());
 			break;
 		default:
-			// TODO
-			throw new UnsupportedOperationException();
+			// TODO: Chunk characters into strings in certain cases, for optimization?
+			if (ch == 0) {
+				context.recordError(ParseError.UNEXPECTED_NULL_CHARACTER);
+			}
+			context.emit(new CharacterToken(ch));
 		}
 	}
 	

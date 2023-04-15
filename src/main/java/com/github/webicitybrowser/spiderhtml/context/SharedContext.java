@@ -2,6 +2,7 @@ package com.github.webicitybrowser.spiderhtml.context;
 
 import java.util.function.Function;
 
+import com.github.webicitybrowser.spec.html.parse.ParseError;
 import com.github.webicitybrowser.spiderhtml.insertion.InsertionMode;
 import com.github.webicitybrowser.spiderhtml.misc.EmitterLogic;
 import com.github.webicitybrowser.spiderhtml.token.EOFToken;
@@ -40,6 +41,14 @@ public class SharedContext {
 			setTokenizeState(null); // Just in case stopParsing is never called
 		}
 		EmitterLogic.emit(this, insertionContext, token);
+	}
+
+	public void recordError(ParseError unexpectedNullCharacter) {
+		// TODO Auto-generated method stub
+	}
+
+	public void parseError() {
+		// TODO Auto-generated method stub
 	}
 	
 }

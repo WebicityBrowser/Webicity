@@ -11,5 +11,7 @@ public interface HTMLTreeBuilder {
 	HTMLElementLeaf createHtmlElementLeaf(ElementCreationOptions creationOptions);
 
 	HTMLDocumentTypeLeaf createDocumentTypeLeaf(String name, String publicId, String systemId);
+
+	HTMLTextLeaf createTextLeaf();
 	
 }
