@@ -10,7 +10,7 @@ import com.github.webicitybrowser.thready.gui.graphical.directive.directive.Fore
 
 public final class WebDirectiveUtil {
 
-private WebDirectiveUtil() {}
+	private WebDirectiveUtil() {}
 	
 	public static FontSettings getFontSettings(DirectivePool directives) {
 		return directives
@@ -23,7 +23,7 @@ private WebDirectiveUtil() {}
 		return directives
 			.inheritDirectiveOrEmpty(ForegroundColorDirective.class)
 			.map(directive -> directive.getColor())
-			.orElse(Colors.WHITE);
+			.orElse(Colors.BLACK);
 	}
 	
 	public static ColorFormat getBackgroundColor(DirectivePool directives) {

@@ -16,4 +16,9 @@ public class TextImp extends NodeImp implements Text {
 		return data.toString();
 	}
 
+	@Override
+	public String toString() {
+		return data.toString();
+	}
+	
 }

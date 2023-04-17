@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.text.stage.render;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.stage.render;
 
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
@@ -7,9 +7,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.FluidRenderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.UnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.text.stage.render.unit.TextUnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
-import com.github.webicitybrowser.thready.gui.tree.basics.TextComponent;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.stage.render.unit.TextUnitGenerator;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.tree.TextComponent;
 
 public class TextComponentRenderer implements FluidRenderer {
 
@@ -33,7 +33,7 @@ public class TextComponentRenderer implements FluidRenderer {
 	}
 
 	private FontSettings getFontSettings() {
-		return SimpleDirectiveUtil.getFontSettings(box.getStyleDirectives());
+		return WebDirectiveUtil.getFontSettings(box.getStyleDirectives());
 	}
 	
 	private float[] calculateCharWidths(String text, FontMetrics metrics) {
