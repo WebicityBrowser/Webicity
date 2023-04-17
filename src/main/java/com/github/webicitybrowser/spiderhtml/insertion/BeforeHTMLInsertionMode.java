@@ -11,8 +11,10 @@ import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
+import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
+import com.github.webicitybrowser.spiderhtml.util.ASCIIUtil;
 
 public class BeforeHTMLInsertionMode implements InsertionMode {
 
@@ -26,7 +28,9 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 	@Override
 	public void emit(SharedContext context, InsertionContext insertionContext, Token token) {
 		// TODO
-		if (
+		if (token instanceof CharacterToken characterToken) {
+			handleCharacterToken(characterToken);
+		} else if (
 			token instanceof StartTagToken startTagToken &&
 			handleStartTagToken(context, insertionContext, startTagToken)
 		) {
@@ -44,6 +48,14 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 		HTMLHtmlElement htmlElementNode = treeBuilder.createHtmlElement(nodeDocument);
 		nodeDocument.appendChild(htmlElementNode);
 		insertionContext.getOpenElementStack().push(htmlElementNode);
+	}
+	
+	private void handleCharacterToken(CharacterToken characterToken) {
+		if (ASCIIUtil.isASCIIWhiteSpace(characterToken.getCharacter())) {
+			return;
+		} else {
+			throw new UnsupportedOperationException();
+		}
 	}
 	
 	private boolean handleStartTagToken(SharedContext context, InsertionContext insertionContext, StartTagToken token) {

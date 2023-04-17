@@ -6,6 +6,7 @@ import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
+import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
 
@@ -21,7 +22,10 @@ public class AfterHeadInsertionMode implements InsertionMode {
 	@Override
 	public void emit(SharedContext context, InsertionContext insertionContext, Token token) {
 		// TODO
-		if (
+		if (token instanceof CharacterToken characterToken) {
+			int ch = characterToken.getCharacter();
+			InsertionLogic.insertCharacters(context, insertionContext, new int [] { ch });
+		} else if (
 			token instanceof StartTagToken startTagToken &&
 			handleStartTagToken(context, insertionContext, startTagToken)
 		) {

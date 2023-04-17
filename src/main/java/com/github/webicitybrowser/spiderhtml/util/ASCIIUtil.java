@@ -19,5 +19,18 @@ public final class ASCIIUtil {
 		
 		return ch;
 	}
+	
+	public static boolean isASCIIWhiteSpace(int ch) {
+		switch (ch) {
+		case ' ':
+		case '\t':
+		case '\n':
+		case '\f':
+		case '\r':
+			return true;
+		default:
+			return false;
+		}
+	}
 
 }

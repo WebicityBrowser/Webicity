@@ -42,7 +42,7 @@ public class InBodyInsertionMode implements InsertionMode {
 		if (characterToken.getCharacter() == 0) {
 			context.parseError();
 		}
-		// TODO: Handle any active formatting elements
+		// TODO: Handle any active formatting elements, and unset frameset-ok
 		InsertionLogic.insertCharacters(context, insertionContext, new int[] { ch });
 	}
 

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.DocumentType;
+import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.Text;
 import com.github.webicitybrowser.spec.dom.node.imp.DocumentImp;
@@ -47,6 +48,37 @@ public class HTMLParserTest {
 	}
 	
 	@Test
+	@DisplayName("Ignores whitespace before head")
+	public void ignoresWhitespaceBeforeHead() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("\n<!doctype html>\n<html>\n<head></head><body></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		testToBody(document, 0);
+	}
+	
+	@Test
+	@DisplayName("Properly parses minimal tree with indentation")
+	public void properlyParsesMinimalTreeWithIndentation() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader(
+			"\n<!doctype html>\n\t<html>\n\t\t<head>\n\t\t</head>\n\t\t<body>\n\t\t</body>\n\t</html>\n");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement htmlNode = testToHtml(document, 3);
+		NodeList htmlChildren = htmlNode.getChildNodes();
+		Element headElement = testElement(htmlChildren.get(0), "head", 1);
+		NodeList headChildren = headElement.getChildNodes();
+		assertText("\n\t\t", headChildren.get(0));
+		assertText("\n\t\t", htmlChildren.get(1));
+		Element bodyElement = testElement(htmlChildren.get(2), "body", 1);
+		NodeList bodyChildren = bodyElement.getChildNodes();
+		assertText("\n\t\t\n\t\n", bodyChildren.get(0));
+	}
+
+	@Test
 	@DisplayName("Can parse basic text")
 	public void canParseBasicText() {
 		HTMLParser parser = new SpiderHTMLParserImp();
@@ -60,15 +92,19 @@ public class HTMLParserTest {
 	}
 	
 	private HTMLElement testToBody(Document document, int numBodyChildren) {
+		HTMLElement htmlNode = testToHtml(document, 2);
+		NodeList htmlChildren = htmlNode.getChildNodes();
+		testElement(htmlChildren.get(0), "head", 0);
+		return testElement(htmlChildren.get(1), "body", numBodyChildren);
+	}
+	
+	private HTMLElement testToHtml(Document document, int numHtmlChildren) {
 		NodeList documentChildren = document.getChildNodes();
 		Assertions.assertEquals(2, documentChildren.getLength());
 		Node doctypeNode = documentChildren.get(0);
 		Assertions.assertInstanceOf(DocumentType.class, doctypeNode);
 		Assertions.assertEquals("html", ((DocumentType) doctypeNode).getName());
-		HTMLElement htmlNode = testElement(documentChildren.get(1), "html", 2);
-		NodeList htmlChildren = htmlNode.getChildNodes();
-		testElement(htmlChildren.get(0), "head", 0);
-		return testElement(htmlChildren.get(1), "body", numBodyChildren);
+		return testElement(documentChildren.get(1), "html", numHtmlChildren);
 	}
 	
 	private HTMLElement testElement(Node node, String name, int children) {
@@ -78,6 +114,12 @@ public class HTMLParserTest {
 		Assertions.assertEquals(children, element.getChildNodes().getLength());
 		
 		return element;
+	}
+	
+	private void assertText(String string, Node node) {
+		Assertions.assertInstanceOf(Text.class, node);
+		Text text = (Text) node;
+		Assertions.assertEquals(string, text.getData());
 	}
 	
 }
