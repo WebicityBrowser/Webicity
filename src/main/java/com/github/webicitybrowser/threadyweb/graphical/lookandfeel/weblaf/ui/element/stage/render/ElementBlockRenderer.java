@@ -12,12 +12,12 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.fluid.ElementFluidRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.solid.ElementSolidRenderer;
 
-public class ElementRenderer implements SolidRenderer {
+public class ElementBlockRenderer implements SolidRenderer {
 
 	private final Box box;
 	private final Box[] children;
 
-	public ElementRenderer(Box box, Box[] children) {
+	public ElementBlockRenderer(Box box, Box[] children) {
 		this.box = box;
 		this.children = children;
 	}
@@ -30,7 +30,7 @@ public class ElementRenderer implements SolidRenderer {
 	}
 	
 	private Unit renderChildren(RenderContext renderContext, AbsoluteSize precomputedInnerSize) {
-		if (children.length == 0 || children[0] instanceof SolidBox) {
+		if (box instanceof SolidBox && children.length > 0 && children[0] instanceof SolidBox) {
 			return ElementSolidRenderer.render(renderContext, precomputedInnerSize, children);
 		} else {
 			return ElementFluidRenderer.render(renderContext, precomputedInnerSize, children);

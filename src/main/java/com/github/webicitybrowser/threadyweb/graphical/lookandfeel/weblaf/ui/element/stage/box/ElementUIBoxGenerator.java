@@ -36,6 +36,16 @@ public class ElementUIBoxGenerator {
 	//
 	
 	private Box[] performBoxing(BoxContext context, DirectivePool directives) {
+		Box rootBox = createRootBox(context, directives);
+		
+		return new Box[] { rootBox };
+	}
+	
+	private Box createRootBox(BoxContext context, DirectivePool directives) {
+		return createBlockRootBox(context, directives);
+	}
+
+	private Box createBlockRootBox(BoxContext context, DirectivePool directives) {
 		Box rootBox = new BasicSolidBox(directives, rendererGenerator);
 		
 		ComponentUI[] children = computeCurrentChildUIs(context.getLookAndFeel(), directives);
@@ -43,9 +53,9 @@ public class ElementUIBoxGenerator {
 			addChildBoxes(rootBox, children[i], context, directives);
 		}
 		
-		return new Box[] { rootBox };
+		return rootBox;
 	}
-	
+
 	private ComponentUI[] computeCurrentChildUIs(LookAndFeel lookAndFeel, DirectivePool directives) {
 		WebComponent[] componentChildren = component.getChildren();
 		childCache.recompute(componentChildren, component -> lookAndFeel.createUIFor(component, parentUI));

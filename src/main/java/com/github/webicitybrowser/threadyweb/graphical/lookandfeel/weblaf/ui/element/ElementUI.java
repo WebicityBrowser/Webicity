@@ -7,7 +7,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.SolidRenderer;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.box.ElementUIBoxGenerator;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.ElementRenderer;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.ElementBlockRenderer;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 
 public class ElementUI implements ComponentUI {
@@ -33,7 +33,7 @@ public class ElementUI implements ComponentUI {
 	}
 	
 	private SolidRenderer createRenderer(Box box, Box[] children) {
-		return new ElementRenderer(box, children);
+		return new ElementBlockRenderer(box, children);
 	}
 
 }
