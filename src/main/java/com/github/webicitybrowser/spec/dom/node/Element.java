@@ -4,4 +4,6 @@ public interface Element extends Node {
 
 	String getLocalTag();
 
+	String getNamespace();
+
 }

@@ -41,7 +41,6 @@ public class TagOpenState implements TokenizeState {
 			break;
 		default:
 			// TODO
-			System.out.println((char)ch);
 			throw new UnsupportedOperationException();
 		}
 	}

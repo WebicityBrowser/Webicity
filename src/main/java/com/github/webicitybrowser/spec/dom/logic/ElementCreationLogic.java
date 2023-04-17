@@ -1,8 +1,8 @@
 package com.github.webicitybrowser.spec.dom.logic;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
-import com.github.webicitybrowser.spec.dom.node.imp.ElementImp;
 import com.github.webicitybrowser.spec.html.node.imp.HTMLBodyElementImp;
+import com.github.webicitybrowser.spec.html.node.imp.HTMLElementImp;
 import com.github.webicitybrowser.spec.html.node.imp.HTMLHeadElementImp;
 import com.github.webicitybrowser.spec.html.node.imp.HTMLHtmlElementImp;
 
@@ -20,7 +20,7 @@ public final class ElementCreationLogic {
 		case "body":
 			return new HTMLBodyElementImp();
 		default:
-			return new ElementImp(name);
+			return new HTMLElementImp(name);
 		}
 	}
 	

@@ -24,7 +24,7 @@ import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 public class Main {
 
 	public static void main(String[] args) {
-		String html = "<!doctype html><html><head></head>\n<body>text</body></html>";
+		String html = "<!doctype html><html><head></head><body><div></div></body></html>";
 		Document document = parseHTML(html);
 		System.out.println(document);
 		createGUIFor(document);

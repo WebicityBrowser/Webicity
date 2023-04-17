@@ -12,11 +12,18 @@ import com.github.webicitybrowser.spec.dom.node.support.imp.NodeListImp;
 
 public class ElementImp extends NodeImp implements Element {
 	
+	private final String namespace;
 	private final String localTag;
 	private final List<Node> childNodes = new ArrayList<>(1);
 
-	public ElementImp(String localTag) {
+	public ElementImp(String namespace, String localTag) {
+		this.namespace = namespace;
 		this.localTag = localTag;
+	}
+	
+	@Override
+	public String getNamespace() {
+		return this.namespace;
 	}
 
 	@Override

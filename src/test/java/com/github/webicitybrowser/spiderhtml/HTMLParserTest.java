@@ -91,6 +91,19 @@ public class HTMLParserTest {
 		Assertions.assertEquals("text", textLeaf.getData());
 	}
 	
+	@Test
+	@DisplayName("Can parse empty div")
+	public void canParseEmptyDiv() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><div></div></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement bodyLeaf = testToBody(document, 1);
+		NodeList childNodes = bodyLeaf.getChildNodes();
+		testElement(childNodes.get(0), "div", 0);
+	}
+	
 	private HTMLElement testToBody(Document document, int numBodyChildren) {
 		HTMLElement htmlNode = testToHtml(document, 2);
 		NodeList htmlChildren = htmlNode.getChildNodes();

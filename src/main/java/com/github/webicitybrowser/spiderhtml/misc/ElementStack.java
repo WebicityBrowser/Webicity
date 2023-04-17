@@ -16,10 +16,8 @@ public class ElementStack {
 		return stack.peek();
 	}
 
-	public void pop() {
-		stack.pop();
+	public Node pop() {
+		return stack.pop();
 	}
-
-	
 	
 }
