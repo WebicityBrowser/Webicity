@@ -6,7 +6,7 @@ import java.io.StringReader;
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.imp.DocumentImp;
 import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLTreeBuilder;
+import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spiderhtml.SpiderHTMLParserImp;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;

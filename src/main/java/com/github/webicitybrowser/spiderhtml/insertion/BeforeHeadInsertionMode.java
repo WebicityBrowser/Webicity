@@ -2,7 +2,7 @@ package com.github.webicitybrowser.spiderhtml.insertion;
 
 import java.util.function.Consumer;
 
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLElementLeaf;
+import com.github.webicitybrowser.spec.html.node.HTMLElement;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
@@ -28,8 +28,8 @@ public class BeforeHeadInsertionMode implements InsertionMode {
 		) {
 			return;
 		} else {
-			HTMLElementLeaf headLeaf = InsertionLogic.insertHTMLElement(insertionContext, new StartTagToken("head"));
-			insertionContext.setHeadElementPointer(headLeaf);
+			HTMLElement headElement = InsertionLogic.insertHTMLElement(insertionContext, new StartTagToken("head"));
+			insertionContext.setHeadElementPointer(headElement);
 			context.setInsertionMode(inHeadInsertionMode);
 			context.emit(token);
 		}
@@ -46,7 +46,7 @@ public class BeforeHeadInsertionMode implements InsertionMode {
 	}
 
 	private void handleHeadStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
-		HTMLElementLeaf headElement = InsertionLogic.insertHTMLElement(insertionContext, token);
+		HTMLElement headElement = InsertionLogic.insertHTMLElement(insertionContext, token);
 		insertionContext.setHeadElementPointer(headElement);
 		
 		context.setInsertionMode(inHeadInsertionMode);

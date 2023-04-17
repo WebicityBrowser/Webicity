@@ -2,10 +2,10 @@ package com.github.webicitybrowser.spiderhtml.insertion;
 
 import java.util.function.Consumer;
 
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLDocumentLeaf;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLElementLeaf;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLHtmlElementLeaf;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLTreeBuilder;
+import com.github.webicitybrowser.spec.dom.node.Document;
+import com.github.webicitybrowser.spec.html.node.HTMLElement;
+import com.github.webicitybrowser.spec.html.node.HTMLHtmlElement;
+import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spec.infra.Namespace;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
@@ -40,10 +40,10 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 
 	private void pushHtmlLeafToStack(InsertionContext insertionContext) {
 		HTMLTreeBuilder treeBuilder = insertionContext.getTreeBuilder();
-		HTMLDocumentLeaf nodeDocument = treeBuilder.getDocumentLeaf();
-		HTMLHtmlElementLeaf htmlLeaf = treeBuilder.createHtmlElementLeaf(nodeDocument);
-		nodeDocument.appendLeaf(htmlLeaf);
-		insertionContext.getOpenElementStack().push(htmlLeaf);
+		Document nodeDocument = treeBuilder.getDocument();
+		HTMLHtmlElement htmlElementNode = treeBuilder.createHtmlElement(nodeDocument);
+		nodeDocument.appendChild(htmlElementNode);
+		insertionContext.getOpenElementStack().push(htmlElementNode);
 	}
 	
 	private boolean handleStartTagToken(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
@@ -58,9 +58,9 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 
 	private void handleHtmlStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		HTMLTreeBuilder treeBuilder = insertionContext.getTreeBuilder();
-		HTMLElementLeaf htmlElement = InsertionLogic.createElementForToken(
-			insertionContext, token, Namespace.HTML_NAMESPACE, treeBuilder.getDocumentLeaf());
-		treeBuilder.getDocumentLeaf().appendLeaf(htmlElement);
+		HTMLElement htmlElement = InsertionLogic.createElementForToken(
+			insertionContext, token, Namespace.HTML_NAMESPACE, treeBuilder.getDocument());
+		treeBuilder.getDocument().appendChild(htmlElement);
 		insertionContext.getOpenElementStack().push(htmlElement);
 		
 		context.setInsertionMode(beforeHeadInsertionMode);

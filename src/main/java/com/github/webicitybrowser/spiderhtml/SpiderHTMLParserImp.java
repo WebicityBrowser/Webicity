@@ -5,7 +5,7 @@ import java.io.PushbackReader;
 import java.io.Reader;
 
 import com.github.webicitybrowser.spec.html.parse.HTMLParser;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLTreeBuilder;
+import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;

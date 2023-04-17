@@ -11,6 +11,11 @@ public class DocumentTypeImp extends NodeImp implements DocumentType {
 	}
 	
 	@Override
+	public String getName() {
+		return this.name;
+	}
+	
+	@Override
 	public String toString() {
 		return "<!doctype " + name + ">";
 	}

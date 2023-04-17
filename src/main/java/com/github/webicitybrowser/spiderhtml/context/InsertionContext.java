@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.spiderhtml.context;
 
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLElementLeaf;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLTreeBuilder;
+import com.github.webicitybrowser.spec.html.node.HTMLElement;
+import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spiderhtml.misc.ElementStack;
 
 public class InsertionContext {
@@ -11,7 +11,7 @@ public class InsertionContext {
 	private final ElementStack stack = new ElementStack();
 	
 	@SuppressWarnings("unused")
-	private HTMLElementLeaf headLeaf;
+	private HTMLElement headNode;
 	
 	public InsertionContext(SharedContext sharedContext, HTMLTreeBuilder treeBuilder) {
 		this.sharedContext = sharedContext;
@@ -30,8 +30,8 @@ public class InsertionContext {
 		return this.stack;
 	}
 
-	public void setHeadElementPointer(HTMLElementLeaf headLeaf) {
-		this.headLeaf = headLeaf;
+	public void setHeadElementPointer(HTMLElement headNode) {
+		this.headNode = headNode;
 	}
 
 }

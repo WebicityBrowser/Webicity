@@ -2,8 +2,8 @@ package com.github.webicitybrowser.spiderhtml.insertion;
 
 import java.util.function.Consumer;
 
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLDocumentTypeLeaf;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLTreeBuilder;
+import com.github.webicitybrowser.spec.dom.node.DocumentType;
+import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
@@ -33,8 +33,8 @@ public class InitialInsertionMode implements InsertionMode {
 	private void handleDoctypeToken(SharedContext context, InsertionContext insertionContext, DoctypeToken token) {
 		// TODO
 		HTMLTreeBuilder treeBuilder = insertionContext.getTreeBuilder();
-		HTMLDocumentTypeLeaf doctypeLeaf = treeBuilder.createDocumentTypeLeaf(token.getName(), "", "");
-		treeBuilder.getDocumentLeaf().appendLeaf(doctypeLeaf);
+		DocumentType doctypeNode = treeBuilder.createDocumentType(token.getName(), "", "");
+		treeBuilder.getDocument().appendChild(doctypeNode);
 		
 		context.setInsertionMode(beforeHTMLInsertionMode);
 	}

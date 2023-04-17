@@ -2,11 +2,11 @@ package com.github.webicitybrowser.spec.html.parse;
 
 import java.util.Map;
 
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLLeaf;
+import com.github.webicitybrowser.spec.dom.node.Node;
 
 public record ElementCreationOptions(
 	String tagName, Map<String, String> attributes,
-	String namespace, HTMLLeaf intendedParent
+	String namespace, Node intendedParent
 ) {
 
 }

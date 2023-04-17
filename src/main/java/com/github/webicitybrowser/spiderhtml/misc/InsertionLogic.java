@@ -2,11 +2,11 @@ package com.github.webicitybrowser.spiderhtml.misc;
 
 import java.util.HashMap;
 
+import com.github.webicitybrowser.spec.dom.node.Document;
+import com.github.webicitybrowser.spec.dom.node.Node;
+import com.github.webicitybrowser.spec.dom.node.Text;
+import com.github.webicitybrowser.spec.html.node.HTMLElement;
 import com.github.webicitybrowser.spec.html.parse.ElementCreationOptions;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLDocumentLeaf;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLElementLeaf;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLLeaf;
-import com.github.webicitybrowser.spec.html.parse.tree.HTMLTextLeaf;
 import com.github.webicitybrowser.spec.infra.Namespace;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
@@ -16,23 +16,23 @@ public final class InsertionLogic {
 
 	private InsertionLogic() {}
 
-	public static HTMLElementLeaf insertHTMLElement(InsertionContext insertionContext, StartTagToken startTagToken) {
+	public static HTMLElement insertHTMLElement(InsertionContext insertionContext, StartTagToken startTagToken) {
 		return insertForeignElement(insertionContext, startTagToken, Namespace.HTML_NAMESPACE);
 	}
 	
 	public static void insertCharacters(SharedContext context, InsertionContext insertionContext, int[] ch) {
 		String text = codePointsToString(ch);
 		InsertionLocation adjustedInsertionLocation = getAppropriatePlaceForInsertingNode(insertionContext, null);
-		if (adjustedInsertionLocation.parent() instanceof HTMLDocumentLeaf) {
+		if (adjustedInsertionLocation.parent() instanceof Document) {
 			return;
 		}
-		HTMLLeaf precedingLeaf = getLeafBefore(adjustedInsertionLocation);
-		if (precedingLeaf != null && precedingLeaf instanceof HTMLTextLeaf textLeaf) {
-			textLeaf.appendData(text);
+		Node precedingNode = getLeafBefore(adjustedInsertionLocation);
+		if (precedingNode != null && precedingNode instanceof Text textNode) {
+			textNode.appendData(text);
 		} else {
-			HTMLTextLeaf textLeaf = insertionContext.getTreeBuilder().createTextLeaf();
-			textLeaf.appendData(text);
-			insertLeaf(adjustedInsertionLocation, textLeaf);
+			Text textNode = insertionContext.getTreeBuilder().createTextNode();
+			textNode.appendData(text);
+			insertNode(adjustedInsertionLocation, textNode);
 		}
 	}
 
@@ -44,25 +44,25 @@ public final class InsertionLogic {
 		return stringBuilder.toString();
 	}
 
-	private static HTMLElementLeaf insertForeignElement(InsertionContext insertionContext, StartTagToken startTagToken, String namespace) {
+	private static HTMLElement insertForeignElement(InsertionContext insertionContext, StartTagToken startTagToken, String namespace) {
 		// TODO
 		InsertionLocation insertionLocation = getAppropriatePlaceForInsertingNode(insertionContext, null);
-		HTMLElementLeaf element = createElementForToken(insertionContext, startTagToken, namespace, insertionLocation.parent());
+		HTMLElement element = createElementForToken(insertionContext, startTagToken, namespace, insertionLocation.parent());
 		// TODO: Ensure that parent can accept more elements
-		insertLeaf(insertionLocation, element);
+		insertNode(insertionLocation, element);
 		insertionContext.getOpenElementStack().push(element);
 		
 		return element;
 	}
 	
-	private static void insertLeaf(InsertionLocation insertionLocation, HTMLLeaf element) {
+	private static void insertNode(InsertionLocation insertionLocation, Node node) {
 		insertionLocation
 			.parent()
-			.insertBeforeLeaf(insertionLocation.before(), element);
+			.insertBefore(insertionLocation.before(), node);
 	}
 
-	public static HTMLElementLeaf createElementForToken(
-		InsertionContext insertionContext, StartTagToken token, String namespace, HTMLLeaf intendedParent
+	public static HTMLElement createElementForToken(
+		InsertionContext insertionContext, StartTagToken token, String namespace, Node intendedParent
 	) {
 		ElementCreationOptions creationOptions = new ElementCreationOptions(
 			token.getName(), new HashMap<String, String>(),
@@ -70,24 +70,24 @@ public final class InsertionLogic {
 		);
 		return insertionContext
 			.getTreeBuilder()
-			.createHtmlElementLeaf(creationOptions);
+			.createHtmlElement(creationOptions);
 	}
 
-	private static InsertionLocation getAppropriatePlaceForInsertingNode(InsertionContext insertionContext, HTMLLeaf targetOverride) {
+	private static InsertionLocation getAppropriatePlaceForInsertingNode(InsertionContext insertionContext, Node targetOverride) {
 		// TODO
-		HTMLLeaf target = targetOverride != null ? targetOverride : getCurrentNode(insertionContext);
+		Node target = targetOverride != null ? targetOverride : getCurrentNode(insertionContext);
 		InsertionLocation adjustedInsertionLocation = new InsertionLocation(target, null);
 		
 		return adjustedInsertionLocation;
 	}
 
-	private static HTMLLeaf getCurrentNode(InsertionContext insertionContext) {
+	private static Node getCurrentNode(InsertionContext insertionContext) {
 		return insertionContext
 			.getOpenElementStack()
 			.peek();
 	}
 	
-	private static HTMLLeaf getLeafBefore(InsertionLocation location) {
+	private static Node getLeafBefore(InsertionLocation location) {
 		return location.before() != null ?
 			location.before().getPreviousSibling() :
 			location.parent().getLastChild();
