@@ -7,6 +7,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 
 public interface SolidLayoutManager {
 
-	Unit render(RenderContext renderContext, AbsoluteSize precomputedInnerSize, SolidBox[] solidChildren);
+	Unit render(RenderContext renderContext, AbsoluteSize precomputedSize, SolidBox[] solidChildren);
 
 }

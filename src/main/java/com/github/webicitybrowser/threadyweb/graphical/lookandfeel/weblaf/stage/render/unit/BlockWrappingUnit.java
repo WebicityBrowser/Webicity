@@ -34,7 +34,7 @@ public class BlockWrappingUnit implements Unit {
 	
 	public static Unit render(Box box, AbsoluteSize precomputedSize, Function<AbsoluteSize, Unit> innerUnitGenerator) {
 		Unit innerContentUnit = innerUnitGenerator.apply(precomputedSize);
-		AbsoluteSize finalSize = precomputedSize;
+		AbsoluteSize finalSize = innerContentUnit.getMinimumSize();
 		return new BlockWrappingUnit(box, finalSize, innerContentUnit);
 	}
 	

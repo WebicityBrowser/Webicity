@@ -8,14 +8,16 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 public class FlowingLayoutUnit implements Unit {
 
 	private final FlowingLayoutResult[] childrenResults;
+	private final AbsoluteSize minimumSize;
 
-	public FlowingLayoutUnit(FlowingLayoutResult[] childrenResults) {
+	public FlowingLayoutUnit(FlowingLayoutResult[] childrenResults, AbsoluteSize minimumSize) {
 		this.childrenResults = childrenResults;
+		this.minimumSize = minimumSize;
 	}
 	
 	@Override
 	public AbsoluteSize getMinimumSize() {
-		return AbsoluteSize.ZERO_SIZE;
+		return this.minimumSize;
 	}
 
 	@Override

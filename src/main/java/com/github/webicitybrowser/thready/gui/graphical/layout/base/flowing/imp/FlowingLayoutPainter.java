@@ -1,6 +1,8 @@
 package com.github.webicitybrowser.thready.gui.graphical.layout.base.flowing.imp;
 
+import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
@@ -27,9 +29,18 @@ public class FlowingLayoutPainter implements Painter {
 	}
 
 	private void paintChild(PaintContext context, Canvas2D canvas, FlowingLayoutResult resultToPaint) {
-		Painter resultPainter = resultToPaint.unit().getPainter(documentRect);
+		Rectangle resultDocumentRect = computeResultDocumentRect(resultToPaint.renderedRect());
+		Painter resultPainter = resultToPaint.unit().getPainter(resultDocumentRect);
 		// TODO: Pass properly clipped canvas
 		resultPainter.paint(context, canvas);
+	}
+	
+	private Rectangle computeResultDocumentRect(Rectangle renderedRect) {
+		AbsolutePosition documentPosition = AbsolutePositionMath.sum(
+			documentRect.position(),
+			renderedRect.position());
+		
+		return new Rectangle(documentPosition, renderedRect.size());
 	}
 
 }

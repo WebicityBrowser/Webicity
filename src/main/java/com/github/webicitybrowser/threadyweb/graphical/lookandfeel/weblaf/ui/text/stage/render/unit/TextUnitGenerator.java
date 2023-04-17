@@ -31,7 +31,8 @@ public class TextUnitGenerator implements UnitGenerator {
 	@Override
 	public Unit getMergedUnits() {
 		String substr = text.substring(windowStart, windowEnd);
-		AbsoluteSize size = new AbsoluteSize(builtWidth, height);
+		float actualHeight = builtWidth > 0 ? height : 0;
+		AbsoluteSize size = new AbsoluteSize(builtWidth, actualHeight);
 		Unit textUnit = new TextUnit(box, substr, font, size);
 		
 		builtWidth = 0;
