@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.document;
 
+import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -23,11 +25,11 @@ public class DocumentUI implements ComponentUI {
 	}
 
 	@Override
-	public Box[] generateBoxes(BoxContext context) {
+	public Box[] generateBoxes(BoxContext context, DirectivePool parentDirectives, StyleGenerator styleGenerator) {
 		return component
 			.getVisibleChild()
 			.map(child -> getComponentUI(context, child))
-			.map(ui -> ui.generateBoxes(context))
+			.map(ui -> ui.generateBoxes(context, parentDirectives, styleGenerator))
 			.orElse(new Box[0]);
 	}
 

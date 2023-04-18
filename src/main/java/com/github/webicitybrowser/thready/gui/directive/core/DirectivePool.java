@@ -6,7 +6,7 @@ import java.util.Optional;
  * A directive pool allows storing styling information in
  * the form of directives.
  */
-public interface DirectivePool {
+public interface DirectivePool extends Iterable<Directive> {
 
 	/**
 	 * Add a directive to this pool.
@@ -14,7 +14,23 @@ public interface DirectivePool {
 	 * @return This pool.
 	 */
 	DirectivePool directive(Directive directive);
-
+	
+	/**
+	 * Get a directive by it's type.
+	 * @param directiveCls The type of directive to be gotten.
+	 * @return An optional with the directive that has been gotten,
+	 *  or empty if the directive has not been set.
+	 */
+	Optional<Directive> getUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass);
+	
+	/**
+	 * Get a directive by it's type. Inherit if not set.
+	 * @param directiveCls The type of directive to be gotten.
+	 * @return An optional with the directive that has been gotten,
+	 *  or empty if the directive has not been set or inherited.
+	 */
+	Optional<Directive> inheritUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass);
+	
 	/**
 	 * Get a directive by it's type.
 	 * @param <T> The interface of the directive to be gotten.
@@ -22,8 +38,12 @@ public interface DirectivePool {
 	 * @return An optional with the directive that has been gotten,
 	 *  or empty if the directive has not been set.
 	 */
-	<T extends Directive> Optional<T> getDirectiveOrEmpty(Class<T> directiveCls);
-
+	@SuppressWarnings("unchecked")
+	default <T extends Directive> Optional<T> getDirectiveOrEmpty(Class<T> directiveClass)  {
+		return getUncastedDirectiveOrEmpty(directiveClass)
+			.map(d -> (T) d);
+	}
+	
 	/**
 	 * Get a directive by it's type. Inherit if not set.
 	 * @param <T> The interface of the directive to be gotten.
@@ -31,6 +51,14 @@ public interface DirectivePool {
 	 * @return An optional with the directive that has been gotten,
 	 *  or empty if the directive has not been set or inherited.
 	 */
-	<T extends Directive> Optional<T> inheritDirectiveOrEmpty(Class<T> directiveCls);
+	@SuppressWarnings("unchecked")
+	default <T extends Directive> Optional<T> inheritDirectiveOrEmpty(Class<T> directiveClass) {
+		return inheritUncastedDirectiveOrEmpty(directiveClass)
+			.map(d -> (T) d);
+	}
+
+	Directive[] getCurrentDirectives();
+	
+	Directive getUnresolvedDirective(Class<? extends Directive> directiveClass);
 	
 }

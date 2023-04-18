@@ -8,9 +8,10 @@ import com.github.webicitybrowser.spec.dom.node.imp.DocumentImp;
 import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spiderhtml.SpiderHTMLParserImp;
+import com.github.webicitybrowser.thready.gui.directive.basics.style.NoopStyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
-import com.github.webicitybrowser.thready.gui.graphical.directive.directive.ChildrenDirective;
+import com.github.webicitybrowser.thready.gui.graphical.directive.ChildrenDirective;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeelBuilder;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.SimpleLookAndFeel;
@@ -55,7 +56,7 @@ public class Main {
 		LookAndFeel lookAndFeel = lookAndFeelBuilder.build();
 		
 		GUIContent content = new GUIContentImp(graphicsSystem.getResourceLoader());
-		content.setRoot(rootComponent, lookAndFeel);
+		content.setRoot(rootComponent, lookAndFeel, new NoopStyleGeneratorRoot());
 		
 		graphicsSystem.createWindow(window -> {
 			window

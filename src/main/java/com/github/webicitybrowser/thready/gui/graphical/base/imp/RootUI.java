@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.thready.gui.graphical.base.imp;
 
+import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -11,7 +13,7 @@ public abstract class RootUI implements ComponentUI {
 		throw new UnsupportedOperationException();
 	}
 	
-	public Box[] generateBoxes(BoxContext context) {
+	public Box[] generateBoxes(BoxContext context, DirectivePool parentDirectives, StyleGenerator styleGenerator) {
 		throw new UnsupportedOperationException();
 	};
 	

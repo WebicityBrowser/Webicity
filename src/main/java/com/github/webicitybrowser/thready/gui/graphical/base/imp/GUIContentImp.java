@@ -5,6 +5,8 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
+import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.directive.core.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -25,6 +27,7 @@ public class GUIContentImp implements GUIContent {
 	
 	private ComponentUI rootUI;
 	private LookAndFeel lookAndFeel;
+	private StyleGeneratorRoot styleGeneratorRoot;
 	
 	private boolean redrawRequested = false;
 	private SolidBox rootBox;
@@ -35,10 +38,11 @@ public class GUIContentImp implements GUIContent {
 	}
 
 	@Override
-	public void setRoot(Component component, LookAndFeel lookAndFeel) {
+	public void setRoot(Component component, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot) {
 		this.redrawRequested = true;
 		this.rootUI = createRootUI(component, lookAndFeel);
 		this.lookAndFeel = lookAndFeel;
+		this.styleGeneratorRoot = styleGeneratorRoot;
 		this.invalidationLevel = InvalidationLevel.BOX;
 	}
 
@@ -90,7 +94,8 @@ public class GUIContentImp implements GUIContent {
 
 	private void performBoxCycle() {
 		BoxContext context = new BoxContextImp(lookAndFeel);
-		Box[] generatedBoxes = rootUI.generateBoxes(context);
+		StyleGenerator styleGenerator = styleGeneratorRoot.generateChildStyleGenerator(rootUI);
+		Box[] generatedBoxes = rootUI.generateBoxes(context, null, styleGenerator);
 		if (generatedBoxes.length == 0) {
 			this.rootBox = null;
 			return;

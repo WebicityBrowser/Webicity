@@ -3,6 +3,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.el
 import java.util.function.BiFunction;
 
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
 import com.github.webicitybrowser.thready.gui.graphical.cache.imp.MappingCacheImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicSolidBox;
@@ -29,28 +30,29 @@ public class ElementUIBoxGenerator {
 		this.rendererGenerator = rendererGenerator;
 	}
 	
-	public Box[] generateBoxes(BoxContext context, DirectivePool directives) {
-		return WebBoxGenerator.generateBoxes(() -> performBoxing(context, directives));
+	public Box[] generateBoxes(BoxContext context, DirectivePool directives, StyleGenerator styleGenerator) {
+		return WebBoxGenerator.generateBoxes(() -> performBoxing(context, directives, styleGenerator));
 	}
 	
 	//
 	
-	private Box[] performBoxing(BoxContext context, DirectivePool directives) {
-		Box rootBox = createRootBox(context, directives);
+	private Box[] performBoxing(BoxContext context, DirectivePool directives, StyleGenerator styleGenerator) {
+		Box rootBox = generateBlockRootBox(context, directives, styleGenerator);
 		
 		return new Box[] { rootBox };
 	}
 	
-	private Box createRootBox(BoxContext context, DirectivePool directives) {
-		return createBlockRootBox(context, directives);
+	private Box generateBlockRootBox(BoxContext context, DirectivePool directives, StyleGenerator styleGenerator) {
+		return createBlockRootBox(context, directives, styleGenerator);
 	}
 
-	private Box createBlockRootBox(BoxContext context, DirectivePool directives) {
+	private Box createBlockRootBox(BoxContext context, DirectivePool directives, StyleGenerator styleGenerator) {
 		Box rootBox = new BasicSolidBox(directives, rendererGenerator);
 		
 		ComponentUI[] children = computeCurrentChildUIs(context.getLookAndFeel(), directives);
+		StyleGenerator[] childStyleGenerators = styleGenerator.createChildStyleGenerators(children);
 		for (int i = 0; i < children.length; i++) {
-			addChildBoxes(rootBox, children[i], context, directives);
+			addChildBoxes(rootBox, children[i], context, directives, childStyleGenerators[i]);
 		}
 		
 		return rootBox;
@@ -64,9 +66,9 @@ public class ElementUIBoxGenerator {
 	}
 	
 	private void addChildBoxes(
-		Box rootBox, ComponentUI child, BoxContext context, DirectivePool directives
+		Box rootBox, ComponentUI child, BoxContext context, DirectivePool directives, StyleGenerator styleGenerator
 	) {
-		for (Box box: child.generateBoxes(context)) {
+		for (Box box: child.generateBoxes(context, directives, styleGenerator)) {
 			for (Box adjustedBox: box.getAdjustedBoxTree()) {
 				rootBox.addChild(adjustedBox);
 			}

@@ -1,13 +1,13 @@
-package com.github.webicitybrowser.thready.gui.graphical.directive.directive;
+package com.github.webicitybrowser.thready.gui.graphical.directive;
 
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 
 /**
- * Allows setting the background color of a component
+ * Allows setting the foreground color of a component
  * (if supported).
  */
-public interface BackgroundColorDirective extends Directive {
+public interface ForegroundColorDirective extends Directive {
 	
 	/**
 	 * Get the color the background of the component should be.
@@ -16,7 +16,7 @@ public interface BackgroundColorDirective extends Directive {
 	ColorFormat getColor();
 	
 	default Class<? extends Directive> getPrimaryType() {
-		return BackgroundColorDirective.class;
+		return ForegroundColorDirective.class;
 	}
 
 	/**
@@ -24,7 +24,7 @@ public interface BackgroundColorDirective extends Directive {
 	 * @param color The color for a component's background.
 	 * @return The relevant. directive.
 	 */
-	public static BackgroundColorDirective of(ColorFormat color) {
+	public static ForegroundColorDirective of(ColorFormat color) {
 		return () -> color;
 	}
 

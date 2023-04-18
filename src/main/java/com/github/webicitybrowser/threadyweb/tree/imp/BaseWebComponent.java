@@ -1,8 +1,8 @@
 package com.github.webicitybrowser.threadyweb.tree.imp;
 
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
-import com.github.webicitybrowser.thready.gui.graphical.directive.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public abstract class BaseWebComponent implements Component {

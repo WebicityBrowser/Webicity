@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.directive.directive;
+package com.github.webicitybrowser.thready.gui.graphical.directive;
 
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
