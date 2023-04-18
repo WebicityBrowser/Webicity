@@ -7,11 +7,16 @@ import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.imp.DocumentImp;
 import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
+import com.github.webicitybrowser.spec.infra.Namespace;
 import com.github.webicitybrowser.spiderhtml.SpiderHTMLParserImp;
-import com.github.webicitybrowser.thready.gui.directive.basics.style.NoopStyleGeneratorRoot;
+import com.github.webicitybrowser.thready.color.Colors;
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
 import com.github.webicitybrowser.thready.gui.graphical.directive.ChildrenDirective;
+import com.github.webicitybrowser.thready.gui.graphical.directive.ForegroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeelBuilder;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.SimpleLookAndFeel;
@@ -21,11 +26,14 @@ import com.github.webicitybrowser.thready.windowing.core.GraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.WebLookAndFeel;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
+import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.cssom.CSSOMNode;
+import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.cssom.filters.TypeFilter;
+import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.generator.DocumentStyleGeneratorRoot;
 
 public class Main {
 
 	public static void main(String[] args) {
-		String html = "<!doctype html><html><head></head><body>h<div>byebye</div>he</body></html>";
+		String html = "<!doctype html><html><head></head><body>Test passes if<a>this text is blue</a>but other lines are not</body></html>";
 		Document document = parseHTML(html);
 		System.out.println(document);
 		createGUIFor(document);
@@ -56,13 +64,25 @@ public class Main {
 		LookAndFeel lookAndFeel = lookAndFeelBuilder.build();
 		
 		GUIContent content = new GUIContentImp(graphicsSystem.getResourceLoader());
-		content.setRoot(rootComponent, lookAndFeel, new NoopStyleGeneratorRoot());
+		content.setRoot(rootComponent, lookAndFeel, createStyleGenerator());
 		
 		graphicsSystem.createWindow(window -> {
 			window
 				.getScreen()
 				.setScreenContent(content);
 		});
+	}
+
+	private static StyleGeneratorRoot createStyleGenerator() {
+		DirectivePool aDirectives = new BasicDirectivePool();
+		aDirectives.directive(ForegroundColorDirective.of(Colors.BLUE));
+		
+		CSSOMNode cssomNode = CSSOMNode.create();
+		cssomNode
+			.getChild(new TypeFilter(Namespace.HTML_NAMESPACE, "a"))
+			.addDirectivePool(aDirectives);
+		
+		return new DocumentStyleGeneratorRoot(() -> cssomNode);
 	}
 	
 }
