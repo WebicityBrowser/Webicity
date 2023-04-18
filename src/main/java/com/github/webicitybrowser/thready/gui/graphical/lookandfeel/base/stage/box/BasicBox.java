@@ -7,32 +7,29 @@ import java.util.function.BiFunction;
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.FluidBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.SolidBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.SolidRenderer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 
-public class BasicSolidBox implements SolidBox {
+public class BasicBox implements Box {
 	
 	private final DirectivePool directives;
-	private final BiFunction<Box, Box[], SolidRenderer> rendererGenerator;
+	private final BiFunction<Box, Box[], Renderer> rendererGenerator;
 	
 	private final List<Box> children = new ArrayList<>();
 	
 	private boolean isSolidBoxContext;
 	private Box currentFluidGroup;
 
-	public BasicSolidBox(DirectivePool directives, BiFunction<Box, Box[], SolidRenderer> rendererGenerator) {
+	public BasicBox(DirectivePool directives, BiFunction<Box, Box[], Renderer> rendererGenerator) {
 		this.directives = directives;
 		this.rendererGenerator = rendererGenerator;
 	}
 	
 	@Override
 	public void addChild(Box child) {
-		if (child instanceof SolidBox) {
-			addSolidBox(child);
-		} else if (child instanceof FluidBox) {
+		if (child instanceof FluidBox) {
 			addFluidBox(child);
 		} else {
-			throw new UnsupportedOperationException("Unsupported box type");
+			addSolidBox(child);
 		}
 	}
 
@@ -42,7 +39,7 @@ public class BasicSolidBox implements SolidBox {
 	}
 
 	@Override
-	public SolidRenderer createRenderer() {
+	public Renderer createRenderer() {
 		return rendererGenerator.apply(this, children.toArray(Box[]::new));
 	}
 
@@ -85,7 +82,7 @@ public class BasicSolidBox implements SolidBox {
 		if (currentFluidGroup != null) {
 			return;
 		}
-		currentFluidGroup = new BasicSolidBox(directives, rendererGenerator);
+		currentFluidGroup = new BasicBox(directives, rendererGenerator);
 		children.add(currentFluidGroup);
 		// TODO: Is the passed-through renderer generator fine?
 	}

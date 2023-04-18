@@ -13,9 +13,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.Compone
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.SolidBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.SolidRenderer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
@@ -30,7 +29,7 @@ public class GUIContentImp implements GUIContent {
 	private StyleGeneratorRoot styleGeneratorRoot;
 	
 	private boolean redrawRequested = false;
-	private SolidBox rootBox;
+	private Box rootBox;
 	private Unit rootUnit;
 	
 	public GUIContentImp(ResourceLoader resourceLoader) {
@@ -106,15 +105,12 @@ public class GUIContentImp implements GUIContent {
 			return;
 		}
 		Box rootBox = adjustedBoxes[0];
-		if (!(rootBox instanceof SolidBox)) {
-			throw new RuntimeException("The root component must be solid!");
-		}
-		this.rootBox = (SolidBox) rootBox;
+		this.rootBox = rootBox;
 	}
 
 	private void performRenderCycle(AbsoluteSize contentSize) {
 		RenderContext renderContext = new RenderContextImp(resourceLoader);
-		SolidRenderer rootRenderer = rootBox.createRenderer();
+		Renderer rootRenderer = rootBox.createRenderer();
 		this.rootUnit = rootRenderer.render(renderContext, contentSize);
 	}
 	

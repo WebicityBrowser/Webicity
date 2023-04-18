@@ -34,7 +34,7 @@ public class HorizontalFluidLines implements FluidLines {
 	@Override
 	public void addBox(FluidBox child) {
 		FluidRenderer childRenderer = child.createRenderer();
-		UnitGenerator unitGenerator = childRenderer.render(renderContext);
+		UnitGenerator unitGenerator = childRenderer.renderFluid(renderContext);
 		while (!unitGenerator.completed()) { // A fluid box has multiple units to add to the line
 			PartialUnitPreview partialUnitPreview = unitGenerator.previewNextUnit(switches);
 			startNewLineIfNeeded(unitGenerator, partialUnitPreview);

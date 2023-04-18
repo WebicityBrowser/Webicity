@@ -5,7 +5,7 @@ import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.SolidRenderer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.stage.style.SimpleStylePoolGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.container.stage.box.ContainerUIBoxGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.container.stage.render.ContainerRenderer;
@@ -36,7 +36,7 @@ public class ContainerUI implements ComponentUI {
 		return SimpleBoxGenerator.generateBoxes(() -> boxGenerator.generateBoxes(context, styleDirectives, styleGenerator));
 	}
 	
-	private SolidRenderer createRenderer(Box box, Box[] children) {
+	private Renderer createRenderer(Box box, Box[] children) {
 		return new ContainerRenderer(box, children);
 	}
 

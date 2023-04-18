@@ -1,13 +1,15 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.fluid;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.context.inline;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.FluidBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.FluidRenderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.PartialUnitPreview;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
@@ -32,15 +34,12 @@ public class HorizontalFluidLines implements FluidLines {
 	}
 
 	@Override
-	public void addBox(FluidBox child) {
-		FluidRenderer childRenderer = child.createRenderer();
-		UnitGenerator unitGenerator = childRenderer.render(renderContext);
-		while (!unitGenerator.completed()) { // A fluid box has multiple units to add to the line
-			PartialUnitPreview partialUnitPreview = unitGenerator.previewNextUnit(switches);
-			startNewLineIfNeeded(unitGenerator, partialUnitPreview);
-			partialUnitPreview.append(); // Appends to the current merged unit
+	public void addBox(Box child) {
+		if (child instanceof FluidBox fluidBox) {
+			addFluidBox(fluidBox);
+		} else {
+			addSolidBox(child);
 		}
-		addMergedUnitToLine(unitGenerator.getMergedUnits());
 	}
 
 	@Override
@@ -51,6 +50,25 @@ public class HorizontalFluidLines implements FluidLines {
 	@Override
 	public FluidChildrenResult[] getRenderResults() {
 		return rendered.toArray(FluidChildrenResult[]::new);
+	}
+	
+	private void addFluidBox(FluidBox child) {
+		FluidRenderer childRenderer = child.createRenderer();
+		UnitGenerator unitGenerator = childRenderer.renderFluid(renderContext);
+		while (!unitGenerator.completed()) { // A fluid box has multiple units to add to the line
+			PartialUnitPreview partialUnitPreview = unitGenerator.previewNextUnit(switches);
+			startNewLineIfNeeded(unitGenerator, partialUnitPreview);
+			partialUnitPreview.append(); // Appends to the current merged unit
+		}
+		addMergedUnitToLine(unitGenerator.getMergedUnits());
+	}
+	
+	private void addSolidBox(Box child) {
+		Renderer childRenderer = child.createRenderer();
+		Unit unit = childRenderer.render(renderContext, new AbsoluteSize(-1, -1));
+		goToNextLine();
+		addMergedUnitToLine(unit);
+		goToNextLine();
 	}
 	
 	private void startNewLineIfNeeded(UnitGenerator unitGenerator, PartialUnitPreview partialUnitPreview) {
@@ -77,6 +95,7 @@ public class HorizontalFluidLines implements FluidLines {
 		rendered.add(new FluidChildrenResult(startPosition, unit));
 		
 		posX += unit.getMinimumSize().width();
+		totalWidth = Math.max(totalWidth, posX);
 	}
 	
 	private void goToNextLine() {

@@ -5,37 +5,37 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.layout.base.flowing.FlowingLayoutManager;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.SolidBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.SolidRenderer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 
 public class FlowingLayoutManagerImp implements FlowingLayoutManager {
 
 	@Override
-	public Unit render(RenderContext renderContext, AbsoluteSize precomputedSize, SolidBox[] solidChildren) {
+	public Unit render(RenderContext renderContext, AbsoluteSize precomputedSize, Box[] children) {
 		RenderCursorTracker renderCursor = new RenderCursorTracker();
-		FlowingLayoutResult[] childrenResults = renderChildren(renderContext, precomputedSize, solidChildren, renderCursor);
+		FlowingLayoutResult[] childrenResults = renderChildren(renderContext, precomputedSize, children, renderCursor);
 		return new FlowingLayoutUnit(childrenResults, renderCursor.getCoveredSize());
 	}
 
 	private FlowingLayoutResult[] renderChildren(
-		RenderContext renderContext, AbsoluteSize parentSize, SolidBox[] solidChildren, RenderCursorTracker renderCursor
+		RenderContext renderContext, AbsoluteSize parentSize, Box[] children, RenderCursorTracker renderCursor
 	) {
-		FlowingLayoutResult[] results = new FlowingLayoutResult[solidChildren.length];
-		for (int i = 0; i < solidChildren.length; i++) {
-			results[i] = renderChild(renderContext, parentSize, solidChildren[i], renderCursor);
+		FlowingLayoutResult[] results = new FlowingLayoutResult[children.length];
+		for (int i = 0; i < children.length; i++) {
+			results[i] = renderChild(renderContext, parentSize, children[i], renderCursor);
 		}
 		
 		return results;
 	}
 
 	private FlowingLayoutResult renderChild(
-		RenderContext renderContext, AbsoluteSize parentSize, SolidBox childBox, RenderCursorTracker renderCursor
+		RenderContext renderContext, AbsoluteSize parentSize, Box childBox, RenderCursorTracker renderCursor
 	) {
 		AbsoluteSize precomputedSize = precomputeChildSize(childBox, parentSize);
 		
-		SolidRenderer childRenderer = childBox.createRenderer();
+		Renderer childRenderer = childBox.createRenderer();
 		Unit childUnit = childRenderer.render(renderContext, precomputedSize);
 		AbsoluteSize renderedSize = childUnit.getMinimumSize();
 		
@@ -49,7 +49,7 @@ public class FlowingLayoutManagerImp implements FlowingLayoutManager {
 		return new FlowingLayoutResult(renderedRectangle, childUnit);
 	}
 
-	private AbsoluteSize precomputeChildSize(SolidBox childBox, AbsoluteSize parentSize) {
+	private AbsoluteSize precomputeChildSize(Box childBox, AbsoluteSize parentSize) {
 		// TODO: Respond to sizing directives
 		return new AbsoluteSize(parentSize.width(), RelativeDimension.UNBOUNDED);
 	}
@@ -67,7 +67,7 @@ public class FlowingLayoutManagerImp implements FlowingLayoutManager {
 	}
 	
 	private AbsolutePosition computeNormalChildPosition(
-		SolidBox child, AbsoluteSize parentSize, AbsoluteSize finalSize, RenderCursorTracker renderCursor
+		Box child, AbsoluteSize parentSize, AbsoluteSize finalSize, RenderCursorTracker renderCursor
 	) {
 		// TODO: Respond to positioning directives
 		return selectNextPosition(finalSize, renderCursor);

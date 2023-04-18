@@ -24,6 +24,8 @@ import com.github.webicitybrowser.thready.gui.tree.basics.ContainerComponent;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.GraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
+import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective.OuterDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.WebLookAndFeel;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.cssom.CSSOMNode;
@@ -33,7 +35,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.
 public class Main {
 
 	public static void main(String[] args) {
-		String html = "<!doctype html><html><head></head><body>Test passes if<a>this text is blue</a>but other lines are not</body></html>";
+		String html = "<!doctype html><html><head></head><body>Test passes if <a><a>h</a>this text is inline</a> with other text</body></html>";
 		Document document = parseHTML(html);
 		System.out.println(document);
 		createGUIFor(document);
@@ -74,8 +76,9 @@ public class Main {
 	}
 
 	private static StyleGeneratorRoot createStyleGenerator() {
-		DirectivePool aDirectives = new BasicDirectivePool();
-		aDirectives.directive(ForegroundColorDirective.of(Colors.BLUE));
+		DirectivePool aDirectives = new BasicDirectivePool()
+			.directive(ForegroundColorDirective.of(Colors.BLUE))
+			.directive(OuterDisplayDirective.of(OuterDisplay.INLINE));
 		
 		CSSOMNode cssomNode = CSSOMNode.create();
 		cssomNode

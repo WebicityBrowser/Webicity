@@ -7,12 +7,12 @@ import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
 import com.github.webicitybrowser.thready.gui.graphical.cache.imp.MappingCacheImp;
 import com.github.webicitybrowser.thready.gui.graphical.directive.ChildrenDirective;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicSolidBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.SolidRenderer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleBoxGenerator;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.gui.tree.core.UINode;
@@ -20,10 +20,10 @@ import com.github.webicitybrowser.thready.gui.tree.core.UINode;
 public class ContainerUIBoxGenerator {
 	
 	private final ComponentUI parentUI;
-	private final BiFunction<Box, Box[], SolidRenderer> rendererGenerator;
+	private final BiFunction<Box, Box[], Renderer> rendererGenerator;
 	private final MappingCache<Component, ComponentUI> childCache = new MappingCacheImp<>(ComponentUI[]::new, ui -> ui.getComponent());
 
-	public ContainerUIBoxGenerator(ComponentUI parentUI, BiFunction<Box, Box[], SolidRenderer> rendererGenerator) {
+	public ContainerUIBoxGenerator(ComponentUI parentUI, BiFunction<Box, Box[], Renderer> rendererGenerator) {
 		this.parentUI = parentUI;
 		this.rendererGenerator = rendererGenerator;
 	}
@@ -35,7 +35,7 @@ public class ContainerUIBoxGenerator {
 	//
 	
 	private Box[] generateRootBox(BoxContext context, DirectivePool directives, StyleGenerator styleGenerator) {
-		Box rootBox = new BasicSolidBox(directives, rendererGenerator);
+		Box rootBox = new BasicBox(directives, rendererGenerator);
 		addChildrenBoxes(rootBox, context, directives, styleGenerator);
 		
 		return new Box[] { rootBox };

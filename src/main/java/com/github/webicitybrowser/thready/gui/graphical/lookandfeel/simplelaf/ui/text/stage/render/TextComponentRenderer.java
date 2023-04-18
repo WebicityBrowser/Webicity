@@ -22,7 +22,7 @@ public class TextComponentRenderer implements FluidRenderer {
 	}
 
 	@Override
-	public UnitGenerator render(RenderContext renderContext) {
+	public UnitGenerator renderFluid(RenderContext renderContext) {
 		FontSettings fontSettings = getFontSettings();
 		Font2D font = renderContext.getResourceLoader().loadFont(fontSettings);
 		
