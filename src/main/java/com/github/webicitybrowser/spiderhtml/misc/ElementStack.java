@@ -15,9 +15,17 @@ public class ElementStack {
 	public Node peek() {
 		return stack.peek();
 	}
+	
+	public Node peek(int pos) {
+		return stack.get(stack.size() - pos - 1);
+	}
 
 	public Node pop() {
 		return stack.pop();
+	}
+
+	public int size() {
+		return stack.size();
 	}
 	
 }

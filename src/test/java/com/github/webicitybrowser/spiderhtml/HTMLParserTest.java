@@ -104,6 +104,19 @@ public class HTMLParserTest {
 		testElement(childNodes.get(0), "div", 0);
 	}
 	
+	@Test
+	@DisplayName("Can parse ordinary element")
+	public void canParseOrdinryElement() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span></span></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement bodyLeaf = testToBody(document, 1);
+		NodeList childNodes = bodyLeaf.getChildNodes();
+		testElement(childNodes.get(0), "span", 0);
+	}
+	
 	private HTMLElement testToBody(Document document, int numBodyChildren) {
 		HTMLElement htmlNode = testToHtml(document, 2);
 		NodeList htmlChildren = htmlNode.getChildNodes();
@@ -123,7 +136,7 @@ public class HTMLParserTest {
 	private HTMLElement testElement(Node node, String name, int children) {
 		Assertions.assertInstanceOf(HTMLElement.class, node);
 		HTMLElement element = (HTMLElement) node;
-		Assertions.assertEquals(name, element.getLocalTag());
+		Assertions.assertEquals(name, element.getLocalName());
 		Assertions.assertEquals(children, element.getChildNodes().getLength());
 		
 		return element;

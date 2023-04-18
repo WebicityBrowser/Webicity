@@ -47,7 +47,7 @@ public class SharedContext {
 		// TODO Auto-generated method stub
 	}
 
-	public void parseError() {
+	public void recordError() {
 		// TODO Auto-generated method stub
 	}
 	

@@ -27,7 +27,7 @@ public class ElementImp extends NodeImp implements Element {
 	}
 
 	@Override
-	public String getLocalTag() {
+	public String getLocalName() {
 		return this.localTag;
 	};
 	
