@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.context.inline;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.block.context.inline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class HorizontalFluidLines implements FluidLines {
 	}
 	
 	private void startNewLineIfNeeded(UnitGenerator unitGenerator, PartialUnitPreview partialUnitPreview) {
-		if (lineCanNotFit(partialUnitPreview)) {
+		if (lineCanNotFit(partialUnitPreview) || partialUnitPreview.shouldForceNewLine()) {
 			addMergedUnitToLine(unitGenerator.getMergedUnits());
 			goToNextLine();
 		}

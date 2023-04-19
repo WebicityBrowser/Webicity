@@ -8,4 +8,8 @@ public interface PartialUnitPreview {
 	
 	AbsoluteSize sizeAfterAppend();
 	
+	default boolean shouldForceNewLine() {
+		return false;
+	};
+	
 }

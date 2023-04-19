@@ -35,7 +35,10 @@ import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.
 public class Main {
 
 	public static void main(String[] args) {
-		String html = "<!doctype html><html><head></head><body>Test passes if <a><a>h</a>this text is inline</a> with other text</body></html>";
+		String html =
+			"<!doctype html><html><head></head><body>Oh chosen one, <a><div>guided <div>by " +
+			"</div></div>the light</a>, do you wish to continue? If you continue, you will " +
+			"die a very terrible death. I need enough text to wrap around a line sooo....</body></html>";
 		Document document = parseHTML(html);
 		System.out.println(document);
 		createGUIFor(document);

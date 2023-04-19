@@ -1,6 +1,7 @@
-package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.imp;
+package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.imp.EmptyUnit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.PartialUnitPreview;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;

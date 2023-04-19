@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.imp;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.SingleUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.FluidRenderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
