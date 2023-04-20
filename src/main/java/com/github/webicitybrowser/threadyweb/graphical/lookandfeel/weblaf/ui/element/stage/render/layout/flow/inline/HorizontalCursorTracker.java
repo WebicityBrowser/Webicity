@@ -20,7 +20,7 @@ public class HorizontalCursorTracker implements CursorTracker {
 	@Override
 	public AbsoluteSize sizeCoveredAfterAdd(AbsoluteSize sizeAfterAppend) {
 		float widthComponent = sizeAfterAppend.width() + currentSize.width();
-		float heightComponent = sizeAfterAppend.height() + currentSize.height();
+		float heightComponent = Math.max(sizeAfterAppend.height(), currentSize.height());
 		return new AbsoluteSize(widthComponent, heightComponent);
 	}
 

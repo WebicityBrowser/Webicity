@@ -2,7 +2,6 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.imp.EmptyUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.PartialUnitPreview;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.UnitGenerator;
@@ -20,7 +19,7 @@ public class SingleUnitGenerator implements UnitGenerator {
 	}
 
 	@Override
-	public PartialUnitPreview previewNextUnit(ContextSwitch[] contextSwitches) {
+	public PartialUnitPreview previewNextUnit() {
 		if (merged) {
 			throw new IllegalStateException("Unit already merged!");
 		}

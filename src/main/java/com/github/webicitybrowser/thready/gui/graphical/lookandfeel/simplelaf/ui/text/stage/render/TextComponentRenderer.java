@@ -6,6 +6,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.FluidRenderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.UnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.text.stage.render.unit.TextUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
@@ -22,14 +23,14 @@ public class TextComponentRenderer implements FluidRenderer {
 	}
 
 	@Override
-	public UnitGenerator renderFluid(RenderContext renderContext) {
+	public UnitGenerator renderFluid(RenderContext renderContext, ContextSwitch[] switches) {
 		FontSettings fontSettings = getFontSettings();
 		Font2D font = renderContext.getResourceLoader().loadFont(fontSettings);
 		
 		String text = component.getText();
 		float[] charWidths = calculateCharWidths(text, font.getMetrics());
 		
-		return new TextUnitGenerator(box, text, font, charWidths);
+		return new TextUnitGenerator(box, text, font, charWidths, switches);
 	}
 
 	private FontSettings getFontSettings() {

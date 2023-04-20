@@ -14,6 +14,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.PartialUnitPreview;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.UnitGenerator;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.inline.FlowRecursiveContextSwitch;
 
 public class HorizontalFluidLines implements FluidLines {
 
@@ -21,6 +22,7 @@ public class HorizontalFluidLines implements FluidLines {
 	private final AbsoluteSize maxBounds;
 	private final ContextSwitch[] switches;
 	
+	private UnitGenerator currentFlow;
 	private List<FluidChildrenResult> rendered = new ArrayList<>();
 	private float posX = 0;
 	private float posY = 0;
@@ -30,7 +32,7 @@ public class HorizontalFluidLines implements FluidLines {
 	public HorizontalFluidLines(RenderContext renderContext, AbsoluteSize maxBounds) {
 		this.renderContext = renderContext;
 		this.maxBounds = maxBounds;
-		this.switches = new ContextSwitch[] {};
+		this.switches = createContextSwitches();
 	}
 
 	@Override
@@ -54,25 +56,26 @@ public class HorizontalFluidLines implements FluidLines {
 	
 	private void addFluidBox(FluidBox child) {
 		FluidRenderer childRenderer = child.createRenderer();
-		UnitGenerator unitGenerator = childRenderer.renderFluid(renderContext);
-		while (!unitGenerator.completed()) { // A fluid box has multiple units to add to the line
-			PartialUnitPreview partialUnitPreview = unitGenerator.previewNextUnit(switches);
-			startNewLineIfNeeded(unitGenerator, partialUnitPreview);
+		currentFlow = childRenderer.renderFluid(renderContext, switches);
+		while (!currentFlow.completed()) { // A fluid box has multiple units to add to the line
+			PartialUnitPreview partialUnitPreview = currentFlow.previewNextUnit();
+			startNewLineIfNeeded(currentFlow, partialUnitPreview);
 			partialUnitPreview.append(); // Appends to the current merged unit
 		}
-		addMergedUnitToLine(unitGenerator.getMergedUnits());
+		addMergedUnitToLine(currentFlow.getMergedUnits());
+		currentFlow = null;
 	}
 	
 	private void addSolidBox(Box child) {
 		Renderer childRenderer = child.createRenderer();
-		Unit unit = childRenderer.render(renderContext, new AbsoluteSize(-1, -1));
+		Unit unit = childRenderer.render(renderContext, new AbsoluteSize(maxBounds.width(), -1));
 		goToNextLine();
 		addMergedUnitToLine(unit);
 		goToNextLine();
 	}
 	
 	private void startNewLineIfNeeded(UnitGenerator unitGenerator, PartialUnitPreview partialUnitPreview) {
-		if (lineCanNotFit(partialUnitPreview) || partialUnitPreview.shouldForceNewLine()) {
+		if (lineCanNotFit(partialUnitPreview)) {
 			addMergedUnitToLine(unitGenerator.getMergedUnits());
 			goToNextLine();
 		}
@@ -102,6 +105,33 @@ public class HorizontalFluidLines implements FluidLines {
 		posX = 0;
 		posY += curLineHeight;
 		curLineHeight = 0;
+	}
+	
+	private void commitCurrentFlow() {
+		if (currentFlow != null) {
+			addMergedUnitToLine(currentFlow.getMergedUnits());
+		}
+	}
+	
+	private ContextSwitch[] createContextSwitches() {
+		return new ContextSwitch[] { new RecursiveContextSwitchHandler() };
+	}
+	
+	public void handleOutOfFlowBox(Box box) {
+		commitCurrentFlow();
+		addSolidBox(box);
+	}
+
+	private class RecursiveContextSwitchHandler implements FlowRecursiveContextSwitch {
+
+		@Override
+		public void onBoxEnter(BoxEnterContext context) {
+			if (!(context.getBox() instanceof FluidBox)) {
+				context.skipBox();
+				handleOutOfFlowBox(context.getBox());
+			}
+		}
+		
 	}
 	
 }

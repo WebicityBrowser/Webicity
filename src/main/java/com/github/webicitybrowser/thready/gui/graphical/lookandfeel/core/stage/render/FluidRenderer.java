@@ -7,13 +7,12 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 
 public interface FluidRenderer extends Renderer {
 
-	UnitGenerator renderFluid(RenderContext renderContext);
+	UnitGenerator renderFluid(RenderContext renderContext, ContextSwitch[] switches);
 	
 	default public Unit render(RenderContext renderContext, AbsoluteSize precomputedSize) {
-		UnitGenerator generator = renderFluid(renderContext);
-		ContextSwitch[] switches = new ContextSwitch[0];
+		UnitGenerator generator = renderFluid(renderContext, new ContextSwitch[0]);
 		while (!generator.completed()) {
-			generator.previewNextUnit(switches).append();
+			generator.previewNextUnit().append();
 		}
 		return generator.getMergedUnits();
 	};

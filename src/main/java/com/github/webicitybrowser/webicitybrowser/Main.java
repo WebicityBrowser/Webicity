@@ -36,9 +36,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		String html =
-			"<!doctype html><html><head></head><body>Oh chosen one, <a><div>guided <div>by " +
-			"</div></div>the light</a>, do you wish to continue? If you continue, you will " +
-			"die a very terrible death. I need enough text to wrap around a line sooo....</body></html>";
+			"<!doctype html><html><head></head><body><a>ATime<a>by</a><div>Once</div>there</a></body></html>";
 		Document document = parseHTML(html);
 		System.out.println(document);
 		createGUIFor(document);
@@ -82,11 +80,16 @@ public class Main {
 		DirectivePool aDirectives = new BasicDirectivePool()
 			.directive(ForegroundColorDirective.of(Colors.BLUE))
 			.directive(OuterDisplayDirective.of(OuterDisplay.INLINE));
+		DirectivePool divDirectives = new BasicDirectivePool()
+			.directive(ForegroundColorDirective.of(Colors.GREEN));
 		
 		CSSOMNode cssomNode = CSSOMNode.create();
 		cssomNode
 			.getChild(new TypeFilter(Namespace.HTML_NAMESPACE, "a"))
 			.addDirectivePool(aDirectives);
+		cssomNode
+			.getChild(new TypeFilter(Namespace.HTML_NAMESPACE, "div"))
+			.addDirectivePool(divDirectives);
 		
 		return new DocumentStyleGeneratorRoot(() -> cssomNode);
 	}

@@ -20,7 +20,7 @@ public class TextUnitGenerator implements UnitGenerator {
 	int windowStart = 0;
 	int windowEnd = 0;
 
-	public TextUnitGenerator(Box box, String text, Font2D font, float[] charWidths) {
+	public TextUnitGenerator(Box box, String text, Font2D font, float[] charWidths, ContextSwitch[] switches) {
 		this.box = box;
 		this.text = text;
 		this.font = font;
@@ -46,7 +46,7 @@ public class TextUnitGenerator implements UnitGenerator {
 	}
 	
 	@Override
-	public PartialUnitPreview previewNextUnit(ContextSwitch[] contextSwitches) {
+	public PartialUnitPreview previewNextUnit() {
 		return new PartialUnitPreview() {
 			
 			@Override

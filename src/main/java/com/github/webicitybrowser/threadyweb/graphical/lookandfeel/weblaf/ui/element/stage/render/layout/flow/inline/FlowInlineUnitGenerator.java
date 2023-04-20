@@ -14,33 +14,38 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.PartialUnitPreview;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.UnitGenerator;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.inline.FlowRecursiveContextSwitch.BoxEnterContext;
 
 public class FlowInlineUnitGenerator implements UnitGenerator {
 
 	private final Box[] children;
 	private final RenderContext renderContext;
+	private final ContextSwitch[] contextSwitches;
+	private final FlowRecursiveContextSwitch recursiveSwitch;
 	
 	private List<RenderedInlineUnit> renderedChildren;
 	private UnitGenerator currentSubGenerator;
-	private int cursor = 0;
-	int linesToForce = 0;
+	private int nextCursor = 0;
 	
 	private CursorTracker cursorTracker = new HorizontalCursorTracker();
 
-	public FlowInlineUnitGenerator(Box[] children, RenderContext renderContext) {
+	public FlowInlineUnitGenerator(Box[] children, RenderContext renderContext, ContextSwitch[] contextSwitches) {
 		this.children = children;
 		this.renderContext = renderContext;
-		updateCurrentSubGenerator();
+		this.contextSwitches = contextSwitches;
+		this.recursiveSwitch = findRecursiveSwitch();
 		startNextUnit();
+		findNextSubGenerator();
 	}
 
 	@Override
-	public PartialUnitPreview previewNextUnit(ContextSwitch[] contextSwitches) {
+	public PartialUnitPreview previewNextUnit() {
 		if (completed()) {
 			throw new IllegalStateException("Unit generator already completed!");
 		}
 		
-		PartialUnitPreview unitPreview = currentSubGenerator.previewNextUnit(contextSwitches);
+		PartialUnitPreview unitPreview = currentSubGenerator.previewNextUnit();
+		
 		return new PartialUnitPreview() {
 			@Override
 			public AbsoluteSize sizeAfterAppend() {
@@ -48,17 +53,9 @@ public class FlowInlineUnitGenerator implements UnitGenerator {
 			}
 			
 			@Override
-			public boolean shouldForceNewLine() {
-				return linesToForce > 0 || unitPreview.shouldForceNewLine();
-			}
-			
-			@Override
 			public void append() {
-				if (linesToForce > 0) {
-					linesToForce--;
-				}
 				unitPreview.append();
-				updateCursorWhileCompleted();
+				findNextSubGenerator();
 			}
 		};
 	}
@@ -66,7 +63,7 @@ public class FlowInlineUnitGenerator implements UnitGenerator {
 	@Override
 	public Unit getMergedUnits() {
 		if (currentSubGenerator != null) {
-			mergeSubGeneratorUnit();
+			mergeCurrentSubGeneratorProgress();
 		}
 		
 		Unit fullUnit = new FlowInlineUnit(
@@ -79,63 +76,89 @@ public class FlowInlineUnitGenerator implements UnitGenerator {
 
 	@Override
 	public boolean completed() {
-		return cursor >= children.length && currentSubGenerator == null;
+		return nextCursor >= children.length && currentSubGenerator == null;
 	}
 	
-	private void updateCursorWhileCompleted() {
-		if (currentSubGenerator == null) {
-			return;
-		}
-		while (!lastUnitCompleted()) {
-			if (!currentSubGenerator.completed()) {
-				return;
-			}
-			mergeSubGeneratorUnit();
-			updateCurrentSubGenerator();
-		}
-		mergeSubGeneratorUnit();
-		currentSubGenerator = null;
+	private void startNextUnit() {
+		this.renderedChildren = new ArrayList<>();
+		this.cursorTracker = new HorizontalCursorTracker();
 	}
 	
-	private boolean lastUnitCompleted() {
-		if (cursor < children.length) {
-			return false;
+	private void findNextSubGenerator() {
+		exitCurrentSubGeneratorIfCompleted();
+		while (nextCursor < children.length && currentSubGenerator == null) {
+			startSubGeneratorAtCursor();
+			exitCurrentSubGeneratorIfCompleted();
+			nextCursor++;
 		}
-		return currentSubGenerator.completed();
 	}
 
-	private void mergeSubGeneratorUnit() {
+	private void startSubGeneratorAtCursor() {
+		// TODO: Call to the context
+		Renderer childRenderer = children[nextCursor].createRenderer();
+		if (childRenderer instanceof FluidRenderer fluidRenderer) {
+			currentSubGenerator = fluidRenderer.renderFluid(renderContext, contextSwitches);
+		} else {
+			startOrSkipNonFluidSubGenerator(children[nextCursor], childRenderer);
+		}
+	}
+	
+	private void startOrSkipNonFluidSubGenerator(Box box, Renderer childRenderer) {
+		startNonFluidSubGenerator(childRenderer);
+		if (recursiveSwitch == null) {
+			return;
+		}
+		recursiveSwitch.onBoxEnter(new BoxEnterContext() {
+			@Override
+			public void skipBox() {
+				currentSubGenerator = null;
+			}
+			
+			@Override
+			public Box getBox() {
+				return box;
+			}
+		});
+		
+	}
+	
+	private void startNonFluidSubGenerator(Renderer childRenderer) {
+		AbsoluteSize childSize = new AbsoluteSize(-1, -1);
+		Unit unit = childRenderer.render(renderContext, childSize);
+		currentSubGenerator = new SingleUnitGenerator(unit);
+	}
+
+	private void exitCurrentSubGeneratorIfCompleted() {
+		if (currentSubGenerator != null && currentSubGenerator.completed()) {
+			exitCurrentSubGenerator();
+		}
+	}
+
+	private void exitCurrentSubGenerator() {
+		mergeCurrentSubGeneratorProgress();
+		currentSubGenerator = null;
+	}
+
+
+	private void mergeCurrentSubGeneratorProgress() {
 		Unit mergedUnit = currentSubGenerator.getMergedUnits();
 		AbsolutePosition unitPosition = cursorTracker.getNextPosition(); 
 		renderedChildren.add(createRenderData(mergedUnit, unitPosition));
 		cursorTracker.add(mergedUnit.getMinimumSize());
 	}
 	
-	private RenderedInlineUnit createRenderData(Unit unit, AbsolutePosition unitPosition) {
-		return new RenderedInlineUnit(unit, unitPosition, unit.getMinimumSize());
-	}
-
-	private void startNextUnit() {
-		this.renderedChildren = new ArrayList<>();
-		this.cursorTracker = new HorizontalCursorTracker();
-	}
-
-	private void updateCurrentSubGenerator() {
-		if (completed()) {
-			return;
+	private FlowRecursiveContextSwitch findRecursiveSwitch() {
+		for (ContextSwitch contextSwitch: this.contextSwitches) {
+			if (contextSwitch instanceof FlowRecursiveContextSwitch recursiveSwitch) {
+				return recursiveSwitch;
+			}
 		}
 		
-		Renderer childRenderer = children[cursor].createRenderer();
-		cursor++;
-		if (childRenderer instanceof FluidRenderer fluidRenderer) {
-			currentSubGenerator = fluidRenderer.renderFluid(renderContext);
-		} else {
-			// TODO: Make sure this gets it's own line
-			AbsoluteSize childSize = new AbsoluteSize(-1, -1);
-			Unit unit = childRenderer.render(renderContext, childSize);
-			currentSubGenerator = new SingleUnitGenerator(unit);
-			linesToForce = 2;
-		}
+		return null;
+	}
+	
+	private RenderedInlineUnit createRenderData(Unit unit, AbsolutePosition unitPosition) {
+		return new RenderedInlineUnit(unit, unitPosition, unit.getMinimumSize());
 	}
 	
 }

@@ -2,7 +2,7 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.
 
 public interface UnitGenerator {
 
-	PartialUnitPreview previewNextUnit(ContextSwitch[] contextSwitches);
+	PartialUnitPreview previewNextUnit();
 
 	Unit getMergedUnits();
 
