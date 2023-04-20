@@ -8,9 +8,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 public class FluidChildrenUnit implements Unit {
 
 	private final AbsoluteSize size;
-	private final FluidChildrenResult[] renderResults;
+	private final FluidChildRenderResult[] renderResults;
 
-	public FluidChildrenUnit(AbsoluteSize size, FluidChildrenResult[] renderResults) {
+	public FluidChildrenUnit(AbsoluteSize size, FluidChildRenderResult[] renderResults) {
 		this.size = size;
 		this.renderResults = renderResults;
 	}

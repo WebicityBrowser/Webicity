@@ -15,23 +15,29 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.UnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.cursor.CursorTracker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.cursor.LineCursorTracker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.cursor.LineDimension;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.inline.FlowRecursiveContextSwitch;
 
-public class FluidLines {
+public class LineBoxContainer {
 
 	private final RenderContext renderContext;
 	private final AbsoluteSize maxBounds;
-	private final CursorTracker cursorTracker;
+	private final LineDimensionConverter dimensionConverter;
 	private final ContextSwitch[] switches;
 	
+	private final List<LineBox> lineBoxes = new ArrayList<>();
+	
+	private LineBox currentLine;
 	private UnitGenerator currentFlow;
-	private List<FluidChildrenResult> rendered = new ArrayList<>();
 
-	public FluidLines(RenderContext renderContext, AbsoluteSize maxBounds, CursorTracker cursorTracker) {
+	public LineBoxContainer(RenderContext renderContext, AbsoluteSize maxBounds, LineDimensionConverter dimensionConverter) {
 		this.renderContext = renderContext;
 		this.maxBounds = maxBounds;
-		this.cursorTracker = cursorTracker;
+		this.dimensionConverter = dimensionConverter;
 		this.switches = createContextSwitches();
+		goToNextLine();
 	}
 
 	public void addBox(Box child) {
@@ -42,12 +48,18 @@ public class FluidLines {
 		}
 	}
 
-	public AbsoluteSize computeTotalSize() {
-		return cursorTracker.getSizeCovered();
-	}
-	
-	public FluidChildrenResult[] getRenderResults() {
-		return rendered.toArray(FluidChildrenResult[]::new);
+	public LineBoxContainerResult collectRenderResults() {
+		List<FluidChildRenderResult> renderedChildren = new ArrayList<>();
+		CursorTracker cursorTracker = new LineCursorTracker(dimensionConverter);
+		for (LineBox line: lineBoxes) {
+			AbsolutePosition linePosition = cursorTracker.getNextPosition();
+			renderedChildren.addAll(line.getRenderResults(linePosition));
+			cursorTracker.add(line.getSize());
+			cursorTracker.nextLine();
+		}
+		return new LineBoxContainerResult(
+			cursorTracker.getSizeCovered(),
+			renderedChildren.toArray(FluidChildRenderResult[]::new));
 	}
 	
 	private void addFluidBox(FluidBox child) {
@@ -65,8 +77,10 @@ public class FluidLines {
 	private void addSolidBox(Box child) {
 		goToNextLine();
 		Renderer childRenderer = child.createRenderer();
-		AbsoluteSize lineSize = cursorTracker.getFullLineSize(maxBounds);
-		Unit unit = childRenderer.render(renderContext, lineSize);
+		LineDimension maxLineBounds = dimensionConverter.getLineDimension(maxBounds);
+		LineDimension childLineBounds = new LineDimension(maxLineBounds.run(), -1);
+		AbsoluteSize childBounds = dimensionConverter.getAbsoluteSize(childLineBounds);
+		Unit unit = childRenderer.render(renderContext, childBounds);
 		addMergedUnitToLine(unit);
 		goToNextLine();
 	}
@@ -80,18 +94,16 @@ public class FluidLines {
 
 	private boolean lineCanNotFit(PartialUnitPreview PartialUnitPreview) {
 		AbsoluteSize unitSize = PartialUnitPreview.sizeAfterAppend();
-		return cursorTracker.addWillOverflowLine(unitSize, maxBounds);
+		return currentLine.canFit(unitSize, maxBounds);
 	}
 
 	private void addMergedUnitToLine(Unit unit) {
-		AbsoluteSize size = unit.getMinimumSize();
-		AbsolutePosition startPosition = cursorTracker.getNextPosition();
-		rendered.add(new FluidChildrenResult(startPosition, unit));
-		cursorTracker.add(size);
+		currentLine.add(unit);
 	}
 	
 	private void goToNextLine() {
-		cursorTracker.nextLine();
+		currentLine = new LineBox(dimensionConverter);
+		lineBoxes.add(currentLine);
 	}
 	
 	private void commitCurrentFlow() {

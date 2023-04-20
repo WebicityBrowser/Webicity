@@ -15,7 +15,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.UnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.cursor.CursorTracker;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.cursor.HorizontalCursorTracker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.cursor.HorizontalLineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.cursor.LineCursorTracker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.render.layout.flow.inline.FlowRecursiveContextSwitch.BoxEnterContext;
 
 public class FlowInlineUnitGenerator implements UnitGenerator {
@@ -24,18 +26,20 @@ public class FlowInlineUnitGenerator implements UnitGenerator {
 	private final RenderContext renderContext;
 	private final ContextSwitch[] contextSwitches;
 	private final FlowRecursiveContextSwitch recursiveSwitch;
+	private final LineDimensionConverter dimensionConverter;
 	
 	private List<RenderedInlineUnit> renderedChildren;
 	private UnitGenerator currentSubGenerator;
 	private int nextCursor = 0;
 	
-	private CursorTracker cursorTracker = new HorizontalCursorTracker();
+	private CursorTracker cursorTracker;
 
 	public FlowInlineUnitGenerator(Box[] children, RenderContext renderContext, ContextSwitch[] contextSwitches) {
 		this.children = children;
 		this.renderContext = renderContext;
 		this.contextSwitches = contextSwitches;
 		this.recursiveSwitch = findRecursiveSwitch();
+		this.dimensionConverter = new HorizontalLineDimensionConverter();
 		startNextUnit();
 		findNextSubGenerator();
 	}
@@ -83,7 +87,7 @@ public class FlowInlineUnitGenerator implements UnitGenerator {
 	
 	private void startNextUnit() {
 		this.renderedChildren = new ArrayList<>();
-		this.cursorTracker = new HorizontalCursorTracker();
+		this.cursorTracker = new LineCursorTracker(dimensionConverter);
 	}
 	
 	private void findNextSubGenerator() {

@@ -10,21 +10,21 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 public class FluidChildrenPainter implements Painter {
 
 	private final Rectangle documentRect;
-	private final FluidChildrenResult[] renderResults;
+	private final FluidChildRenderResult[] renderResults;
 
-	public FluidChildrenPainter(Rectangle documentRect, FluidChildrenResult[] renderResults) {
+	public FluidChildrenPainter(Rectangle documentRect, FluidChildRenderResult[] renderResults) {
 		this.documentRect = documentRect;
 		this.renderResults = renderResults;
 	}
 
 	@Override
 	public void paint(PaintContext context, Canvas2D canvas) {
-		for (FluidChildrenResult renderResult: renderResults) {
+		for (FluidChildRenderResult renderResult: renderResults) {
 			paintChild(renderResult, context, canvas);
 		}
 	}
 
-	private void paintChild(FluidChildrenResult renderResult, PaintContext context, Canvas2D canvas) {
+	private void paintChild(FluidChildRenderResult renderResult, PaintContext context, Canvas2D canvas) {
 		AbsolutePosition childPosition = AbsolutePositionMath.sum(renderResult.position(), documentRect.position());
 		Rectangle childDocumentRect = new Rectangle(childPosition, renderResult.unit().getMinimumSize());
 		renderResult

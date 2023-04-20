@@ -17,6 +17,4 @@ public interface CursorTracker {
 
 	AbsolutePosition getNextPosition();
 
-	AbsoluteSize getFullLineSize(AbsoluteSize bounds);
-
 }
