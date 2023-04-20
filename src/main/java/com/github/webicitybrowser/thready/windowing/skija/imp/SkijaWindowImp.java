@@ -4,6 +4,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaScreen;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindow;
 
@@ -14,9 +15,9 @@ public class SkijaWindowImp implements SkijaWindow {
 	
 	private boolean windowClosed = false;
 
-	public SkijaWindowImp(long windowId) {
+	public SkijaWindowImp(long windowId, SkijaGraphicsSystem graphicsSystem) {
 		this.windowId = windowId;
-		this.screen = new SkijaScreenImp(this, windowId);
+		this.screen = new SkijaScreenImp(this, windowId, graphicsSystem);
 	}
 	
 	@Override
@@ -71,7 +72,7 @@ public class SkijaWindowImp implements SkijaWindow {
 	
 	//
 
-	public static SkijaWindow create() {
+	public static SkijaWindow create(SkijaGraphicsSystem graphicsSystem) {
 		initGlfw();
 		long windowId = GLFW.glfwCreateWindow(800, 600, "Untitled Application", 0, 0);
 		GLFW.glfwMakeContextCurrent(windowId);
@@ -79,7 +80,7 @@ public class SkijaWindowImp implements SkijaWindow {
 		GLFW.glfwSetWindowPos(windowId, 200, 100);
 		GLFW.glfwSwapInterval(1);
 		
-		SkijaWindow window = new SkijaWindowImp(windowId);
+		SkijaWindow window = new SkijaWindowImp(windowId, graphicsSystem);
 		
 		return window;
 	}

@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.cssom.imp;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.imp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 import com.github.webicitybrowser.threadyweb.tree.WebComponent;
-import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.cssom.CSSOMFilter;
-import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.cssom.CSSOMNode;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMFilter;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMNode;
 
 public class CSSOMNodeImp implements CSSOMNode {
 	

@@ -1,11 +1,11 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.cssom.filters;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.filters;
 
 import java.util.Objects;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.threadyweb.tree.WebComponent;
-import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.cssom.CSSOMFilter;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMFilter;
 
 public class TypeFilter implements CSSOMFilter {
 

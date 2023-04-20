@@ -10,7 +10,7 @@ import com.github.webicitybrowser.thready.windowing.skija.SkijaWindowingThread;
 
 public class SkijaGraphicsSystemImp implements SkijaGraphicsSystem {
 	
-	private final SkijaWindowingThread windowingThread = new SkijaWindowingThreadImp();
+	private final SkijaWindowingThread windowingThread = new SkijaWindowingThreadImp(this);
 	private final ResourceLoader resourceLoader = new SkijaResourceLoaderImp();
 	
 	@Override

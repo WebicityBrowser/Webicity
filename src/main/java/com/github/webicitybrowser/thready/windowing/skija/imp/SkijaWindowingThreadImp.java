@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import org.lwjgl.glfw.GLFW;
 
 import com.github.webicitybrowser.thready.windowing.core.Window;
+import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindow;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindowingThread;
 
@@ -17,8 +18,13 @@ public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 	
 	private final Queue<Consumer<Window>> windowsToStart = new ConcurrentLinkedQueue<>();
 	private final List<SkijaWindow> windows = Collections.synchronizedList(new ArrayList<>());
+	private final SkijaGraphicsSystem graphicsSystem;
 	
 	private Thread runnerThread;
+	
+	public SkijaWindowingThreadImp(SkijaGraphicsSystem graphicsSystem) {
+		this.graphicsSystem = graphicsSystem;
+	}
 	
 	@Override
 	public void createWindow(Consumer<Window> callback) {
@@ -50,7 +56,7 @@ public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 		synchronized (windowsToStart) {
 			while (!windowsToStart.isEmpty()) {
 				Consumer<Window> callback = windowsToStart.poll();
-				SkijaWindow window = SkijaWindowImp.create();
+				SkijaWindow window = SkijaWindowImp.create(graphicsSystem);
 				windows.add(window);
 				callback.accept(window);
 			}

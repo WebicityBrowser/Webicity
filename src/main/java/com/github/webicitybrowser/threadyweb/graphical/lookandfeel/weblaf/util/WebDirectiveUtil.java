@@ -39,8 +39,7 @@ public final class WebDirectiveUtil {
 		return directives
 			.getDirectiveOrEmpty(OuterDisplayDirective.class)
 			.map(directive -> directive.getOuterDisplay())
-			.orElse(OuterDisplay.BLOCK);
-		// TODO: Elements should be inline by default
+			.orElse(OuterDisplay.INLINE);
 	}
 	
 }

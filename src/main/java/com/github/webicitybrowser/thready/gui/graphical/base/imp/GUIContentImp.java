@@ -4,7 +4,6 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
-import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
 import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.directive.core.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
@@ -20,8 +19,6 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class GUIContentImp implements GUIContent {
 	
-	private final ResourceLoader resourceLoader;
-	
 	private InvalidationLevel invalidationLevel = InvalidationLevel.NONE;
 	
 	private ComponentUI rootUI;
@@ -31,10 +28,6 @@ public class GUIContentImp implements GUIContent {
 	private boolean redrawRequested = false;
 	private Box rootBox;
 	private Unit rootUnit;
-	
-	public GUIContentImp(ResourceLoader resourceLoader) {
-		this.resourceLoader = resourceLoader;
-	}
 
 	@Override
 	public void setRoot(Component component, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot) {
@@ -51,10 +44,10 @@ public class GUIContentImp implements GUIContent {
 	}
 
 	@Override
-	public void redraw(Canvas2D canvas, AbsoluteSize size) {
+	public void redraw(ScreenContentRedrawContext redrawContext) {
 		this.redrawRequested = false;
 		if (rootUI != null && lookAndFeel != null) {
-			performRenderPipeline(canvas, size);
+			performRenderPipeline(redrawContext);
 		}
 	}
 	
@@ -64,7 +57,7 @@ public class GUIContentImp implements GUIContent {
 		return lookAndFeel.createUIFor(component, dummyUI);
 	}
 
-	private void performRenderPipeline(Canvas2D canvas, AbsoluteSize contentSize) {
+	private void performRenderPipeline(ScreenContentRedrawContext redrawContext) {
 		if (invalidationLevel == InvalidationLevel.BOX) {
 			performBoxCycle();
 		}
@@ -75,14 +68,14 @@ public class GUIContentImp implements GUIContent {
 		switch (invalidationLevel) {
 		case BOX:
 		case RENDER:
-			performRenderCycle(contentSize);
+			performRenderCycle(redrawContext);
 		case COMPOSITE:
 		case PAINT:
 		case NONE:
 			// Even if the invalidation level is NONE, there is
 			// probably a reason that redraw was called.
 			// For example, if a buffer must be drawn twice.
-			performPaintCycle(canvas, contentSize);
+			performPaintCycle(redrawContext);
 			invalidationLevel = InvalidationLevel.NONE;
 			break;
 		default:
@@ -108,13 +101,16 @@ public class GUIContentImp implements GUIContent {
 		this.rootBox = rootBox;
 	}
 
-	private void performRenderCycle(AbsoluteSize contentSize) {
-		RenderContext renderContext = new RenderContextImp(resourceLoader);
+	private void performRenderCycle(ScreenContentRedrawContext redrawContext) {
+		RenderContext renderContext = new RenderContextImp(redrawContext.resourceLoader());
 		Renderer rootRenderer = rootBox.createRenderer();
-		this.rootUnit = rootRenderer.render(renderContext, contentSize);
+		this.rootUnit = rootRenderer.render(renderContext, redrawContext.contentSize());
 	}
 	
-	private void performPaintCycle(Canvas2D canvas, AbsoluteSize contentSize) {
+	private void performPaintCycle(ScreenContentRedrawContext redrawContext) {
+		AbsoluteSize contentSize = redrawContext.contentSize();
+		Canvas2D canvas = redrawContext.canvas();
+		
 		clearPaint(canvas, contentSize);
 		
 		rootUnit.getPainter(createDocumentRect(contentSize))

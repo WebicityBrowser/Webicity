@@ -1,11 +1,11 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.generator;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator;
 
 import java.util.function.Supplier;
 
 import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.directive.core.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
-import com.github.webicitybrowser.webicity.renderer.frontend.html.thready.style.cssom.CSSOMNode;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMNode;
 
 public class DocumentStyleGeneratorRoot implements StyleGeneratorRoot {
 	

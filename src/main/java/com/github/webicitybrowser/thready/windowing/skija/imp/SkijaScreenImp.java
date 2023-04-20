@@ -3,6 +3,8 @@ package com.github.webicitybrowser.thready.windowing.skija.imp;
 import org.lwjgl.glfw.GLFW;
 
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
+import com.github.webicitybrowser.thready.windowing.core.ScreenContent.ScreenContentRedrawContext;
+import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaRootCanvas2D;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaScreen;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindow;
@@ -16,14 +18,16 @@ public class SkijaScreenImp implements SkijaScreen {
 	private final SkijaWindow window;
 	private final Long windowId;
 	private final DirectContext directContext = DirectContext.makeGL();
+	private final SkijaGraphicsSystem graphicsSystem;
 	
 	private int ticksLeft = FULL_TICKS;
 	private ScreenContent screenContent;
 	private SkijaRootCanvas2D canvas;
 	
-	public SkijaScreenImp(SkijaWindow window, long windowId) {
+	public SkijaScreenImp(SkijaWindow window, long windowId, SkijaGraphicsSystem graphicsSystem) {
 		this.window = window;
 		this.windowId = windowId;
+		this.graphicsSystem = graphicsSystem;
 	}
 
 	@Override
@@ -41,7 +45,9 @@ public class SkijaScreenImp implements SkijaScreen {
 		GLFW.glfwMakeContextCurrent(windowId);
 		regenerateCanvasIfNeeded();
 		resetTickChecks();
-		screenContent.redraw(canvas, window.getSize());
+		screenContent.redraw(new ScreenContentRedrawContext(
+			canvas, window.getSize(),
+			graphicsSystem.getResourceLoader()));
 		canvas.flush();
 		GLFW.glfwSwapBuffers(windowId);
 	}
