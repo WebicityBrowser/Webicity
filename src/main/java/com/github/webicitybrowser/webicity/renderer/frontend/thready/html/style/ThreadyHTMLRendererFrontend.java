@@ -21,7 +21,7 @@ import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.WebLookAndFeel;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
-import com.github.webicitybrowser.webicity.core.RendererContext;
+import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
