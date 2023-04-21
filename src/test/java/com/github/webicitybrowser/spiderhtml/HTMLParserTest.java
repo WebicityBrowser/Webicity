@@ -106,7 +106,7 @@ public class HTMLParserTest {
 	
 	@Test
 	@DisplayName("Can parse ordinary element")
-	public void canParseOrdinryElement() {
+	public void canParseOrdinaryElement() {
 		HTMLParser parser = new SpiderHTMLParserImp();
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span></span></body></html>");
 		Document document = new DocumentImp();
@@ -115,6 +115,22 @@ public class HTMLParserTest {
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		NodeList childNodes = bodyLeaf.getChildNodes();
 		testElement(childNodes.get(0), "span", 0);
+	}
+	
+	@Test
+	@DisplayName("Can parse element with quoted attributes")
+	public void canParseElementWithAttibutes() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span a='b' c=\"d\"></span></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement bodyLeaf = testToBody(document, 1);
+		NodeList childNodes = bodyLeaf.getChildNodes();
+		HTMLElement spanElement = testElement(childNodes.get(0), "span", 0);
+		Assertions.assertArrayEquals(new String[] { "a", "c" }, spanElement.getAttributeNames());
+		Assertions.assertEquals("b", spanElement.getAttribute("a"));
+		Assertions.assertEquals("d", spanElement.getAttribute("c"));
 	}
 	
 	private HTMLElement testToBody(Document document, int numBodyChildren) {

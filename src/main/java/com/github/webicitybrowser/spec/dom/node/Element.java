@@ -5,5 +5,11 @@ public interface Element extends Node {
 	String getLocalName();
 
 	String getNamespace();
+	
+	String[] getAttributeNames();
+
+	void setAttribute(String name, String value);
+	
+	String getAttribute(String name);
 
 }

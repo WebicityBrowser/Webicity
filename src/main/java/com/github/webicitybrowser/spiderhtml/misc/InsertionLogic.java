@@ -11,6 +11,7 @@ import com.github.webicitybrowser.spec.infra.Namespace;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
+import com.github.webicitybrowser.spiderhtml.token.StartTagToken.StartTagAttribute;
 
 public final class InsertionLogic {
 
@@ -68,9 +69,14 @@ public final class InsertionLogic {
 			token.getName(), new HashMap<String, String>(),
 			namespace, intendedParent
 		);
-		return insertionContext
+		HTMLElement element = insertionContext
 			.getTreeBuilder()
 			.createHtmlElement(creationOptions);
+		for (StartTagAttribute attribute: token.getAttributes()) {
+			element.setAttribute(attribute.name(), attribute.value());
+		}
+		
+		return element;
 	}
 
 	private static InsertionLocation getAppropriatePlaceForInsertingNode(InsertionContext insertionContext, Node targetOverride) {

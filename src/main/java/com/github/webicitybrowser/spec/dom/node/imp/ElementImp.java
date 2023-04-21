@@ -1,7 +1,9 @@
 package com.github.webicitybrowser.spec.dom.node.imp;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
@@ -14,7 +16,9 @@ public class ElementImp extends NodeImp implements Element {
 	
 	private final String namespace;
 	private final String localTag;
+	
 	private final List<Node> childNodes = new ArrayList<>(1);
+	private final Map<String, String> attributes = new LinkedHashMap<>(1);
 
 	public ElementImp(String namespace, String localTag) {
 		this.namespace = namespace;
@@ -30,6 +34,21 @@ public class ElementImp extends NodeImp implements Element {
 	public String getLocalName() {
 		return this.localTag;
 	};
+	
+	@Override
+	public String[] getAttributeNames() {
+		return attributes.keySet().toArray(String[]::new);
+	}
+	
+	@Override
+	public void setAttribute(String name, String value) {
+		attributes.put(name, value);
+	}
+	
+	@Override
+	public String getAttribute(String name) {
+		return attributes.get(name);
+	}
 	
 	@Override
 	public NodeList getChildNodes() {
