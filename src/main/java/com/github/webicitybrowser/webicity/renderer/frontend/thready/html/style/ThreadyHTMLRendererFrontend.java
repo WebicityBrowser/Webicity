@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style;
 
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.Reader;
 
 import com.github.webicitybrowser.spec.css.parser.CSSParser;
 import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
@@ -20,6 +20,8 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.WebLookAndFeel;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
+import com.github.webicitybrowser.webicity.core.AssetLoader;
+import com.github.webicitybrowser.webicity.core.RendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
@@ -29,10 +31,12 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 
 	private final HTMLRendererBackend backend;
+	private final RendererContext rendererContext;
 	private final ScreenContent content;
 
-	public ThreadyHTMLRendererFrontend(HTMLRendererBackend backend) {
+	public ThreadyHTMLRendererFrontend(HTMLRendererBackend backend, RendererContext rendererContext) {
 		this.backend = backend;
+		this.rendererContext = rendererContext;
 		this.content = createContent();
 	}
 
@@ -57,17 +61,17 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 		return content;
 	}
 	
-	private static StyleGeneratorRoot createStyleGenerator() {
-		String css = "a { color: #0000FF; } div, head, body, html { display: block; }";
-		CSSOMNode cssomNode = parseCSS(css);
+	private StyleGeneratorRoot createStyleGenerator() {
+		CSSOMNode cssomNode = loadUAStylesheet();
 		
 		return new DocumentStyleGeneratorRoot(() -> new CSSOMNode[] { cssomNode });
 	}
 
-	private static CSSOMNode parseCSS(String css) {
+	private CSSOMNode loadUAStylesheet() {
 		// TODO: Better error handling
-		try {
-			Token[] tokens = CSSTokenizer.create().tokenize(new StringReader(css));
+		AssetLoader assetLoader = rendererContext.getAssetLoader();
+		try (Reader reader = assetLoader.streamAsset("static", "renderer/html/ua.css")) {
+			Token[] tokens = CSSTokenizer.create().tokenize(reader);
 			CSSRule[] rules = CSSParser.create().parseAListOfRules(tokens);
 			CSSStyleSheet stylesheet = () -> rules;
 			return CSSOMBinder.create().createCSSOMFor(stylesheet);

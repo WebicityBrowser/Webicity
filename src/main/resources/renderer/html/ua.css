@@ -1,0 +1,7 @@
+a {
+	color: #0000FF;
+}
+
+div, head, body, html {
+	display: block;
+}
