@@ -9,16 +9,16 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 
 public class DocumentStyleGeneratorRoot implements StyleGeneratorRoot {
 	
-	private final Supplier<CSSOMNode> cssomRootSupplier;
+	private final Supplier<CSSOMNode[]> cssomRootsSupplier;
 
-	public DocumentStyleGeneratorRoot(Supplier<CSSOMNode> cssomRootSupplier) {
-		this.cssomRootSupplier = cssomRootSupplier;
+	public DocumentStyleGeneratorRoot(Supplier<CSSOMNode[]> cssomRootsSupplier) {
+		this.cssomRootsSupplier = cssomRootsSupplier;
 	}
 
 	@Override
 	public StyleGenerator generateChildStyleGenerator(ComponentUI componentUI) {
-		CSSOMNode cssomRoot = cssomRootSupplier.get();
-		return new DocumentStyleGenerator(new CSSOMNode[] { cssomRoot });
+		CSSOMNode[] cssomRoots = cssomRootsSupplier.get();
+		return new DocumentStyleGenerator(cssomRoots);
 	}
 
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.github.webicitybrowser.spec.css.parser.tokenizer.imp.TokenizerImp;
 import com.github.webicitybrowser.spec.css.parser.tokens.AtKeywordToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.CDCToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.CDOToken;
@@ -27,9 +28,9 @@ import com.github.webicitybrowser.spec.css.parser.tokens.Token;
 import com.github.webicitybrowser.spec.css.parser.tokens.URLToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 
-public class TokenizerTest {
+public class CSSTokenizerTest {
 
-	private Tokenizer tokenizer;
+	private CSSTokenizer tokenizer;
 	
 	@BeforeEach
 	public void beforeEach() {

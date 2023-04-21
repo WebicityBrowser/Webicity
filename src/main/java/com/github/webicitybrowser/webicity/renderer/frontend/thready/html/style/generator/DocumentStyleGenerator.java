@@ -41,15 +41,9 @@ public class DocumentStyleGenerator implements StyleGenerator {
 		WebComponent childComponent = (WebComponent) childUI.getComponent();
 		List<CSSOMNode> childCSSOMNodes = new ArrayList<>();
 		
-		addRootCSSOMNode(childCSSOMNodes);
 		addChildCSSOMNodes(childCSSOMNodes, childComponent, i);
 		
 		return new DocumentStyleGenerator(childCSSOMNodes.toArray(CSSOMNode[]::new));
-	}
-
-	private void addRootCSSOMNode(List<CSSOMNode> childCSSOMNodes) {
-		CSSOMNode rootNode = cssomNodes[0];
-		childCSSOMNodes.add(rootNode);
 	}
 	
 	private void addChildCSSOMNodes(List<CSSOMNode> childCSSOMNodes, WebComponent childComponent, int i) {

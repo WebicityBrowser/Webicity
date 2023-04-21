@@ -16,10 +16,19 @@ public class CSSOMNodeImp implements CSSOMNode {
 	// TODO: Quick paths
 	private final Map<CSSOMFilter, CSSOMNode> childNodes = new HashMap<>();
 	private final List<DirectivePool> directivePools = new ArrayList<>();
+	private final CSSOMNode rootNode;
+	
+	public CSSOMNodeImp() {
+		this.rootNode = this;
+	}
+	
+	public CSSOMNodeImp(CSSOMNode rootNode) {
+		this.rootNode = rootNode;
+	}
 	
 	@Override
 	public CSSOMNode getChild(CSSOMFilter filter) {
-		return childNodes.computeIfAbsent(filter, _1 -> new CSSOMNodeImp());
+		return childNodes.computeIfAbsent(filter, _1 -> new CSSOMNodeImp(rootNode));
 	}
 	
 	@Override
@@ -30,7 +39,9 @@ public class CSSOMNodeImp implements CSSOMNode {
 				applicableNodes.add(childEntry.getValue());
 			}
 		}
-		return applicableNodes.toArray(new CSSOMNode[0]);
+		applicableNodes.add(rootNode);
+		
+		return applicableNodes.toArray(CSSOMNode[]::new);
 	}
 	
 	@Override

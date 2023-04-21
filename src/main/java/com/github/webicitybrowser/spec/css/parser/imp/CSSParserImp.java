@@ -72,41 +72,42 @@ public class CSSParserImp implements CSSParser {
 	private CSSRule[] consumeAListOfDeclarations(TokenStream stream) {
 		List<CSSRule> declarations = new ArrayList<>();
 		while (true) {
-			TokenLike token = stream.read();
+			TokenLike token = stream.peek();
 			if (token instanceof WhitespaceToken || token instanceof SemicolonToken) {
-				// Do nothing
+				stream.read();
 			} else if (token instanceof EOFToken) {
-				return declarations.toArray(new CSSRule[declarations.size()]);
+				return declarations.toArray(CSSRule[]::new);
 			} else if (token instanceof AtKeywordToken) {
-				stream.unread();
 				declarations.add(consumeAnAtRule(stream));
 			} else if (token instanceof IdentToken) {
-				List<TokenLike> tokens = new ArrayList<>();
-				while (true) {
-					TokenLike token2 = stream.read();
-					if (token2 instanceof SemicolonToken || token2 instanceof EOFToken) {
-						break;
-					}
-					tokens.add(consumeAComponentValue(stream));
-				}
-				stream.unread();
-				Token[] tokensArr = tokens.toArray(new Token[tokens.size()]);
-				Declaration declaration = consumeADeclaration(new TokenStreamImp(tokensArr));
-				if (declaration != null) {
-					declarations.add(declaration);
-				}
+				handleIdentToken(stream, declarations);
 			} else {
 				// TODO: Parse Error
-				stream.unread();
 				while (true) {
-					TokenLike token2 = stream.read();
-					if (token2 instanceof SemicolonToken || token2 instanceof EOFToken) {
+					token = stream.peek();
+					if (token instanceof SemicolonToken || token instanceof EOFToken) {
 						break;
 					}
 					consumeAComponentValue(stream);
 				}
 				stream.unread();
 			}
+		}
+	}
+
+	private void handleIdentToken(TokenStream stream, List<CSSRule> declarations) {
+		List<TokenLike> tokens = new ArrayList<>();
+		while (true) {
+			TokenLike token = stream.peek();
+			if (token instanceof SemicolonToken || token instanceof EOFToken) {
+				break;
+			}
+			tokens.add(consumeAComponentValue(stream));
+		}
+		Token[] tokensArr = tokens.toArray(Token[]::new);
+		Declaration declaration = consumeADeclaration(new TokenStreamImp(tokensArr));
+		if (declaration != null) {
+			declarations.add(declaration);
 		}
 	}
 

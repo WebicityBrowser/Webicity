@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spec.css.parser.tokenizer;
+package com.github.webicitybrowser.spec.css.parser.tokenizer.imp;
 
 import java.io.IOException;
 import java.io.PushbackReader;
@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
 import com.github.webicitybrowser.spec.css.parser.tokens.AtKeywordToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.BadStringToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.BadURLToken;
@@ -35,7 +36,7 @@ import com.github.webicitybrowser.spec.css.parser.tokens.Token;
 import com.github.webicitybrowser.spec.css.parser.tokens.URLToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 
-public class TokenizerImp implements Tokenizer {
+public class TokenizerImp implements CSSTokenizer {
 
 	private static final int MAX_CODE_POINT = 0x10FFFF;
 	

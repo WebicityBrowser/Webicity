@@ -1,5 +1,13 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style;
 
+import java.io.IOException;
+import java.io.StringReader;
+
+import com.github.webicitybrowser.spec.css.parser.CSSParser;
+import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
+import com.github.webicitybrowser.spec.css.parser.tokens.Token;
+import com.github.webicitybrowser.spec.css.rule.CSSRule;
+import com.github.webicitybrowser.spec.css.rule.CSSStyleSheet;
 import com.github.webicitybrowser.thready.gui.directive.core.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
@@ -14,15 +22,16 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.WebLoo
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGeneratorRoot;
 
-public class ThreadyHTMLRendererFrontent implements ThreadyRendererFrontend {
+public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 
 	private final HTMLRendererBackend backend;
 	private final ScreenContent content;
 
-	public ThreadyHTMLRendererFrontent(HTMLRendererBackend backend) {
+	public ThreadyHTMLRendererFrontend(HTMLRendererBackend backend) {
 		this.backend = backend;
 		this.content = createContent();
 	}
@@ -49,9 +58,22 @@ public class ThreadyHTMLRendererFrontent implements ThreadyRendererFrontend {
 	}
 	
 	private static StyleGeneratorRoot createStyleGenerator() {
-		CSSOMNode cssomNode = CSSOMNode.create();
+		String css = "a { color: #0000FF; }";
+		CSSOMNode cssomNode = parseCSS(css);
 		
-		return new DocumentStyleGeneratorRoot(() -> cssomNode);
+		return new DocumentStyleGeneratorRoot(() -> new CSSOMNode[] { cssomNode });
+	}
+
+	private static CSSOMNode parseCSS(String css) {
+		// TODO: Better error handling
+		try {
+			Token[] tokens = CSSTokenizer.create().tokenize(new StringReader(css));
+			CSSRule[] rules = CSSParser.create().parseAListOfRules(tokens);
+			CSSStyleSheet stylesheet = () -> rules;
+			return CSSOMBinder.create().createCSSOMFor(stylesheet);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
