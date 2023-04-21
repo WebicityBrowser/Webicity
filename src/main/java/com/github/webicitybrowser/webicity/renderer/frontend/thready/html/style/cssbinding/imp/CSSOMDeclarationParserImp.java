@@ -6,38 +6,67 @@ import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.color.ColorPropertyValueParser;
+import com.github.webicitybrowser.spec.css.parser.property.display.DisplayPropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.property.color.ColorValue;
+import com.github.webicitybrowser.spec.css.property.display.DisplayValue;
+import com.github.webicitybrowser.spec.css.property.display.OuterDisplayType;
 import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.thready.color.colors.RGBA8Color;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.graphical.directive.ForegroundColorDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective.OuterDisplay;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 
 public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 
 	private final PropertyValueParser<ColorValue> colorParser = new ColorPropertyValueParser();
+	private final PropertyValueParser<DisplayValue> displayParser = new DisplayPropertyValueParser();
+	
+	// TODO: HashMap of dedicated parser classes
 	
 	@Override
-	public Directive parseDeclaration(Declaration rule) {
+	public Directive[] parseDeclaration(Declaration rule) {
 		switch (rule.getName()) {
 		case "color":
 			return parseColorRule(rule);
+		case "display":
+			return parseDisplayRule(rule);
 		default:
 			// TODO: Log unrecognized declarations
 			return null;
 		}
 	}
 
-	private Directive parseColorRule(Declaration rule) {
+	private Directive[] parseColorRule(Declaration rule) {
 		return getResult(rule, colorParser)
-			.map(value -> ForegroundColorDirective.of(createColorFrom(value)))
+			.map(value -> new Directive[] { ForegroundColorDirective.of(createColorFrom(value)) })
 			.orElse(null);
 	}
 
 	private ColorFormat createColorFrom(ColorValue value) {
 		return new RGBA8Color(value.getRed(), value.getGreen(), value.getBlue(), value.getAlpha());
+	}
+	
+	private Directive[] parseDisplayRule(Declaration rule) {
+		return getResult(rule, displayParser)
+			.map(value -> new Directive[] {
+				OuterDisplayDirective.of(convertOuterDisplayType(value.outerDisplayType()))
+			})
+			.orElse(null);
+	}
+
+	private OuterDisplay convertOuterDisplayType(OuterDisplayType outerDisplayType) {
+		switch (outerDisplayType) {
+		case BLOCK:
+			return OuterDisplay.BLOCK;
+		case INLINE:
+			return OuterDisplay.INLINE;
+		default:
+			throw new UnsupportedOperationException("Unsupported display type: " + outerDisplayType);
+		}
 	}
 
 	private <T> Optional<T> getResult(Declaration rule, PropertyValueParser<T> parser) {

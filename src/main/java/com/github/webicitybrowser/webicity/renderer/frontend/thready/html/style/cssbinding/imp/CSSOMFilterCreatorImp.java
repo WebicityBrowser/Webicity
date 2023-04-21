@@ -11,7 +11,6 @@ public class CSSOMFilterCreatorImp implements CSSOMFilterCreator {
 
 	@Override
 	public CSSOMFilter createFilterFor(ComplexSelectorPart complexSelectorPart) {
-		System.out.println(complexSelectorPart);
 		if (complexSelectorPart instanceof TypeSelector typeSelector) {
 			QualifiedName name = typeSelector.getQualifiedName();
 			return new TypeFilter(name.getNamespace(), name.getName());

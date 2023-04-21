@@ -29,7 +29,7 @@ public class DocumentUI implements ComponentUI {
 		return component
 			.getVisibleChild()
 			.map(child -> getComponentUI(context, child))
-			.map(ui -> ui.generateBoxes(context, parentDirectives, styleGenerator))
+			.map(ui -> ui.generateBoxes(context, parentDirectives, createChildStyleGenerator(ui, styleGenerator)))
 			.orElse(new Box[0]);
 	}
 
@@ -39,6 +39,10 @@ public class DocumentUI implements ComponentUI {
 		}
 		
 		return this.childComponentUI;
+	}
+	
+	private StyleGenerator createChildStyleGenerator(ComponentUI ui, StyleGenerator styleGenerator) {
+		return styleGenerator.createChildStyleGenerators(new ComponentUI[] { ui })[0];
 	}
 
 }

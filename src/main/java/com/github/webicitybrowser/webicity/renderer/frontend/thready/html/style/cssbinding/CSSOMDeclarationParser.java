@@ -5,6 +5,6 @@ import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 
 public interface CSSOMDeclarationParser {
 
-	Directive parseDeclaration(Declaration rule);
+	Directive[] parseDeclaration(Declaration rule);
 
 }

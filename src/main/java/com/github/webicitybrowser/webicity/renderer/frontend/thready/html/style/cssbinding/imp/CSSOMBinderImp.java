@@ -72,12 +72,14 @@ public class CSSOMBinderImp implements CSSOMBinder {
 				continue;
 			}
 			
-			Directive declDirective = declarationParser.parseDeclaration((Declaration) rule);
-			if (declDirective == null) {
+			Directive[] declDirectives = declarationParser.parseDeclaration((Declaration) rule);
+			if (declDirectives == null) {
 				continue;
 			}
 			
-			directivePool.directive(declDirective);
+			for (Directive declDirective: declDirectives) {
+				directivePool.directive(declDirective);
+			}
 		}
 		targetNode.addDirectivePool(directivePool);
 	}
