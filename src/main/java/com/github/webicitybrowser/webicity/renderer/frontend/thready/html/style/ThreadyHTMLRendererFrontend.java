@@ -58,8 +58,7 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 	}
 	
 	private static StyleGeneratorRoot createStyleGenerator() {
-		// TODO: Rendering breaks weirdly if html is set to inline
-		String css = "a { display: inline; } div, head, body, html { display: block; }";
+		String css = "a { color: #0000FF; } div, head, body, html { display: block; }";
 		CSSOMNode cssomNode = parseCSS(css);
 		
 		return new DocumentStyleGeneratorRoot(() -> new CSSOMNode[] { cssomNode });

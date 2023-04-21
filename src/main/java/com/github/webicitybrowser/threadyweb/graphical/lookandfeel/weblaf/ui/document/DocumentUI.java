@@ -1,11 +1,15 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.document;
 
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.layout.InnerDisplayLayout;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.layout.flow.FlowRootInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 
@@ -30,7 +34,21 @@ public class DocumentUI implements ComponentUI {
 			.getVisibleChild()
 			.map(child -> getComponentUI(context, child))
 			.map(ui -> ui.generateBoxes(context, parentDirectives, createChildStyleGenerator(ui, styleGenerator)))
+			.map(childBoxes -> new Box[] { generateBlockRootBox(childBoxes) })
 			.orElse(new Box[0]);
+	}
+	
+	private Box generateBlockRootBox(Box[] childBoxes) {
+		InnerDisplayLayout layout = new FlowRootInnerDisplayLayout();
+		Box rootBox = new BasicBox(
+			new BasicDirectivePool(),
+			(box, children) -> layout.createRenderer(box, children));
+		
+		for (Box childBox: childBoxes) {
+			rootBox.addChild(childBox);
+		}
+		
+		return rootBox;
 	}
 
 	private ComponentUI getComponentUI(BoxContext context, ElementComponent child) {
