@@ -20,7 +20,6 @@ public class RawTextState implements TokenizeState {
 	@Override
 	public void process(SharedContext context, ParsingContext parsingContext, int ch) throws IOException {
 		// TODO
-		System.out.println("Reached!");
 		switch (ch) {
 		case '<':
 			context.setTokenizeState(rawTextLessThanSignState);

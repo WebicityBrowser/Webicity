@@ -13,12 +13,14 @@ import com.github.webicitybrowser.spiderhtml.util.ASCIIUtil;
 public class RawTextEndTagNameState implements TokenizeState {
 	
 	private final BeforeAttributeNameState beforeAttributeNameState;
+	private final SelfClosingStartTagState selfClosingStartTagState;
 	private final DataState dataState;
 	private final RawTextState rawTextState;
 
 	public RawTextEndTagNameState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
 		this.beforeAttributeNameState = initializer.getTokenizeState(BeforeAttributeNameState.class);
+		this.selfClosingStartTagState = initializer.getTokenizeState(SelfClosingStartTagState.class);
 		this.dataState = initializer.getTokenizeState(DataState.class);
 		this.rawTextState = initializer.getTokenizeState(RawTextState.class);
 	}
@@ -42,6 +44,9 @@ public class RawTextEndTagNameState implements TokenizeState {
 				context.setTokenizeState(beforeAttributeNameState);
 				return;
 			}
+			break;
+		case '/':
+			context.setTokenizeState(selfClosingStartTagState);
 			break;
 		case '>':
 			if (context.isAppropriateEndTagToken(endTagToken)) {

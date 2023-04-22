@@ -118,6 +118,20 @@ public class HTMLParserTest {
 	}
 	
 	@Test
+	@DisplayName("Can parse self-closing element")
+	public void canParseSelfClosingElement() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><br><br/></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement bodyLeaf = testToBody(document, 2);
+		NodeList childNodes = bodyLeaf.getChildNodes();
+		testElement(childNodes.get(0), "br", 0);
+		testElement(childNodes.get(1), "br", 0);
+	}
+	
+	@Test
 	@DisplayName("Can parse element with quoted attributes")
 	public void canParseElementWithAttibutes() {
 		HTMLParser parser = new SpiderHTMLParserImp();

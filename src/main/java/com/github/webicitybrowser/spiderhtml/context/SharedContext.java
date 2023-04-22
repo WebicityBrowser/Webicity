@@ -47,6 +47,13 @@ public class SharedContext {
 			lastStartTagTokenName = startTagToken.getName();
 		}
 		EmitterLogic.emit(this, insertionContext, token);
+		if (
+			token instanceof StartTagToken startTagToken &&
+			startTagToken.isSelfClosingTag() &&
+			!startTagToken.hasAcknowledgedSelfClosingTag()
+		) {
+			recordError(ParseError.NON_VOID_HTML_ELEMENT_START_TAG_WITH_TRAILING_SOLIDUS);
+		}
 	}
 
 	public void recordError(ParseError unexpectedNullCharacter) {

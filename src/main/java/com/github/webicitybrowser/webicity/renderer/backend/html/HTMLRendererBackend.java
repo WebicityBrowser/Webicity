@@ -44,7 +44,7 @@ public class HTMLRendererBackend implements RendererBackend {
 	private void parseDocument(Reader inputReader) throws IOException {
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
 		new SpiderHTMLParserImp().parse(inputReader, treeBuilder);
-		System.out.println(document);
+		//System.out.println(document);
 	}
 
 	public <T extends RendererFrontend> T createFrontend(Function<RendererContext, T> factory) {

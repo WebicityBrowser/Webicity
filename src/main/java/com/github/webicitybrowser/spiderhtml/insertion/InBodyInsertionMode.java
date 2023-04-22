@@ -58,6 +58,14 @@ public class InBodyInsertionMode implements InsertionMode {
 		case "div":
 			handleMiscNoPStartTag(context, insertionContext, token);
 			break;
+		case "area":
+		case "br":
+		case"embed":
+		case "img":
+		case "keygen":
+		case "wbr":
+			handleSelfClosingStartTag(context, insertionContext, token);
+			break;
 		default:
 			handleOrdinaryElementStartTag(context, insertionContext, token);
 		}
@@ -66,6 +74,16 @@ public class InBodyInsertionMode implements InsertionMode {
 	private void handleMiscNoPStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		// TODO: Close p if in button scope
 		InsertionLogic.insertHTMLElement(insertionContext, token);
+	}
+	
+	private void handleSelfClosingStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		// TODO: Handle any active formatting elements
+		InsertionLogic.insertHTMLElement(insertionContext, token);
+		insertionContext.getOpenElementStack().pop();
+		if (token.isSelfClosingTag()) {
+			token.acknowledgeSelfClosingTag();
+		}
+		// TODO: Set frameset-ok flag
 	}
 	
 	private void handleOrdinaryElementStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {

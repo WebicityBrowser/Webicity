@@ -8,43 +8,33 @@ import com.github.webicitybrowser.spiderhtml.context.ParsingContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.token.EOFToken;
-import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
+import com.github.webicitybrowser.spiderhtml.token.TagToken;
 
-public class AfterAttributeValueQuotedState implements TokenizeState {
-
-	private final BeforeAttributeNameState beforeAttributeNameState;
-	private final SelfClosingStartTagState selfClosingStartTagState;
-	private final DataState dataState;
-
-	public AfterAttributeValueQuotedState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
-		callback.accept(this);
-		this.beforeAttributeNameState = initializer.getTokenizeState(BeforeAttributeNameState.class);
-		this.selfClosingStartTagState = initializer.getTokenizeState(SelfClosingStartTagState.class);
-		this.dataState = initializer.getTokenizeState(DataState.class);
-	}
+public class SelfClosingStartTagState implements TokenizeState {
 	
+	private final DataState dataState;
+	private final BeforeAttributeNameState beforeAttributeNameState;
+
+	public SelfClosingStartTagState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
+		callback.accept(this);
+		this.dataState = initializer.getTokenizeState(DataState.class);
+		this.beforeAttributeNameState = initializer.getTokenizeState(BeforeAttributeNameState.class);
+	}
+
 	@Override
 	public void process(SharedContext context, ParsingContext parsingContext, int ch) throws IOException {
 		switch (ch) {
-		case '\t':
-		case '\n':
-		case '\f':
-		case ' ':
-			context.setTokenizeState(beforeAttributeNameState);
-			break;
-		case '/':
-			context.setTokenizeState(selfClosingStartTagState);
-			break;
 		case '>':
+			TagToken tagToken = parsingContext.getCurrentToken(TagToken.class);
+			tagToken.setSelfClosingTag(true);
 			context.setTokenizeState(dataState);
-			context.emit(parsingContext.getCurrentToken(StartTagToken.class));
-			break;
+			context.emit(tagToken);
 		case -1:
 			context.recordError(ParseError.EOF_IN_TAG);
 			context.emit(new EOFToken());
 			break;
 		default:
-			context.recordError(ParseError.MISSING_WHITESPACE_BETWEEN_ATTRIBUTES);
+			context.recordError(ParseError.UNEXPECTED_SOLIDUS_IN_TAG);
 			parsingContext.readerHandle().unread(ch);
 			context.setTokenizeState(beforeAttributeNameState);
 		}

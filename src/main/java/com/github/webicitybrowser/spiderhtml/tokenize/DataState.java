@@ -21,9 +21,9 @@ public class DataState implements TokenizeState {
 	@Override
 	public void process(SharedContext context, ParsingContext parsingContext, int ch) {
 		switch (ch) {
-		case '&':
+		/*case '&':
 			// TODO
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException();*/
 		case '<':
 			context.setTokenizeState(tagOpenState);
 			break;
