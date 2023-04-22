@@ -6,6 +6,8 @@ import com.github.webicitybrowser.spiderhtml.token.Token;
 
 public class ParsingContext {
 	
+	private final StringBuilder temporaryBuffer = new StringBuilder();
+	
 	private final ReaderHandle readerHandle;
 	
 	private Token currentToken;
@@ -25,6 +27,18 @@ public class ParsingContext {
 	@SuppressWarnings("unchecked")
 	public <T extends Token> T getCurrentToken(Class<T> tokenCls) {
 		return (T) this.currentToken;
+	}
+	
+	public void resetTemporaryBuffer() {
+		temporaryBuffer.setLength(0);
+	}
+
+	public void appendToTemporaryBuffer(int ch) {
+		temporaryBuffer.appendCodePoint(ch);
+	}
+
+	public String getTemporaryBuffer() {
+		return temporaryBuffer.toString();
 	}
 
 }

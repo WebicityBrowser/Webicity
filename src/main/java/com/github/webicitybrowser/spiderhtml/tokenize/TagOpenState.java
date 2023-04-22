@@ -31,6 +31,7 @@ public class TagOpenState implements TokenizeState {
 			
 			return;
 		}
+		System.out.println((char) ch);
 		
 		switch (ch) {
 		case '!':
@@ -41,6 +42,7 @@ public class TagOpenState implements TokenizeState {
 			break;
 		default:
 			// TODO
+			System.out.println(parsingContext.readerHandle().lookahead(10));
 			throw new UnsupportedOperationException();
 		}
 	}

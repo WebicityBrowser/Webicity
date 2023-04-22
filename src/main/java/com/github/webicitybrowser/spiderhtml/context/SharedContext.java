@@ -6,15 +6,19 @@ import com.github.webicitybrowser.spec.html.parse.ParseError;
 import com.github.webicitybrowser.spiderhtml.insertion.InsertionMode;
 import com.github.webicitybrowser.spiderhtml.misc.EmitterLogic;
 import com.github.webicitybrowser.spiderhtml.token.EOFToken;
+import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
+import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
 import com.github.webicitybrowser.spiderhtml.tokenize.TokenizeState;
 
 public class SharedContext {
 	
 	private final InsertionContext insertionContext;
-
+	
 	private TokenizeState tokenizeState;
 	private InsertionMode insertionMode;
+	
+	private String lastStartTagTokenName;
 	
 	public SharedContext(Function<SharedContext, InsertionContext> insertionContextFactory) {
 		this.insertionContext = insertionContextFactory.apply(this);
@@ -39,6 +43,8 @@ public class SharedContext {
 	public void emit(Token token) {
 		if (token instanceof EOFToken) {
 			setTokenizeState(null); // Just in case stopParsing is never called
+		} else if (token instanceof StartTagToken startTagToken) {
+			lastStartTagTokenName = startTagToken.getName();
 		}
 		EmitterLogic.emit(this, insertionContext, token);
 	}
@@ -49,6 +55,10 @@ public class SharedContext {
 
 	public void recordError() {
 		// TODO Auto-generated method stub
+	}
+
+	public boolean isAppropriateEndTagToken(EndTagToken endTagToken) {
+		return endTagToken.getName().equals(lastStartTagTokenName);
 	}
 	
 }

@@ -125,12 +125,29 @@ public class HTMLParserTest {
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
 		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
-		HTMLElement bodyLeaf = testToBody(document, 1);
-		NodeList childNodes = bodyLeaf.getChildNodes();
+		HTMLElement bodyNode = testToBody(document, 1);
+		NodeList childNodes = bodyNode.getChildNodes();
 		HTMLElement spanElement = testElement(childNodes.get(0), "span", 0);
 		Assertions.assertArrayEquals(new String[] { "a", "c" }, spanElement.getAttributeNames());
 		Assertions.assertEquals("b", spanElement.getAttribute("a"));
 		Assertions.assertEquals("d", spanElement.getAttribute("c"));
+	}
+	
+	@Test
+	@DisplayName("Can parse style element")
+	public void canParseStyleElement() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head><style>a < b {}</style></head><body></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement headNode = testToHead(document, 1);
+		NodeList headChildren = headNode.getChildNodes();
+		HTMLElement styleElement = testElement(headChildren.get(0), "style", 1);
+		NodeList styleChildren = styleElement.getChildNodes();
+		Assertions.assertInstanceOf(Text.class, styleChildren.get(0));
+		Text text = (Text) styleChildren.get(0);
+		Assertions.assertEquals("a < b {}", text.getData());
 	}
 	
 	private HTMLElement testToBody(Document document, int numBodyChildren) {
@@ -138,6 +155,13 @@ public class HTMLParserTest {
 		NodeList htmlChildren = htmlNode.getChildNodes();
 		testElement(htmlChildren.get(0), "head", 0);
 		return testElement(htmlChildren.get(1), "body", numBodyChildren);
+	}
+	
+	private HTMLElement testToHead(Document document, int numHeadChildren) {
+		HTMLElement htmlNode = testToHtml(document, 2);
+		NodeList htmlChildren = htmlNode.getChildNodes();
+		testElement(htmlChildren.get(1), "body", 0);
+		return testElement(htmlChildren.get(0), "head", numHeadChildren);
 	}
 	
 	private HTMLElement testToHtml(Document document, int numHtmlChildren) {
