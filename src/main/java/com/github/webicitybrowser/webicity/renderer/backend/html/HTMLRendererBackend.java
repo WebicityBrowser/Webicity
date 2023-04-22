@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
@@ -15,17 +18,27 @@ import com.github.webicitybrowser.webicity.core.renderer.RendererFrontend;
 
 public class HTMLRendererBackend implements RendererBackend {
 	
+	private static final Logger logger = LoggerFactory.getLogger(HTMLRendererBackend.class);
+	
 	private final RendererContext rendererContext;
 	private final Document document;
 
 	public HTMLRendererBackend(RendererContext rendererContext, Connection connection) throws IOException {
 		this.rendererContext = rendererContext;
 		this.document = Document.create();
-		parseDocument(connection.getInputReader());
+		parseAndTimeDocument(connection);
 	}
 
 	public Document getDocument() {
 		return this.document;
+	}
+	
+	private void parseAndTimeDocument(Connection connection) throws IOException {
+		long time = System.currentTimeMillis();
+		parseDocument(connection.getInputReader());
+		long millisToParse = System.currentTimeMillis()-time;
+		int secondsToParse = (int) (millisToParse/1000 + .5);
+		logger.info("Page (" + connection.getURL() +") parsed in " + (millisToParse) + " millis (" + secondsToParse +" seconds).");
 	}
 	
 	private void parseDocument(Reader inputReader) throws IOException {

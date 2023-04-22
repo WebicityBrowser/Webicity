@@ -1,5 +1,8 @@
 package com.github.webicitybrowser.thready.gui.graphical.base.imp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
@@ -18,6 +21,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class GUIContentImp implements GUIContent {
+	
+	private static final Logger logger = LoggerFactory.getLogger(GUIContentImp.class);
 	
 	private InvalidationLevel invalidationLevel = InvalidationLevel.NONE;
 	
@@ -79,7 +84,7 @@ public class GUIContentImp implements GUIContent {
 			invalidationLevel = InvalidationLevel.NONE;
 			break;
 		default:
-			// TODO: Log when this case is reached
+			logger.warn("Reached unhandled invalidation level: " + invalidationLevel);
 			invalidationLevel = InvalidationLevel.NONE;
 		}
 	}

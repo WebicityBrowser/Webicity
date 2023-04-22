@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
@@ -73,12 +74,23 @@ public class ElementImp extends NodeImp implements Element {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("<");
 		stringBuilder.append(localTag);
+		appendAttributes(stringBuilder);
 		stringBuilder.append(">\n");
 		stringBuilder.append(StringifyUtil.serializeChildren(childNodes, "\t"));
 		stringBuilder.append("\n</");
 		stringBuilder.append(localTag);
 		stringBuilder.append(">");
 		return stringBuilder.toString();
+	}
+
+	private void appendAttributes(StringBuilder stringBuilder) {
+		for (Entry<String, String> attribute: attributes.entrySet()) {
+			stringBuilder.append(" ");
+			stringBuilder.append(attribute.getKey());
+			stringBuilder.append("=\"");
+			stringBuilder.append(attribute.getValue());
+			stringBuilder.append("\"");
+		}
 	}
 	
 }

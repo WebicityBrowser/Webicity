@@ -20,5 +20,10 @@ public class URLImp implements URL {
 	public String getPath() {
 		return url.getPath();
 	}
+	
+	@Override
+	public String toString() {
+		return url.toString();
+	}
 
 }

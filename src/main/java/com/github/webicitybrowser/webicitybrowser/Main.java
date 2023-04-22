@@ -1,5 +1,8 @@
 package com.github.webicitybrowser.webicitybrowser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.thready.windowing.core.GraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
@@ -16,8 +19,12 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicitybrowser.loader.ResourceAssetLoader;
 
 public class Main {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) {
+		configureLogging();
+		
 		String urlStr = args[0];
 		URL url = URL.ofSafe(urlStr);
 		RenderingEngine renderingEngine = createRenderingEngine();
@@ -33,10 +40,17 @@ public class Main {
 		createGUIFor(frontend.getContent());
 	}
 
+	private static void configureLogging() {
+		System.setProperty("logging.level", "INFO");
+	}
+
 	private static void logCrash(RendererCrashReason rendererCrashReason) {
-		System.err.println("Renderer crashed! Error: " + rendererCrashReason.getTitle());
+		String message = "Renderer crashed! Error: " + rendererCrashReason.getTitle();
 		if (rendererCrashReason instanceof ExceptionRendererCrashReason exceptionCrashReason) {
-			exceptionCrashReason.getException().printStackTrace();
+			Exception reason = exceptionCrashReason.getException();
+			logger.error(message, reason);
+		} else {
+			logger.error(message);
 		}
 	}
 

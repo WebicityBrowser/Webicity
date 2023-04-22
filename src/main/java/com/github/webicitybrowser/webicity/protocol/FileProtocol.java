@@ -35,6 +35,11 @@ public class FileProtocol implements Protocol {
 			public String getContentType() {
 				return "text/html";
 			}
+
+			@Override
+			public URL getURL() {
+				return url;
+			}
 		};
 	}
 

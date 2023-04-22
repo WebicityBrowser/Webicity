@@ -34,6 +34,9 @@ dependencies {
 	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 	
+	implementation 'com.github.taucher2003:t2003-logger-impl:1.0.2'
+	implementation 'com.github.taucher2003:t2003-logger-binder:1.0.2'
+	
 	implementation "io.github.humbleui:${skijaNatives}:${skijaVersion}"
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
