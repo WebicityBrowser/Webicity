@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html;
 
 import java.io.IOException;
 import java.io.Reader;

@@ -15,7 +15,7 @@ import com.github.webicitybrowser.webicity.core.renderer.RendererHandle;
 import com.github.webicitybrowser.webicity.protocol.FileProtocol;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.ThreadyHTMLRendererFrontend;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.ThreadyHTMLRendererFrontend;
 import com.github.webicitybrowser.webicitybrowser.loader.ResourceAssetLoader;
 
 public class Main {

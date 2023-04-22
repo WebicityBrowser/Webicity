@@ -8,7 +8,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.style.WebStylePoolGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.stage.box.ElementUIBoxGenerator;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebBoxGenerator;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 
 public class ElementUI implements ComponentUI {
@@ -31,7 +30,7 @@ public class ElementUI implements ComponentUI {
 	@Override
 	public Box[] generateBoxes(BoxContext context, DirectivePool parentDirectives, StyleGenerator styleGenerator) {
 		DirectivePool styleDirectives = stylePoolGenerator.createStylePool(parentDirectives, styleGenerator);
-		return WebBoxGenerator.generateBoxes(() -> boxGenerator.generateBoxes(context, styleDirectives, styleGenerator));
+		return boxGenerator.generateBoxes(context, styleDirectives, styleGenerator);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -8,70 +10,40 @@ import org.slf4j.LoggerFactory;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
-import com.github.webicitybrowser.spec.css.parser.property.color.ColorPropertyValueParser;
-import com.github.webicitybrowser.spec.css.parser.property.display.DisplayPropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
-import com.github.webicitybrowser.spec.css.property.color.ColorValue;
-import com.github.webicitybrowser.spec.css.property.display.DisplayValue;
-import com.github.webicitybrowser.spec.css.property.display.OuterDisplayType;
 import com.github.webicitybrowser.spec.css.rule.Declaration;
-import com.github.webicitybrowser.thready.color.colors.RGBA8Color;
-import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.thready.gui.graphical.directive.ForegroundColorDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective.OuterDisplay;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 
 public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CSSOMDeclarationParserImp.class);
-
-	private final PropertyValueParser<ColorValue> colorParser = new ColorPropertyValueParser();
-	private final PropertyValueParser<DisplayValue> displayParser = new DisplayPropertyValueParser();
 	
-	// TODO: HashMap of dedicated parser classes
+	private final Map<String, CSSOMNamedDeclarationParser<?>> namedDeclarationParsers = new HashMap<>();
+	
+	public CSSOMDeclarationParserImp() {
+		namedDeclarationParsers.put("color", new CSSOMColorDeclarationParser());
+		namedDeclarationParsers.put("display", new CSSOMDisplayDeclarationParser());
+	}
 	
 	@Override
 	public Directive[] parseDeclaration(Declaration rule) {
-		switch (rule.getName()) {
-		case "color":
-			return parseColorRule(rule);
-		case "display":
-			return parseDisplayRule(rule);
-		default:
+		CSSOMNamedDeclarationParser<?> namedParser = namedDeclarationParsers.get(rule.getName());
+		if (namedParser == null) {
 			logger.warn("Unrecognized declaration name: " + rule.getName());
 			return null;
 		}
+		
+		return invokeParser(namedParser, rule);
 	}
 
-	private Directive[] parseColorRule(Declaration rule) {
-		return getResult(rule, colorParser)
-			.map(value -> new Directive[] { ForegroundColorDirective.of(createColorFrom(value)) })
+	@SuppressWarnings("unchecked")
+	private <T> Directive[] invokeParser(CSSOMNamedDeclarationParser<?> namedParser, Declaration rule) {
+		CSSOMNamedDeclarationParser<T> castedParser = (CSSOMNamedDeclarationParser<T>) namedParser;
+		Optional<T> result = getResult(rule, castedParser.getPropertyValueParser());
+		return result
+			.map(value -> castedParser.translatePropertyValue(value))
 			.orElse(null);
-	}
-
-	private ColorFormat createColorFrom(ColorValue value) {
-		return new RGBA8Color(value.getRed(), value.getGreen(), value.getBlue(), value.getAlpha());
-	}
-	
-	private Directive[] parseDisplayRule(Declaration rule) {
-		return getResult(rule, displayParser)
-			.map(value -> new Directive[] {
-				OuterDisplayDirective.of(convertOuterDisplayType(value.outerDisplayType()))
-			})
-			.orElse(null);
-	}
-
-	private OuterDisplay convertOuterDisplayType(OuterDisplayType outerDisplayType) {
-		switch (outerDisplayType) {
-		case BLOCK:
-			return OuterDisplay.BLOCK;
-		case INLINE:
-			return OuterDisplay.INLINE;
-		default:
-			throw new UnsupportedOperationException("Unsupported display type: " + outerDisplayType);
-		}
 	}
 
 	private <T> Optional<T> getResult(Declaration rule, PropertyValueParser<T> parser) {

@@ -12,7 +12,8 @@ public interface OuterDisplayDirective extends Directive {
 	}
 	
 	public static enum OuterDisplay {
-		BLOCK, INLINE
+		BLOCK, INLINE,
+		NONE, CONTENTS
 	}
 
 	public static OuterDisplayDirective of(OuterDisplay display) {

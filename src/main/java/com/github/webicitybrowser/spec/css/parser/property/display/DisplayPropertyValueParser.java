@@ -9,11 +9,13 @@ import com.github.webicitybrowser.spec.css.property.display.DisplayValue;
 public class DisplayPropertyValueParser implements PropertyValueParser<DisplayValue> {
 	
 	private final PropertyValueParser<DisplayValue> innerOuterDisplayValueParser = new InnerOuterDisplayValueParser();
+	private final PropertyValueParser<DisplayValue> boxDisplayValueParser = new BoxDisplayValueParser();
 
 	@Override
 	public PropertyValueParseResult<DisplayValue> parse(TokenLike[] tokens, int offset, int length) {
 		return PropertyValueParserUtil.takeLongestResult(
-			innerOuterDisplayValueParser.parse(tokens, offset, length));
+			innerOuterDisplayValueParser.parse(tokens, offset, length),
+			boxDisplayValueParser.parse(tokens, offset, length));
 	}
 
 }

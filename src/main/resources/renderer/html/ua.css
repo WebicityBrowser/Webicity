@@ -5,3 +5,7 @@ a {
 div, head, body, html {
 	display: block;
 }
+
+style, script {
+	display: none;
+}
