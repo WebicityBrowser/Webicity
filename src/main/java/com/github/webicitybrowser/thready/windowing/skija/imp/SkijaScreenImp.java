@@ -2,6 +2,7 @@ package com.github.webicitybrowser.thready.windowing.skija.imp;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent.ScreenContentRedrawContext;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
@@ -23,6 +24,7 @@ public class SkijaScreenImp implements SkijaScreen {
 	private int ticksLeft = FULL_TICKS;
 	private ScreenContent screenContent;
 	private SkijaRootCanvas2D canvas;
+	private AbsoluteSize oldScreenSize;
 	
 	public SkijaScreenImp(SkijaWindow window, long windowId, SkijaGraphicsSystem graphicsSystem) {
 		this.window = window;
@@ -63,10 +65,20 @@ public class SkijaScreenImp implements SkijaScreen {
 	}
 
 	private boolean redrawConditionsTriggered() {
-		// TODO Auto-generated method stub
-		return false;
+		return pollScreenSizeChanged();
 	}
 	
+	private boolean pollScreenSizeChanged() {
+		AbsoluteSize screenSize = window.getSize();
+		boolean changed = !window.getSize().equals(oldScreenSize);
+		if (changed) {
+			oldScreenSize = screenSize;
+			regenerateCanvas();
+		}
+		
+		return changed;
+	}
+
 	private void regenerateCanvasIfNeeded() {
 		if (canvas == null) {
 			regenerateCanvas();

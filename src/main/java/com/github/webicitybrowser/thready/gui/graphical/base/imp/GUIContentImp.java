@@ -31,6 +31,7 @@ public class GUIContentImp implements GUIContent {
 	private StyleGeneratorRoot styleGeneratorRoot;
 	
 	private boolean redrawRequested = false;
+	private AbsoluteSize oldContentSize;
 	private Box rootBox;
 	private Unit rootUnit;
 
@@ -52,10 +53,11 @@ public class GUIContentImp implements GUIContent {
 	public void redraw(ScreenContentRedrawContext redrawContext) {
 		this.redrawRequested = false;
 		if (rootUI != null && lookAndFeel != null) {
+			detectPipelineInvalidations(redrawContext);
 			performRenderPipeline(redrawContext);
 		}
 	}
-	
+
 	private ComponentUI createRootUI(Component component, LookAndFeel lookAndFeel) {
 		ComponentUI dummyUI = new RootUI() {};
 		
@@ -126,6 +128,13 @@ public class GUIContentImp implements GUIContent {
 		// TODO: What if we have a transparent window?
 		// The default paint is white
 		canvas.drawRect(0, 0, contentSize.width(), contentSize.height());
+	}
+	
+	private void detectPipelineInvalidations(ScreenContentRedrawContext redrawContext) {
+		if (!redrawContext.contentSize().equals(oldContentSize)) {
+			oldContentSize = redrawContext.contentSize();
+			this.invalidationLevel = InvalidationLevel.BOX;
+		}
 	}
 	
 	private Rectangle createDocumentRect(AbsoluteSize windowSize) {
