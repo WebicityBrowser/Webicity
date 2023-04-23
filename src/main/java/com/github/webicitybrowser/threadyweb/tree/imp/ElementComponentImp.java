@@ -1,7 +1,12 @@
 package com.github.webicitybrowser.threadyweb.tree.imp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
+import com.github.webicitybrowser.spec.dom.node.Text;
+import com.github.webicitybrowser.spec.dom.node.support.NodeList;
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
 import com.github.webicitybrowser.thready.gui.graphical.cache.imp.MappingCacheImp;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
@@ -31,9 +36,20 @@ public class ElementComponentImp extends BaseWebComponent implements ElementComp
 
 	@Override
 	public WebComponent[] getChildren() {
-		Node[] children = element.getChildNodes().toArray();
+		Node[] children = filterChildren(element.getChildNodes());
 		componentCache.recompute(children, WebComponentFactory::createWebComponent);
 		return componentCache.getComputedMappings();
+	}
+
+	private Node[] filterChildren(NodeList childNodes) {
+		List<Node> filtered = new ArrayList<>(childNodes.getLength());
+		for (Node childNode: childNodes) {
+			if (childNode instanceof Text || childNode instanceof Element) {
+				filtered.add(childNode);
+			}
+		}
+		
+		return filtered.toArray(Node[]::new);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util;
 
+import com.github.webicitybrowser.spec.dom.node.Comment;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.Text;
@@ -16,6 +17,8 @@ public final class WebComponentFactory {
 			return ElementComponent.create(element);
 		} else if (node instanceof Text text) {
 			return new TextComponentImp(text);
+		} else if (node instanceof Comment) {
+			return null;
 		} else {
 			throw new RuntimeException("No web component available for " + node.getClass().getName());
 		}
