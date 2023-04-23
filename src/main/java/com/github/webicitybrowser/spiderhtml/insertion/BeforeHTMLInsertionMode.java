@@ -3,6 +3,7 @@ package com.github.webicitybrowser.spiderhtml.insertion;
 import java.util.function.Consumer;
 
 import com.github.webicitybrowser.spec.dom.node.Document;
+import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.html.node.HTMLElement;
 import com.github.webicitybrowser.spec.html.node.HTMLHtmlElement;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
@@ -10,8 +11,10 @@ import com.github.webicitybrowser.spec.infra.Namespace;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
+import com.github.webicitybrowser.spiderhtml.misc.InsertionLocation;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
+import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
 import com.github.webicitybrowser.spiderhtml.util.ASCIIUtil;
@@ -30,19 +33,21 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 		// TODO
 		if (token instanceof CharacterToken characterToken) {
 			handleCharacterToken(characterToken);
+		} else if (token instanceof CommentToken commentToken) {
+			handleCommentToken(insertionContext, commentToken);
 		} else if (
 			token instanceof StartTagToken startTagToken &&
 			handleStartTagToken(context, insertionContext, startTagToken)
 		) {
 			return;
 		} else {
-			pushHtmlLeafToStack(insertionContext);
+			pushHtmlNodeToStack(insertionContext);
 			context.setInsertionMode(beforeHeadInsertionMode);
 			context.emit(token);
 		}
 	}
 
-	private void pushHtmlLeafToStack(InsertionContext insertionContext) {
+	private void pushHtmlNodeToStack(InsertionContext insertionContext) {
 		HTMLTreeBuilder treeBuilder = insertionContext.getTreeBuilder();
 		Document nodeDocument = treeBuilder.getDocument();
 		HTMLHtmlElement htmlElementNode = treeBuilder.createHtmlElement(nodeDocument);
@@ -56,6 +61,12 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 		} else {
 			throw new UnsupportedOperationException();
 		}
+	}
+	
+	private void handleCommentToken(InsertionContext insertionContext, CommentToken commentToken) {
+		Node htmlNode = insertionContext.getOpenElementStack().peek();
+		InsertionLocation position = new InsertionLocation(htmlNode, null);
+		InsertionLogic.insertComment(insertionContext, commentToken, position);
 	}
 	
 	private boolean handleStartTagToken(SharedContext context, InsertionContext insertionContext, StartTagToken token) {

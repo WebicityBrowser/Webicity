@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.imp.util.InsertUtil;
@@ -21,7 +22,8 @@ public class ElementImp extends NodeImp implements Element {
 	private final List<Node> childNodes = new ArrayList<>(1);
 	private final Map<String, String> attributes = new LinkedHashMap<>(1);
 
-	public ElementImp(String namespace, String localTag) {
+	public ElementImp(Document nodeDocument, String namespace, String localTag) {
+		super(nodeDocument);
 		this.namespace = namespace;
 		this.localTag = localTag;
 	}

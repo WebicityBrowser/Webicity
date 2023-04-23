@@ -2,10 +2,14 @@ package com.github.webicitybrowser.spiderhtml.insertion;
 
 import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
+import com.github.webicitybrowser.spiderhtml.misc.InsertionLocation;
+import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
+import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
 import com.github.webicitybrowser.spiderhtml.util.ASCIIUtil;
@@ -24,7 +28,11 @@ public class AfterBodyInsertionMode implements InsertionMode {
 	@Override
 	public void emit(SharedContext context, InsertionContext insertionContext, Token token) {
 		// TODO
-		if (
+		if (token instanceof CommentToken commentToken) {
+			Node htmlNode = insertionContext.getOpenElementStack().peek();
+			InsertionLocation position = new InsertionLocation(htmlNode, null);
+			InsertionLogic.insertComment(insertionContext, commentToken, position);
+		} else if (
 			token instanceof CharacterToken characterToken &&
 			ASCIIUtil.isASCIIWhiteSpace(characterToken.getCharacter())
 		) {
@@ -40,6 +48,7 @@ public class AfterBodyInsertionMode implements InsertionMode {
 	}
 
 	private boolean handleEndTagToken(SharedContext context, InsertionContext insertionContext, EndTagToken token) {
+		// TODO
 		switch (token.getName()) {
 		case "html":
 			handleHtmlEndTag(context, insertionContext, token);

@@ -8,6 +8,7 @@ import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionModeLogic;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
+import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
@@ -29,6 +30,8 @@ public class InHeadInsertionMode implements InsertionMode {
 		if (token instanceof CharacterToken characterToken) {
 			int ch = characterToken.getCharacter();
 			InsertionLogic.insertCharacters(context, insertionContext, new int [] { ch });
+		} else if (token instanceof CommentToken commentToken) {
+			InsertionLogic.insertComment(insertionContext, commentToken, null);
 		} else if (
 			token instanceof StartTagToken startTagToken &&
 			handleStartTag(context, insertionContext, startTagToken)

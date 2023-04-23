@@ -4,6 +4,8 @@ import com.github.webicitybrowser.spec.dom.node.support.NodeList;
 
 public interface Node {
 
+	Node getOwnerDocument();
+	
 	Node getParentNode();
 	
 	NodeList getChildNodes();

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.github.webicitybrowser.spec.dom.node.Comment;
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.DocumentType;
 import com.github.webicitybrowser.spec.dom.node.Element;
@@ -162,6 +163,21 @@ public class HTMLParserTest {
 		Assertions.assertInstanceOf(Text.class, styleChildren.get(0));
 		Text text = (Text) styleChildren.get(0);
 		Assertions.assertEquals("a < b {}", text.getData());
+	}
+	
+	@Test
+	@DisplayName("Can parse a comment")
+	public void canParseAComment() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><!--Hello, World--></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement bodyNode = testToBody(document, 1);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		Assertions.assertInstanceOf(Comment.class, bodyChildren.get(0));
+		Comment comment = (Comment) bodyChildren.get(0);
+		Assertions.assertEquals("Hello, World", comment.getData());
 	}
 	
 	private HTMLElement testToBody(Document document, int numBodyChildren) {

@@ -2,6 +2,7 @@ package com.github.webicitybrowser.spiderhtml.misc;
 
 import java.util.HashMap;
 
+import com.github.webicitybrowser.spec.dom.node.Comment;
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.Text;
@@ -10,6 +11,7 @@ import com.github.webicitybrowser.spec.html.parse.ElementCreationOptions;
 import com.github.webicitybrowser.spec.infra.Namespace;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
+import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken.StartTagAttribute;
 
@@ -35,6 +37,21 @@ public final class InsertionLogic {
 			textNode.appendData(text);
 			insertNode(adjustedInsertionLocation, textNode);
 		}
+	}
+	
+	public static Comment insertComment(InsertionContext insertionContext, CommentToken token, InsertionLocation position) {
+		String data = token.getData();
+		InsertionLocation adjustedInsertionLocation = position != null ?
+			position :
+			getAppropriatePlaceForInsertingNode(insertionContext, null);
+		Node parentNode = adjustedInsertionLocation.parent();
+		Node nodeDocument = parentNode instanceof Document ?
+			parentNode :
+			parentNode.getOwnerDocument();
+		Comment comment = insertionContext.getTreeBuilder()
+			.createComment(data, (Document) nodeDocument);
+		insertNode(adjustedInsertionLocation, comment);
+		return comment;
 	}
 
 	private static String codePointsToString(int[] chars) {

@@ -3,13 +3,24 @@ package com.github.webicitybrowser.spec.dom.node.imp;
 import java.util.List;
 
 import com.github.webicitybrowser.spec.dom.exception.HierarchyRequestError;
+import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.support.NodeList;
 import com.github.webicitybrowser.spec.dom.node.support.imp.NodeListImp;
 
 public abstract class NodeImp implements Node {
 	
+	private final Document nodeDocument;
 	private Node parentNode;
+	
+	public NodeImp(Document nodeDocument) {
+		this.nodeDocument = nodeDocument;
+	}
+	
+	@Override
+	public Document getOwnerDocument() {
+		return nodeDocument;
+	}
 	
 	@Override
 	public Node getParentNode() {

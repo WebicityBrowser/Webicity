@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.spec.html.parse;
 
+import com.github.webicitybrowser.spec.dom.node.Comment;
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.DocumentType;
 import com.github.webicitybrowser.spec.dom.node.Text;
@@ -17,5 +18,7 @@ public interface HTMLTreeBuilder {
 	DocumentType createDocumentType(String name, String publicId, String systemId);
 
 	Text createTextNode();
+
+	Comment createComment(String data, Document nodeDocument);
 	
 }

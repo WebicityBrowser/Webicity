@@ -10,9 +10,9 @@ import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
 
-public class TextMode implements InsertionMode {
+public class TextInsertionMode implements InsertionMode {
 
-	public TextMode(ParsingInitializer initializer, Consumer<InsertionMode> callback) {
+	public TextInsertionMode(ParsingInitializer initializer, Consumer<InsertionMode> callback) {
 		callback.accept(this);
 	}
 	

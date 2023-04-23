@@ -8,6 +8,7 @@ import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
+import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
 import com.github.webicitybrowser.spiderhtml.util.ASCIIUtil;
@@ -25,6 +26,8 @@ public class BeforeHeadInsertionMode implements InsertionMode {
 	public void emit(SharedContext context, InsertionContext insertionContext, Token token) {
 		if (token instanceof CharacterToken characterToken) {
 			handleCharacterToken(characterToken);
+		} else if (token instanceof CommentToken commentToken) {
+			InsertionLogic.insertComment(insertionContext, commentToken, null);
 		} else if (
 			token instanceof StartTagToken startTagToken &&
 			handleStartTagToken(context, insertionContext, startTagToken)

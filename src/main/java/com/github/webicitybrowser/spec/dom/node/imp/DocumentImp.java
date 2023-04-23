@@ -14,6 +14,10 @@ public class DocumentImp extends NodeImp implements Document {
 
 	private final List<Node> childNodes = new ArrayList<>(2);
 	
+	public DocumentImp() {
+		super(null);
+	}
+	
 	@Override
 	public NodeList getChildNodes() {
 		return new NodeListImp(childNodes);

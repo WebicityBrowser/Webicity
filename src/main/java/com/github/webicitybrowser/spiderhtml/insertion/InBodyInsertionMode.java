@@ -13,6 +13,7 @@ import com.github.webicitybrowser.spiderhtml.misc.ElementUtil;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
 import com.github.webicitybrowser.spiderhtml.misc.StackLogic;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
+import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.EOFToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
@@ -32,6 +33,8 @@ public class InBodyInsertionMode implements InsertionMode {
 		// TODO
 		if (token instanceof CharacterToken characterToken) {
 			handleCharacter(context, insertionContext, characterToken);
+		} else if (token instanceof CommentToken commentToken) {
+			handleCommentToken(context, insertionContext, commentToken);
 		} else if (token instanceof StartTagToken startTagToken) {
 			handleStartTag(context, insertionContext, startTagToken);
 		} else if (token instanceof EndTagToken endTagToken) {
@@ -50,6 +53,10 @@ public class InBodyInsertionMode implements InsertionMode {
 		}
 		// TODO: Handle any active formatting elements, and unset frameset-ok
 		InsertionLogic.insertCharacters(context, insertionContext, new int[] { ch });
+	}
+	
+	private void handleCommentToken(SharedContext context, InsertionContext insertionContext, CommentToken commentToken) {
+		InsertionLogic.insertComment(insertionContext, commentToken, null);
 	}
 	
 	private void handleStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {

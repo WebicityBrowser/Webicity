@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.spec.dom.logic;
 
+import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.html.node.imp.HTMLBodyElementImp;
 import com.github.webicitybrowser.spec.html.node.imp.HTMLElementImp;
@@ -10,17 +11,17 @@ public final class ElementCreationLogic {
 
 	private ElementCreationLogic() {}
 	
-	public static Element createElement(String name) {
+	public static Element createElement(Document nodeDocument, String name) {
 		// TODO: Actual logic
 		switch (name) {
 		case "html":
-			return new HTMLHtmlElementImp();
+			return new HTMLHtmlElementImp(nodeDocument);
 		case "head":
-			return new HTMLHeadElementImp();
+			return new HTMLHeadElementImp(nodeDocument);
 		case "body":
-			return new HTMLBodyElementImp();
+			return new HTMLBodyElementImp(nodeDocument);
 		default:
-			return new HTMLElementImp(name);
+			return new HTMLElementImp(nodeDocument, name);
 		}
 	}
 	
