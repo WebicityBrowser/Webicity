@@ -10,8 +10,8 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 
 public class TypeFilter implements CSSOMFilter {
 
-	private String namespace;
-	private String elementName;
+	private final String namespace;
+	private final String elementName;
 
 	public TypeFilter(String namespace, String elementName) {
 		this.namespace = namespace;
@@ -21,14 +21,13 @@ public class TypeFilter implements CSSOMFilter {
 	@Override
 	public boolean isApplicable(WebComponent component, int index) {
 		Node node = component.getNode();
-		if (!(node instanceof Element)) {
+		if (node instanceof Element element) {
+			return
+				element.getLocalName().equals(elementName) &&
+				namespaceMatches(element.getNamespace());
+		} else {
 			return false;
 		}
-		
-		Element element = (Element) node;
-		return
-			element.getLocalName().equals(elementName) &&
-			namespaceMatches(element.getNamespace());
 	}
 	
 	@Override
@@ -40,8 +39,8 @@ public class TypeFilter implements CSSOMFilter {
 	}
 
 	private boolean namespaceMatches(String elementNamespace) {
-		if (namespace == null) {
-			return elementNamespace == null;
+		if (namespace == elementNamespace) {
+			return true;
 		}
 		if (namespace.equals("*")) {
 			return true;

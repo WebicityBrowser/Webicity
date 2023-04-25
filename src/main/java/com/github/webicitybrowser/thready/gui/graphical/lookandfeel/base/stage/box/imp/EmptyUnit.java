@@ -14,7 +14,7 @@ public class EmptyUnit implements Unit {
 
 	@Override
 	public Painter getPainter(Rectangle documentRect) {
-		return (context, canvas) -> {};
+		return (context, canvas, viewport) -> {};
 	}
 
 }

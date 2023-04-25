@@ -117,11 +117,12 @@ public class GUIContentImp implements GUIContent {
 	private void performPaintCycle(ScreenContentRedrawContext redrawContext) {
 		AbsoluteSize contentSize = redrawContext.contentSize();
 		Canvas2D canvas = redrawContext.canvas();
+		Rectangle viewport = new Rectangle(new AbsolutePosition(0, 0), contentSize);
 		
 		clearPaint(canvas, contentSize);
 		
 		rootUnit.getPainter(createDocumentRect(contentSize))
-			.paint(new PaintContextImp(), canvas);
+			.paint(new PaintContextImp(), canvas, viewport);
 	}
 
 	private void clearPaint(Canvas2D canvas, AbsoluteSize contentSize) {

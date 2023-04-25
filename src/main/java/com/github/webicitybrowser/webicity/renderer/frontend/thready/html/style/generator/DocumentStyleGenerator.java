@@ -1,7 +1,9 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
@@ -39,14 +41,14 @@ public class DocumentStyleGenerator implements StyleGenerator {
 	
 	private StyleGenerator createChildGenerator(ComponentUI childUI, int i) {
 		WebComponent childComponent = (WebComponent) childUI.getComponent();
-		List<CSSOMNode> childCSSOMNodes = new ArrayList<>();
+		Set<CSSOMNode> childCSSOMNodes = new HashSet<>();
 		
 		addChildCSSOMNodes(childCSSOMNodes, childComponent, i);
 		
 		return new DocumentStyleGenerator(childCSSOMNodes.toArray(CSSOMNode[]::new));
 	}
 	
-	private void addChildCSSOMNodes(List<CSSOMNode> childCSSOMNodes, WebComponent childComponent, int i) {
+	private void addChildCSSOMNodes(Set<CSSOMNode> childCSSOMNodes, WebComponent childComponent, int i) {
 		for (CSSOMNode currentNode: cssomNodes) {
 			CSSOMNode[] matchedNodes = currentNode.getApplicableNodes(childComponent, i);
 			for (CSSOMNode matchedNode: matchedNodes) {

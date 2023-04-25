@@ -24,9 +24,9 @@ public class BlockWrappingPainter implements Painter {
 	}
 
 	@Override
-	public void paint(PaintContext context, Canvas2D canvas) {
+	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewport) {
 		paintBackground(canvas);
-		paintInnerContent(context, canvas);
+		paintInnerContent(context, canvas, viewport);
 	}
 
 	private void paintBackground(Canvas2D canvas) {
@@ -42,8 +42,8 @@ public class BlockWrappingPainter implements Painter {
 				documentRect.size().height());
 	}
 	
-	private void paintInnerContent(PaintContext context, Canvas2D canvas) {
-		innerPainter.paint(context, canvas);
+	private void paintInnerContent(PaintContext context, Canvas2D canvas, Rectangle viewport) {
+		innerPainter.paint(context, canvas, viewport);
 	}
 	
 	private ColorFormat getBackgroundColor() {

@@ -27,7 +27,7 @@ public class TextPainter implements Painter {
 	}
 
 	@Override
-	public void paint(PaintContext context, Canvas2D canvas) {
+	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewport) {
 		Paint2D paint = Paint2DBuilder.clone(canvas.getPaint())
 			.setColor(getForegroundColor())
 			.setFont(font)
