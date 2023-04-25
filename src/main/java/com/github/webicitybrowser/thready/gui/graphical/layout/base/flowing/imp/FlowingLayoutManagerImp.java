@@ -4,6 +4,8 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.thready.gui.graphical.directive.PositionDirective;
+import com.github.webicitybrowser.thready.gui.graphical.directive.SizeDirective;
 import com.github.webicitybrowser.thready.gui.graphical.layout.base.flowing.FlowingLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
@@ -50,8 +52,12 @@ public class FlowingLayoutManagerImp implements FlowingLayoutManager {
 	}
 
 	private AbsoluteSize precomputeChildSize(Box childBox, AbsoluteSize parentSize) {
-		// TODO: Respond to sizing directives
-		return new AbsoluteSize(parentSize.width(), RelativeDimension.UNBOUNDED);
+		return childBox
+			.getStyleDirectives()
+			.getDirectiveOrEmpty(SizeDirective.class)
+			.map(directive -> directive.getSize())
+			.map(relativeSize -> relativeSize.resolveAbsoluteSize(parentSize))
+			.orElse(new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED));
 	}
 	
 	private AbsoluteSize computeFinalChildSize(AbsoluteSize renderedSize, AbsoluteSize precomputedSize, AbsoluteSize parentSize) {
@@ -69,8 +75,12 @@ public class FlowingLayoutManagerImp implements FlowingLayoutManager {
 	private AbsolutePosition computeNormalChildPosition(
 		Box child, AbsoluteSize parentSize, AbsoluteSize finalSize, RenderCursorTracker renderCursor
 	) {
-		// TODO: Respond to positioning directives
-		return selectNextPosition(finalSize, renderCursor);
+		return child
+			.getStyleDirectives()
+			.getDirectiveOrEmpty(PositionDirective.class)
+			.map(directive -> directive.getPosition())
+			.map(relativePosition -> relativePosition.resolveAbsolutePosition(parentSize))
+			.orElse(selectNextPosition(finalSize, renderCursor));
 	}
 
 	private AbsolutePosition selectNextPosition(AbsoluteSize finalSize, RenderCursorTracker renderCursor) {
