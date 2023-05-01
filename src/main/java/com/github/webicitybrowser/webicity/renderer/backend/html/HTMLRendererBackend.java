@@ -38,7 +38,7 @@ public class HTMLRendererBackend implements RendererBackend {
 		parseDocument(connection.getInputReader());
 		long millisToParse = System.currentTimeMillis()-time;
 		int secondsToParse = (int) (millisToParse/1000 + .5);
-		logger.info("Page (" + connection.getURL() +") parsed in " + (millisToParse) + " millis (" + secondsToParse +" seconds).");
+		logger.info("Page (" + connection.getURL() + ") parsed in " + (millisToParse) + " millis (" + secondsToParse +" seconds).");
 	}
 	
 	private void parseDocument(Reader inputReader) throws IOException {

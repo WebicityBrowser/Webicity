@@ -2,11 +2,11 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.u
 
 import java.util.function.BiFunction;
 
+import com.github.webicitybrowser.thready.gui.directive.basics.ChildrenDirective;
 import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
 import com.github.webicitybrowser.thready.gui.graphical.cache.imp.MappingCacheImp;
-import com.github.webicitybrowser.thready.gui.graphical.directive.ChildrenDirective;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;

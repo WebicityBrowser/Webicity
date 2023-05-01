@@ -18,6 +18,8 @@ import com.github.webicitybrowser.webicity.core.renderer.RendererBackendRegistry
 import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.core.renderer.RendererCrashException;
 import com.github.webicitybrowser.webicity.core.renderer.RendererHandle;
+import com.github.webicitybrowser.webicity.core.ui.Frame;
+import com.github.webicitybrowser.webicity.core.ui.imp.FrameImp;
 
 public class RenderingEngineImp implements RenderingEngine {
 
@@ -30,6 +32,11 @@ public class RenderingEngineImp implements RenderingEngine {
 		this.assetLoader = assetLoader;
 	}
 
+	@Override
+	public Frame createFrame() {
+		return new FrameImp(this);
+	}
+	
 	@Override
 	public RendererHandle openRenderer(URL url) {
 		Optional<Protocol> protocol = protocolRegistry.getProtocolForURL(url);

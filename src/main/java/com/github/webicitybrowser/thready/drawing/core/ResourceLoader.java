@@ -16,7 +16,7 @@ public interface ResourceLoader {
 	 * @param source The data to construct the image from.
 	 * @return The loaded image.
 	 */
-	Image loadResource(ImageSource source);
+	Image loadImage(ImageSource source);
 	
 	/**
 	 * Load a font that can be used to draw text.

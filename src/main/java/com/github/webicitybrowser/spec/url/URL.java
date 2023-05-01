@@ -1,6 +1,9 @@
 package com.github.webicitybrowser.spec.url;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 
 import com.github.webicitybrowser.spec.url.imp.URLImp;
 
@@ -10,17 +13,22 @@ public interface URL {
 	
 	String getPath();
 
-	public static URL of(String name) throws InvalidURLException {
+	public static URL of(String href) throws InvalidURLException {
 		try {
-			return new URLImp(new java.net.URL(name));
+			return new URLImp(new java.net.URL(null, href, new URLStreamHandler() {		
+				@Override
+				protected URLConnection openConnection(java.net.URL u) throws IOException {
+					return null;
+				}
+			}));
 		} catch (MalformedURLException e) {
 			throw new InvalidURLException();
 		}
 	}
 	
-	public static URL ofSafe(String name) {
+	public static URL ofSafe(String href) {
 		try {
-			return of(name);
+			return of(href);
 		} catch (InvalidURLException e) {
 			throw new RuntimeException(e);
 		}

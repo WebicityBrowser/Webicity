@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.thready.windowing.core;
 
+import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 
 public interface DesktopWindow extends Window {
@@ -16,5 +17,28 @@ public interface DesktopWindow extends Window {
 	 * @return The current size of this window.
 	 */
 	AbsoluteSize getSize();
+	
+	/**
+	 * Minimizes the window.
+	 */
+	void minimize();
+	
+	/**
+	 * Show the window.
+	 */
+	void restore();
+	
+	/**
+	 * Move the window to the specified position.
+	 * @param position The position to move the window to.
+	 */
+	void setPosition(AbsolutePosition position);
+	
+	/**
+	 * Get the position of the window on the screen
+	 * from the top-left corner.
+	 * @return The position of the window.
+	 */
+	AbsolutePosition getPosition();
 	
 }

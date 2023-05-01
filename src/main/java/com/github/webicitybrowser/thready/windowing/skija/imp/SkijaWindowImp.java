@@ -3,6 +3,7 @@ package com.github.webicitybrowser.thready.windowing.skija.imp;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
+import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaScreen;
@@ -44,6 +45,32 @@ public class SkijaWindowImp implements SkijaWindow {
 		
 		return new AbsoluteSize((float) width[0], (float) height[0]);
 	}
+	
+	//
+	
+	public void minimize() {
+		GLFW.glfwIconifyWindow(windowId);
+	}
+	
+	public void restore() {
+		if (isMaximized()) {
+			GLFW.glfwRestoreWindow(windowId);
+		} else {
+			GLFW.glfwMaximizeWindow(windowId);
+		}
+	}
+
+	//
+	
+	public void setPosition(AbsolutePosition position) {
+		GLFW.glfwSetWindowPos(windowId, (int) position.x(), (int) position.y());
+	}
+	
+	public AbsolutePosition getPosition() {
+		int[] xpos = new int[1], ypos = new int[1];
+		GLFW.glfwGetWindowPos(windowId, xpos, ypos);
+		return new AbsolutePosition(xpos[0], ypos[0]);
+	}
 
 	//
 	
@@ -68,6 +95,10 @@ public class SkijaWindowImp implements SkijaWindow {
 
 	private int glfwBool(boolean bool) {
 		return bool ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE;
+	}
+	
+	private boolean isMaximized() {
+		return GLFW.glfwGetWindowAttrib(windowId, GLFW.GLFW_MAXIMIZED) == GLFW.GLFW_TRUE;
 	}
 	
 	//

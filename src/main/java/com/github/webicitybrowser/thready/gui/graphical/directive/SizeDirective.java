@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.thready.gui.graphical.directive;
 
+import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeSize;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 
@@ -13,6 +14,10 @@ public interface SizeDirective extends Directive {
 	
 	public static SizeDirective of(RelativeSize size) {
 		return () -> size;
+	}
+	
+	public static SizeDirective of(AbsoluteSize size) {
+		return () -> new RelativeSize(0, size.width(), 0, size.height());
 	}
 
 }

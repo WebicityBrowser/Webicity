@@ -15,7 +15,7 @@ public class SkijaResourceLoaderImp implements ResourceLoader {
 	private final static Map<FontSettings, Font2D> fonts = new WeakHashMap<>();
 
 	@Override
-	public Image loadResource(ImageSource source) {
+	public Image loadImage(ImageSource source) {
 		// TODO Auto-generated method stub
 		return null;
 	}
