@@ -8,14 +8,12 @@ import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
 import com.github.webicitybrowser.spec.css.parser.tokens.Token;
 import com.github.webicitybrowser.spec.css.rule.CSSRule;
 import com.github.webicitybrowser.spec.css.rule.CSSStyleSheet;
-import com.github.webicitybrowser.thready.gui.directive.basics.ChildrenDirective;
 import com.github.webicitybrowser.thready.gui.directive.core.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeelBuilder;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.SimpleLookAndFeel;
-import com.github.webicitybrowser.thready.gui.tree.basics.ContainerComponent;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.WebLookAndFeel;
@@ -47,16 +45,13 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 	
 	private ScreenContent createContent() {
 		Component documentComponent = DocumentComponent.create(backend.getDocument());
-		Component rootComponent = ContainerComponent.create()
-			.directive(ChildrenDirective.of(documentComponent));
-		
 		LookAndFeelBuilder lookAndFeelBuilder = LookAndFeelBuilder.create();
 		SimpleLookAndFeel.installTo(lookAndFeelBuilder);
 		WebLookAndFeel.installTo(lookAndFeelBuilder);
 		LookAndFeel lookAndFeel = lookAndFeelBuilder.build();
 		
 		GUIContent content = new GUIContentImp();
-		content.setRoot(rootComponent, lookAndFeel, createStyleGenerator());
+		content.setRoot(documentComponent, lookAndFeel, createStyleGenerator());
 		
 		return content;
 	}
