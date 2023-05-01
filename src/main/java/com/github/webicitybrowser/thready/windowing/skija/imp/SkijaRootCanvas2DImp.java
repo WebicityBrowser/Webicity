@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL30;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
+import com.github.webicitybrowser.thready.drawing.skija.imp.SkijaCanvas2DImp;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaRootCanvas2D;
 
 import io.github.humbleui.skija.BackendRenderTarget;

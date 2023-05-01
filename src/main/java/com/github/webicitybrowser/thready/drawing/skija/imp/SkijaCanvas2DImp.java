@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.windowing.skija.imp;
+package com.github.webicitybrowser.thready.drawing.skija.imp;
 
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.color.imp.InternalColorImp;
@@ -12,6 +12,7 @@ import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.image.Image;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.skija.SkijaFont2D;
+import com.github.webicitybrowser.thready.windowing.skija.imp.SkijaCanvasSettings;
 
 import io.github.humbleui.skija.Canvas;
 import io.github.humbleui.skija.Font;
@@ -70,8 +71,10 @@ public class SkijaCanvas2DImp implements Canvas2D {
 
 	@Override
 	public void drawTexture(float x, float y, int l, int h, Image texture) {
-		// TODO Auto-generated method stub
-		
+		beforePaint();
+		io.github.humbleui.skija.Image rawImage = ((SkijaImage) texture).getRawImage();
+		Rect rect = Rect.makeXYWH(x, y, l, h);
+		canvas.drawImageRect(rawImage, rect, rawPaint);
 	}
 	
 	@Override

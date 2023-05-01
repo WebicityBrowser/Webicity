@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
+import com.github.webicitybrowser.thready.drawing.core.image.BytesImageSource;
 import com.github.webicitybrowser.thready.drawing.core.image.Image;
 import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
@@ -16,8 +17,9 @@ public class SkijaResourceLoaderImp implements ResourceLoader {
 
 	@Override
 	public Image loadImage(ImageSource source) {
-		// TODO Auto-generated method stub
-		return null;
+		byte[] data = ((BytesImageSource) source).getBytes();
+		io.github.humbleui.skija.Image loadedImage = io.github.humbleui.skija.Image.makeFromEncoded(data);
+		return new SkijaImage(loadedImage);
 	}
 
 	@Override
