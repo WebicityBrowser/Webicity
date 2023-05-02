@@ -52,6 +52,9 @@ public class InHeadInsertionMode implements InsertionMode {
 	private boolean handleStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		// TODO
 		switch (token.getName()) {
+		case "meta":
+			handleMetaStartTag(context, insertionContext, token);
+			return true;
 		case "title":
 			handleRCDataStartTag(context, insertionContext, token);
 			return true;
@@ -64,6 +67,15 @@ public class InHeadInsertionMode implements InsertionMode {
 		}
 	}
 	
+	private void handleMetaStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		InsertionLogic.insertHTMLElement(insertionContext, token);
+		insertionContext.getOpenElementStack().pop();
+		if (token.isSelfClosingTag()) {
+			token.acknowledgeSelfClosingTag();
+		}
+		// TODO: Speculative HTML Parser
+	}
+
 	private void handleRCDataStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		InsertionModeLogic.followGenericRCDataElementParsingAlgorithm(initializer, context, insertionContext, token);
 	}

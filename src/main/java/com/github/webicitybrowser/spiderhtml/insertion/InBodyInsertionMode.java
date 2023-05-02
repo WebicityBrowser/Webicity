@@ -22,10 +22,12 @@ import com.github.webicitybrowser.spiderhtml.token.Token;
 public class InBodyInsertionMode implements InsertionMode {
 	
 	private final AfterBodyInsertionMode afterBodyInsertionMode;
+	private final InHeadInsertionMode inHeadInsertionMode;
 
 	public InBodyInsertionMode(ParsingInitializer initializer, Consumer<InsertionMode> callback) {
 		callback.accept(this);
 		this.afterBodyInsertionMode = initializer.getInsertionMode(AfterBodyInsertionMode.class);
+		this.inHeadInsertionMode = initializer.getInsertionMode(InHeadInsertionMode.class);
 	}
 
 	@Override
@@ -62,6 +64,12 @@ public class InBodyInsertionMode implements InsertionMode {
 	private void handleStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		// TODO
 		switch (token.getName()) {
+		case "meta":
+		//case "script":
+		case "style":
+		case "title":
+			inHeadInsertionMode.emit(context, insertionContext, token);
+			break;
 		case "div":
 			handleMiscNoPStartTag(context, insertionContext, token);
 			break;
