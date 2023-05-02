@@ -1,6 +1,5 @@
 package com.github.webicitybrowser.spec.html.binding;
 
-import com.github.webicitybrowser.spec.dom.logic.ElementCreationLogic;
 import com.github.webicitybrowser.spec.dom.node.Comment;
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.DocumentType;
@@ -8,6 +7,7 @@ import com.github.webicitybrowser.spec.dom.node.Text;
 import com.github.webicitybrowser.spec.dom.node.imp.CommentImp;
 import com.github.webicitybrowser.spec.dom.node.imp.DocumentTypeImp;
 import com.github.webicitybrowser.spec.dom.node.imp.TextImp;
+import com.github.webicitybrowser.spec.html.logic.ElementCreationLogic;
 import com.github.webicitybrowser.spec.html.node.HTMLElement;
 import com.github.webicitybrowser.spec.html.node.HTMLHtmlElement;
 import com.github.webicitybrowser.spec.html.node.imp.HTMLHtmlElementImp;

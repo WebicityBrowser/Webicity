@@ -3,11 +3,11 @@ package com.github.webicitybrowser.spiderhtml.tokenize;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.infra.util.ASCIIUtil;
 import com.github.webicitybrowser.spiderhtml.context.ParsingContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
-import com.github.webicitybrowser.spiderhtml.util.ASCIIUtil;
 
 public class TagOpenState implements TokenizeState {
 	

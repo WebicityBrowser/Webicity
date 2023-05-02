@@ -2,10 +2,10 @@ a {
 	color: #0000FF;
 }
 
-div, head, body, html {
+div, body, html {
 	display: block;
 }
 
-style, script {
+head, style, script {
 	display: none;
 }

@@ -52,6 +52,9 @@ public class InHeadInsertionMode implements InsertionMode {
 	private boolean handleStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		// TODO
 		switch (token.getName()) {
+		case "title":
+			handleRCDataStartTag(context, insertionContext, token);
+			return true;
 		case "noframes":
 		case "style":
 			handleRawTextStartTag(context, insertionContext, token);
@@ -61,8 +64,12 @@ public class InHeadInsertionMode implements InsertionMode {
 		}
 	}
 	
+	private void handleRCDataStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		InsertionModeLogic.followGenericRCDataElementParsingAlgorithm(initializer, context, insertionContext, token);
+	}
+	
 	private void handleRawTextStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
-		InsertionModeLogic.followGenericRawTextParsingAlgorithm(initializer, context, insertionContext, token);
+		InsertionModeLogic.followGenericRawTextElementParsingAlgorithm(initializer, context, insertionContext, token);
 	}
 
 	private boolean handleEndTag(SharedContext context, InsertionContext insertionContext, EndTagToken token) {

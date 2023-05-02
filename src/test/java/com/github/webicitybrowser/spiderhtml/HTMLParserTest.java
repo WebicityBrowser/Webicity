@@ -166,6 +166,23 @@ public class HTMLParserTest {
 	}
 	
 	@Test
+	@DisplayName("Can parse title element")
+	public void canParseTitleElement() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head><title>Hello, World!</title></head><body></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement headNode = testToHead(document, 1);
+		NodeList headChildren = headNode.getChildNodes();
+		HTMLElement titleElement = testElement(headChildren.get(0), "title", 1);
+		NodeList titleChildren = titleElement.getChildNodes();
+		Assertions.assertInstanceOf(Text.class, titleChildren.get(0));
+		Text text = (Text) titleChildren.get(0);
+		Assertions.assertEquals("Hello, World!", text.getData());
+	}
+	
+	@Test
 	@DisplayName("Can parse a comment")
 	public void canParseAComment() {
 		HTMLParser parser = new SpiderHTMLParserImp();

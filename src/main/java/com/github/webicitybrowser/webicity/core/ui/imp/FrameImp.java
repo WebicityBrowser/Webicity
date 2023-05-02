@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.core.ui.imp;
 
+import java.util.Optional;
+
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.RenderingEngine;
 import com.github.webicitybrowser.webicity.core.renderer.RendererHandle;
@@ -24,8 +26,15 @@ public class FrameImp implements Frame {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return "Untitled Tab";
+		Optional<String> rendererTitle = currentRenderer
+			.getRenderer()
+			.map(renderer -> renderer.getTitle());
+		Optional<String> crashTitle = currentRenderer
+			.getCrashReason()
+			.map(reason -> reason.getTitle());
+		return rendererTitle
+			.or(() -> crashTitle)
+			.orElse("Untitled Document");
 	}
 
 	@Override

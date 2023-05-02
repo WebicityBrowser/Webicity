@@ -10,15 +10,15 @@ import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 
-public class RawTextEndTagOpenState implements TokenizeState {
+public class RCDataEndTagOpenState implements TokenizeState {
 
-	private final RawTextEndTagNameState rawTextEndTagNameState;
-	private final RawTextState rawTextState;
+	private final RCDataEndTagNameState rcDataEndTagNameState;
+	private final RCDataState rcDataState;
 
-	public RawTextEndTagOpenState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
+	public RCDataEndTagOpenState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
-		this.rawTextEndTagNameState = initializer.getTokenizeState(RawTextEndTagNameState.class);
-		this.rawTextState = initializer.getTokenizeState(RawTextState.class);
+		this.rcDataEndTagNameState = initializer.getTokenizeState(RCDataEndTagNameState.class);
+		this.rcDataState = initializer.getTokenizeState(RCDataState.class);
 	}
 	
 	@Override
@@ -26,11 +26,11 @@ public class RawTextEndTagOpenState implements TokenizeState {
 		parsingContext.readerHandle().unread(ch);
 		if (ASCIIUtil.isASCIIAlpha(ch)) {
 			parsingContext.setCurrentToken(new EndTagToken(""));
-			context.setTokenizeState(rawTextEndTagNameState);
+			context.setTokenizeState(rcDataEndTagNameState);
 		} else {
 			context.emit(new CharacterToken('<'));
 			context.emit(new CharacterToken('/'));
-			context.setTokenizeState(rawTextState);
+			context.setTokenizeState(rcDataState);
 		}
 	}
 

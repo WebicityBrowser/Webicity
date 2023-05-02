@@ -3,6 +3,7 @@ package com.github.webicitybrowser.spiderhtml.insertion;
 import java.util.function.Consumer;
 
 import com.github.webicitybrowser.spec.dom.node.Node;
+import com.github.webicitybrowser.spec.infra.util.ASCIIUtil;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
@@ -12,7 +13,6 @@ import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
-import com.github.webicitybrowser.spiderhtml.util.ASCIIUtil;
 
 public class AfterBodyInsertionMode implements InsertionMode {
 

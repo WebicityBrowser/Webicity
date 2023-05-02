@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import com.github.webicitybrowser.spec.dom.node.DocumentType;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
+import com.github.webicitybrowser.spec.infra.util.ASCIIUtil;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
@@ -14,7 +15,6 @@ import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.DoctypeToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
-import com.github.webicitybrowser.spiderhtml.util.ASCIIUtil;
 
 public class InitialInsertionMode implements InsertionMode {
 

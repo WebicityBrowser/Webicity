@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spiderhtml.util;
+package com.github.webicitybrowser.spec.infra.util;
 
 public final class ASCIIUtil {
 	
@@ -31,6 +31,13 @@ public final class ASCIIUtil {
 		default:
 			return false;
 		}
+	}
+	
+	public static String stripAndCollapseASCIIWhitespace(String text) {
+		return text
+			.replaceAll("[\t\n\f\r ]+", " ")
+			.replaceAll("^ +", "")
+			.replaceAll(" +$", "");
 	}
 
 }

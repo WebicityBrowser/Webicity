@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
+import com.github.webicitybrowser.spec.html.node.HTMLDocument;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spiderhtml.SpiderHTMLParserImp;
 import com.github.webicitybrowser.webicity.core.net.Connection;
@@ -21,12 +22,17 @@ public class HTMLRendererBackend implements RendererBackend {
 	private static final Logger logger = LoggerFactory.getLogger(HTMLRendererBackend.class);
 	
 	private final RendererContext rendererContext;
-	private final Document document;
+	private final HTMLDocument document;
 
 	public HTMLRendererBackend(RendererContext rendererContext, Connection connection) throws IOException {
 		this.rendererContext = rendererContext;
-		this.document = Document.create();
+		this.document = HTMLDocument.create();
 		parseAndTimeDocument(connection);
+	}
+	
+	@Override
+	public String getTitle() {
+		return document.getTitle();
 	}
 
 	public Document getDocument() {
@@ -44,7 +50,6 @@ public class HTMLRendererBackend implements RendererBackend {
 	private void parseDocument(Reader inputReader) throws IOException {
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
 		new SpiderHTMLParserImp().parse(inputReader, treeBuilder);
-		//System.out.println(document);
 	}
 
 	public <T extends RendererFrontend> T createFrontend(Function<RendererContext, T> factory) {

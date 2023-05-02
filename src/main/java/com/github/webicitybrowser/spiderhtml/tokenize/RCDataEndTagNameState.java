@@ -10,21 +10,21 @@ import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 
-public class RawTextEndTagNameState implements TokenizeState {
-	
+public class RCDataEndTagNameState implements TokenizeState {
+
 	private final BeforeAttributeNameState beforeAttributeNameState;
 	private final SelfClosingStartTagState selfClosingStartTagState;
 	private final DataState dataState;
-	private final RawTextState rawTextState;
-
-	public RawTextEndTagNameState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
+	private final RCDataState rcDataState;
+	
+	public RCDataEndTagNameState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
 		this.beforeAttributeNameState = initializer.getTokenizeState(BeforeAttributeNameState.class);
 		this.selfClosingStartTagState = initializer.getTokenizeState(SelfClosingStartTagState.class);
 		this.dataState = initializer.getTokenizeState(DataState.class);
-		this.rawTextState = initializer.getTokenizeState(RawTextState.class);
+		this.rcDataState = initializer.getTokenizeState(RCDataState.class);
 	}
-
+	
 	@Override
 	public void process(SharedContext context, ParsingContext parsingContext, int ch) throws IOException {
 		EndTagToken endTagToken = parsingContext.getCurrentToken(EndTagToken.class);
@@ -61,9 +61,9 @@ public class RawTextEndTagNameState implements TokenizeState {
 		
 		emitCharactersNoTag(context, parsingContext);
 		parsingContext.readerHandle().unread(ch);
-		context.setTokenizeState(rawTextState);
+		context.setTokenizeState(rcDataState);
 	}
-
+	
 	private void emitCharactersNoTag(SharedContext context, ParsingContext parsingContext) {
 		context.emit(new CharacterToken('<'));
 		context.emit(new CharacterToken('/'));

@@ -8,6 +8,7 @@ import com.github.webicitybrowser.spec.html.node.HTMLElement;
 import com.github.webicitybrowser.spec.html.node.HTMLHtmlElement;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spec.infra.Namespace;
+import com.github.webicitybrowser.spec.infra.util.ASCIIUtil;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
@@ -17,7 +18,6 @@ import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
-import com.github.webicitybrowser.spiderhtml.util.ASCIIUtil;
 
 public class BeforeHTMLInsertionMode implements InsertionMode {
 
