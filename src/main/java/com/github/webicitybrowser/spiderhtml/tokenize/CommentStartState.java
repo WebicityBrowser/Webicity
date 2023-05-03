@@ -32,6 +32,7 @@ public class CommentStartState implements TokenizeState {
 			context.recordError(ParseError.ABRUPT_CLOSING_OF_EMPTY_COMMENT);
 			context.setTokenizeState(dataState);
 			context.emit(parsingContext.getCurrentToken(CommentToken.class));
+			break;
 		default:
 			parsingContext.readerHandle().unread(ch);
 			context.setTokenizeState(commentState);

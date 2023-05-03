@@ -46,6 +46,7 @@ public class AfterAttributeNameState implements TokenizeState {
 		case -1:
 			context.recordError(ParseError.EOF_IN_TAG);
 			context.emit(new EOFToken());
+			break;
 		default:
 			parsingContext.getCurrentToken(StartTagToken.class).startNewAttribute();
 			context.setTokenizeState(attributeNameState);

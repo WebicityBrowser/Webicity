@@ -21,7 +21,7 @@ public final class StringifyUtil {
 	}
 
 	private static String indent(String string, String indentation) {
-		return indentation + string.replaceAll("\n", "\n" + indentation);
+		return indentation + string.replace("\n", "\n" + indentation);
 	}
 	
 }

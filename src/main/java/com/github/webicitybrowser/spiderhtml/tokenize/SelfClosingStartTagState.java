@@ -29,6 +29,7 @@ public class SelfClosingStartTagState implements TokenizeState {
 			tagToken.setSelfClosingTag(true);
 			context.setTokenizeState(dataState);
 			context.emit(tagToken);
+			break;
 		case -1:
 			context.recordError(ParseError.EOF_IN_TAG);
 			context.emit(new EOFToken());
