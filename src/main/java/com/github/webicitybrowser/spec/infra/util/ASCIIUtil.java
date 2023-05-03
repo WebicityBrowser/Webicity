@@ -4,12 +4,27 @@ public final class ASCIIUtil {
 	
 	private ASCIIUtil() {}
 	
-	public static boolean isASCIIAlpha(int ch) {
-		return (ch >= 'A' && ch <= 'z');
+	public static boolean isASCIILowerAlpha(int ch) {
+		return ch >= 'a' && ch <= 'z';
 	}
 	
 	public static boolean isASCIIUpperAlpha(int ch) {
-		return (ch >= 'A' && ch <= 'Z');
+		return ch >= 'A' && ch <= 'Z';
+	}
+	
+	public static boolean isASCIIAlpha(int ch) {
+		return isASCIIUpperAlpha(ch) || isASCIILowerAlpha(ch);
+	}
+	
+	public static boolean isASCIIDigit(int ch) {
+		return ch >= '0' && ch <= '9';
+	}
+	
+	public static boolean isASCIIHexDigit(int ch) {
+		return
+			isASCIIDigit(ch) ||
+			(ch >= 'a' && ch <= 'f') ||
+			(ch >= 'A' && ch <= 'F');
 	}
 	
 	public static int toASCIILowerCase(int ch) {
@@ -38,6 +53,17 @@ public final class ASCIIUtil {
 			.replaceAll("[\t\n\f\r ]+", " ")
 			.replaceAll("^ +", "")
 			.replaceAll(" +$", "");
+	}
+
+	public static int fromASCIIHexCharacter(int ch) {
+		assert isASCIIHexDigit(ch) : "Character must be hex digit!";
+		if (ch >= '0' && ch <= '9') {
+			return ch - '0';
+		} else if (ch >= 'a' && ch <= 'f') {
+			return 10 + ch - 'a';
+		} else {
+			return 10 + ch - 'A';
+		}
 	}
 
 }
