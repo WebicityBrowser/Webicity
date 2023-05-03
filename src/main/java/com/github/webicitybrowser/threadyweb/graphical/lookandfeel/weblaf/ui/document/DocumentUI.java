@@ -41,7 +41,7 @@ public class DocumentUI implements ComponentUI {
 	private Box generateBlockRootBox(Box[] childBoxes) {
 		InnerDisplayLayout layout = new FlowRootInnerDisplayLayout();
 		Box rootBox = new BasicBox(
-			new BasicDirectivePool(),
+			component, new BasicDirectivePool(),
 			(box, children) -> layout.createRenderer(box, children));
 		
 		for (Box childBox: childBoxes) {

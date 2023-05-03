@@ -6,6 +6,8 @@ import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.thready.gui.message.MessageHandler;
+import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.stage.paint.TextPainter;
 
 public class TextUnit implements Unit {
@@ -30,6 +32,11 @@ public class TextUnit implements Unit {
 	@Override
 	public AbsoluteSize getMinimumSize() {
 		return this.size;
+	}
+
+	@Override
+	public MessageHandler getMessageHandler(Rectangle documentRect) {
+		return new NoopMessageHandler();
 	}
 
 }

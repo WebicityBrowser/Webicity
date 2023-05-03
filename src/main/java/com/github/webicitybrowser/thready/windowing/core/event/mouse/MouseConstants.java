@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.event.mouse;
+package com.github.webicitybrowser.thready.windowing.core.event.mouse;
 
 public final class MouseConstants {
 	

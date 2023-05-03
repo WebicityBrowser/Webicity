@@ -21,7 +21,7 @@ public class ContainerUI implements ComponentUI {
 
 	public ContainerUI(Component component, ComponentUI parent) {
 		this.component = component;
-		this.boxGenerator = new ContainerUIBoxGenerator(parent, (box, children) -> createRenderer(box, children));
+		this.boxGenerator = new ContainerUIBoxGenerator(this, (box, children) -> createRenderer(box, children));
 		this.stylePoolGenerator = new SimpleStylePoolGenerator(component.getStyleDirectives());
 	}
 	

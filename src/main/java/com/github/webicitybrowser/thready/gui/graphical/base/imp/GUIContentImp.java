@@ -18,7 +18,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.thready.windowing.core.event.ScreenEvent;
 
 public class GUIContentImp implements GUIContent {
 	
@@ -58,6 +60,19 @@ public class GUIContentImp implements GUIContent {
 		}
 	}
 
+	@Override
+	public void handleEvent(ScreenEvent e, AbsoluteSize contentSize) {
+		if (rootUnit != null) {
+			Message message = MessageConverter.convertEventToMessage(e);
+			if (message == null) {
+				return;
+			}
+			rootUnit
+				.getMessageHandler(createDocumentRect(contentSize))
+				.onMessage(message);
+		}
+	}
+	
 	private ComponentUI createRootUI(Component component, LookAndFeel lookAndFeel) {
 		ComponentUI dummyUI = new RootUI() {};
 		

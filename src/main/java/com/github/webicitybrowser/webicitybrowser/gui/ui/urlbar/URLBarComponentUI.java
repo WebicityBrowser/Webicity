@@ -32,8 +32,8 @@ public class URLBarComponentUI implements ComponentUI {
 		
 		return SimpleBoxGenerator.generateBoxes(() -> new Box[] {
 			new BasicBox(
-				directives,
-				(box, children) -> new URLBarComponentRenderer(box, component))
+				component, directives,
+				(box, children) -> new URLBarComponentRenderer(box))
 		});
 	}
 

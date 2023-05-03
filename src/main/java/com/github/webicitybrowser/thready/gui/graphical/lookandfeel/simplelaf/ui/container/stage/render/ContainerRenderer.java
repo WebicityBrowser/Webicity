@@ -33,7 +33,7 @@ public class ContainerRenderer implements Renderer {
 		if (children.length == 0 || !(children[0] instanceof FluidBox)) {
 			return ContainerSolidRenderer.render(renderContext, precomputedInnerSize, children);
 		} else {
-			return ContainerFluidRenderer.render(renderContext, precomputedInnerSize, children);
+			return ContainerFluidRenderer.render(box, renderContext, precomputedInnerSize, children);
 		}
 	}
 }

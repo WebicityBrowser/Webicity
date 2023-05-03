@@ -6,10 +6,10 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.gui.graphical.directive.ExternalMouseListenerDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.MouseListenerDirective;
-import com.github.webicitybrowser.thready.gui.graphical.event.mouse.MouseConstants;
-import com.github.webicitybrowser.thready.gui.graphical.event.mouse.MouseEvent;
-import com.github.webicitybrowser.thready.gui.graphical.event.mouse.MouseListener;
+import com.github.webicitybrowser.thready.gui.graphical.event.MouseEvent;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseConstants;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseListener;
 import com.github.webicitybrowser.webicitybrowser.gui.window.GUIWindow;
 
 public final class WindowDragBehavior {

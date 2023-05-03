@@ -14,9 +14,9 @@ public class TabComponentRenderer implements Renderer {
 	private final Box box;
 	private final TabComponent component;
 
-	public TabComponentRenderer(Box box, TabComponent component) {
+	public TabComponentRenderer(Box box) {
 		this.box = box;
-		this.component = component;
+		this.component = (TabComponent) box.getOwningComponent();
 	}
 
 	@Override

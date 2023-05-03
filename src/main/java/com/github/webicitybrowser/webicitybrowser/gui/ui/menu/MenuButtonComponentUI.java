@@ -32,7 +32,7 @@ public class MenuButtonComponentUI implements ComponentUI {
 		
 		return SimpleBoxGenerator.generateBoxes(() -> new Box[] {
 			new BasicBox(
-				directives,
+				component, directives,
 				(box, children) -> new MenuButtonComponentRenderer(box))
 		});
 	}

@@ -76,7 +76,7 @@ public class ElementUIBoxGenerator {
 	
 	private Box generateBlockRootBox(DirectivePool directives, InnerDisplayLayout layout) {
 		Box rootBox = new BasicBox(
-			directives,
+			component, directives,
 			(box, children) -> layout.createRenderer(box, children));
 		
 		return rootBox;
@@ -85,7 +85,7 @@ public class ElementUIBoxGenerator {
 	
 	private Box generateInlineRootBox(DirectivePool directives, InnerDisplayLayout layout) {
 		Box rootBox = new BasicFluidBox(
-			directives,
+			component, directives,
 			(box, children) -> layout.createRenderer(box, children));
 		
 		return rootBox;

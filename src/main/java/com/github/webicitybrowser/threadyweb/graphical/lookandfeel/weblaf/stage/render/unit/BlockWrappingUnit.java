@@ -7,6 +7,8 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.thready.gui.message.MessageHandler;
+import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.paint.BlockWrappingPainter;
 
 public class BlockWrappingUnit implements Unit {
@@ -30,6 +32,11 @@ public class BlockWrappingUnit implements Unit {
 	public Painter getPainter(Rectangle documentRect) {
 		Painter innerPainter = innerUnit.getPainter(documentRect);
 		return new BlockWrappingPainter(box, documentRect, innerPainter);
+	}
+	
+	@Override
+	public MessageHandler getMessageHandler(Rectangle documentRect) {
+		return new NoopMessageHandler();
 	}
 	
 	public static Unit render(Box box, AbsoluteSize precomputedSize, Function<AbsoluteSize, Unit> innerUnitGenerator) {

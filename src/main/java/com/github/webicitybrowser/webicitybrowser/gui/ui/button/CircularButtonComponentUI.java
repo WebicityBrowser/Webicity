@@ -32,8 +32,8 @@ public class CircularButtonComponentUI implements ComponentUI {
 		
 		return SimpleBoxGenerator.generateBoxes(() -> new Box[] {
 			new BasicBox(
-				directives,
-				(box, children) -> new CircularButtonComponentRenderer(box, component))
+				component, directives,
+				(box, children) -> new CircularButtonComponentRenderer(box))
 		});
 	}
 

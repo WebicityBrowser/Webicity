@@ -7,6 +7,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.text.stage.paint.TextPainter;
+import com.github.webicitybrowser.thready.gui.graphical.message.basics.DefaultGraphicalMessageHandler;
+import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 
 public class TextUnit implements Unit {
 
@@ -30,6 +32,11 @@ public class TextUnit implements Unit {
 	@Override
 	public AbsoluteSize getMinimumSize() {
 		return this.size;
+	}
+
+	@Override
+	public MessageHandler getMessageHandler(Rectangle documentRect) {
+		return new DefaultGraphicalMessageHandler(documentRect, box);
 	}
 
 }

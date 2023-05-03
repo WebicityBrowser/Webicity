@@ -6,8 +6,8 @@ import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.ExternalMouseListenerDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.MouseListenerDirective;
-import com.github.webicitybrowser.thready.gui.graphical.event.mouse.MouseConstants;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseConstants;
 
 public final class ActionButtonBehavior {
 	

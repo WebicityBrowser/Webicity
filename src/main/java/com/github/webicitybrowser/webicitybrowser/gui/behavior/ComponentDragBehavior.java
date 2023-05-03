@@ -8,10 +8,10 @@ import com.github.webicitybrowser.thready.gui.directive.basics.ChildrenDirective
 import com.github.webicitybrowser.thready.gui.graphical.directive.ExternalMouseListenerDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.MouseListenerDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.PositionDirective;
-import com.github.webicitybrowser.thready.gui.graphical.event.mouse.MouseConstants;
-import com.github.webicitybrowser.thready.gui.graphical.event.mouse.MouseEvent;
-import com.github.webicitybrowser.thready.gui.graphical.event.mouse.MouseListener;
+import com.github.webicitybrowser.thready.gui.graphical.event.MouseEvent;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseConstants;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseListener;
 
 public final class ComponentDragBehavior {
 

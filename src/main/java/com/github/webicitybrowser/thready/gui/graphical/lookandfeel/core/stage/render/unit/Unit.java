@@ -11,8 +11,6 @@ public interface Unit {
 
 	Painter getPainter(Rectangle documentRect);
 
-	default MessageHandler getMessageHandler(Rectangle documentRect) {
-		throw new UnsupportedOperationException();
-	};
+	MessageHandler getMessageHandler(Rectangle documentRect);
 	
 }

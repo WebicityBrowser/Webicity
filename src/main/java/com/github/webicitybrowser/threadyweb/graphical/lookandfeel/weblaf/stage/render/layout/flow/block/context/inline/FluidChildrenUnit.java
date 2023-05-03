@@ -4,6 +4,8 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.thready.gui.message.MessageHandler;
+import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 
 public class FluidChildrenUnit implements Unit {
 
@@ -22,6 +24,11 @@ public class FluidChildrenUnit implements Unit {
 	@Override
 	public AbsoluteSize getMinimumSize() {
 		return this.size;
+	}
+
+	@Override
+	public MessageHandler getMessageHandler(Rectangle documentRect) {
+		return new NoopMessageHandler();
 	}
 
 }

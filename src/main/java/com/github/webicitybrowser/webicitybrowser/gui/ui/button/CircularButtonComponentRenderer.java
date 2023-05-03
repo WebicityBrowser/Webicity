@@ -14,9 +14,9 @@ public class CircularButtonComponentRenderer implements Renderer {
 	private final Box box;
 	private final CircularButtonComponent component;
 
-	public CircularButtonComponentRenderer(Box box, CircularButtonComponent component) {
+	public CircularButtonComponentRenderer(Box box) {
 		this.box = box;
-		this.component = component;
+		this.component = (CircularButtonComponent) box.getOwningComponent();
 	}
 
 	@Override

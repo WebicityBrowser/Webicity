@@ -32,7 +32,7 @@ public class TextUI implements ComponentUI {
 
 	private Box createBox(DirectivePool parentDirectives) {
 		return new BasicFluidBox(
-			parentDirectives,
+			component, parentDirectives,
 			(box, children) -> new TextComponentRenderer(component, box));
 	}
 

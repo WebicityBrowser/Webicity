@@ -36,7 +36,7 @@ public class TextUI implements ComponentUI {
 
 	private Box createBox(DirectivePool directives) {
 		return new BasicFluidBox(
-			directives,
+			component, directives,
 			(box, children) -> new TextComponentRenderer((TextComponent) component, box));
 	}
 

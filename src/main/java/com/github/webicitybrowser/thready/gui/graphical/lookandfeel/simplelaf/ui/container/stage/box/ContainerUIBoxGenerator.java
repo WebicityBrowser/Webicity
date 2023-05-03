@@ -35,7 +35,7 @@ public class ContainerUIBoxGenerator {
 	//
 	
 	private Box[] generateRootBox(BoxContext context, DirectivePool directives, StyleGenerator styleGenerator) {
-		Box rootBox = new BasicBox(directives, rendererGenerator);
+		Box rootBox = new BasicBox(parentUI.getComponent(), directives, rendererGenerator);
 		addChildrenBoxes(rootBox, context, directives, styleGenerator);
 		
 		return new Box[] { rootBox };

@@ -6,6 +6,8 @@ import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.thready.gui.graphical.message.basics.DefaultGraphicalMessageHandler;
+import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.webicitybrowser.component.URLBarComponent;
 
 public class URLBarUnit implements Unit {
@@ -28,6 +30,11 @@ public class URLBarUnit implements Unit {
 	@Override
 	public AbsoluteSize getMinimumSize() {
 		return AbsoluteSize.ZERO_SIZE;
+	}
+
+	@Override
+	public MessageHandler getMessageHandler(Rectangle documentRect) {
+		return new DefaultGraphicalMessageHandler(documentRect, box);
 	}
 
 }

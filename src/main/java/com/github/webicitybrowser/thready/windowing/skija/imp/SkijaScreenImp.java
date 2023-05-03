@@ -36,6 +36,8 @@ public class SkijaScreenImp implements SkijaScreen {
 	public void setScreenContent(ScreenContent content) {
 		this.screenContent = content;
 		ticksLeft = FULL_TICKS;
+		// TODO: Release event listeners
+		SkijaEventListeners.setupEventListeners(windowId, content);
 	}
 
 	@Override

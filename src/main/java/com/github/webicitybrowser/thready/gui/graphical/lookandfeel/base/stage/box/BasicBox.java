@@ -8,9 +8,11 @@ import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.FluidBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
+import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class BasicBox implements Box {
 	
+	private final Component component;
 	private final DirectivePool directives;
 	private final BiFunction<Box, Box[], Renderer> rendererGenerator;
 	
@@ -19,9 +21,15 @@ public class BasicBox implements Box {
 	private boolean isSolidBoxContext;
 	private Box currentFluidGroup;
 
-	public BasicBox(DirectivePool directives, BiFunction<Box, Box[], Renderer> rendererGenerator) {
+	public BasicBox(Component component, DirectivePool directives, BiFunction<Box, Box[], Renderer> rendererGenerator) {
+		this.component = component;
 		this.directives = directives;
 		this.rendererGenerator = rendererGenerator;
+	}
+	
+	@Override
+	public Component getOwningComponent() {
+		return component;
 	}
 	
 	@Override
@@ -82,7 +90,7 @@ public class BasicBox implements Box {
 		if (currentFluidGroup != null) {
 			return;
 		}
-		currentFluidGroup = new BasicBox(directives, rendererGenerator);
+		currentFluidGroup = new BasicBox(component, directives, rendererGenerator);
 		children.add(currentFluidGroup);
 		// TODO: Is the passed-through renderer generator fine?
 	}

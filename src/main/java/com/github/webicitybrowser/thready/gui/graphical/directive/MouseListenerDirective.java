@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.thready.gui.graphical.directive;
 
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.thready.gui.graphical.event.mouse.MouseListener;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseListener;
 
 public interface MouseListenerDirective extends Directive {
 

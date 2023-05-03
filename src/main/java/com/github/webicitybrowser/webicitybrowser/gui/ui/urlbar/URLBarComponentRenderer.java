@@ -14,9 +14,9 @@ public class URLBarComponentRenderer implements Renderer {
 	private final Box box;
 	private final URLBarComponent component;
 
-	public URLBarComponentRenderer(Box box, URLBarComponent component) {
+	public URLBarComponentRenderer(Box box) {
 		this.box = box;
-		this.component = component;
+		this.component = (URLBarComponent) box.getOwningComponent();
 	}
 
 	@Override

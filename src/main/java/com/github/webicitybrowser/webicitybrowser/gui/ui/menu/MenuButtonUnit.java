@@ -6,7 +6,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.message.SimpleDefaultMessageHandler;
+import com.github.webicitybrowser.thready.gui.graphical.message.basics.DefaultGraphicalMessageHandler;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 
 public class MenuButtonUnit implements Unit {
@@ -26,7 +26,7 @@ public class MenuButtonUnit implements Unit {
 
 	@Override
 	public MessageHandler getMessageHandler(Rectangle documentRect) {
-		return new SimpleDefaultMessageHandler(documentRect, box);
+		return new DefaultGraphicalMessageHandler(documentRect, box);
 	}
 
 	@Override

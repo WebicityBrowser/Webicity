@@ -4,6 +4,8 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.thready.gui.message.MessageHandler;
+import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 
 public class EmptyUnit implements Unit {
 
@@ -15,6 +17,11 @@ public class EmptyUnit implements Unit {
 	@Override
 	public Painter getPainter(Rectangle documentRect) {
 		return (context, canvas, viewport) -> {};
+	}
+
+	@Override
+	public MessageHandler getMessageHandler(Rectangle documentRect) {
+		return new NoopMessageHandler();
 	}
 
 }

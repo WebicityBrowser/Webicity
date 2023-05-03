@@ -32,8 +32,8 @@ public class TabComponentUI implements ComponentUI {
 		
 		return SimpleBoxGenerator.generateBoxes(() -> new Box[] {
 			new BasicBox(
-				directives,
-				(box, children) -> new TabComponentRenderer(box, component))
+				component, directives,
+				(box, children) -> new TabComponentRenderer(box))
 		});
 	}
 

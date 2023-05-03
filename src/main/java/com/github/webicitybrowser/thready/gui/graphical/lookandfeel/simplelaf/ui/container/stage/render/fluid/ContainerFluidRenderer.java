@@ -10,17 +10,17 @@ public final class ContainerFluidRenderer {
 	
 	private ContainerFluidRenderer() {}
 
-	public static Unit render(RenderContext renderContext, AbsoluteSize precomputedInnerSize, Box[] children) {
+	public static Unit render(Box box, RenderContext renderContext, AbsoluteSize precomputedInnerSize, Box[] children) {
 		FluidBox[] fluidChildren = toFluidBoxArray(children);
 		FluidLines lines = new HorizontalFluidLines(renderContext, precomputedInnerSize);
-		return render(fluidChildren, lines);
+		return render(box, fluidChildren, lines);
 	}
 	
-	public static Unit render(FluidBox[] children, FluidLines lines) {
+	public static Unit render(Box box, FluidBox[] children, FluidLines lines) {
 		renderChildren(children, lines);
 		
 		AbsoluteSize computedSize = lines.computeTotalSize();
-		return new FluidChildrenUnit(computedSize, lines.getRenderResults());
+		return new FluidChildrenUnit(box, computedSize, lines.getRenderResults());
 	}
 	
 	private static void renderChildren(FluidBox[] children, FluidLines lines) {

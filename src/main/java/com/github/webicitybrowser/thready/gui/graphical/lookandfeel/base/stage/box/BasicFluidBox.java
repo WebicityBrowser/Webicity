@@ -10,17 +10,25 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.FluidBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.FluidRenderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
+import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class BasicFluidBox implements FluidBox {
 
+	private final Component component;
 	private final DirectivePool directives;
 	private final BiFunction<Box, Box[], Renderer> rendererGenerator;
 	
 	private final List<Box> children = new ArrayList<>();
 	
-	public BasicFluidBox(DirectivePool directives, BiFunction<Box, Box[], Renderer> rendererGenerator) {
+	public BasicFluidBox(Component component, DirectivePool directives, BiFunction<Box, Box[], Renderer> rendererGenerator) {
+		this.component = component;
 		this.directives = directives;
 		this.rendererGenerator = rendererGenerator;
+	}
+	
+	@Override
+	public Component getOwningComponent() {
+		return this.component;
 	}
 	
 	@Override

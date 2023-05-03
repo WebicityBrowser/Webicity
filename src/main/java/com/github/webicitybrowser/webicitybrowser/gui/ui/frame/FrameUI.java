@@ -51,8 +51,8 @@ public class FrameUI implements ComponentUI {
 		DirectivePool directives = stylePoolGenerator.createStylePool(parentDirectives, styleGenerator);
 		return SimpleBoxGenerator.generateBoxes(() -> new Box[] {
 			new BasicBox(
-				directives,
-				(box, children) -> new FrameComponentRenderer(screenContent))
+				component, directives,
+				(box, children) -> new FrameComponentRenderer(box, screenContent))
 		});
 	}
 	

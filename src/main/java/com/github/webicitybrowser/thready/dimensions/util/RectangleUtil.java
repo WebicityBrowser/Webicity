@@ -23,5 +23,23 @@ public final class RectangleUtil {
 			!rALeftOfRB && !rBLeftOfRA &&
 			!rAOverRB && !rBOverRA;
 	}
+
+	public static boolean containsPoint(Rectangle rectangle, AbsolutePosition point) {
+		float rectX = rectangle.position().x();
+		float rectWidth = rectangle.size().width();
+		
+		float rectY = rectangle.position().y();
+		float rectHeight = rectangle.size().height();
+		
+		return
+			between(rectX, point.x(), rectX + rectWidth - 1) &&
+			between(rectY, point.y(), rectY + rectHeight - 1);
+	}
+
+	private static boolean between(float lower, float target, float higher) {
+		return
+			lower <= target &&
+			higher >= target;
+	}
 	
 }
