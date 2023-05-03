@@ -134,7 +134,7 @@ public class HTMLParserTest {
 	
 	@Test
 	@DisplayName("Can parse element with quoted attributes")
-	public void canParseElementWithAttibutes() {
+	public void canParseElementWithQuotedAttributes() {
 		HTMLParser parser = new SpiderHTMLParserImp();
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span a='b' c=\"d\"></span></body></html>");
 		Document document = new DocumentImp();
@@ -146,6 +146,21 @@ public class HTMLParserTest {
 		Assertions.assertArrayEquals(new String[] { "a", "c" }, spanElement.getAttributeNames());
 		Assertions.assertEquals("b", spanElement.getAttribute("a"));
 		Assertions.assertEquals("d", spanElement.getAttribute("c"));
+	}
+	
+	@Test
+	@DisplayName("Can parse element with unquoted attributes")
+	public void canParseElementWithUnquottedAttributes() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span a=boo></span></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement bodyNode = testToBody(document, 1);
+		NodeList childNodes = bodyNode.getChildNodes();
+		HTMLElement spanElement = testElement(childNodes.get(0), "span", 0);
+		Assertions.assertArrayEquals(new String[] { "a" }, spanElement.getAttributeNames());
+		Assertions.assertEquals("boo", spanElement.getAttribute("a"));
 	}
 	
 	@Test
