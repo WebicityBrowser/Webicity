@@ -3,7 +3,7 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.u
 import com.github.webicitybrowser.thready.color.Colors;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
-import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.FontDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.ForegroundColorDirective;

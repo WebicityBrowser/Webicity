@@ -7,8 +7,8 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
-import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
-import com.github.webicitybrowser.thready.gui.directive.core.StyleGeneratorRoot;
+import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -74,7 +74,15 @@ public class GUIContentImp implements GUIContent {
 	}
 	
 	private ComponentUI createRootUI(Component component, LookAndFeel lookAndFeel) {
-		ComponentUI dummyUI = new RootUI() {};
+		ComponentUI dummyUI = new RootUI() {
+			@Override
+			public void invalidate(InvalidationLevel level) {
+				if (level.compareTo(invalidationLevel) > 0) {
+					invalidationLevel = level;
+					redrawRequested = true;
+				}
+			}
+		};
 		
 		return lookAndFeel.createUIFor(component, dummyUI);
 	}

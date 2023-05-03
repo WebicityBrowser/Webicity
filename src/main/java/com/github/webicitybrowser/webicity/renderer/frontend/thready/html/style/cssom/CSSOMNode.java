@@ -2,7 +2,7 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 
 import java.util.List;
 
-import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.threadyweb.tree.WebComponent;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.imp.CSSOMNodeImp;
 

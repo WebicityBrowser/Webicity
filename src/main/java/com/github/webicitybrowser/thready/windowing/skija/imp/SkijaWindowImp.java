@@ -33,6 +33,18 @@ public class SkijaWindowImp implements SkijaWindow {
 	}
 	
 	@Override
+	public void setTitle(String title) {
+		GLFW.glfwSetWindowTitle(windowId, title);
+	}
+
+	//
+	
+	@Override
+	public void setDecorated(boolean decorated) {
+		GLFW.glfwSetWindowAttrib(windowId, GLFW.GLFW_DECORATED, glfwBool(decorated));
+	}
+	
+	@Override
 	public void setVisible(boolean visible) {
 		GLFW.glfwSetWindowAttrib(windowId, GLFW.GLFW_VISIBLE, glfwBool(visible));
 	}
@@ -48,10 +60,12 @@ public class SkijaWindowImp implements SkijaWindow {
 	
 	//
 	
+	@Override
 	public void minimize() {
 		GLFW.glfwIconifyWindow(windowId);
 	}
 	
+	@Override
 	public void restore() {
 		if (isMaximized()) {
 			GLFW.glfwRestoreWindow(windowId);
@@ -62,10 +76,12 @@ public class SkijaWindowImp implements SkijaWindow {
 
 	//
 	
+	@Override
 	public void setPosition(AbsolutePosition position) {
 		GLFW.glfwSetWindowPos(windowId, (int) position.x(), (int) position.y());
 	}
 	
+	@Override
 	public AbsolutePosition getPosition() {
 		int[] xpos = new int[1], ypos = new int[1];
 		GLFW.glfwGetWindowPos(windowId, xpos, ypos);

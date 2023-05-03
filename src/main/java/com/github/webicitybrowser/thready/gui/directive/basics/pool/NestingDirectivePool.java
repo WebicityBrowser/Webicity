@@ -3,14 +3,17 @@ package com.github.webicitybrowser.thready.gui.directive.basics.pool;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
-import com.github.webicitybrowser.thready.gui.directive.core.ComposedDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.ComposedDirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePoolListener;
 
 public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool> {
 	
@@ -19,6 +22,8 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 	private final DirectivePool parent;
 	private final DirectivePool defaultPool = new BasicDirectivePool();
 	private final List<DirectivePool> subpools = new ArrayList<>(4);
+	private final List<DirectivePoolListener> subpoolListeners = new ArrayList<>(4);
+	private final Set<DirectivePoolListener> listeners = new HashSet<>(1);
 	
 	{
 		subpools.add(defaultPool);
@@ -66,17 +71,41 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 
 	@Override
 	public void addDirectivePool(DirectivePool pool) {
+		DirectivePoolListener listener = new SubpoolListener();
+		pool.addEventListener(listener);
 		subpools.add(pool);
+		subpoolListeners.add(listener);
+		fireMassChangeListeners();
 	}
 
 	@Override
 	public void removeDirectivePool(DirectivePool pool) {
-		subpools.remove(pool);
+		int removalIndex = subpools.indexOf(pool);
+		subpools.remove(removalIndex);
+		subpoolListeners.remove(removalIndex);
+		fireMassChangeListeners();
 	}
 
 	@Override
 	public DirectivePool[] getCurrentDirectivePools() {
 		return subpools.toArray(new DirectivePool[0]);
+	}
+	
+	@Override
+	public void addEventListener(DirectivePoolListener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeEventListener(DirectivePoolListener listener) {
+		listeners.remove(listener);
+	}
+	
+	@Override
+	public void release() {
+		for (int i = 0; i < subpoolListeners.size(); i++) {
+			subpools.get(i).removeEventListener(subpoolListeners.get(i));
+		}
 	}
 	
 	private Directive searchForDirective(Class<? extends Directive> directiveClass) {
@@ -110,5 +139,29 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 				.or(() -> parent.inheritDirectiveOrEmpty(directiveClass));
 		}
 	}
+	
+	private void fireChangeListeners(Class<? extends Directive> directiveCls) {
+		for (DirectivePoolListener listener: listeners) {
+			listener.onDirective(directiveCls);
+		}
+	}
+	
+	private void fireMassChangeListeners() {
+		for (DirectivePoolListener listener: listeners) {
+			listener.onMassChange();
+		}
+	}
+	
+	private class SubpoolListener implements DirectivePoolListener {
+		@Override
+		public void onMassChange() {
+			fireMassChangeListeners();
+		}
+		
+		@Override
+		public void onDirective(Class<? extends Directive> directiveCls) {
+			fireChangeListeners(directiveCls);
+		}
+	};
 
 }

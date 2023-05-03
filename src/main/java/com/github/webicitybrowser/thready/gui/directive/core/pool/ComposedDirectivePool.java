@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.directive.core;
+package com.github.webicitybrowser.thready.gui.directive.core.pool;
 
 public interface ComposedDirectivePool<T extends DirectivePool>  extends DirectivePool {
 
@@ -8,6 +8,8 @@ public interface ComposedDirectivePool<T extends DirectivePool>  extends Directi
 	
 	// Includes self
 	T[] getCurrentDirectivePools();
+
+	void release();
 	
 	// Note: A composed directive pool's own set of directives typically
 	// take priority over those of any other pools added to it,

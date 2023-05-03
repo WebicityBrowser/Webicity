@@ -1,6 +1,8 @@
-package com.github.webicitybrowser.thready.gui.directive.core;
+package com.github.webicitybrowser.thready.gui.directive.core.pool;
 
 import java.util.Optional;
+
+import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 
 /**
  * A directive pool allows storing styling information in
@@ -60,5 +62,9 @@ public interface DirectivePool extends Iterable<Directive> {
 	Directive[] getCurrentDirectives();
 	
 	Directive getUnresolvedDirective(Class<? extends Directive> directiveClass);
+	
+	void addEventListener(DirectivePoolListener listener);
+	
+	void removeEventListener(DirectivePoolListener listener);
 	
 }

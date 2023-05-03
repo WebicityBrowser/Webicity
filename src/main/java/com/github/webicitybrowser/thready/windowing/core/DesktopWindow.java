@@ -35,10 +35,23 @@ public interface DesktopWindow extends Window {
 	void setPosition(AbsolutePosition position);
 	
 	/**
-	 * Get the position of the window on the screen
+	 * Get the position of the window on the screen.
 	 * from the top-left corner.
 	 * @return The position of the window.
 	 */
 	AbsolutePosition getPosition();
+
+	/**
+	 * Set the title of this window.
+	 * @param title The title of this window.
+	 */
+	void setTitle(String title);
+
+	/**
+	 * Set whether this window uses native decorations.
+	 * @param decorated A boolean indicating if this window
+	 *  uses native decorations.
+	 */
+	void setDecorated(boolean decorated);
 	
 }

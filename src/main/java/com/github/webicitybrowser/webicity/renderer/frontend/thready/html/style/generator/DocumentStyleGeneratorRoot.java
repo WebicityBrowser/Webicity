@@ -2,8 +2,8 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 
 import java.util.function.Supplier;
 
-import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
-import com.github.webicitybrowser.thready.gui.directive.core.StyleGeneratorRoot;
+import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMNode;
 

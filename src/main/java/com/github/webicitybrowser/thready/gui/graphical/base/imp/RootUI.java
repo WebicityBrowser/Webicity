@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.thready.gui.graphical.base.imp;
 
-import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
-import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;

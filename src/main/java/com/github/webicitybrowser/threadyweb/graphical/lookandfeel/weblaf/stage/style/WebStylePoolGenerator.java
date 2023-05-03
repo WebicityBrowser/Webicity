@@ -1,9 +1,9 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.style;
 
 import com.github.webicitybrowser.thready.gui.directive.basics.pool.NestingDirectivePool;
-import com.github.webicitybrowser.thready.gui.directive.core.ComposedDirectivePool;
-import com.github.webicitybrowser.thready.gui.directive.core.DirectivePool;
-import com.github.webicitybrowser.thready.gui.directive.core.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.ComposedDirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 
 public class WebStylePoolGenerator {
 	

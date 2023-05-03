@@ -121,9 +121,14 @@ public class Main {
 		content.setRoot(component, lookAndFeel, new NoopStyleGeneratorRoot());
 		
 		graphicsSystem.createWindow(window -> {
+			DesktopWindow desktopWindow = (DesktopWindow) window;
+			
 			window
 				.getScreen()
 				.setScreenContent(content);
+			
+			desktopWindow.setTitle("Webicity");
+			desktopWindow.setDecorated(false);
 			
 			callback.accept(new DesktopGUIWindow((DesktopWindow) window));
 		});
