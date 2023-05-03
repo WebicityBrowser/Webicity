@@ -73,7 +73,7 @@ public final class InsertionLogic {
 		return element;
 	}
 	
-	private static void insertNode(InsertionLocation insertionLocation, Node node) {
+	public static void insertNode(InsertionLocation insertionLocation, Node node) {
 		insertionLocation
 			.parent()
 			.insertBefore(insertionLocation.before(), node);
@@ -96,7 +96,7 @@ public final class InsertionLogic {
 		return element;
 	}
 
-	private static InsertionLocation getAppropriatePlaceForInsertingNode(InsertionContext insertionContext, Node targetOverride) {
+	public static InsertionLocation getAppropriatePlaceForInsertingNode(InsertionContext insertionContext, Node targetOverride) {
 		// TODO
 		Node target = targetOverride != null ? targetOverride : getCurrentNode(insertionContext);
 		InsertionLocation adjustedInsertionLocation = new InsertionLocation(target, null);

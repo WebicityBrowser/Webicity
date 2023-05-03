@@ -10,19 +10,19 @@ import com.github.webicitybrowser.spiderhtml.context.SharedContext;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 
-public class RawTextEndTagNameState implements TokenizeState {
+public class ScriptDataEndTagNameState implements TokenizeState {
 	
 	private final BeforeAttributeNameState beforeAttributeNameState;
 	private final SelfClosingStartTagState selfClosingStartTagState;
 	private final DataState dataState;
-	private final RawTextState rawTextState;
-
-	public RawTextEndTagNameState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
+	private final ScriptDataState scriptDataState;
+	
+	public ScriptDataEndTagNameState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
 		this.beforeAttributeNameState = initializer.getTokenizeState(BeforeAttributeNameState.class);
 		this.selfClosingStartTagState = initializer.getTokenizeState(SelfClosingStartTagState.class);
 		this.dataState = initializer.getTokenizeState(DataState.class);
-		this.rawTextState = initializer.getTokenizeState(RawTextState.class);
+		this.scriptDataState = initializer.getTokenizeState(ScriptDataState.class);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class RawTextEndTagNameState implements TokenizeState {
 		} else {
 			emitCharactersNoTag(context, parsingContext);
 			parsingContext.readerHandle().unread(ch);
-			context.setTokenizeState(rawTextState);
+			context.setTokenizeState(scriptDataState);
 		}
 	}
 	

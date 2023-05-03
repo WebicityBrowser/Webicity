@@ -2,9 +2,12 @@ package com.github.webicitybrowser.spiderhtml.insertion;
 
 import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.html.node.HTMLElement;
+import com.github.webicitybrowser.spec.infra.Namespace;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
+import com.github.webicitybrowser.spiderhtml.misc.InsertionLocation;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionModeLogic;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
@@ -12,16 +15,21 @@ import com.github.webicitybrowser.spiderhtml.token.CommentToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
+import com.github.webicitybrowser.spiderhtml.tokenize.ScriptDataState;
 
 public class InHeadInsertionMode implements InsertionMode {
 
 	private final ParsingInitializer initializer;
 	private final AfterHeadInsertionMode afterHeadInsertionMode;
+	private final TextInsertionMode textInsertionMode;
+	private final ScriptDataState scriptDataState;
 
 	public InHeadInsertionMode(ParsingInitializer initializer, Consumer<InsertionMode> callback) {
 		callback.accept(this);
 		this.initializer = initializer;
 		this.afterHeadInsertionMode = initializer.getInsertionMode(AfterHeadInsertionMode.class);
+		this.textInsertionMode = initializer.getInsertionMode(TextInsertionMode.class);
+		this.scriptDataState = initializer.getTokenizeState(ScriptDataState.class);
 	}
 	
 	@Override
@@ -62,11 +70,14 @@ public class InHeadInsertionMode implements InsertionMode {
 		case "style":
 			handleRawTextStartTag(context, insertionContext, token);
 			return true;
+		case "script":
+			handleScriptStartTag(context, insertionContext, token);
+			return true;
 		default:
 			return false;
 		}
 	}
-	
+
 	private void handleMetaStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		InsertionLogic.insertHTMLElement(insertionContext, token);
 		insertionContext.getOpenElementStack().pop();
@@ -82,6 +93,18 @@ public class InHeadInsertionMode implements InsertionMode {
 	
 	private void handleRawTextStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		InsertionModeLogic.followGenericRawTextElementParsingAlgorithm(initializer, context, insertionContext, token);
+	}
+	
+	private void handleScriptStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		InsertionLocation adjustedInsertionLocation = InsertionLogic.getAppropriatePlaceForInsertingNode(insertionContext, null);
+		HTMLElement scriptElement = InsertionLogic.createElementForToken(
+			insertionContext, token, Namespace.HTML_NAMESPACE, adjustedInsertionLocation.parent());
+		// TODO: Implement silly things
+		InsertionLogic.insertNode(adjustedInsertionLocation, scriptElement);
+		insertionContext.getOpenElementStack().push(scriptElement);
+		context.setTokenizeState(scriptDataState);
+		insertionContext.setOriginalInsertionMode(context.getInsertionMode());
+		context.setInsertionMode(textInsertionMode);
 	}
 
 	private boolean handleEndTag(SharedContext context, InsertionContext insertionContext, EndTagToken token) {

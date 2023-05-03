@@ -65,7 +65,7 @@ public class InBodyInsertionMode implements InsertionMode {
 		// TODO
 		switch (token.getName()) {
 		case "meta":
-		//case "script":
+		case "script":
 		case "style":
 		case "title":
 			inHeadInsertionMode.emit(context, insertionContext, token);

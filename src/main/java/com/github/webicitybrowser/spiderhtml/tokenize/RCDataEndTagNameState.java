@@ -32,38 +32,38 @@ public class RCDataEndTagNameState implements TokenizeState {
 			int lowerChar = ASCIIUtil.toASCIILowerCase(ch);
 			endTagToken.appendToName(lowerChar);
 			parsingContext.appendToTemporaryBuffer(ch);
+		} else if (
+			context.isAppropriateEndTagToken(endTagToken) &&
+			handleAppropriateEndTagToken(context, parsingContext, ch, endTagToken)
+		) {
 			return;
+		} else {
+			emitCharactersNoTag(context, parsingContext);
+			parsingContext.readerHandle().unread(ch);
+			context.setTokenizeState(rcDataState);
 		}
-		// TODO: Handle self-closing tag
+	}
+	
+	private boolean handleAppropriateEndTagToken(SharedContext context, ParsingContext parsingContext, int ch, EndTagToken endTagToken) {
 		switch (ch) {
 		case '\t':
 		case '\n':
 		case '\f':
 		case ' ':
-			if (context.isAppropriateEndTagToken(endTagToken)) {
-				context.setTokenizeState(beforeAttributeNameState);
-				return;
-			}
-			break;
+			context.setTokenizeState(beforeAttributeNameState);
+			return true;
 		case '/':
 			context.setTokenizeState(selfClosingStartTagState);
-			break;
+			return true;
 		case '>':
-			if (context.isAppropriateEndTagToken(endTagToken)) {
-				context.setTokenizeState(dataState);
-				context.emit(parsingContext.getCurrentToken(EndTagToken.class));
-				return;
-			}
-			break;
+			context.setTokenizeState(dataState);
+			context.emit(parsingContext.getCurrentToken(EndTagToken.class));
+			return true;
 		default:
-			break;
+			return false;
 		}
-		
-		emitCharactersNoTag(context, parsingContext);
-		parsingContext.readerHandle().unread(ch);
-		context.setTokenizeState(rcDataState);
 	}
-	
+
 	private void emitCharactersNoTag(SharedContext context, ParsingContext parsingContext) {
 		context.emit(new CharacterToken('<'));
 		context.emit(new CharacterToken('/'));
