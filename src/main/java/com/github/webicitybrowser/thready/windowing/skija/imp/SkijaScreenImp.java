@@ -42,18 +42,20 @@ public class SkijaScreenImp implements SkijaScreen {
 
 	@Override
 	public void tick() {
-		if (!shouldPerformRedraw()) {
-			return;
-		}
-		
 		GLFW.glfwMakeContextCurrent(windowId);
+		if (shouldPerformRedraw()) {
+			performRedraw();
+		}
+		GLFW.glfwSwapBuffers(windowId);
+	}
+
+	private void performRedraw() {
 		regenerateCanvasIfNeeded();
 		resetTickChecks();
 		screenContent.redraw(new ScreenContentRedrawContext(
 			canvas, window.getSize(),
 			graphicsSystem.getResourceLoader()));
 		canvas.flush();
-		GLFW.glfwSwapBuffers(windowId);
 	}
 
 	private boolean shouldPerformRedraw() {
