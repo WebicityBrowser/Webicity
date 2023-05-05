@@ -2,23 +2,37 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 
 import java.util.function.Supplier;
 
+import com.github.webicitybrowser.spec.dom.node.Document;
+import com.github.webicitybrowser.spec.dom.node.Node;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMNode;
+import com.github.webicitybrowser.threadyweb.tree.WebComponent;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMResult;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 
 public class DocumentStyleGeneratorRoot implements StyleGeneratorRoot {
 	
-	private final Supplier<CSSOMNode[]> cssomRootsSupplier;
+	private final Document document;
+	private final Supplier<CSSOMTree<Node, DirectivePool>[]> cssomTreesSupplier;
 
-	public DocumentStyleGeneratorRoot(Supplier<CSSOMNode[]> cssomRootsSupplier) {
-		this.cssomRootsSupplier = cssomRootsSupplier;
+	public DocumentStyleGeneratorRoot(Document document, Supplier<CSSOMTree<Node, DirectivePool>[]> cssomTreesSupplier) {
+		this.document = document;
+		this.cssomTreesSupplier = cssomTreesSupplier;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public StyleGenerator generateChildStyleGenerator(ComponentUI componentUI) {
-		CSSOMNode[] cssomRoots = cssomRootsSupplier.get();
-		return new DocumentStyleGenerator(cssomRoots);
+		CSSOMTree<Node, DirectivePool>[] cssomTrees = cssomTreesSupplier.get();
+		CSSOMResult<Node, DirectivePool>[] results = (CSSOMResult<Node, DirectivePool>[]) new CSSOMResult[cssomTrees.length];
+		for (int i = 0; i < cssomTrees.length; i++) {
+			CSSOMTree<Node, DirectivePool> tree = cssomTrees[i];
+			results[i] = tree.apply(new DocumentStyleParticipant(document));
+		}
+		
+		return new DocumentStyleGenerator(((WebComponent) componentUI.getComponent()).getNode(), results);
 	}
 
 }

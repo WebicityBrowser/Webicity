@@ -8,6 +8,8 @@ import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
 import com.github.webicitybrowser.spec.css.parser.tokens.Token;
 import com.github.webicitybrowser.spec.css.rule.CSSRule;
 import com.github.webicitybrowser.spec.css.rule.CSSStyleSheet;
+import com.github.webicitybrowser.spec.dom.node.Node;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
@@ -21,9 +23,9 @@ import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
 import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGeneratorRoot;
 
 public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
@@ -56,13 +58,14 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 		return content;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private StyleGeneratorRoot createStyleGenerator() {
-		CSSOMNode cssomNode = loadUAStylesheet();
+		CSSOMTree<Node, DirectivePool> cssomTree = loadUAStylesheet();
 		
-		return new DocumentStyleGeneratorRoot(() -> new CSSOMNode[] { cssomNode });
+		return new DocumentStyleGeneratorRoot(backend.getDocument(), () -> new CSSOMTree[] { cssomTree });
 	}
 
-	private CSSOMNode loadUAStylesheet() {
+	private CSSOMTree<Node, DirectivePool> loadUAStylesheet() {
 		// TODO: Better error handling
 		AssetLoader assetLoader = rendererContext.getAssetLoader();
 		try (Reader reader = assetLoader.streamAsset("static", "renderer/html/ua.css")) {

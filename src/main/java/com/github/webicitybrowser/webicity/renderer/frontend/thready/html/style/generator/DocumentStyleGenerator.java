@@ -1,22 +1,24 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.threadyweb.tree.WebComponent;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMNode;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMResult;
 
 public class DocumentStyleGenerator implements StyleGenerator {
 	
-	private final CSSOMNode[] cssomNodes;
+	private final Node node;
+	private final CSSOMResult<Node, DirectivePool>[] cssomResults;
 
-	public DocumentStyleGenerator(CSSOMNode[] cssomNodes) {
-		this.cssomNodes = cssomNodes;
+	public DocumentStyleGenerator(Node node, CSSOMResult<Node, DirectivePool>[] results) {
+		this.node = node;
+		this.cssomResults = results;
 	}
 
 	@Override
@@ -31,30 +33,18 @@ public class DocumentStyleGenerator implements StyleGenerator {
 
 	@Override
 	public DirectivePool[] getDirectivePools() {
-		List<DirectivePool> pools = new ArrayList<>(cssomNodes.length);
-		for (int i = 0; i < cssomNodes.length; i++) {
-			pools.addAll(cssomNodes[i].getDirectivePools());
+		List<DirectivePool> pools = new ArrayList<>(cssomResults.length);
+		for (CSSOMResult<Node, DirectivePool> result: cssomResults) {
+			for (CSSOMNode<Node, DirectivePool> node: result.getMatchingNodes(node)) {
+				pools.addAll(node.getNodeProperties());
+			}
 		}
 		
 		return pools.toArray(DirectivePool[]::new);
 	}
 	
 	private StyleGenerator createChildGenerator(ComponentUI childUI, int i) {
-		WebComponent childComponent = (WebComponent) childUI.getComponent();
-		Set<CSSOMNode> childCSSOMNodes = new HashSet<>();
-		
-		addChildCSSOMNodes(childCSSOMNodes, childComponent, i);
-		
-		return new DocumentStyleGenerator(childCSSOMNodes.toArray(CSSOMNode[]::new));
-	}
-	
-	private void addChildCSSOMNodes(Set<CSSOMNode> childCSSOMNodes, WebComponent childComponent, int i) {
-		for (CSSOMNode currentNode: cssomNodes) {
-			CSSOMNode[] matchedNodes = currentNode.getApplicableNodes(childComponent, i);
-			for (CSSOMNode matchedNode: matchedNodes) {
-				childCSSOMNodes.add(matchedNode);
-			}
-		}
+		return new DocumentStyleGenerator(((WebComponent) childUI.getComponent()).getNode(), cssomResults);
 	}
 
 }

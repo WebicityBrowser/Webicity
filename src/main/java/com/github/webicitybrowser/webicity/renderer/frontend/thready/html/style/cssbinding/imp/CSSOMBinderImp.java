@@ -10,15 +10,17 @@ import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.spec.css.rule.QualifiedRule;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
+import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.imp.CSSOMNodeImp;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMFilterCreator;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMFilter;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.CSSOMNode;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssom.imp.CSSOMNodeImp;
 
 public class CSSOMBinderImp implements CSSOMBinder {
 	
@@ -26,45 +28,46 @@ public class CSSOMBinderImp implements CSSOMBinder {
 	private final CSSOMDeclarationParser declarationParser = new CSSOMDeclarationParserImp();
 	
 	@Override
-	public CSSOMNode createCSSOMFor(CSSStyleSheet stylesheet) {
-		CSSOMNode rootNode = new CSSOMNodeImp();
+	public CSSOMTree<Node, DirectivePool> createCSSOMFor(CSSStyleSheet stylesheet) {
+		CSSOMNode<Node, DirectivePool> rootNode = new CSSOMNodeImp<>();
 		addStyleSheetToCSSOMNode(rootNode, stylesheet);
+		rootNode.linkChild((_1, node) -> node.getChildren(), 0, rootNode);
 		
-		return rootNode;
+		return CSSOMTree.create(rootNode);
 	}
 
-	private void addStyleSheetToCSSOMNode(CSSOMNode rootNode, CSSStyleSheet stylesheet) {
+	private void addStyleSheetToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, CSSStyleSheet stylesheet) {
 		for (CSSRule rule: stylesheet.getCSSRules()) {
 			addCSSRuleToCSSOMNode(rootNode, rule);
 		}
 	}
 
-	private void addCSSRuleToCSSOMNode(CSSOMNode rootNode, CSSRule rule) {
+	private void addCSSRuleToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, CSSRule rule) {
 		if (rule instanceof QualifiedRule qualifiedRule) {
 			addQualifiedRuleToCSSOMNode(rootNode, qualifiedRule);
 		}
 	}
 
-	private void addQualifiedRuleToCSSOMNode(CSSOMNode rootNode, QualifiedRule rule) {
+	private void addQualifiedRuleToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, QualifiedRule rule) {
 		TokenLike[] prelude = rule.getPrelude();
 		ComplexSelector[] selectors = new ComplexSelectorParser().parseMany(prelude);
 		for (ComplexSelector selector: selectors) {
-			CSSOMNode targetNode = getSelectedCSSOMNode(rootNode, selector);
+			CSSOMNode<Node, DirectivePool> targetNode = getSelectedCSSOMNode(rootNode, selector);
 			addDeclarationsToCSSOMNode(targetNode, rule.getValue());
 		}
 	}
 
-	private CSSOMNode getSelectedCSSOMNode(CSSOMNode rootNode, ComplexSelector selector) {
-		CSSOMNode current = rootNode;
+	private CSSOMNode<Node, DirectivePool> getSelectedCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, ComplexSelector selector) {
+		CSSOMNode<Node, DirectivePool> current = rootNode;
 		for (ComplexSelectorPart complexSelectorPart: selector.getParts()) {
-			CSSOMFilter filter = filterCreator.createFilterFor(complexSelectorPart);
-			current = current.getChild(filter);
+			CSSOMFilter<Node, DirectivePool> filter = filterCreator.createFilterFor(complexSelectorPart);
+			current = current.createChild(filter, 0);
 		}
 		
 		return current;
 	}
 	
-	private void addDeclarationsToCSSOMNode(CSSOMNode targetNode, SimpleBlock value) {
+	private void addDeclarationsToCSSOMNode(CSSOMNode<Node, DirectivePool> targetNode, SimpleBlock value) {
 		CSSRule[] rules = parseDeclarations(value);
 		DirectivePool directivePool = new BasicDirectivePool();
 		for (CSSRule rule: rules) {
@@ -81,7 +84,7 @@ public class CSSOMBinderImp implements CSSOMBinder {
 				directivePool.directive(declDirective);
 			}
 		}
-		targetNode.addDirectivePool(directivePool);
+		targetNode.addNodeProperties(directivePool);
 	}
 
 
