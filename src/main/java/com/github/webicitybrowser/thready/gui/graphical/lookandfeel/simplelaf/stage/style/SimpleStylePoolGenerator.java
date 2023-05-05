@@ -8,6 +8,7 @@ import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePoolL
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleInvalidationUtil;
 
 public class SimpleStylePoolGenerator {
 	
@@ -43,9 +44,8 @@ public class SimpleStylePoolGenerator {
 		}
 		
 		@Override
-		public void onDirective(Class<? extends Directive> directiveCls) {
-			owner.invalidate(InvalidationLevel.RENDER);
-			//owner.invalidate(InvalidationUtil.getInvalidationLevelFor(directiveCls));
+		public void onDirective(Directive directive) {
+			owner.invalidate(SimpleInvalidationUtil.getInvalidationLevelFor(directive));
 		}
 	}
 

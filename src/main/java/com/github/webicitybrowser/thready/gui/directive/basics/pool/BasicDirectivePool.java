@@ -28,7 +28,7 @@ public class BasicDirectivePool implements DirectivePool {
 	@Override
 	public DirectivePool directive(Directive directive) {
 		directives.put(directive.getPrimaryType(), directive);
-		fireChangeListeners(directive.getPrimaryType());
+		fireChangeListeners(directive);
 		
 		return this;
 	}
@@ -64,9 +64,9 @@ public class BasicDirectivePool implements DirectivePool {
 		listeners.remove(listener);
 	}
 	
-	private void fireChangeListeners(Class<? extends Directive> directiveCls) {
+	private void fireChangeListeners(Directive directive) {
 		for (DirectivePoolListener listener: listeners) {
-			listener.onDirective(directiveCls);
+			listener.onDirective(directive);
 		}
 	}
 

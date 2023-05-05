@@ -140,9 +140,9 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 		}
 	}
 	
-	private void fireChangeListeners(Class<? extends Directive> directiveCls) {
+	private void fireChangeListeners(Directive directive) {
 		for (DirectivePoolListener listener: listeners) {
-			listener.onDirective(directiveCls);
+			listener.onDirective(directive);
 		}
 	}
 	
@@ -159,8 +159,8 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 		}
 		
 		@Override
-		public void onDirective(Class<? extends Directive> directiveCls) {
-			fireChangeListeners(directiveCls);
+		public void onDirective(Directive directive) {
+			fireChangeListeners(directive);
 		}
 	};
 

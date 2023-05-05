@@ -99,6 +99,7 @@ public class GUIContentImp implements GUIContent {
 		case BOX:
 		case RENDER:
 			performRenderCycle(redrawContext);
+			System.gc();
 		case COMPOSITE:
 		case PAINT:
 		case NONE:
