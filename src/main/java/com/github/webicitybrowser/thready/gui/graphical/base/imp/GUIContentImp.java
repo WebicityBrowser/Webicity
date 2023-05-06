@@ -18,13 +18,21 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.thready.gui.graphical.message.CharMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.KeyMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.MouseMessage;
+import com.github.webicitybrowser.thready.gui.message.FocusManager;
 import com.github.webicitybrowser.thready.gui.message.Message;
+import com.github.webicitybrowser.thready.gui.message.MessageContext;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.event.ScreenEvent;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseConstants;
 
 public class GUIContentImp implements GUIContent {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GUIContentImp.class);
+	
+	private final FocusManager focusManager = new FocusManagerImp();
 	
 	private InvalidationLevel invalidationLevel = InvalidationLevel.NONE;
 	
@@ -67,12 +75,32 @@ public class GUIContentImp implements GUIContent {
 			if (message == null) {
 				return;
 			}
-			rootUnit
-				.getMessageHandler(createDocumentRect(contentSize))
-				.onMessage(message);
+			
+			MessageContext messageContext = createMessageContext();
+			if (message instanceof KeyMessage || message instanceof CharMessage) {
+				focusManager.messageFocused(messageContext, message);
+			} else {
+				resetFocusIfClick(messageContext, message);
+				rootUnit
+					.getMessageHandler(createDocumentRect(contentSize))
+					.onMessage(messageContext, message);
+			}
 		}
 	}
 	
+	private void resetFocusIfClick(MessageContext messageContext, Message message) {
+		if (
+			message instanceof MouseMessage mouseMessage &&
+			mouseMessage.getScreenEvent().getAction() == MouseConstants.PRESS
+		) {
+			focusManager.setFocused(null);
+		}
+	}
+
+	private MessageContext createMessageContext() {
+		return () -> focusManager;
+	}
+
 	private ComponentUI createRootUI(Component component, LookAndFeel lookAndFeel) {
 		ComponentUI dummyUI = new RootUI() {
 			@Override

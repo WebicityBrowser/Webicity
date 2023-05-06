@@ -1,18 +1,12 @@
 package com.github.webicitybrowser.thready.gui.graphical.message;
 
-import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.gui.message.Message;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseScreenEvent;
 
 public interface MouseMessage extends Message {
 	
-	int getButton();
-	
-	int getAction();
+	MouseScreenEvent getScreenEvent();
 	
 	boolean isExternal();
-	
-	AbsolutePosition getViewportPosition();
-	
-	AbsolutePosition getScreenPosition();
 	
 }

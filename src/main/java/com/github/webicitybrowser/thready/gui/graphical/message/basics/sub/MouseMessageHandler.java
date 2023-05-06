@@ -12,10 +12,12 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.message.MouseMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.MouseMessageResponse;
 import com.github.webicitybrowser.thready.gui.message.Message;
+import com.github.webicitybrowser.thready.gui.message.MessageContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.MessageResponse;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseListener;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseScreenEvent;
 
 public class MouseMessageHandler implements MessageHandler {
 
@@ -34,28 +36,34 @@ public class MouseMessageHandler implements MessageHandler {
 	}
 	
 	@Override
-	public MessageResponse onMessage(Message message) {
+	public MessageResponse onMessage(MessageContext messageContext, Message message) {
 		if (message instanceof MouseMessage) {
-			return handleMouseMessage((MouseMessage) message);
+			return handleMouseMessage(messageContext, (MouseMessage) message);
 		}
 		
 		return null;
 	}
+	
+	protected void onMouseEvent(MessageContext messageContext, MouseEvent mouseEvent) {
+		// Override this
+	}
 
-	private MessageResponse handleMouseMessage(MouseMessage message) {
+	private MessageResponse handleMouseMessage(MessageContext messageContext, MouseMessage message) {
 		if (message.isExternal() || !mouseCollides(message)) {
-			processExternalMessage(message);
+			processExternalMessage(messageContext, message);
 			return null;
 		} else {
-			return processNormalMessage(message);
+			return processNormalMessage(messageContext, message);
 		}
 	}
 
-	private MessageResponse processNormalMessage(MouseMessage message) {
-		boolean isSource = !passChildrenMessage(message);
+	private MessageResponse processNormalMessage(MessageContext messageContext, MouseMessage message) {
+		boolean isSource = !passChildrenMessage(messageContext, message);
+		MouseEvent mouseEvent = createMouseEvent(message, isSource);
+		onMouseEvent(messageContext, mouseEvent);
 		MouseListener ownListener = getMouseListener();
 		if (ownListener != null) {
-			ownListener.accept(createMouseEvent(message, isSource));
+			ownListener.accept(mouseEvent);
 			return (MouseMessageResponse) () -> true;
 		}
 		if (!isSource) {
@@ -65,8 +73,8 @@ public class MouseMessageHandler implements MessageHandler {
 		return null;
 	}
 
-	private void processExternalMessage(MouseMessage message) {
-		passChildrenMessage(message);
+	private void processExternalMessage(MessageContext messageContext, MouseMessage message) {
+		passChildrenMessage(messageContext, message);
 		MouseListener ownListener = getExternalMouseListener();
 		if (ownListener != null) {
 			ownListener.accept(createMouseEvent(message, false));
@@ -74,15 +82,16 @@ public class MouseMessageHandler implements MessageHandler {
 	}
 
 	private boolean mouseCollides(MouseMessage message) {
-		return RectangleUtil.containsPoint(documentRect, message.getViewportPosition());
+		AbsolutePosition mousePosition = message.getScreenEvent().getViewportPosition();
+		return RectangleUtil.containsPoint(documentRect, mousePosition);
 	}
 	
-	private boolean passChildrenMessage(MouseMessage message) {
+	private boolean passChildrenMessage(MessageContext messageContext, MouseMessage message) {
 		boolean childResponded = false;
 		
 		MouseMessage currentMessage = message;
 		for (MessageHandler child: children) {
-			MouseMessageResponse response = (MouseMessageResponse) child.onMessage(currentMessage);
+			MouseMessageResponse response = (MouseMessageResponse) child.onMessage(messageContext, currentMessage);
 			if (!childResponded && response != null && response.getCaptured()) {
 				childResponded = true;
 				currentMessage = convertToExternalMessage(currentMessage);
@@ -93,6 +102,8 @@ public class MouseMessageHandler implements MessageHandler {
 	}
 
 	private MouseEvent createMouseEvent(MouseMessage message, boolean isSource) {
+		MouseScreenEvent event = message.getScreenEvent();
+		
 		return new MouseEvent() {
 			@Override
 			public Component getComponent() {
@@ -101,12 +112,12 @@ public class MouseMessageHandler implements MessageHandler {
 			
 			@Override
 			public int getButton() {
-				return message.getButton();
+				return event.getButton();
 			}
 			
 			@Override
 			public int getAction() {
-				return message.getAction();
+				return event.getAction();
 			}
 			
 			@Override
@@ -121,41 +132,26 @@ public class MouseMessageHandler implements MessageHandler {
 			
 			@Override
 			public AbsolutePosition getViewportPosition() {
-				return message.getViewportPosition();
+				return event.getViewportPosition();
 			}
 			
 			@Override
 			public AbsolutePosition getScreenPosition() {
-				return message.getScreenPosition();
+				return event.getScreenPosition();
 			}
 		};
 	}
 	
-	private MouseMessage convertToExternalMessage(MouseMessage currentMessage) {
+	private MouseMessage convertToExternalMessage(MouseMessage message) {
 		return new MouseMessage() {
-			@Override
-			public int getButton() {
-				return currentMessage.getButton();
-			}
-			
-			@Override
-			public int getAction() {
-				return currentMessage.getAction();
-			}
-			
 			@Override
 			public boolean isExternal() {
 				return true;
 			}
-			
+
 			@Override
-			public AbsolutePosition getViewportPosition() {
-				return currentMessage.getViewportPosition();
-			}
-			
-			@Override
-			public AbsolutePosition getScreenPosition() {
-				return currentMessage.getScreenPosition();
+			public MouseScreenEvent getScreenEvent() {
+				return message.getScreenEvent();
 			}
 		};
 	}

@@ -1,9 +1,12 @@
 package com.github.webicitybrowser.thready.gui.graphical.base.imp;
 
-import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
+import com.github.webicitybrowser.thready.gui.graphical.message.CharMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.KeyMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.MouseMessage;
 import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.windowing.core.event.ScreenEvent;
+import com.github.webicitybrowser.thready.windowing.core.event.keyboard.CharScreenEvent;
+import com.github.webicitybrowser.thready.windowing.core.event.keyboard.KeyScreenEvent;
 import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseScreenEvent;
 
 public final class MessageConverter {
@@ -13,6 +16,10 @@ public final class MessageConverter {
 	public static Message convertEventToMessage(ScreenEvent e) {
 		if (e instanceof MouseScreenEvent mouseEvent) {
 			return createMouseMessage(mouseEvent);
+		} else if (e instanceof KeyScreenEvent keyboardEvent) {
+			return createKeyboardMessage(keyboardEvent);
+		} else if (e instanceof CharScreenEvent charEvent) {
+			return createCharMessage(charEvent);
 		} else {
 			return null;
 		}
@@ -24,25 +31,28 @@ public final class MessageConverter {
 			public boolean isExternal() {
 				return false;
 			}
-			
+
 			@Override
-			public AbsolutePosition getViewportPosition() {
-				return e.getViewportPosition();
+			public MouseScreenEvent getScreenEvent() {
+				return e;
 			}
-			
+		};
+	}
+	
+	private static Message createKeyboardMessage(KeyScreenEvent e) {
+		return new KeyMessage() {
 			@Override
-			public AbsolutePosition getScreenPosition() {
-				return e.getScreenPosition();
+			public KeyScreenEvent getScreenEvent() {
+				return e;
 			}
-			
+		};
+	}
+	
+	private static Message createCharMessage(CharScreenEvent charEvent) {
+		return new CharMessage() {
 			@Override
-			public int getButton() {
-				return e.getButton();
-			}
-			
-			@Override
-			public int getAction() {
-				return e.getAction();
+			public CharScreenEvent getScreenEvent() {
+				return charEvent;
 			}
 		};
 	}

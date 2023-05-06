@@ -7,16 +7,16 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
-import com.github.webicitybrowser.webicitybrowser.component.URLBarComponent;
+import com.github.webicitybrowser.thready.model.textfield.TextFieldModel;
 
 public class URLBarComponentRenderer implements Renderer {
 
 	private final Box box;
-	private final URLBarComponent component;
+	private final TextFieldModel textFieldModel;
 
-	public URLBarComponentRenderer(Box box) {
+	public URLBarComponentRenderer(Box box, TextFieldModel textFieldModel) {
 		this.box = box;
-		this.component = (URLBarComponent) box.getOwningComponent();
+		this.textFieldModel = textFieldModel;
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class URLBarComponentRenderer implements Renderer {
 		Font2D font = renderContext
 			.getResourceLoader()
 			.loadFont(SimpleDirectiveUtil.getFontSettings(box.getStyleDirectives()));
-		return new URLBarUnit(box, component, font);
+		return new URLBarUnit(box, font, textFieldModel);
 	}
 
 }

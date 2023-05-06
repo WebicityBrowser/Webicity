@@ -8,6 +8,7 @@ public final class SkijaEventListeners {
 
 	public static void setupEventListeners(long windowId, ScreenContent screenContent) {
 		SkijaMouseEventListeners.setupEventListeners(windowId, screenContent);
+		SkijaKeyboardEventListeners.setupEventListeners(windowId, screenContent);
 	}
 	
 }
