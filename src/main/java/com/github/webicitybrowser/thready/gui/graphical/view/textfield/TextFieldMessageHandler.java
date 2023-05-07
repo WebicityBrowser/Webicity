@@ -9,6 +9,7 @@ import com.github.webicitybrowser.thready.gui.graphical.message.basics.sub.Mouse
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyboardMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessage;
 import com.github.webicitybrowser.thready.gui.graphical.viewmodel.textfield.TextFieldViewModel;
+import com.github.webicitybrowser.thready.gui.message.FocusChangeMessage;
 import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.gui.message.MessageContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
@@ -19,10 +20,12 @@ public class TextFieldMessageHandler implements MessageHandler {
 
 	private final MouseMessageHandler mouseMessageHandler;
 	private final TextFieldKeyboardMessageHandler keyboardMessageHandler;
+	private final TextFieldViewModel textFieldViewModel;
 
-	public TextFieldMessageHandler(Rectangle documentRect, Box box, TextFieldViewModel textFieldViewModel) {
+	public TextFieldMessageHandler(Rectangle documentRect, Rectangle contentRect, Box box, TextFieldViewModel textFieldViewModel) {
 		this.mouseMessageHandler = createMouseMessageHandler(documentRect, box);
 		this.keyboardMessageHandler = new TextFieldKeyboardMessageHandler(textFieldViewModel);
+		this.textFieldViewModel = textFieldViewModel;
 	}
 	
 	@Override
@@ -31,6 +34,8 @@ public class TextFieldMessageHandler implements MessageHandler {
 			return handleMouseMessage(messageContext, message);
 		} else if (message instanceof KeyboardMessage) {
 			return handleKeyboardMessage(messageContext, message);
+		} else if (message instanceof FocusChangeMessage focusMessage) {
+			textFieldViewModel.setFocused(focusMessage.isFocused());
 		}
 		
 		return null;
@@ -48,9 +53,9 @@ public class TextFieldMessageHandler implements MessageHandler {
 		MessageHandler mainHandler = this;
 		return new MouseMessageHandler(documentRect, Optional.ofNullable(box)) {
 			@Override
-			protected void onMouseEvent(MessageContext messageContext, MouseEvent mouseEvent) {
+			protected void onInternalMouseEvent(MessageContext messageContext, MouseEvent mouseEvent) {
 				if (mouseEvent.getButton() == MouseConstants.LEFT_BUTTON && mouseEvent.getAction() == MouseConstants.PRESS) {
-					messageContext.getFocusManager().setFocused(mainHandler);
+					messageContext.getFocusManager().setFocused(mainHandler, messageContext);
 				}
 			}
 		};

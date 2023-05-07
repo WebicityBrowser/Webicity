@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.github.webicitybrowser.thready.gui.graphical.animation.InvalidationScheduler;
 import com.github.webicitybrowser.thready.windowing.core.Window;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindow;
@@ -18,6 +19,7 @@ public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 	
 	private final Queue<Consumer<Window>> windowsToStart = new ConcurrentLinkedQueue<>();
 	private final List<SkijaWindow> windows = Collections.synchronizedList(new ArrayList<>());
+	private final SkijaInvalidationScheduler invalidationScheduler = new SkijaInvalidationScheduler();
 	private final SkijaGraphicsSystem graphicsSystem;
 	
 	private Thread runnerThread;
@@ -31,6 +33,11 @@ public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 		windowsToStart.add(callback);
 		startRunnerThreadIfNotActive();
 	}
+	
+	@Override
+	public InvalidationScheduler getInvalidationScheduler() {
+		return this.invalidationScheduler;
+	}
 
 	private void startRunnerThreadIfNotActive() {
 		if (runnerThread == null) {
@@ -42,6 +49,7 @@ public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 		new Thread(() -> {
 			while (continueRunning()) {
 				GLFW.glfwPollEvents();
+				invalidationScheduler.tick();
 				startQueuedWindows();
 				continueRunningScreens();
 			}

@@ -53,8 +53,8 @@ public class SkijaScreenImp implements SkijaScreen {
 		regenerateCanvasIfNeeded();
 		resetTickChecks();
 		screenContent.redraw(new ScreenContentRedrawContext(
-			canvas, window.getSize(),
-			graphicsSystem.getResourceLoader()));
+			canvas, window.getSize(), graphicsSystem.getResourceLoader(),
+			graphicsSystem.getInvalidationScheduler()));
 		canvas.flush();
 	}
 

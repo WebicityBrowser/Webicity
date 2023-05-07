@@ -93,7 +93,7 @@ public class GUIContentImp implements GUIContent {
 			message instanceof MouseMessage mouseMessage &&
 			mouseMessage.getScreenEvent().getAction() == MouseConstants.PRESS
 		) {
-			focusManager.setFocused(null);
+			focusManager.setFocused(null, messageContext);
 		}
 	}
 
@@ -174,7 +174,7 @@ public class GUIContentImp implements GUIContent {
 		clearPaint(canvas, contentSize);
 		
 		rootUnit.getPainter(createDocumentRect(contentSize))
-			.paint(new PaintContextImp(), canvas, viewport);
+			.paint(new PaintContextImp(redrawContext.invalidationScheduler()), canvas, viewport);
 	}
 
 	private void clearPaint(Canvas2D canvas, AbsoluteSize contentSize) {

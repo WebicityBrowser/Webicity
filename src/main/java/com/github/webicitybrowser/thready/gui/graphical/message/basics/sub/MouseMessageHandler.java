@@ -44,7 +44,7 @@ public class MouseMessageHandler implements MessageHandler {
 		return null;
 	}
 	
-	protected void onMouseEvent(MessageContext messageContext, MouseEvent mouseEvent) {
+	protected void onInternalMouseEvent(MessageContext messageContext, MouseEvent mouseEvent) {
 		// Override this
 	}
 
@@ -60,7 +60,7 @@ public class MouseMessageHandler implements MessageHandler {
 	private MessageResponse processNormalMessage(MessageContext messageContext, MouseMessage message) {
 		boolean isSource = !passChildrenMessage(messageContext, message);
 		MouseEvent mouseEvent = createMouseEvent(message, isSource);
-		onMouseEvent(messageContext, mouseEvent);
+		onInternalMouseEvent(messageContext, mouseEvent);
 		MouseListener ownListener = getMouseListener();
 		if (ownListener != null) {
 			ownListener.accept(mouseEvent);

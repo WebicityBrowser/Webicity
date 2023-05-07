@@ -25,7 +25,8 @@ public class FrameUnitPainter implements Painter {
 	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewport) {
 		Canvas2D childCanvas = createChildCanvas(canvas);
 		ScreenContentRedrawContext redrawContext = new ScreenContentRedrawContext(
-			childCanvas, documentRect.size(), resourceLoader);
+			childCanvas, documentRect.size(), resourceLoader,
+			context.getInvalidationScheduler());
 		screenContent.redraw(redrawContext);
 	}
 

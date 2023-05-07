@@ -39,6 +39,8 @@ public interface Canvas2D {
 	 */
 	void drawText(float x, float y, String string);
 	
+	void drawLine(float x, float y, int run, float fall);
+	
 	void drawTexture(float x, float y, int l, int h, Image texture);
 	
 	/**

@@ -8,6 +8,7 @@ public class TextFieldViewModel {
 	private final TextFieldViewModelListener listener;
 	
 	private boolean isReplaceMode = false;
+	private boolean isFocused = false;
 
 	public TextFieldViewModel(TextFieldModel model, TextFieldViewModelListener listener) {
 		this.model = model;
@@ -58,6 +59,14 @@ public class TextFieldViewModel {
 
 	public void submit() {
 		listener.onSubmit();
+	}
+
+	public void setFocused(boolean focused) {
+		this.isFocused = focused;
+	}
+	
+	public boolean isFocused() {
+		return isFocused;
 	}
 	
 }

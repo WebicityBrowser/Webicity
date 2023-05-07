@@ -68,6 +68,15 @@ public class SkijaCanvas2DImp implements Canvas2D {
 		float adjustedY = y + metrics.getHeight() - metrics.getLeading();
 		canvas.drawTextBlob(textBlob, x, adjustedY, rawPaint);
 	}
+	
+	@Override
+	public void drawLine(float x, float y, int run, float fall) {
+		beforePaint();
+		if (run < 0 || fall < 0) {
+			return;
+		}
+		canvas.drawLine(x, y, x + run, y + fall, rawPaint);
+	}
 
 	@Override
 	public void drawTexture(float x, float y, int l, int h, Image texture) {
