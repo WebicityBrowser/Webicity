@@ -3,7 +3,7 @@ package com.github.webicitybrowser.thready.gui.graphical.view.textfield;
 import java.util.Optional;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.gui.graphical.event.MouseEvent;
+import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.message.basics.sub.MouseMessageHandler;
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyboardMessage;
@@ -14,7 +14,6 @@ import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.gui.message.MessageContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.MessageResponse;
-import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseConstants;
 
 public class TextFieldMessageHandler implements MessageHandler {
 
@@ -22,10 +21,10 @@ public class TextFieldMessageHandler implements MessageHandler {
 	private final TextFieldKeyboardMessageHandler keyboardMessageHandler;
 	private final TextFieldViewModel textFieldViewModel;
 
-	public TextFieldMessageHandler(Rectangle documentRect, Rectangle contentRect, Box box, TextFieldViewModel textFieldViewModel) {
-		this.mouseMessageHandler = createMouseMessageHandler(documentRect, box);
-		this.keyboardMessageHandler = new TextFieldKeyboardMessageHandler(textFieldViewModel);
+	public TextFieldMessageHandler(Rectangle documentRect, Rectangle contentRect, Box box, TextFieldViewModel textFieldViewModel, Font2D font) {
 		this.textFieldViewModel = textFieldViewModel;
+		this.mouseMessageHandler = createMouseMessageHandler(documentRect, contentRect, box, font);
+		this.keyboardMessageHandler = new TextFieldKeyboardMessageHandler(textFieldViewModel);
 	}
 	
 	@Override
@@ -49,16 +48,10 @@ public class TextFieldMessageHandler implements MessageHandler {
 		return keyboardMessageHandler.onMessage(messageContext, message);
 	}
 
-	private MouseMessageHandler createMouseMessageHandler(Rectangle documentRect, Box box) {
-		MessageHandler mainHandler = this;
-		return new MouseMessageHandler(documentRect, Optional.ofNullable(box)) {
-			@Override
-			protected void onInternalMouseEvent(MessageContext messageContext, MouseEvent mouseEvent) {
-				if (mouseEvent.getButton() == MouseConstants.LEFT_BUTTON && mouseEvent.getAction() == MouseConstants.PRESS) {
-					messageContext.getFocusManager().setFocused(mainHandler, messageContext);
-				}
-			}
-		};
+	private MouseMessageHandler createMouseMessageHandler(Rectangle documentRect, Rectangle contentRect, Box box, Font2D font) {
+		return new TextFieldMouseMessageHandler(
+			documentRect, contentRect, Optional.of(box),
+			textFieldViewModel, this, font);
 	}
 
 }

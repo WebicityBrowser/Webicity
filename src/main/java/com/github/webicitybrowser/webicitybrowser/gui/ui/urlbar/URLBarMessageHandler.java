@@ -15,7 +15,7 @@ public class URLBarMessageHandler implements MessageHandler {
 	private final TextFieldMessageHandler textFieldMessageHandler;
 
 	public URLBarMessageHandler(Rectangle documentRect, Rectangle contentRect, Box box, TextFieldViewModel textFieldViewModel, Font2D font) {
-		this.textFieldMessageHandler = new TextFieldMessageHandler(documentRect, contentRect, box, textFieldViewModel);
+		this.textFieldMessageHandler = new TextFieldMessageHandler(documentRect, contentRect, box, textFieldViewModel, font);
 	}
 
 	@Override

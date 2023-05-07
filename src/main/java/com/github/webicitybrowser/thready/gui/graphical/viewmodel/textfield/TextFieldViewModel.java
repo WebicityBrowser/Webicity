@@ -63,6 +63,7 @@ public class TextFieldViewModel {
 
 	public void setFocused(boolean focused) {
 		this.isFocused = focused;
+		listener.onStateChanged();
 	}
 	
 	public boolean isFocused() {
