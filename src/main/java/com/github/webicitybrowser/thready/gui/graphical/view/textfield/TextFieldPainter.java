@@ -20,7 +20,7 @@ public class TextFieldPainter implements Painter {
 	private final TextFieldViewModel textFieldViewModel;
 	private final Font2D font;
 	
-	private CursorState lastCursorState = CursorState.NEW;
+	private CursorState lastCursorState = CursorState.INACTIVE;
 
 	public TextFieldPainter(Rectangle documentRect, ComponentUI componentUI, TextFieldViewModel textFieldViewModel, Font2D font) {
 		this.documentRect = documentRect;
@@ -38,9 +38,13 @@ public class TextFieldPainter implements Painter {
 		if (textFieldViewModel.isFocused() && currentCursorState == CursorState.SHOWN) {
 			drawCursor(text, canvas);
 		}
-		if (lastCursorState != currentCursorState) {
-			scheduleNextInvalidation(context.getInvalidationScheduler());
-			lastCursorState = currentCursorState;
+		if (textFieldViewModel.isFocused()) {
+			if (lastCursorState != currentCursorState) {
+				scheduleNextInvalidation(context.getInvalidationScheduler());
+				lastCursorState = currentCursorState;
+			}
+		} else {
+			lastCursorState = CursorState.INACTIVE;
 		}
 	}
 
@@ -83,7 +87,7 @@ public class TextFieldPainter implements Painter {
 	}
 	
 	private enum CursorState {
-		NEW, NOT_SHOWN, SHOWN
+		INACTIVE, NOT_SHOWN, SHOWN
 	}
 
 }
