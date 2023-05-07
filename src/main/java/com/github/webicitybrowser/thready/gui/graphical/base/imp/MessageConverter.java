@@ -1,8 +1,8 @@
 package com.github.webicitybrowser.thready.gui.graphical.base.imp;
 
-import com.github.webicitybrowser.thready.gui.graphical.message.CharMessage;
-import com.github.webicitybrowser.thready.gui.graphical.message.KeyMessage;
-import com.github.webicitybrowser.thready.gui.graphical.message.MouseMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.CharMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessage;
 import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.windowing.core.event.ScreenEvent;
 import com.github.webicitybrowser.thready.windowing.core.event.keyboard.CharScreenEvent;

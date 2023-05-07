@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicitybrowser.gui.binding;
 
+import com.github.webicitybrowser.spec.url.InvalidURLException;
+import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.RelativePosition;
 import com.github.webicitybrowser.thready.dimensions.RelativeSize;
@@ -97,10 +99,21 @@ public class TabGUI {
 	}
 
 	private Component createURLBar() {
-		return new URLBarComponent()
+		URLBarComponent component = new URLBarComponent();
+		component
 			.setValue(tab.getURL().toString())
 			.directive(BackgroundColorDirective.of(colors.getBackgroundSecondary()))
 			.directive(FontDirective.of(new FontSettings(new NamedFontSource("Open Sans"), 12, FontWeight.NORMAL, new FontDecoration[0])));
+		
+		component.setAction(url -> {
+			try {
+				tab.navigate(URL.of(url));
+			} catch (InvalidURLException e) {
+				e.printStackTrace();
+			}
+		});
+		
+		return component;
 	}
 
 	private Component createNavigationButtonsContainer() {

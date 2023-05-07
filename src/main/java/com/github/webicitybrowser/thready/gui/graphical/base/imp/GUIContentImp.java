@@ -18,9 +18,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
-import com.github.webicitybrowser.thready.gui.graphical.message.CharMessage;
-import com.github.webicitybrowser.thready.gui.graphical.message.KeyMessage;
-import com.github.webicitybrowser.thready.gui.graphical.message.MouseMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.CharMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessage;
 import com.github.webicitybrowser.thready.gui.message.FocusManager;
 import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.gui.message.MessageContext;

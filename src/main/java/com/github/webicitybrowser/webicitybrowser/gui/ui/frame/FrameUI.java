@@ -37,7 +37,7 @@ public class FrameUI implements ComponentUI {
 		this.component = (FrameComponent) component;
 		this.parent = parent;
 		this.stylePoolGenerator = new SimpleStylePoolGenerator(this, component.getStyleDirectives());
-		updateCurrentRenderer();
+		addFrameEventListener();
 	}
 
 	@Override
@@ -64,8 +64,15 @@ public class FrameUI implements ComponentUI {
 		});
 	}
 	
-	private void updateCurrentRenderer() {
-		this.screenContent = bindRenderer(component.getFrame().getCurrentRenderer());
+	private void addFrameEventListener() {
+		component
+			.getFrame()
+			.addEventListener(rendererHandle -> updateCurrentRenderer(rendererHandle), true);
+	}
+	
+	private void updateCurrentRenderer(RendererHandle rendererHandle) {
+		this.screenContent = bindRenderer(rendererHandle);
+		invalidate(InvalidationLevel.BOX); // TODO: Detect screen invalidation level
 	}
 	
 	private ScreenContent bindRenderer(RendererHandle rendererHandle) {

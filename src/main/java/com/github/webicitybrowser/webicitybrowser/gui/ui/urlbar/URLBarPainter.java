@@ -10,7 +10,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
-import com.github.webicitybrowser.thready.model.textfield.TextFieldModel;
+import com.github.webicitybrowser.thready.gui.graphical.viewmodel.textfield.TextFieldViewModel;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
 import com.github.webicitybrowser.webicitybrowser.gui.Styling;
 
@@ -18,13 +18,13 @@ public class URLBarPainter implements Painter {
 
 	private final Box box;
 	private final Rectangle documentRect;
-	private final TextFieldModel textFieldModel;
+	private final TextFieldViewModel textFieldViewModel;
 	private final Font2D font;
 
-	public URLBarPainter(Box box, Rectangle documentRect, TextFieldModel textFieldModel, Font2D font) {
+	public URLBarPainter(Box box, Rectangle documentRect, TextFieldViewModel textFieldViewModel, Font2D font) {
 		this.box = box;
 		this.documentRect = documentRect;
-		this.textFieldModel = textFieldModel;
+		this.textFieldViewModel = textFieldViewModel;
 		this.font = font;
 	}
 
@@ -65,7 +65,7 @@ public class URLBarPainter implements Painter {
 			.build();
 		Canvas2D ctx = canvas.withPaint(paint);
 		
-		String text = textFieldModel.getText();
+		String text = textFieldViewModel.getText();
 		
 		float docX = documentRect.position().x();
 		float docY = documentRect.position().y();

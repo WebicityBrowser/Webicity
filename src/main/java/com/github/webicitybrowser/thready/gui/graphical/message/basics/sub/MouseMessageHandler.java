@@ -9,8 +9,8 @@ import com.github.webicitybrowser.thready.gui.graphical.directive.ExternalMouseL
 import com.github.webicitybrowser.thready.gui.graphical.directive.MouseListenerDirective;
 import com.github.webicitybrowser.thready.gui.graphical.event.MouseEvent;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.message.MouseMessage;
-import com.github.webicitybrowser.thready.gui.graphical.message.MouseMessageResponse;
+import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessageResponse;
 import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.gui.message.MessageContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;

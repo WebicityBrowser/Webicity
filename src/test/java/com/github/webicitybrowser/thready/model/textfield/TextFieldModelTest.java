@@ -44,6 +44,28 @@ public class TextFieldModelTest {
 	}
 	
 	@Test
+	@DisplayName("Can replace text at cursor before end")
+	public void canReplaceTextAtCursorBeforeEnd() {
+		TextFieldModel textField = TextFieldModel.create();
+		textField.setText("hello");
+		textField.setCursorPos(2);
+		textField.replace("yo");
+		Assertions.assertEquals("heyoo", textField.getText());
+		Assertions.assertEquals(4, textField.getCursorPos());
+	}
+	
+	@Test
+	@DisplayName("Can replace text at cursor past end")
+	public void canReplaceTextAtCursorPastEnd() {
+		TextFieldModel textField = TextFieldModel.create();
+		textField.setText("hello");
+		textField.setCursorPos(2);
+		textField.replace("y Jude");
+		Assertions.assertEquals("hey Jude", textField.getText());
+		Assertions.assertEquals(8, textField.getCursorPos());
+	}
+	
+	@Test
 	@DisplayName("Can delete upcoming text")
 	public void canDeleteUpcomingText() {
 		TextFieldModel textField = TextFieldModel.create();

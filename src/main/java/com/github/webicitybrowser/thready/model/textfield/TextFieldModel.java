@@ -16,14 +16,14 @@ public interface TextFieldModel {
 	
 	void insert(String text);
 	
-	void toggleInsertMode();
+	void replace(String text);
 	
 	public static TextFieldModel create() {
-		return new DefaultTextFieldModel(null);
+		return new DefaultTextFieldModel();
 	}
 
-	static TextFieldModel create(TextFieldListener listener) {
-		return new DefaultTextFieldModel(listener);
-	}
+	void addListener(TextFieldModelListener listener);
+	
+	void removeListener(TextFieldModelListener listener);
 	
 }

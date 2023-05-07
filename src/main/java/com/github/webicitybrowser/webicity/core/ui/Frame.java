@@ -18,5 +18,7 @@ public interface Frame {
 	void back();
 
 	void forward();
+
+	void addEventListener(FrameEventListener listener, boolean sync);
 	
 }

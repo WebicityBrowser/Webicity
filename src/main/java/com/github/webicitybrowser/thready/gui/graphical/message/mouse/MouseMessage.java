@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.message;
+package com.github.webicitybrowser.thready.gui.graphical.message.mouse;
 
 import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseScreenEvent;

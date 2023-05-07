@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.webicitybrowser.event;
+package com.github.webicitybrowser.webicity.event;
 
 import java.util.function.Consumer;
 

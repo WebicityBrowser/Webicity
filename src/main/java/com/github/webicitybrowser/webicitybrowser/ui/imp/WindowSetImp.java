@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.webicitybrowser.spec.url.URL;
+import com.github.webicitybrowser.webicity.event.EventDispatcher;
+import com.github.webicitybrowser.webicity.event.imp.EventDispatcherImp;
 import com.github.webicitybrowser.webicitybrowser.BrowserInstance;
-import com.github.webicitybrowser.webicitybrowser.event.EventDispatcher;
-import com.github.webicitybrowser.webicitybrowser.event.imp.EventDispatcherImp;
 import com.github.webicitybrowser.webicitybrowser.ui.Window;
 import com.github.webicitybrowser.webicitybrowser.ui.Window.WindowOptions;
 import com.github.webicitybrowser.webicitybrowser.ui.WindowSet;

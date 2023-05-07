@@ -53,14 +53,7 @@ public final class SkijaKeyboardEventListeners {
 	}
 	
 	public static int remapKeyCode(int kc) {
-		switch(kc) {
-			case GLFW.GLFW_KEY_ENTER:
-				return KeyboardConstants.VK_ENTER;
-			case GLFW.GLFW_KEY_BACKSPACE:
-				return KeyboardConstants.VK_BACKSPACE;
-			default:
-				return KeyboardConstants.VK_UNKNOWN;
-		}
+		return kc; // TODO: These should technically be re-mapped
 	}
 	
 }

@@ -1,18 +1,17 @@
 package com.github.webicitybrowser.thready.model.textfield.imp;
 
-import com.github.webicitybrowser.thready.model.textfield.TextFieldListener;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.github.webicitybrowser.thready.model.textfield.TextFieldModel;
+import com.github.webicitybrowser.thready.model.textfield.TextFieldModelListener;
 
 public class DefaultTextFieldModel implements TextFieldModel {
 	
 	private final StringBuilder currentText = new StringBuilder();
-	private final TextFieldListener listener;
+	private final Set<TextFieldModelListener> listeners = new HashSet<>();
 	
 	private int cursorPos = 0;
-
-	public DefaultTextFieldModel(TextFieldListener listener) {
-		this.listener = listener;
-	}
 
 	@Override
 	public String getText() {
@@ -60,9 +59,27 @@ public class DefaultTextFieldModel implements TextFieldModel {
 	}
 	
 	@Override
-	public void toggleInsertMode() {
-		// TODO Auto-generated method stub
+	public void replace(String text) {
+		int endPos = cursorPos + text.length();
+		if (endPos > currentText.length()) {
+			endPos = currentText.length();
+		}
+		String ending = currentText.substring(endPos);
+		currentText.setLength(cursorPos);
+		currentText.append(text);
+		currentText.append(ending);
+		cursorPos += text.length();
 		invokeListener();
+	}
+	
+	@Override
+	public void addListener(TextFieldModelListener listener) {
+		listeners.add(listener);
+	}
+	
+	@Override
+	public void removeListener(TextFieldModelListener listener) {
+		listeners.remove(listener);
 	}
 	
 	private void normalizeCursorPos() {
@@ -92,7 +109,7 @@ public class DefaultTextFieldModel implements TextFieldModel {
 	}
 	
 	private void invokeListener() {
-		if (listener != null) {
+		for (TextFieldModelListener listener: listeners) {
 			listener.onStateChanged();
 		}
 	}

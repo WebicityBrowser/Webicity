@@ -6,10 +6,14 @@ import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.RenderingEngine;
 import com.github.webicitybrowser.webicity.core.renderer.RendererHandle;
 import com.github.webicitybrowser.webicity.core.ui.Frame;
+import com.github.webicitybrowser.webicity.core.ui.FrameEventListener;
+import com.github.webicitybrowser.webicity.event.EventDispatcher;
+import com.github.webicitybrowser.webicity.event.imp.EventDispatcherImp;
 
 public class FrameImp implements Frame {
 
 	private final RenderingEngine renderingEngine;
+	private final EventDispatcher<FrameEventListener> eventDispatcher = new EventDispatcherImp<>();
 	
 	private URL url;
 	private RendererHandle currentRenderer;
@@ -46,6 +50,7 @@ public class FrameImp implements Frame {
 	public void navigate(URL url) {
 		this.url = url;
 		this.currentRenderer = renderingEngine.openRenderer(url);
+		eventDispatcher.fire(listener -> listener.onRendererChange(currentRenderer));
 	}
 
 	@Override
@@ -64,6 +69,14 @@ public class FrameImp implements Frame {
 	public void forward() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void addEventListener(FrameEventListener listener, boolean sync) {
+		eventDispatcher.addListener(listener);
+		if (sync) {
+			listener.onRendererChange(currentRenderer);
+		}
 	}
 
 }

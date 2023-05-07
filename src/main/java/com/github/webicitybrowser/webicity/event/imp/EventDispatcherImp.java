@@ -1,11 +1,11 @@
-package com.github.webicitybrowser.webicitybrowser.event.imp;
+package com.github.webicitybrowser.webicity.event.imp;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.github.webicitybrowser.webicitybrowser.event.EventDispatcher;
-import com.github.webicitybrowser.webicitybrowser.event.EventListener;
+import com.github.webicitybrowser.webicity.event.EventDispatcher;
+import com.github.webicitybrowser.webicity.event.EventListener;
 
 public class EventDispatcherImp<T extends EventListener> implements EventDispatcher<T> {
 	
