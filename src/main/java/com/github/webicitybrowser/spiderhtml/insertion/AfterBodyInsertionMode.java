@@ -49,7 +49,7 @@ public class AfterBodyInsertionMode implements InsertionMode {
 
 	private boolean handleEndTagToken(SharedContext context, InsertionContext insertionContext, EndTagToken token) {
 		// TODO
-		switch (token.getName()) {
+		switch (token.getName(insertionContext.getStringCache())) {
 		case "html":
 			handleHtmlEndTag(context, insertionContext, token);
 			return true;

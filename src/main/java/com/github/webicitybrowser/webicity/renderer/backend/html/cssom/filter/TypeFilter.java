@@ -3,13 +3,14 @@ package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.infra.Namespace;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipant;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipantTraverser;
 
 public class TypeFilter<U> implements CSSOMFilter<Node, U> {
 
@@ -22,10 +23,10 @@ public class TypeFilter<U> implements CSSOMFilter<Node, U> {
 	}
 	
 	@Override
-	public List<CSSOMParticipant<Node>> filter(List<CSSOMNode<Node, U>> prematched, CSSOMParticipant<Node> item) {
-		List<CSSOMParticipant<Node>> matched = new ArrayList<>(4);
-		for (CSSOMParticipant<Node> child: item.getChildren()) {
-			if (isApplicable(child.getValue())) {
+	public List<Node> filter(Set<CSSOMNode<Node, U>> prematched, Node item, CSSOMParticipantTraverser<Node> traverser) {
+		List<Node> matched = new ArrayList<>(4);
+		for (Node child: traverser.getChildren(item)) {
+			if (isApplicable(child)) {
 				matched.add(child);
 			}
 		}

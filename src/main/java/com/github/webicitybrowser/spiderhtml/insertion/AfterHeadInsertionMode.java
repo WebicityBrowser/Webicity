@@ -41,7 +41,7 @@ public class AfterHeadInsertionMode implements InsertionMode {
 	}
 	
 	private boolean handleStartTagToken(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
-		switch (token.getName()) {
+		switch (token.getName(insertionContext.getStringCache())) {
 		case "body":
 			handleBodyStartTag(context, insertionContext, token);
 			return true;

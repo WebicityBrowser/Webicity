@@ -1,8 +1,5 @@
 package com.github.webicitybrowser.threadyweb.tree.imp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.Text;
@@ -42,14 +39,23 @@ public class ElementComponentImp extends BaseWebComponent implements ElementComp
 	}
 
 	private Node[] filterChildren(NodeList childNodes) {
-		List<Node> filtered = new ArrayList<>(childNodes.getLength());
+		int childrenLength = childNodes.getLength();
+		Node[] filtered = new Node[childrenLength];
+		int i = 0;
 		for (Node childNode: childNodes) {
 			if (childNode instanceof Text || childNode instanceof Element) {
-				filtered.add(childNode);
+				filtered[i++] = childNode;
 			}
 		}
 		
-		return filtered.toArray(Node[]::new);
+		if (i == childrenLength) {
+			return filtered;
+		}
+		
+		Node[] resized = new Node[i];
+		System.arraycopy(filtered, 0, resized, 0, i);
+		
+		return resized;
 	}
 
 }

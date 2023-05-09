@@ -10,6 +10,8 @@ import com.github.webicitybrowser.spec.dom.node.support.imp.NodeListImp;
 
 public abstract class NodeImp implements Node {
 	
+	private static final NodeList EMPTY_NODE_LIST = new NodeListImp(List.of());
+	
 	private final Document nodeDocument;
 	private Node parentNode;
 	
@@ -29,7 +31,7 @@ public abstract class NodeImp implements Node {
 	
 	@Override
 	public NodeList getChildNodes() {
-		return new NodeListImp(List.of());
+		return EMPTY_NODE_LIST;
 	}
 	
 	@Override

@@ -1,9 +1,10 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.cssom;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CSSOMFilter<T, U> {
 	
-	List<CSSOMParticipant<T>> filter(List<CSSOMNode<T, U>> prematched, CSSOMParticipant<T> item);
+	List<T> filter(Set<CSSOMNode<T, U>> prematched, T item, CSSOMParticipantTraverser<T> traverser);
 	
 }

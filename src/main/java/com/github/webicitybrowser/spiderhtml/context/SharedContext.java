@@ -44,7 +44,7 @@ public class SharedContext {
 		if (token instanceof EOFToken) {
 			setTokenizeState(null); // Just in case stopParsing is never called
 		} else if (token instanceof StartTagToken startTagToken) {
-			lastStartTagTokenName = startTagToken.getName();
+			lastStartTagTokenName = startTagToken.getName(insertionContext.getStringCache());
 		}
 		EmitterLogic.emit(this, insertionContext, token);
 		if (
@@ -65,7 +65,8 @@ public class SharedContext {
 	}
 
 	public boolean isAppropriateEndTagToken(EndTagToken endTagToken) {
-		return endTagToken.getName().equals(lastStartTagTokenName);
+		return endTagToken.getName(insertionContext.getStringCache())
+			.equals(lastStartTagTokenName);
 	}
 	
 }

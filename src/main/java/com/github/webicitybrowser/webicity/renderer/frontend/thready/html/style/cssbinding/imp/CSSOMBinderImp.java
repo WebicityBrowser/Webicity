@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.componentvalue.SimpleBlock;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.imp.CSSParserImp;
@@ -31,7 +33,7 @@ public class CSSOMBinderImp implements CSSOMBinder {
 	public CSSOMTree<Node, DirectivePool> createCSSOMFor(CSSStyleSheet stylesheet) {
 		CSSOMNode<Node, DirectivePool> rootNode = new CSSOMNodeImp<>();
 		addStyleSheetToCSSOMNode(rootNode, stylesheet);
-		rootNode.linkChild((_1, node) -> node.getChildren(), 0, rootNode);
+		rootNode.linkChild((_1, node, traverser) -> List.of(traverser.getChildren(node)), 0, rootNode);
 		
 		return CSSOMTree.create(rootNode);
 	}

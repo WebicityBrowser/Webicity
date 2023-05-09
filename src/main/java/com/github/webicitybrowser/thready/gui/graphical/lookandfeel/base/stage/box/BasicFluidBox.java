@@ -18,7 +18,7 @@ public class BasicFluidBox implements FluidBox {
 	private final DirectivePool directives;
 	private final BiFunction<Box, Box[], Renderer> rendererGenerator;
 	
-	private final List<Box> children = new ArrayList<>();
+	private final List<Box> children = new ArrayList<>(1);
 	
 	public BasicFluidBox(Component component, DirectivePool directives, BiFunction<Box, Box[], Renderer> rendererGenerator) {
 		this.component = component;

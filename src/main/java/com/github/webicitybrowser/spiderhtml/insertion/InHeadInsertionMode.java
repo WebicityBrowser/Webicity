@@ -59,7 +59,7 @@ public class InHeadInsertionMode implements InsertionMode {
 	
 	private boolean handleStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		// TODO
-		switch (token.getName()) {
+		switch (token.getName(insertionContext.getStringCache())) {
 		case "meta":
 			handleMetaStartTag(context, insertionContext, token);
 			return true;
@@ -109,7 +109,7 @@ public class InHeadInsertionMode implements InsertionMode {
 
 	private boolean handleEndTag(SharedContext context, InsertionContext insertionContext, EndTagToken token) {
 		// TODO
-		switch (token.getName()) {
+		switch (token.getName(insertionContext.getStringCache())) {
 		case "head":
 			handleHeadEndTag(context, insertionContext, token);
 			return true;

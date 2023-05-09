@@ -70,7 +70,7 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 	}
 	
 	private boolean handleStartTagToken(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
-		switch (token.getName()) {
+		switch (token.getName(insertionContext.getStringCache())) {
 		case "html":
 			handleHtmlStartTag(context, insertionContext, token);
 			return true;

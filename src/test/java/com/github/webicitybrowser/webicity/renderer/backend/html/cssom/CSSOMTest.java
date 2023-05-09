@@ -8,18 +8,18 @@ import org.junit.jupiter.api.Test;
 
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.ChildFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.test.TestCSSOMParticipant;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.test.TestCSSOMParticipantTraverser;
 
 public class CSSOMTest {
 
 	@Test
 	@DisplayName("Root CSSOMNode matches root participant")
 	public void rootCSSOMNodeMatchesRootParticipant() {
-		CSSOMNode<Object, Object> rootNode = CSSOMNode.create();
-		CSSOMTree<Object, Object> cssomTree = CSSOMTree.create(rootNode);
-		Object node = new Object();
-		CSSOMParticipant<Object> rootParticipant = new TestCSSOMParticipant<>(node, null);
-		CSSOMResult<Object, Object> result = cssomTree.apply(rootParticipant);
-		List<CSSOMNode<Object, Object>> matchingNodes = result.getMatchingNodes(node);
+		CSSOMNode<TestCSSOMParticipant, Object> rootNode = CSSOMNode.create();
+		CSSOMTree<TestCSSOMParticipant, Object> cssomTree = CSSOMTree.create(rootNode);
+		TestCSSOMParticipant rootParticipant = new TestCSSOMParticipant(null);
+		CSSOMResult<TestCSSOMParticipant, Object> result = cssomTree.apply(rootParticipant, new TestCSSOMParticipantTraverser());
+		List<CSSOMNode<TestCSSOMParticipant, Object>> matchingNodes = List.copyOf(result.getMatchingNodes(rootParticipant));
 		Assertions.assertEquals(1, matchingNodes.size());
 		Assertions.assertEquals(rootNode, matchingNodes.get(0));
 	}
@@ -27,19 +27,17 @@ public class CSSOMTest {
 	@Test
 	@DisplayName("Child CSSOMNode matches child filter")
 	public void childCSSOMNodeMatchesGlobFilter() {
-		CSSOMNode<Object, Object> rootNode = CSSOMNode.create();
-		CSSOMNode<Object, Object> childNode = rootNode.createChild(new ChildFilter<>(), 0);
-		CSSOMTree<Object, Object> cssomTree = CSSOMTree.create(rootNode);
-		Object node1 = new Object();
-		TestCSSOMParticipant<Object> rootParticipant = new TestCSSOMParticipant<>(node1, null);
-		Object node2 = new Object();
-		CSSOMParticipant<Object> childParticipant = new TestCSSOMParticipant<>(node2, rootParticipant);
+		CSSOMNode<TestCSSOMParticipant, Object> rootNode = CSSOMNode.create();
+		CSSOMNode<TestCSSOMParticipant, Object> childNode = rootNode.createChild(new ChildFilter<>(), 0);
+		CSSOMTree<TestCSSOMParticipant, Object> cssomTree = CSSOMTree.create(rootNode);
+		TestCSSOMParticipant rootParticipant = new TestCSSOMParticipant(null);
+		TestCSSOMParticipant childParticipant = new TestCSSOMParticipant(rootParticipant);
 		rootParticipant.addChild(childParticipant);
-		CSSOMResult<Object, Object> result = cssomTree.apply(rootParticipant);
-		List<CSSOMNode<Object, Object>> rootMatchingNodes = result.getMatchingNodes(node1);
+		CSSOMResult<TestCSSOMParticipant, Object> result = cssomTree.apply(rootParticipant, new TestCSSOMParticipantTraverser());
+		List<CSSOMNode<TestCSSOMParticipant, Object>> rootMatchingNodes = List.copyOf(result.getMatchingNodes(rootParticipant));
 		Assertions.assertEquals(1, rootMatchingNodes.size());
 		Assertions.assertEquals(rootNode, rootMatchingNodes.get(0));
-		List<CSSOMNode<Object, Object>> childMatchingNodes = result.getMatchingNodes(node2);
+		List<CSSOMNode<TestCSSOMParticipant, Object>> childMatchingNodes = List.copyOf(result.getMatchingNodes(childParticipant));
 		Assertions.assertEquals(1, childMatchingNodes.size());
 		Assertions.assertEquals(childNode, childMatchingNodes.get(0));
 	}

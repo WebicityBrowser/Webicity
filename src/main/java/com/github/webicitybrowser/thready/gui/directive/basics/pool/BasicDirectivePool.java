@@ -1,12 +1,13 @@
 package com.github.webicitybrowser.thready.gui.directive.basics.pool;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
+import com.github.webicitybrowser.performance.LazyMap;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePoolListener;
@@ -17,8 +18,8 @@ import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePoolL
  */
 public class BasicDirectivePool implements DirectivePool {
 
-	private final Map<Class<? extends Directive>, Directive> directives = new HashMap<>(4);
-	private final Set<DirectivePoolListener> listeners = new HashSet<>(1);
+	private final Map<Class<? extends Directive>, Directive> directives = new LazyNormalHashMap<>();
+	private final List<DirectivePoolListener> listeners = new ArrayList<>(1);
 	
 	@Override
 	public Iterator<Directive> iterator() {
@@ -70,4 +71,11 @@ public class BasicDirectivePool implements DirectivePool {
 		}
 	}
 
+	private static class LazyNormalHashMap<K, V> extends LazyMap<K, V> {
+		@Override
+		protected Map<K, V> initialize() {
+			return new HashMap<>(1);
+		}
+	}
+	
 }

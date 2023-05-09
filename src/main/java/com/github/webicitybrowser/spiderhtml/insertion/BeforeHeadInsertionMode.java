@@ -50,7 +50,7 @@ public class BeforeHeadInsertionMode implements InsertionMode {
 	}
 
 	private boolean handleStartTagToken(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
-		switch (token.getName()) {
+		switch (token.getName(insertionContext.getStringCache())) {
 		case "head":
 			handleHeadStartTag(context, insertionContext, token);
 			return true;

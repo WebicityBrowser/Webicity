@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.spiderhtml.token;
 
+import com.github.webicitybrowser.spiderhtml.performance.StringCache;
+
 public abstract class TagToken implements Token {
 
 	private final StringBuilder nameBuilder;
@@ -10,8 +12,8 @@ public abstract class TagToken implements Token {
 		this.nameBuilder = new StringBuilder(name);
 	}
 	
-	public String getName() {
-		return nameBuilder.toString();
+	public String getName(StringCache stringCache) {
+		return stringCache.get(nameBuilder.toString());
 	}
 
 	public void appendToName(int ch) {

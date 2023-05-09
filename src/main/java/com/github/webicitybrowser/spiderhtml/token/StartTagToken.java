@@ -3,6 +3,8 @@ package com.github.webicitybrowser.spiderhtml.token;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.webicitybrowser.spiderhtml.performance.StringCache;
+
 public class StartTagToken extends TagToken {
 	
 	private final List<AttributeBuilder> attributes = new ArrayList<>();
@@ -28,13 +30,13 @@ public class StartTagToken extends TagToken {
 		attributeValueBuilder.appendCodePoint(ch);
 	}
 	
-	public StartTagAttribute[] getAttributes() {
+	public StartTagAttribute[] getAttributes(StringCache stringCache) {
 		StartTagAttribute[] attributeArr = new StartTagAttribute[attributes.size()];
 		for (int i = 0; i < attributeArr.length; i++) {
 			AttributeBuilder attrBuild = attributes.get(i);
 			attributeArr[i] = new StartTagAttribute(
-				attrBuild.nameBuilder.toString(),
-				attrBuild.valueBuilder.toString());
+				stringCache.get(attrBuild.nameBuilder.toString()),
+				stringCache.get(attrBuild.valueBuilder.toString()));
 		}
 		
 		return attributeArr;

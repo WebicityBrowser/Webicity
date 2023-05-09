@@ -63,7 +63,7 @@ public class InBodyInsertionMode implements InsertionMode {
 	
 	private void handleStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		// TODO
-		switch (token.getName()) {
+		switch (token.getName(insertionContext.getStringCache())) {
 		case "meta":
 		case "script":
 		case "style":
@@ -108,7 +108,7 @@ public class InBodyInsertionMode implements InsertionMode {
 
 	private void handleEndTag(SharedContext context, InsertionContext insertionContext, EndTagToken token) {
 		// TODO
-		switch (token.getName()) {
+		switch (token.getName(insertionContext.getStringCache())) {
 		case "body":
 			handleBodyEndTag(context, insertionContext, token);
 			break;
@@ -126,19 +126,22 @@ public class InBodyInsertionMode implements InsertionMode {
 	}
 	
 	private void handleMiscNoPEndTag(SharedContext context, InsertionContext insertionContext, EndTagToken token) {
-		String tokenName = token.getName();
+		String tokenName = token.getName(insertionContext.getStringCache());
 		ElementStack stack = insertionContext.getOpenElementStack();
 		// TODO: Ensure element in scope
 		StackLogic.generateImpliedEndTags(stack, tokenName);
 		if (!ElementUtil.isHTMLElementWithName(stack.peek(), tokenName)) {
 			context.recordError();
 		}
-		StackLogic.popUntil(insertionContext.getOpenElementStack(), Namespace.HTML_NAMESPACE, token.getName());
+		StackLogic.popUntil(
+			insertionContext.getOpenElementStack(),
+			Namespace.HTML_NAMESPACE,
+			token.getName(insertionContext.getStringCache()));
 	}
 	
 	private void handleOrdinaryElementEndTag(SharedContext context, InsertionContext insertionContext, EndTagToken token) {
 		ElementStack stack = insertionContext.getOpenElementStack();
-		String tokenName = token.getName();
+		String tokenName = token.getName(insertionContext.getStringCache());
 		for (int pos = 0; pos < stack.size(); pos++) {
 			Node node = stack.peek(pos);
 			if (ElementUtil.isHTMLElementWithName(node, tokenName)) {

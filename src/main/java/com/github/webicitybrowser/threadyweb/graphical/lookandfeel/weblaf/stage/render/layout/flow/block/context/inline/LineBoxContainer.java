@@ -92,8 +92,8 @@ public class LineBoxContainer {
 		}
 	}
 
-	private boolean lineCanNotFit(PartialUnitPreview PartialUnitPreview) {
-		AbsoluteSize unitSize = PartialUnitPreview.sizeAfterAppend();
+	private boolean lineCanNotFit(PartialUnitPreview partialUnitPreview) {
+		AbsoluteSize unitSize = partialUnitPreview.sizeAfterAppend();
 		return currentLine.canFit(unitSize, maxBounds);
 	}
 

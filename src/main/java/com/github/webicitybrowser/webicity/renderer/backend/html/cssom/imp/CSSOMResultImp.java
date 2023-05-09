@@ -1,9 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.imp;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMResult;
@@ -17,10 +15,11 @@ public class CSSOMResultImp<T, U> implements CSSOMResult<T, U> {
 	}
 
 	@Override
-	public List<CSSOMNode<T, U>> getMatchingNodes(T value) {
-		return Optional.ofNullable(matches.get(value))
-			.map(tracker -> tracker.getMatchingNodes())
-			.orElse(new ArrayList<>(0));
+	public Set<CSSOMNode<T, U>> getMatchingNodes(T value) {
+		CSSOMParticipantTracker<T, U> tracker = matches.get(value);
+		return tracker != null ?
+			tracker.getMatchingNodes() :
+			Set.of();
 	}
 
 }

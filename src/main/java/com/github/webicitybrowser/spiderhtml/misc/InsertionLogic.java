@@ -83,13 +83,13 @@ public final class InsertionLogic {
 		InsertionContext insertionContext, StartTagToken token, String namespace, Node intendedParent
 	) {
 		ElementCreationOptions creationOptions = new ElementCreationOptions(
-			token.getName(), new HashMap<String, String>(),
+			token.getName(insertionContext.getStringCache()), new HashMap<String, String>(),
 			namespace, intendedParent
 		);
 		HTMLElement element = insertionContext
 			.getTreeBuilder()
 			.createHtmlElement(creationOptions);
-		for (StartTagAttribute attribute: token.getAttributes()) {
+		for (StartTagAttribute attribute: token.getAttributes(insertionContext.getStringCache())) {
 			element.setAttribute(attribute.name(), attribute.value());
 		}
 		

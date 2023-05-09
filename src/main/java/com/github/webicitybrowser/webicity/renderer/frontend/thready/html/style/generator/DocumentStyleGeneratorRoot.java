@@ -29,7 +29,7 @@ public class DocumentStyleGeneratorRoot implements StyleGeneratorRoot {
 		CSSOMResult<Node, DirectivePool>[] results = (CSSOMResult<Node, DirectivePool>[]) new CSSOMResult[cssomTrees.length];
 		for (int i = 0; i < cssomTrees.length; i++) {
 			CSSOMTree<Node, DirectivePool> tree = cssomTrees[i];
-			results[i] = tree.apply(new DocumentStyleParticipant(document));
+			results[i] = tree.apply(document, new DocumentParticipantTraverser());
 		}
 		
 		return new DocumentStyleGenerator(((WebComponent) componentUI.getComponent()).getNode(), results);

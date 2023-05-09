@@ -3,36 +3,25 @@ package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipant;
+public class TestCSSOMParticipant {
 
-public class TestCSSOMParticipant<T> implements CSSOMParticipant<T> {
+	private final TestCSSOMParticipant parent;
+	private final List<TestCSSOMParticipant> children;
 
-	private final T value;
-	private final CSSOMParticipant<T> parent;
-	private final List<CSSOMParticipant<T>> children;
-
-	public TestCSSOMParticipant(T value, CSSOMParticipant<T> parent) {
-		this.value = value;
+	public TestCSSOMParticipant(TestCSSOMParticipant parent) {
 		this.parent = parent;
 		this.children = new ArrayList<>();
 	}
-
-	@Override
-	public T getValue() {
-		return this.value;
-	}
 	
-	@Override
-	public CSSOMParticipant<T> getParent() {
+	public TestCSSOMParticipant getParent() {
 		return this.parent;
 	}
 
-	@Override
-	public List<CSSOMParticipant<T>> getChildren() {
-		return List.copyOf(this.children);
+	public TestCSSOMParticipant[] getChildren() {
+		return this.children.toArray(new TestCSSOMParticipant[0]);
 	}
 
-	public void addChild(CSSOMParticipant<T> child) {
+	public void addChild(TestCSSOMParticipant child) {
 		children.add(child);
 	}
 

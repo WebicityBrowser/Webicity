@@ -16,7 +16,7 @@ public class BasicBox implements Box {
 	private final DirectivePool directives;
 	private final BiFunction<Box, Box[], Renderer> rendererGenerator;
 	
-	private final List<Box> children = new ArrayList<>();
+	private final List<Box> children = new ArrayList<>(1);
 	
 	private boolean isSolidBoxContext;
 	private Box currentFluidGroup;
@@ -69,8 +69,10 @@ public class BasicBox implements Box {
 			children.add(child);
 			return;
 		}
+		
 		startFluidGroup();
 		currentFluidGroup.addChild(child);
+		children.add(currentFluidGroup);
 	}
 
 	private void startSolidBoxContext() {
@@ -78,12 +80,13 @@ public class BasicBox implements Box {
 		if (children.isEmpty()) {
 			return;
 		}
-		List<Box> priorChildren = List.copyOf(children);
-		children.clear();
+		
 		startFluidGroup();
-		for (Box priorChild: priorChildren) {
+		for (Box priorChild: children) {
 			currentFluidGroup.addChild(priorChild);
 		}
+		children.clear();
+		children.add(currentFluidGroup);
 	}
 
 	private void startFluidGroup() {
@@ -91,7 +94,6 @@ public class BasicBox implements Box {
 			return;
 		}
 		currentFluidGroup = new BasicBox(component, directives, rendererGenerator);
-		children.add(currentFluidGroup);
 		// TODO: Is the passed-through renderer generator fine?
 	}
 	
