@@ -90,7 +90,6 @@ public class CSSParserImp implements CSSParser {
 					}
 					consumeAComponentValue(stream);
 				}
-				stream.unread();
 			}
 		}
 	}

@@ -7,10 +7,12 @@ import org.junit.jupiter.api.Test;
 
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.tokens.CommaToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
+import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector;
 import com.github.webicitybrowser.spec.css.selectors.selector.TypeSelector;
 
 public class ComplexSelectorParserTest {
@@ -91,6 +93,21 @@ public class ComplexSelectorParserTest {
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 		TypeSelector selector = (TypeSelector) parts[0];
 		Assertions.assertEquals("hi", selector.getQualifiedName().getName());
+	}
+	
+	@Test
+	@DisplayName("Dot delim token creates class selector")
+	public void dotDelimTokenCreatesClassSelector() {
+		TokenLike[] tokens = new TokenLike[] {
+			(DelimToken) () -> '.', (IdentToken) () -> "hi"
+		};
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens);
+		Assertions.assertEquals(1, selectors.length);
+		ComplexSelectorPart[] parts = selectors[0].getParts();
+		Assertions.assertEquals(1, parts.length);
+		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
+		AttributeSelector selector = (AttributeSelector) parts[0];
+		Assertions.assertEquals("hi", selector.getComparisonValue());
 	}
 	
 }
