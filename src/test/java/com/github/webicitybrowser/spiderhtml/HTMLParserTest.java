@@ -229,6 +229,20 @@ public class HTMLParserTest {
 		Assertions.assertEquals("Hello, World", comment.getData());
 	}
 	
+	@Test
+	@DisplayName("Can parse self-closing in-head tag")
+	public void canParseSelfClosingInHeadTag() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head><link/><link/></head><body></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		HTMLElement headNode = testToHead(document, 2);
+		NodeList headChildren = headNode.getChildNodes();
+		testElement(headChildren.get(0), "link", 0);
+		testElement(headChildren.get(1), "link", 0);
+	}
+	
 	private HTMLElement testToBody(Document document, int numBodyChildren) {
 		HTMLElement htmlNode = testToHtml(document, 2);
 		NodeList htmlChildren = htmlNode.getChildNodes();

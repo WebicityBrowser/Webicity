@@ -60,6 +60,12 @@ public class InHeadInsertionMode implements InsertionMode {
 	private boolean handleStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		// TODO
 		switch (token.getName(insertionContext.getStringCache())) {
+		case "base":
+		case "basefont":
+		case "bgsound":
+		case "link":
+			handleSelfClosingStartTag(context, insertionContext, token);
+			return true;
 		case "meta":
 			handleMetaStartTag(context, insertionContext, token);
 			return true;
@@ -75,6 +81,14 @@ public class InHeadInsertionMode implements InsertionMode {
 			return true;
 		default:
 			return false;
+		}
+	}
+
+	private void handleSelfClosingStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		InsertionLogic.insertHTMLElement(insertionContext, token);
+		insertionContext.getOpenElementStack().pop();
+		if (token.isSelfClosingTag()) {
+			token.acknowledgeSelfClosingTag();
 		}
 	}
 

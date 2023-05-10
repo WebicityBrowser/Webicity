@@ -23,11 +23,13 @@ public class InBodyInsertionMode implements InsertionMode {
 	
 	private final AfterBodyInsertionMode afterBodyInsertionMode;
 	private final InHeadInsertionMode inHeadInsertionMode;
+	private final InTableInsertionMode inTableInsertionMode;
 
 	public InBodyInsertionMode(ParsingInitializer initializer, Consumer<InsertionMode> callback) {
 		callback.accept(this);
 		this.afterBodyInsertionMode = initializer.getInsertionMode(AfterBodyInsertionMode.class);
 		this.inHeadInsertionMode = initializer.getInsertionMode(InHeadInsertionMode.class);
+		this.inTableInsertionMode = initializer.getInsertionMode(InTableInsertionMode.class);
 	}
 
 	@Override
@@ -73,6 +75,9 @@ public class InBodyInsertionMode implements InsertionMode {
 		case "div":
 			handleMiscNoPStartTag(context, insertionContext, token);
 			break;
+		case "table":
+			handleTableStartTag(context, insertionContext, token);
+			break;
 		case "area":
 		case "br":
 		case"embed":
@@ -99,6 +104,13 @@ public class InBodyInsertionMode implements InsertionMode {
 			token.acknowledgeSelfClosingTag();
 		}
 		// TODO: Set frameset-ok flag
+	}
+	
+	private void handleTableStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		// TODO: Close a p element if not quirks
+		InsertionLogic.insertHTMLElement(insertionContext, token);
+		// TODO: Set frameset-ok flag
+		context.setInsertionMode(inTableInsertionMode);
 	}
 	
 	private void handleOrdinaryElementStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
