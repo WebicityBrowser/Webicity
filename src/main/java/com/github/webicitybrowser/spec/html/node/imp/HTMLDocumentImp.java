@@ -2,6 +2,7 @@ package com.github.webicitybrowser.spec.html.node.imp;
 
 import java.util.function.Function;
 
+import com.github.webicitybrowser.spec.css.stylesheet.StyleSheetList;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.imp.DocumentImp;
 import com.github.webicitybrowser.spec.html.node.HTMLDocument;
@@ -11,6 +12,8 @@ import com.github.webicitybrowser.spec.html.node.HTMLTitleElement;
 import com.github.webicitybrowser.spec.infra.util.ASCIIUtil;
 
 public class HTMLDocumentImp extends DocumentImp implements HTMLDocument {
+	
+	private final StyleSheetList styleSheetList = StyleSheetList.create();
 
 	@Override
 	public String getTitle() {
@@ -43,6 +46,11 @@ public class HTMLDocumentImp extends DocumentImp implements HTMLDocument {
 		}
 		
 		return null;
+	}
+
+	@Override
+	public StyleSheetList getStyleSheets() {
+		return this.styleSheetList;
 	}
 
 }

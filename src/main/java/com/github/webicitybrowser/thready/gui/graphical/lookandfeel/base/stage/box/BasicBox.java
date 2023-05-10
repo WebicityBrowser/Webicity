@@ -70,9 +70,8 @@ public class BasicBox implements Box {
 			return;
 		}
 		
-		startFluidGroup();
+		startFluidGroup(true);
 		currentFluidGroup.addChild(child);
-		children.add(currentFluidGroup);
 	}
 
 	private void startSolidBoxContext() {
@@ -81,7 +80,7 @@ public class BasicBox implements Box {
 			return;
 		}
 		
-		startFluidGroup();
+		startFluidGroup(false);
 		for (Box priorChild: children) {
 			currentFluidGroup.addChild(priorChild);
 		}
@@ -89,12 +88,15 @@ public class BasicBox implements Box {
 		children.add(currentFluidGroup);
 	}
 
-	private void startFluidGroup() {
+	private void startFluidGroup(boolean autoAdd) {
 		if (currentFluidGroup != null) {
 			return;
 		}
 		currentFluidGroup = new BasicBox(component, directives, rendererGenerator);
 		// TODO: Is the passed-through renderer generator fine?
+		if (autoAdd) {
+			children.add(currentFluidGroup);
+		}
 	}
 	
 }

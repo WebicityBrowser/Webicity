@@ -18,6 +18,7 @@ import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
 import com.github.webicitybrowser.spec.html.node.HTMLElement;
 import com.github.webicitybrowser.spec.html.parse.HTMLParser;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
+import com.github.webicitybrowser.spiderhtml.test.TestParserSettings;
 
 public class HTMLParserTest {
 
@@ -28,7 +29,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		NodeList documentChildren = document.getChildNodes();
 		Assertions.assertEquals(1, documentChildren.getLength());
 		HTMLElement htmlLeaf = testElement(documentChildren.get(0), "html", 2);
@@ -44,7 +45,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		testToBody(document, 0);
 	}
 	
@@ -55,7 +56,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("\n<!doctype html>\n<html>\n<head></head><body></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		testToBody(document, 0);
 	}
 	
@@ -67,7 +68,7 @@ public class HTMLParserTest {
 			"\n<!doctype html>\n\t<html>\n\t\t<head>\n\t\t</head>\n\t\t<body>\n\t\t</body>\n\t</html>\n");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement htmlNode = testToHtml(document, 3);
 		NodeList htmlChildren = htmlNode.getChildNodes();
 		Element headElement = testElement(htmlChildren.get(0), "head", 1);
@@ -86,7 +87,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body>text</body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		Text textLeaf = (Text) bodyLeaf.getChildNodes().get(0);
 		Assertions.assertEquals("text", textLeaf.getData());
@@ -99,7 +100,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body><div></div></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		NodeList childNodes = bodyLeaf.getChildNodes();
 		testElement(childNodes.get(0), "div", 0);
@@ -112,7 +113,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span></span></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		NodeList childNodes = bodyLeaf.getChildNodes();
 		testElement(childNodes.get(0), "span", 0);
@@ -125,7 +126,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body><br><br/></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement bodyLeaf = testToBody(document, 2);
 		NodeList childNodes = bodyLeaf.getChildNodes();
 		testElement(childNodes.get(0), "br", 0);
@@ -139,7 +140,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span a='b' c=\"d\"></span></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement bodyNode = testToBody(document, 1);
 		NodeList childNodes = bodyNode.getChildNodes();
 		HTMLElement spanElement = testElement(childNodes.get(0), "span", 0);
@@ -155,7 +156,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span a=boo></span></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement bodyNode = testToBody(document, 1);
 		NodeList childNodes = bodyNode.getChildNodes();
 		HTMLElement spanElement = testElement(childNodes.get(0), "span", 0);
@@ -170,7 +171,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head><style>a < b {}</style></head><body></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement headNode = testToHead(document, 1);
 		NodeList headChildren = headNode.getChildNodes();
 		HTMLElement styleElement = testElement(headChildren.get(0), "style", 1);
@@ -187,7 +188,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head><script>alert(a < b)</script></head><body></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement headNode = testToHead(document, 1);
 		NodeList headChildren = headNode.getChildNodes();
 		HTMLElement scriptElement = testElement(headChildren.get(0), "script", 1);
@@ -204,7 +205,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head><title>Hello, World!</title></head><body></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement headNode = testToHead(document, 1);
 		NodeList headChildren = headNode.getChildNodes();
 		HTMLElement titleElement = testElement(headChildren.get(0), "title", 1);
@@ -221,7 +222,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head></head><body><!--Hello, World--></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement bodyNode = testToBody(document, 1);
 		NodeList bodyChildren = bodyNode.getChildNodes();
 		Assertions.assertInstanceOf(Comment.class, bodyChildren.get(0));
@@ -236,7 +237,7 @@ public class HTMLParserTest {
 		StringReader reader = new StringReader("<!doctype html><html><head><link/><link/></head><body></body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder));
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
 		HTMLElement headNode = testToHead(document, 2);
 		NodeList headChildren = headNode.getChildNodes();
 		testElement(headChildren.get(0), "link", 0);

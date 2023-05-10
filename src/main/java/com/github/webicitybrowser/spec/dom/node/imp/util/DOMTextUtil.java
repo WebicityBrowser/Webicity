@@ -3,9 +3,9 @@ package com.github.webicitybrowser.spec.dom.node.imp.util;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.Text;
 
-public final class TextUtil {
+public final class DOMTextUtil {
 
-	private TextUtil() {}
+	private DOMTextUtil() {}
 	
 	public static String getChildTextContent(Node node) {
 		StringBuilder textContent = new StringBuilder();

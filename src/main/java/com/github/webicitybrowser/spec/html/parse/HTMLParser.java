@@ -5,6 +5,6 @@ import java.io.Reader;
 
 public interface HTMLParser {
 
-	void parse(Reader inputReader, HTMLTreeBuilder treeBuilder) throws IOException;
+	void parse(Reader inputReader, HTMLTreeBuilder treeBuilder, ParserSettings parserSettings) throws IOException;
 	
 }

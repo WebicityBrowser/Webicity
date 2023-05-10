@@ -6,6 +6,7 @@ import java.io.Reader;
 
 import com.github.webicitybrowser.spec.html.parse.HTMLParser;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
+import com.github.webicitybrowser.spec.html.parse.ParserSettings;
 import com.github.webicitybrowser.spiderhtml.context.InsertionContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
@@ -18,10 +19,10 @@ import com.github.webicitybrowser.spiderhtml.tokenize.TokenizeState;
 public class SpiderHTMLParserImp implements HTMLParser {
 
 	@Override
-	public void parse(Reader inputReader, HTMLTreeBuilder treeBuilder) throws IOException {
+	public void parse(Reader inputReader, HTMLTreeBuilder treeBuilder, ParserSettings settings) throws IOException {
 		PushbackReader reader = new PushbackReader(inputReader, 16);
 		ParsingInitializer parsingInitializer = new ParsingInitializer();
-		SharedContext sharedContext = new SharedContext(c -> new InsertionContext(c, treeBuilder));
+		SharedContext sharedContext = new SharedContext(ctx -> new InsertionContext(ctx, treeBuilder, settings));
 		ParsingContext parsingContext = new ParsingContext(reader);
 		
 		initializeContext(parsingInitializer, sharedContext);

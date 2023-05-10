@@ -77,16 +77,16 @@ public final class IdentTokenizer {
 	public static boolean isValidIdentSequence(int ch, ReaderHandle reader) throws IOException {
 		switch(ch) {
 		case '-':
-			reader.read();
+			int ch2 = reader.read();
 			if (
 				isIdentStartCodePoint(reader.peek()) ||
 				reader.peek() == '-' ||
 				SharedTokenizer.wouldStartValidEscapeSequence(reader)
 			) {
-				reader.unread(ch);
+				reader.unread(ch2);
 				return true;
 			}
-			reader.unread(ch);
+			reader.unread(ch2);
 			return false;
 		case '/':
 			return SharedTokenizer.isValidEscapeSequence(ch, reader);

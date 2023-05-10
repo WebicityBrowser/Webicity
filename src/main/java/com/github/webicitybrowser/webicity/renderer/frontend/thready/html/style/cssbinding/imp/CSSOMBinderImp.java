@@ -7,7 +7,7 @@ import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.imp.CSSParserImp;
 import com.github.webicitybrowser.spec.css.parser.selectors.ComplexSelectorParser;
 import com.github.webicitybrowser.spec.css.rule.CSSRule;
-import com.github.webicitybrowser.spec.css.rule.CSSStyleSheet;
+import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
 import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.spec.css.rule.QualifiedRule;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
@@ -30,16 +30,17 @@ public class CSSOMBinderImp implements CSSOMBinder {
 	private final CSSOMDeclarationParser declarationParser = new CSSOMDeclarationParserImp();
 	
 	@Override
-	public CSSOMTree<Node, DirectivePool> createCSSOMFor(CSSStyleSheet stylesheet) {
+	public CSSOMTree<Node, DirectivePool> createCSSOMFor(CSSRuleList ruleList) {
 		CSSOMNode<Node, DirectivePool> rootNode = new CSSOMNodeImp<>();
-		addStyleSheetToCSSOMNode(rootNode, stylesheet);
+		addRuleListToCSSOMNode(rootNode, ruleList);
 		rootNode.linkChild((_1, node, traverser) -> List.of(traverser.getChildren(node)), 0, rootNode);
 		
 		return CSSOMTree.create(rootNode);
 	}
 
-	private void addStyleSheetToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, CSSStyleSheet stylesheet) {
-		for (CSSRule rule: stylesheet.getCSSRules()) {
+	private void addRuleListToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, CSSRuleList ruleList) {
+		for (int i = 0; i < ruleList.getLength(); i++) {
+			CSSRule rule = ruleList.getItem(i);
 			addCSSRuleToCSSOMNode(rootNode, rule);
 		}
 	}
