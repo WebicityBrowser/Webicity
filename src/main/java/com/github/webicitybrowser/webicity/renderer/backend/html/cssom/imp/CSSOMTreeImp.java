@@ -70,7 +70,7 @@ public class CSSOMTreeImp<T, U> implements CSSOMTree<T, U> {
 	private void exploreChildNodes(
 		TreeContext<T, U> context, T matchedParticipant, CSSOMNode<T, U> cssomNode, int priority
 	) {
-		for (CSSOMFilterEntry<T, U> filter: cssomNode.getFilters()) {
+		for (CSSOMFilterEntry<T, U> filter: cssomNode.getPossibleFilters(matchedParticipant)) {
 			if (filter.priority() != priority) {
 				context.tasks().add(new CSSOMTask<>(filter.priority(), matchedParticipant, filter.cssomNode(), filter.filter()));
 			} else {

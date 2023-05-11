@@ -8,8 +8,8 @@ import com.github.webicitybrowser.spec.css.selectors.selector.TypeSelector;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.AttributeOneOfFilter;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.TypeFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.attroneof.AttributeOneOfFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.type.TypeFilter;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMFilterCreator;
 
 public class CSSOMFilterCreatorImp implements CSSOMFilterCreator {

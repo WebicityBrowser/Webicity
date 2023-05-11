@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter;
+package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.attroneof;
 
 import java.util.List;
 import java.util.Set;
@@ -6,11 +6,12 @@ import java.util.Set;
 import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMComposableFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilterComposition;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipantTraverser;
 
-public class AttributeOneOfFilter<U> implements CSSOMFilter<Node, U> {
+public class AttributeOneOfFilter<U> implements CSSOMComposableFilter<Node, U, AttributeOneOfFilter<U>> {
 
 	private final AttributeSelector attributeSelector;
 
@@ -31,7 +32,25 @@ public class AttributeOneOfFilter<U> implements CSSOMFilter<Node, U> {
 		}
 		return List.of();
 	}
+	
+	@Override
+	public Class<?> getFilterType() {
+		return AttributeOneOfFilter.class;
+	}
 
+	@Override
+	public CSSOMFilterComposition<Node, U, AttributeOneOfFilter<U>> createFilterComposition() {
+		return new AttributeOneOfFilterComposition<U>();
+	}
+	
+	public String getAttributeName() {
+		return attributeSelector.getAttributeName().getName();
+	}
+
+	public String getComparisonValue() {
+		return attributeSelector.getComparisonValue();
+	}
+	
 	private boolean attrContainsTarget(String attrValue, String target) {
 		for (String value: attrValue.split(" ")) {
 			if (value.equals(target)) {

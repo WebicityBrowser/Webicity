@@ -14,7 +14,7 @@ public interface CSSOMNode<T, U> {
 	
 	List<U> getNodeProperties();
 	
-	List<CSSOMFilterEntry<T, U>> getFilters();
+	List<CSSOMFilterEntry<T, U>> getPossibleFilters(T item);
 
 	static <T, U> CSSOMNode<T, U> create() {
 		return new CSSOMNodeImp<>();

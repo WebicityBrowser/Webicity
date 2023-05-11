@@ -1,6 +1,5 @@
-package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter;
+package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.type;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -8,11 +7,12 @@ import java.util.Set;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.infra.Namespace;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMComposableFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilterComposition;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipantTraverser;
 
-public class TypeFilter<U> implements CSSOMFilter<Node, U> {
+public class TypeFilter<U> implements CSSOMComposableFilter<Node, U, TypeFilter<U>> {
 
 	private final String namespace;
 	private final String elementName;
@@ -24,17 +24,11 @@ public class TypeFilter<U> implements CSSOMFilter<Node, U> {
 	
 	@Override
 	public List<Node> filter(Set<CSSOMNode<Node, U>> prematched, Node item, CSSOMParticipantTraverser<Node> traverser) {
-		List<Node> matched = new ArrayList<>(4);
-		for (Node child: traverser.getChildren(item)) {
-			if (isApplicable(child)) {
-				matched.add(child);
-			}
-		}
-		
-		return matched;
+		return isApplicable(item) ?
+			List.of(item) :
+			List.of();
 	}
 
-	
 	@Override
 	public int hashCode() {
 		return Objects.hash(namespace, elementName);
@@ -47,6 +41,20 @@ public class TypeFilter<U> implements CSSOMFilter<Node, U> {
 			o instanceof TypeFilter filter &&
 			filter.elementName.equals(elementName) &&
 			Objects.equals(namespace, filter.namespace);
+	}
+	
+	@Override
+	public Class<?> getFilterType() {
+		return TypeFilter.class;
+	}
+
+	@Override
+	public CSSOMFilterComposition<Node, U, TypeFilter<U>> createFilterComposition() {
+		return new TypeFilterComposition<>();
+	}
+	
+	public String getElementName() {
+		return this.elementName;
 	}
 	
 	private boolean isApplicable(Node node) {
