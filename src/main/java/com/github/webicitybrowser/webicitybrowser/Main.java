@@ -14,18 +14,12 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.DesktopWindow;
 import com.github.webicitybrowser.thready.windowing.core.GraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
-import com.github.webicitybrowser.webicity.core.AssetLoader;
 import com.github.webicitybrowser.webicity.core.RenderingEngine;
-import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
-import com.github.webicitybrowser.webicity.protocol.AboutProtocol;
-import com.github.webicitybrowser.webicity.protocol.FileProtocol;
-import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicitybrowser.gui.binding.WindowSetGUI;
 import com.github.webicitybrowser.webicitybrowser.gui.ui.WebicityLookAndFeel;
 import com.github.webicitybrowser.webicitybrowser.gui.window.DesktopGUIWindow;
 import com.github.webicitybrowser.webicitybrowser.gui.window.GUIWindow;
 import com.github.webicitybrowser.webicitybrowser.imp.BrowserInstanceImp;
-import com.github.webicitybrowser.webicitybrowser.loader.ResourceAssetLoader;
 import com.github.webicitybrowser.webicitybrowser.startup.WebicityArgumentReader;
 import com.github.webicitybrowser.webicitybrowser.ui.Window;
 import com.github.webicitybrowser.webicitybrowser.ui.WindowSet;
@@ -81,7 +75,7 @@ public class Main {
 	private static void openDefaultURLs(Window window) {
 		try {
 			//TODO: Configuration
-			openURL(window, URL.of("webicity:\\welcome"));
+			openURL(window, URL.of("webicity://welcome"));
 		} catch (InvalidURLException e) {
 			e.printStackTrace();
 		}
@@ -96,17 +90,7 @@ public class Main {
 	}
 
 	private static RenderingEngine createRenderingEngine() {
-		AssetLoader assetLoader = new ResourceAssetLoader();
-		RenderingEngine renderingEngine = RenderingEngine.create(assetLoader);
-		
-		ProtocolRegistry protocolRegistry = renderingEngine.getProtocolRegistry();
-		protocolRegistry.registerProtocol(new FileProtocol());
-		protocolRegistry.registerProtocol(new AboutProtocol());
-		
-		renderingEngine.getBackendRendererRegistry()
-			.registerBackendFactory("text/html", HTMLRendererBackend::new);
-		
-		return renderingEngine;
+		return RenderingEngineCreator.create();
 	}
 
 	private static void startGUIFor(BrowserInstance browserInstance, WindowSet windowSet) {

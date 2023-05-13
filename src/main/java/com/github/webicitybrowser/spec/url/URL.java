@@ -11,6 +11,10 @@ public interface URL {
 	
 	String getScheme();
 	
+	String getHost();
+	
+	int getPort();
+	
 	String getPath();
 
 	public static URL of(String href) throws InvalidURLException {

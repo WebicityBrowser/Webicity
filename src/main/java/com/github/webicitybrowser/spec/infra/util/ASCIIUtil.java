@@ -66,4 +66,12 @@ public final class ASCIIUtil {
 		}
 	}
 
+	public static int fromASCIINumericalCharacter(int ch) {
+		return ch - '0';
+	}
+
+	public static boolean isVisibleASCIICharacter(int ch) {
+		return ch >= 0x21 && ch <= 0x7E;
+	}
+
 }
