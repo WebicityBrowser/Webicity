@@ -71,7 +71,7 @@ private final InputStream stream;
 			parsedChunkSize = parsedChunkSize * 16 + ASCIIUtil.fromASCIIHexCharacter(ch);
 		}
 		ParseUtil.expect("CRLF (line feed)", '\n', stream.read());
-		//TODO: Support chunk extensions
+		// TODO: Support chunk extensions
 		remainingChunkLength = parsedChunkSize;
 		if (parsedChunkSize == 0) {
 			ended = true;

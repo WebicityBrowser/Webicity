@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PushbackInputStream;
 
 import com.github.webicitybrowser.spec.http.HTTPHeaders;
-import com.github.webicitybrowser.spec.http.HTTPHeaders.HeaderEntry;
 import com.github.webicitybrowser.spec.http.util.ParseUtil;
 import com.github.webicitybrowser.spec.infra.util.ASCIIUtil;
 
@@ -23,9 +22,6 @@ public final class HTTP11ResponseFieldLinesParser {
 			parseFieldLine(inputStream, headers);
 		}
 		ParseUtil.eatCRLF(inputStream);
-		for (HeaderEntry entry: headers) {
-			System.out.println(entry.headerName() + ": " + entry.headerValue());
-		}
 		
 		return headers;
 	}

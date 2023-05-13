@@ -32,6 +32,11 @@ public class URLImp implements URL {
 	}
 	
 	@Override
+	public String getQuery() {
+		return url.getQuery();
+	}
+	
+	@Override
 	public String toString() {
 		return url.toString();
 	}

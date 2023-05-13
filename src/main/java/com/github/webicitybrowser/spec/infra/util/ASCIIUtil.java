@@ -67,6 +67,7 @@ public final class ASCIIUtil {
 	}
 
 	public static int fromASCIINumericalCharacter(int ch) {
+		assert isASCIIDigit(ch) : "Character must be numerical digit!";
 		return ch - '0';
 	}
 

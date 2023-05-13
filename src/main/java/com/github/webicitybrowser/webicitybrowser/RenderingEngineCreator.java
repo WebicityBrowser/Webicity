@@ -40,7 +40,7 @@ public final class RenderingEngineCreator {
 	}
 	
 	private static HTTPService createHTTPService() {
-		HTTPService service = HTTPService.create("Webicity/0.1");
+		HTTPService service = HTTPService.create("Webicity/0.1.0 ThreadyWeb/0.1.0 Firefox/113.0 (Not actually Firefox)");
 		service.setTransportFactory(new SocketChannelHTTPTransportFactory());
 		service.registerHTTPVersion(new HTTP11Version());
 		service.registerTransferEncoding(new ChunkedEncoding());

@@ -20,8 +20,6 @@ public final class HTTP11ResponseStatusLineParser {
 		String statusMessage = parseStatusMessage(inputStream);
 		ParseUtil.eatCRLF(inputStream);
 		
-		System.out.println(statusCode + " " + statusMessage);
-		
 		return new HTTPStatus(statusCode, statusMessage);
 	}
 

@@ -16,6 +16,8 @@ public interface URL {
 	int getPort();
 	
 	String getPath();
+	
+	String getQuery();
 
 	public static URL of(String href) throws InvalidURLException {
 		try {

@@ -2,12 +2,12 @@ package com.github.webicitybrowser.spec.http.version.http11;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import com.github.webicitybrowser.spec.http.HTTPHeaders;
 import com.github.webicitybrowser.spec.http.HTTPResponse;
 import com.github.webicitybrowser.spec.http.HTTPTransferEncoding;
 import com.github.webicitybrowser.spec.http.HTTPVersion;
+import com.github.webicitybrowser.spec.http.encoding.contentlength.ContentLengthInputStream;
 import com.github.webicitybrowser.spec.http.imp.HTTPContext;
 import com.github.webicitybrowser.spec.url.URL;
 
@@ -15,12 +15,13 @@ public class HTTP11Version implements HTTPVersion {
 
 	@Override
 	public String getName() {
-		return "HTTP/1.1";
+		return HTTP11Constants.HTTP11_NAME;
 	}
 	
 	@Override
 	public HTTPResponse get(URL url, HTTPContext context) throws IOException {
-		writeGetHeader(url, context);
+		HTTPHeaders headers = createHTTPHeaders(url, context);
+		HTTP11GetWriter.writeGetHeader(url, context, headers);
 		InputStream inputStream = context.transport().inputStream();
 		HTTP11ResponseData httpData = HTTP11ResponseHeaderParser.parse(inputStream);
 		InputStream responseStream = createResponseStream(inputStream, context, httpData.headers());
@@ -28,24 +29,29 @@ public class HTTP11Version implements HTTPVersion {
 		return createResponse(httpData, responseStream);
 	}
 
-	private void writeGetHeader(URL url, HTTPContext context) throws IOException {
-		OutputStream outputStream = context.transport().outputStream();
-		
-		StringBuilder headerBuilder = new StringBuilder();
-		writeHTTPRequestLine(headerBuilder, url, "GET");
-		headerBuilder.append("\r\n\r\n");
-
-		outputStream.write(headerBuilder.toString().getBytes());
-	}
-
-	private void writeHTTPRequestLine(StringBuilder headerBuilder, URL url, String method) {
-		headerBuilder.append(method);
-		headerBuilder.append(" ");
-		headerBuilder.append(url.getPath());
-		headerBuilder.append(" ");
-		headerBuilder.append(getName());
-	}
 	
+	
+	private HTTPHeaders createHTTPHeaders(URL url, HTTPContext context) {
+		HTTPHeaders headers = HTTPHeaders.create();
+		// TODO: Copy request headers
+		headers.set("Host", url.getHost());
+		headers.set("User-Agent", context.userAgent());
+		
+		//
+		headers.set("Upgrade-Insecure-Requests", "1");
+		headers.set("dnt", "1");
+		
+		headers.set("Sec-Fetch-Dest", "document");
+		headers.set("Sec-Fetch-Mode", "navigate");
+		headers.set("Sec-Fetch-Site", "cross-site");
+		headers.set("Sec-Fetch-User", "?1");
+		
+		headers.set("Cache-Control", "no-cache");
+		//
+		
+		return headers;
+	}
+
 	private HTTPResponse createResponse(HTTP11ResponseData httpData, InputStream inputStream) {
 		return new HTTPResponse() {
 			@Override
@@ -63,7 +69,7 @@ public class HTTP11Version implements HTTPVersion {
 	private InputStream createResponseStream(InputStream inputStream, HTTPContext context, HTTPHeaders httpHeaders) throws IOException {
 		String encodingName = httpHeaders.get("Transfer-Encoding");
 		if (encodingName == null) {
-			return inputStream;
+			return createDefaultEncodingResponseStream(inputStream, context, httpHeaders);
 		}
 		
 		HTTPTransferEncoding encoding = context.transferEncodings().get(encodingName);
@@ -72,6 +78,15 @@ public class HTTP11Version implements HTTPVersion {
 		}
 		
 		return encoding.decode(inputStream);
+	}
+
+	private InputStream createDefaultEncodingResponseStream(InputStream inputStream, HTTPContext context, HTTPHeaders httpHeaders) {
+		if (!httpHeaders.has("Content-Length")) {
+			return inputStream;
+		}
+		
+		int contentLength = Integer.valueOf(httpHeaders.get("Content-Length"));
+		return new ContentLengthInputStream(inputStream, contentLength);
 	}
 
 }

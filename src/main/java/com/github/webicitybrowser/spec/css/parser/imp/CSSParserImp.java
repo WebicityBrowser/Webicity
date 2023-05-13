@@ -124,7 +124,7 @@ public class CSSParserImp implements CSSParser {
 			value.add(consumeAComponentValue(stream));
 		}
 		// TODO: !important
-		while (value.get(value.size() - 1) instanceof WhitespaceToken) {
+		while (!value.isEmpty() && value.get(value.size() - 1) instanceof WhitespaceToken) {
 			value.remove(value.size() - 1);
 		}
 		return createDeclaration(name, value, important);
