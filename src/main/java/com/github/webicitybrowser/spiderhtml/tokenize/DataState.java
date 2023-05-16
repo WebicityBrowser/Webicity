@@ -11,19 +11,22 @@ import com.github.webicitybrowser.spiderhtml.token.EOFToken;
 
 public class DataState implements TokenizeState {
 
+	private final CharacterReferenceState characterReferenceState;
 	private final TagOpenState tagOpenState;
 
 	public DataState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
+		this.characterReferenceState = initializer.getTokenizeState(CharacterReferenceState.class);
 		this.tagOpenState = initializer.getTokenizeState(TagOpenState.class);
 	}
 
 	@Override
 	public void process(SharedContext context, ParsingContext parsingContext, int ch) {
 		switch (ch) {
-		/*case '&':
-			// TODO
-			throw new UnsupportedOperationException();*/
+		case '&':
+			context.setReturnState(this);
+			context.setTokenizeState(characterReferenceState);
+			break;
 		case '<':
 			context.setTokenizeState(tagOpenState);
 			break;

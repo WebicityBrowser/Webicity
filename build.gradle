@@ -39,6 +39,8 @@ dependencies {
 	implementation 'com.github.taucher2003:t2003-logger-impl:1.0.2'
 	implementation 'com.github.taucher2003:t2003-logger-binder:1.0.2'
 	
+	implementation 'com.google.code.gson:gson:2.10.1'
+	
 	implementation "io.github.humbleui:${skijaNatives}:${skijaVersion}"
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'

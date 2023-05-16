@@ -12,7 +12,9 @@ public class ReaderHandle {
 	}
 
 	public void unread(int ch) throws IOException {
-		reader.unread(ch);
+		if (ch != -1) {
+			reader.unread(ch);
+		}
 	}
 	
 	public String lookahead(int num) throws IOException {
@@ -21,9 +23,7 @@ public class ReaderHandle {
 			chars[i] = reader.read();
 		}
 		for (int i = num - 1; i >= 0; i--) {
-			if (chars[i] != -1) {
-				reader.unread(chars[i]);
-			}
+			reader.unread(chars[i]);
 		}
 		return new String(chars, 0, num);
 	}

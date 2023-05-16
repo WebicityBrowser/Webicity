@@ -14,17 +14,18 @@ import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 public class AttributeValueUnquotedState implements TokenizeState {
 
 	private final BeforeAttributeNameState beforeAttributeNameState;
+	private final CharacterReferenceState characterReferenceState;
 	private final DataState dataState;
 
 	public AttributeValueUnquotedState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
 		this.beforeAttributeNameState = initializer.getTokenizeState(BeforeAttributeNameState.class);
+		this.characterReferenceState = initializer.getTokenizeState(CharacterReferenceState.class);
 		this.dataState = initializer.getTokenizeState(DataState.class);
 	}
 	
 	@Override
 	public void process(SharedContext context, ParsingContext parsingContext, int ch) throws IOException {
-		// TODO: Character reference
 		StartTagToken tagToken = parsingContext.getCurrentToken(StartTagToken.class);
 		switch (ch) {
 		case '\t':
@@ -32,6 +33,10 @@ public class AttributeValueUnquotedState implements TokenizeState {
 		case '\f':
 		case ' ':
 			context.setTokenizeState(beforeAttributeNameState);
+			break;
+		case '&':
+			context.setReturnState(this);
+			context.setTokenizeState(characterReferenceState);
 			break;
 		case '>':
 			context.setTokenizeState(dataState);

@@ -6,4 +6,6 @@ public interface ParserSettings {
 
 	void onNodePopped(Node node);
 	
+	CharacterReferenceLookup getUnicodeLookup();
+	
 }

@@ -17,6 +17,7 @@ public class SharedContext {
 	
 	private TokenizeState tokenizeState;
 	private InsertionMode insertionMode;
+	private TokenizeState returnState;
 	
 	private String lastStartTagTokenName;
 	
@@ -30,6 +31,14 @@ public class SharedContext {
 
 	public TokenizeState getTokenizeState() {
 		return this.tokenizeState;
+	}
+	
+	public void setReturnState(TokenizeState returnState) {
+		this.returnState = returnState;
+	}
+	
+	public TokenizeState getReturnState() {
+		return this.returnState;
 	}
 	
 	public void setInsertionMode(InsertionMode insertionMode) {

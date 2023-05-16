@@ -20,8 +20,8 @@ public class SpiderHTMLParserImp implements HTMLParser {
 
 	@Override
 	public void parse(Reader inputReader, HTMLTreeBuilder treeBuilder, ParserSettings settings) throws IOException {
-		PushbackReader reader = new PushbackReader(inputReader, 16);
-		ParsingInitializer parsingInitializer = new ParsingInitializer();
+		PushbackReader reader = new PushbackReader(inputReader, 32);
+		ParsingInitializer parsingInitializer = new ParsingInitializer(settings);
 		SharedContext sharedContext = new SharedContext(ctx -> new InsertionContext(ctx, treeBuilder, settings));
 		ParsingContext parsingContext = new ParsingContext(reader);
 		

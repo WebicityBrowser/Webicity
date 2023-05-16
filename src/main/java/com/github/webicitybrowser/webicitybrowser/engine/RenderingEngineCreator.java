@@ -1,5 +1,8 @@
-package com.github.webicitybrowser.webicitybrowser;
+package com.github.webicitybrowser.webicitybrowser.engine;
 
+import java.io.InputStream;
+
+import com.github.webicitybrowser.spec.html.parse.CharacterReferenceLookup;
 import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.http.encoding.chunked.ChunkedEncoding;
 import com.github.webicitybrowser.spec.http.version.http11.HTTP11Version;
@@ -10,8 +13,9 @@ import com.github.webicitybrowser.webicity.protocol.AboutProtocol;
 import com.github.webicitybrowser.webicity.protocol.FileProtocol;
 import com.github.webicitybrowser.webicity.protocol.HTTPProtocol;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
+import com.github.webicitybrowser.webicitybrowser.engine.file.FileUnicodeLookup;
+import com.github.webicitybrowser.webicitybrowser.engine.net.SocketChannelHTTPTransportFactory;
 import com.github.webicitybrowser.webicitybrowser.loader.ResourceAssetLoader;
-import com.github.webicitybrowser.webicitybrowser.net.SocketChannelHTTPTransportFactory;
 
 public final class RenderingEngineCreator {
 
@@ -35,10 +39,12 @@ public final class RenderingEngineCreator {
 	}
 
 	private static void registerBackendRenderers(RenderingEngine renderingEngine) {
+		CharacterReferenceLookup characterReferenceLookup = createCharacterReferenceLookup();
+		
 		renderingEngine.getBackendRendererRegistry()
-			.registerBackendFactory("text/html", HTMLRendererBackend::new);
+			.registerBackendFactory("text/html", (r, c) -> new HTMLRendererBackend(r, c, characterReferenceLookup));
 	}
-	
+
 	private static HTTPService createHTTPService() {
 		HTTPService service = HTTPService.create("Webicity/0.1.0 ThreadyWeb/0.1.0 Firefox/113.0 (Not actually Firefox)");
 		service.setTransportFactory(new SocketChannelHTTPTransportFactory());
@@ -46,6 +52,11 @@ public final class RenderingEngineCreator {
 		service.registerTransferEncoding(new ChunkedEncoding());
 		
 		return service;
+	}
+	
+	private static CharacterReferenceLookup createCharacterReferenceLookup() {
+		InputStream resourceStream = ClassLoader.getSystemClassLoader().getResourceAsStream("renderer/html/charrefs.json");
+		return new FileUnicodeLookup(resourceStream);
 	}
 
 }

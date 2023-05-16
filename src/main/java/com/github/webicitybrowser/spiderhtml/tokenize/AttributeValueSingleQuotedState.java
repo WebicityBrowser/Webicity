@@ -10,9 +10,11 @@ import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 public class AttributeValueSingleQuotedState implements TokenizeState {
 
 	private final AfterAttributeValueQuotedState afterAttributeValueQuotedState;
+	private final CharacterReferenceState characterReferenceState;
 
 	public AttributeValueSingleQuotedState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
+		this.characterReferenceState = initializer.getTokenizeState(CharacterReferenceState.class);
 		this.afterAttributeValueQuotedState = initializer.getTokenizeState(AfterAttributeValueQuotedState.class);
 	}
 	
@@ -22,6 +24,10 @@ public class AttributeValueSingleQuotedState implements TokenizeState {
 		switch (ch) {
 		case '\'':
 			context.setTokenizeState(afterAttributeValueQuotedState);
+			break;
+		case '&':
+			context.setReturnState(this);
+			context.setTokenizeState(characterReferenceState);
 			break;
 		default:
 			parsingContext.getCurrentToken(StartTagToken.class)

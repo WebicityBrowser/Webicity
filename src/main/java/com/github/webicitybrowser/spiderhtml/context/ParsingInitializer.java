@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.html.parse.ParserSettings;
 import com.github.webicitybrowser.spiderhtml.insertion.InsertionMode;
 import com.github.webicitybrowser.spiderhtml.tokenize.TokenizeState;
 
@@ -11,6 +12,12 @@ public class ParsingInitializer {
 
 	private final Map<Class<? extends TokenizeState>, TokenizeState> tokenizeStateCache = new HashMap<>();
 	private final Map<Class<? extends InsertionMode>, InsertionMode> insertionModeCache = new HashMap<>();
+	
+	private final ParserSettings settings;
+	
+	public ParsingInitializer(ParserSettings settings) {
+		this.settings = settings;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends TokenizeState> T getTokenizeState(Class<T> stateClass) {
@@ -42,6 +49,10 @@ public class ParsingInitializer {
 		}
 		
 		return (T) insertionModeCache.get(modeClass);
+	}
+
+	public ParserSettings getSettings() {
+		return this.settings;
 	}
 	
 }

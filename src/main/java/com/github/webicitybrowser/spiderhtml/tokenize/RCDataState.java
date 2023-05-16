@@ -12,10 +12,12 @@ import com.github.webicitybrowser.spiderhtml.token.EOFToken;
 
 public class RCDataState implements TokenizeState {
 
+	private final CharacterReferenceState characterReferenceState;
 	private final RCDataLessThanSignState rcDataLessThanSignState;
 
 	public RCDataState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
+		this.characterReferenceState = initializer.getTokenizeState(CharacterReferenceState.class);
 		this.rcDataLessThanSignState = initializer.getTokenizeState(RCDataLessThanSignState.class);
 	}
 	
@@ -23,8 +25,9 @@ public class RCDataState implements TokenizeState {
 	public void process(SharedContext context, ParsingContext parsingContext, int ch) throws IOException {
 		switch (ch) {
 		case '&':
-			// TODO
-			throw new UnsupportedOperationException();
+			context.setReturnState(this);
+			context.setTokenizeState(characterReferenceState);
+			break;
 		case '<':
 			context.setTokenizeState(rcDataLessThanSignState);
 			break;

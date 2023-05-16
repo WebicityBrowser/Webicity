@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.webicitybrowser.net;
+package com.github.webicitybrowser.webicitybrowser.engine.net;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +22,8 @@ import javax.net.ssl.X509TrustManager;
 import com.github.webicitybrowser.spec.http.HTTPTransport;
 import com.github.webicitybrowser.spec.http.HTTPTransportFactory;
 import com.github.webicitybrowser.spec.url.URL;
-import com.github.webicitybrowser.webicitybrowser.net.stream.ByteChannelInputStream;
-import com.github.webicitybrowser.webicitybrowser.net.stream.ByteChannelOutputStream;
+import com.github.webicitybrowser.webicitybrowser.engine.net.stream.ByteChannelInputStream;
+import com.github.webicitybrowser.webicitybrowser.engine.net.stream.ByteChannelOutputStream;
 
 import tlschannel.ClientTlsChannel;
 

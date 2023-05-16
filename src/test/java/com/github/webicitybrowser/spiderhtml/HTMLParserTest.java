@@ -81,6 +81,19 @@ public class HTMLParserTest {
 	}
 
 	@Test
+	@DisplayName("Can parse character reference text")
+	public void canParseCharacterReferenceText() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body>&lt;</body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		HTMLElement bodyLeaf = testToBody(document, 1);
+		Text textLeaf = (Text) bodyLeaf.getChildNodes().get(0);
+		Assertions.assertEquals("<", textLeaf.getData());
+	}
+	
+	@Test
 	@DisplayName("Can parse basic text")
 	public void canParseBasicText() {
 		HTMLParser parser = new SpiderHTMLParserImp();

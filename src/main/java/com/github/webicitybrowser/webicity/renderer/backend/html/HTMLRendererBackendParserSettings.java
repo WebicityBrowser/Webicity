@@ -16,9 +16,16 @@ import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.imp.util.DOMTextUtil;
 import com.github.webicitybrowser.spec.html.node.HTMLDocument;
 import com.github.webicitybrowser.spec.html.parse.ParserSettings;
+import com.github.webicitybrowser.spec.html.parse.CharacterReferenceLookup;
 import com.github.webicitybrowser.spec.infra.Namespace;
 
 public class HTMLRendererBackendParserSettings implements ParserSettings {
+	
+	private final CharacterReferenceLookup unicodeLookup;
+
+	public HTMLRendererBackendParserSettings(CharacterReferenceLookup unicodeLookup) {
+		this.unicodeLookup = unicodeLookup;
+	}
 
 	@Override
 	public void onNodePopped(Node node) {
@@ -29,6 +36,11 @@ public class HTMLRendererBackendParserSettings implements ParserSettings {
 		) {
 			addDocumentStylesheet(element);
 		}
+	}
+	
+	@Override
+	public CharacterReferenceLookup getUnicodeLookup() {
+		return this.unicodeLookup;
 	}
 
 	private void addDocumentStylesheet(Element element) {
