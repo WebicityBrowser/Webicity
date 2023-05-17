@@ -238,6 +238,23 @@ public class HTMLParserTest {
 	}
 	
 	@Test
+	@DisplayName("Can parse escaped script element")
+	public void canParseEscapedScriptElement() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head><script><!--test\n// hi\n//--></script></head><body></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		HTMLElement headNode = testToHead(document, 1);
+		NodeList headChildren = headNode.getChildNodes();
+		HTMLElement scriptElement = testElement(headChildren.get(0), "script", 1);
+		NodeList scriptChildren = scriptElement.getChildNodes();
+		Assertions.assertInstanceOf(Text.class, scriptChildren.get(0));
+		Text text = (Text) scriptChildren.get(0);
+		Assertions.assertEquals("<!--test\n// hi\n//-->", text.getData());
+	}
+	
+	@Test
 	@DisplayName("Can parse title element")
 	public void canParseTitleElement() {
 		HTMLParser parser = new SpiderHTMLParserImp();

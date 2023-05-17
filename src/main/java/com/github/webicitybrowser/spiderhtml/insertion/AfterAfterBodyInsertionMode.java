@@ -38,7 +38,7 @@ public class AfterAfterBodyInsertionMode implements InsertionMode {
 		} else if (token instanceof EOFToken) {
 			insertionContext.stopParsing();
 		} else {
-			throw new UnsupportedOperationException();
+			context.recordError();
 		}
 	}
 

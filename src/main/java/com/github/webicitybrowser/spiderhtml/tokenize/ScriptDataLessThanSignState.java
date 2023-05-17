@@ -11,11 +11,13 @@ import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 public class ScriptDataLessThanSignState implements TokenizeState {
 
 	private final ScriptDataEndTagOpenState scriptDataEndTagOpenState;
+	private final ScriptDataEscapeStartState scriptDataEscapeStartState;
 	private final ScriptDataState scriptDataState;
 
 	public ScriptDataLessThanSignState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
 		this.scriptDataEndTagOpenState = initializer.getTokenizeState(ScriptDataEndTagOpenState.class);
+		this.scriptDataEscapeStartState = initializer.getTokenizeState(ScriptDataEscapeStartState.class);
 		this.scriptDataState = initializer.getTokenizeState(ScriptDataState.class);
 	}
 	
@@ -27,8 +29,10 @@ public class ScriptDataLessThanSignState implements TokenizeState {
 			context.setTokenizeState(scriptDataEndTagOpenState);
 			break;
 		case '!':
-			// TODO
-			throw new UnsupportedOperationException();
+			context.setTokenizeState(scriptDataEscapeStartState);
+			context.emit(new CharacterToken('<'));
+			context.emit(new CharacterToken('!'));
+			break;
 		default:
 			context.emit(new CharacterToken('<'));
 			parsingContext.readerHandle().unread(ch);

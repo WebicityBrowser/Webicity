@@ -61,10 +61,10 @@ public class NamedCharacterReferenceState implements TokenizeState {
 	private int[] consumeReference(ReaderHandle reader) throws IOException {
 		String comparison = reader.lookahead(longestReferenceLength - 1);
 		
-		for (int i = longestReferenceLength; i > 1; i--) {
-			String referenceName = '&' + comparison.substring(0, i - 1);
+		for (int i = comparison.length(); i > 0; i--) {
+			String referenceName = '&' + comparison.substring(0, i);
 			if (referenceLookup.containsKey(referenceName)) {
-				reader.eat(i - 1);
+				reader.eat(i);
 				return referenceLookup.get(referenceName);
 			}
 		}
