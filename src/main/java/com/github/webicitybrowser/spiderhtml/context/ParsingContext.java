@@ -11,6 +11,7 @@ public class ParsingContext {
 	private final ReaderHandle readerHandle;
 	
 	private Token currentToken;
+	private int charRefCode;
 
 	public ParsingContext(PushbackReader reader) {
 		this.readerHandle = new ReaderHandle(reader);
@@ -39,6 +40,14 @@ public class ParsingContext {
 
 	public String getTemporaryBuffer() {
 		return temporaryBuffer.toString();
+	}
+
+	public void setCharacterReferenceCode(int code) {
+		this.charRefCode = code;
+	}
+	
+	public int getCharacterReferenceCode() {
+		return this.charRefCode;
 	}
 
 }

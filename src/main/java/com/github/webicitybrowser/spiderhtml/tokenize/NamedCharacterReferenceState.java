@@ -17,10 +17,12 @@ public class NamedCharacterReferenceState implements TokenizeState {
 	
 	private final Map<String, int[]> referenceLookup = new HashMap<>();
 	
+	private final AmbiguousAmpersandState ambiguousAmpersandState;
 	private final int longestReferenceLength;
 
 	public NamedCharacterReferenceState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
+		this.ambiguousAmpersandState = initializer.getTokenizeState(AmbiguousAmpersandState.class);
 		this.longestReferenceLength = setupReferenceLookup(initializer.getSettings().getUnicodeLookup());
 	}
 
@@ -42,8 +44,7 @@ public class NamedCharacterReferenceState implements TokenizeState {
 			context.setTokenizeState(context.getReturnState());
 		} else {
 			TokenizeLogic.flushCodePointsConsumedAsACharacterReference(context, parsingContext);
-			// TODO: Ambiguous ampersand state
-			throw new UnsupportedOperationException();
+			context.setTokenizeState(ambiguousAmpersandState);
 		}
 	}
 	

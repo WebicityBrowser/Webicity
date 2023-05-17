@@ -16,6 +16,10 @@ public final class ASCIIUtil {
 		return isASCIIUpperAlpha(ch) || isASCIILowerAlpha(ch);
 	}
 	
+	public static boolean isASCIIAlphanumeric(int ch) {
+		return isASCIIAlpha(ch) || isASCIIDigit(ch);
+	}
+	
 	public static boolean isASCIIDigit(int ch) {
 		return ch >= '0' && ch <= '9';
 	}
