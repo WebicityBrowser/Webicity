@@ -18,6 +18,7 @@ import com.github.webicitybrowser.webicity.core.component.FrameComponent;
 import com.github.webicitybrowser.webicity.core.renderer.ExceptionRendererCrashReason;
 import com.github.webicitybrowser.webicity.core.renderer.RendererCrashReason;
 import com.github.webicitybrowser.webicity.core.renderer.RendererHandle;
+import com.github.webicitybrowser.webicity.core.ui.FrameEventListener;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.ThreadyHTMLRendererFrontend;
@@ -67,7 +68,12 @@ public class FrameUI implements ComponentUI {
 	private void addFrameEventListener() {
 		component
 			.getFrame()
-			.addEventListener(rendererHandle -> updateCurrentRenderer(rendererHandle), true);
+			.addEventListener(new FrameEventListener() {
+				@Override
+				public void onRendererChange(RendererHandle rendererHandle) {
+					updateCurrentRenderer(rendererHandle);
+				}
+			}, true);
 	}
 	
 	private void updateCurrentRenderer(RendererHandle rendererHandle) {

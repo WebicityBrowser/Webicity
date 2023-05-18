@@ -8,6 +8,7 @@ import com.github.webicitybrowser.webicity.core.RenderingEngine;
 import com.github.webicitybrowser.webicity.core.imp.RendererHandleImp;
 import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.net.Protocol;
+import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
 import com.github.webicitybrowser.webicity.core.net.imp.ProtocolRegistryImp;
 import com.github.webicitybrowser.webicity.core.renderer.ExceptionRendererCrashReason;
@@ -38,14 +39,15 @@ public class RenderingEngineImp implements RenderingEngine {
 	}
 	
 	@Override
-	public RendererHandle openRenderer(URL url) {
+	public RendererHandle openRenderer(URL url, Frame frame) {
 		Optional<Protocol> protocol = protocolRegistry.getProtocolForURL(url);
 		if (protocol.isEmpty()) {
 			return RendererHandleImp.fail(new GenericRendererCrashReason("PROTOCOL_NOT_REGISTERED"));
 		}
 		
 		try {
-			Connection connection = protocol.get().openConnection(url);
+			ProtocolContext context = new ProtocolContext("GET", redirectURL -> frame.redirect(redirectURL));
+			Connection connection = protocol.get().openConnection(url, context);
 			return openRenderer(connection);
 		} catch (Exception e) {
 			if (e instanceof RendererCrashException crashException) {

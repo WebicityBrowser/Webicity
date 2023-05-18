@@ -5,11 +5,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
-import com.github.webicitybrowser.spec.http.HTTPResponse;
+import com.github.webicitybrowser.spec.http.HTTPRedirectHandler;
+import com.github.webicitybrowser.spec.http.HTTPRequest;
 import com.github.webicitybrowser.spec.http.HTTPService;
+import com.github.webicitybrowser.spec.http.response.HTTPResponse;
+import com.github.webicitybrowser.spec.http.response.HTTPSuccessResponse;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.net.Protocol;
+import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 
 public class HTTPProtocol implements Protocol {
 
@@ -25,13 +29,21 @@ public class HTTPProtocol implements Protocol {
 	}
 
 	@Override
-	public Connection openConnection(URL url) throws IOException {
-		HTTPResponse response = httpService.get(url);
-		
-		return createConnection(response, url);
+	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
+		HTTPResponse response = httpService.resolveRequest(createRequest(url, context));
+		if (response instanceof HTTPSuccessResponse successResponse) {
+			return createConnection(successResponse, url);
+		} else {
+			throw new UnsupportedOperationException("Unhandled HTTP response object: " + response);
+		}
+	}
+	
+	private HTTPRequest createRequest(URL url, ProtocolContext context) {
+		HTTPRedirectHandler redirectHandler = redirectURL -> context.redirectHandler().onRedirectRequest(redirectURL);
+		return new HTTPRequest(url, context.action(), redirectHandler);
 	}
 
-	private Connection createConnection(HTTPResponse response, URL url) {
+	private Connection createConnection(HTTPSuccessResponse response, URL url) {
 		return new Connection() {
 			@Override
 			public URL getURL() {
@@ -45,7 +57,11 @@ public class HTTPProtocol implements Protocol {
 			
 			@Override
 			public String getContentType() {
-				return parseContentType(response.getHeaders().get("Content-Type"));
+				if (response.getHeaders().has("Content-Type")) {
+					return parseContentType(response.getHeaders().get("Content-Type"));
+				}
+				
+				return "text/plain";
 			}
 		};
 	}

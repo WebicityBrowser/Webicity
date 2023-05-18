@@ -11,6 +11,7 @@ import java.io.Reader;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.net.Protocol;
+import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 
 public class FileProtocol implements Protocol {
 
@@ -20,7 +21,7 @@ public class FileProtocol implements Protocol {
 	}
 
 	@Override
-	public Connection openConnection(URL url) throws IOException {
+	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
 		InputStream inputStream = new FileInputStream(new File(url.getPath()));
 		BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
 		Reader reader = new InputStreamReader(bufferedStream);

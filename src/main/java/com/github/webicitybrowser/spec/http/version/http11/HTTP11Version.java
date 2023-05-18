@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.github.webicitybrowser.spec.http.HTTPHeaders;
-import com.github.webicitybrowser.spec.http.HTTPResponse;
 import com.github.webicitybrowser.spec.http.HTTPTransferEncoding;
 import com.github.webicitybrowser.spec.http.HTTPVersion;
 import com.github.webicitybrowser.spec.http.encoding.contentlength.ContentLengthInputStream;
 import com.github.webicitybrowser.spec.http.imp.HTTPContext;
+import com.github.webicitybrowser.spec.http.response.HTTPRedirectResponse;
+import com.github.webicitybrowser.spec.http.response.HTTPResponse;
+import com.github.webicitybrowser.spec.http.response.HTTPSuccessResponse;
+import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
 
 public class HTTP11Version implements HTTPVersion {
@@ -24,13 +27,19 @@ public class HTTP11Version implements HTTPVersion {
 		HTTP11GetWriter.writeGetHeader(url, context, headers);
 		InputStream inputStream = context.transport().inputStream();
 		HTTP11ResponseData httpData = HTTP11ResponseHeaderParser.parse(inputStream);
+		if (isRedirect(httpData.status().statusCode())) {
+			return createRedirectResponse(httpData);
+		}
+		
 		InputStream responseStream = createResponseStream(inputStream, context, httpData.headers());
 		
-		return createResponse(httpData, responseStream);
+		return createSuccessResponse(url, httpData, responseStream);
 	}
 
-	
-	
+	private boolean isRedirect(int statusCode) {
+		return statusCode >= 300 && statusCode < 400;
+	}
+
 	private HTTPHeaders createHTTPHeaders(URL url, HTTPContext context) {
 		HTTPHeaders headers = HTTPHeaders.create();
 		// TODO: Copy request headers
@@ -52,8 +61,13 @@ public class HTTP11Version implements HTTPVersion {
 		return headers;
 	}
 
-	private HTTPResponse createResponse(HTTP11ResponseData httpData, InputStream inputStream) {
-		return new HTTPResponse() {
+	private HTTPSuccessResponse createSuccessResponse(URL url, HTTP11ResponseData httpData, InputStream inputStream) {
+		return new HTTPSuccessResponse() {
+			@Override
+			public URL getURL() {
+				return url;
+			}
+			
 			@Override
 			public InputStream getInputStream() {
 				return inputStream;
@@ -64,6 +78,15 @@ public class HTTP11Version implements HTTPVersion {
 				return httpData.headers();
 			}
 		};
+	}
+	
+	private HTTPRedirectResponse createRedirectResponse(HTTP11ResponseData httpData) throws IOException {
+		try {
+			URL redirectURL = URL.of(httpData.headers().get("Location"));
+			return () -> redirectURL;
+		} catch (InvalidURLException e) {
+			throw new IOException(e);
+		}
 	}
 	
 	private InputStream createResponseStream(InputStream inputStream, HTTPContext context, HTTPHeaders httpHeaders) throws IOException {

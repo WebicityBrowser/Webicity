@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.webicitybrowser.spec.http.HTTPResponse;
+import com.github.webicitybrowser.spec.http.HTTPFailResponse;
+import com.github.webicitybrowser.spec.http.HTTPRequest;
 import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.http.HTTPTransferEncoding;
 import com.github.webicitybrowser.spec.http.HTTPTransport;
 import com.github.webicitybrowser.spec.http.HTTPTransportFactory;
 import com.github.webicitybrowser.spec.http.HTTPVersion;
+import com.github.webicitybrowser.spec.http.response.HTTPRedirectResponse;
+import com.github.webicitybrowser.spec.http.response.HTTPResponse;
 import com.github.webicitybrowser.spec.url.URL;
 
 public class HTTPServiceImp implements HTTPService {
@@ -40,11 +43,36 @@ public class HTTPServiceImp implements HTTPService {
 	public void registerTransferEncoding(HTTPTransferEncoding transferEncoding) {
 		transferEncodings.put(transferEncoding.getName(), transferEncoding);
 	}
-
+	
 	@Override
-	public HTTPResponse get(URL url) throws IOException {
-		HTTPTransport transport = transportFactory.createTransport(url);
-		return defaultHTTPVersion.get(url, createHTTPContext(transport));
+	public HTTPResponse resolveRequest(HTTPRequest request) throws IOException {
+		URL url = request.url();
+		while (true) {
+			// TODO: Re-use transport, and allow client to see redirect text
+			// Probably just add an option to the request that allows an
+			// early preview of responses.
+			// TODO: Save the fragment, unless overriden
+			HTTPTransport transport = transportFactory.createTransport(url);
+			HTTPResponse response = resolveRequest(url, transport, request);
+			if (response instanceof HTTPRedirectResponse redirectResponse) {
+				url = redirectResponse.getRedirectURL();
+				if (!request.redirectHandler().onRedirectRequest(url)) {
+					return (HTTPFailResponse) () -> "Page redirect denied";
+				}
+			} else {
+				return response;
+			}
+		}
+	}
+
+	private HTTPResponse resolveRequest(URL url, HTTPTransport transport, HTTPRequest request) throws IOException {
+		String methodName = request.method().toUpperCase();
+		switch (methodName) {
+		case "GET":
+			return defaultHTTPVersion.get(url, createHTTPContext(transport));
+		default:
+			throw new UnsupportedOperationException("HTTP: Unrecognized method (" + methodName + ")!");
+		}
 	}
 
 	private HTTPContext createHTTPContext(HTTPTransport transport) {

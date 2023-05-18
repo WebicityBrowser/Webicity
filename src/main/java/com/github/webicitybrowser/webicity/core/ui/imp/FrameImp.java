@@ -49,8 +49,17 @@ public class FrameImp implements Frame {
 	@Override
 	public void navigate(URL url) {
 		this.url = url;
-		this.currentRenderer = renderingEngine.openRenderer(url);
+		eventDispatcher.fire(listener -> listener.onURLChange(url));
+		this.currentRenderer = renderingEngine.openRenderer(url, this);
 		eventDispatcher.fire(listener -> listener.onRendererChange(currentRenderer));
+	}
+	
+	@Override
+	public boolean redirect(URL url) {
+		this.url = url;
+		eventDispatcher.fire(listener -> listener.onURLChange(url));
+		
+		return true;
 	}
 
 	@Override
@@ -75,6 +84,7 @@ public class FrameImp implements Frame {
 	public void addEventListener(FrameEventListener listener, boolean sync) {
 		eventDispatcher.addListener(listener);
 		if (sync) {
+			listener.onURLChange(url);
 			listener.onRendererChange(currentRenderer);
 		}
 	}

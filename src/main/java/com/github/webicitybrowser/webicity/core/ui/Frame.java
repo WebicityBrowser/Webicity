@@ -12,6 +12,8 @@ public interface Frame {
 	URL getURL();
 
 	void navigate(URL url);
+	
+	boolean redirect(URL url);
 
 	void reload();
 

@@ -7,6 +7,7 @@ import java.io.StringReader;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.net.Protocol;
+import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 
 public class AboutProtocol implements Protocol {
 
@@ -16,7 +17,7 @@ public class AboutProtocol implements Protocol {
 	}
 
 	@Override
-	public Connection openConnection(URL url) throws IOException {
+	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
 		return new Connection() {
 			@Override
 			public URL getURL() {

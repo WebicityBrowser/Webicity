@@ -8,6 +8,6 @@ public interface Protocol {
 	
 	String[] getSchemes();
 
-	Connection openConnection(URL url) throws IOException;
+	Connection openConnection(URL url, ProtocolContext context) throws IOException;
 	
 }

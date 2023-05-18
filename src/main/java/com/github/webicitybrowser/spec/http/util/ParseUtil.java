@@ -23,7 +23,7 @@ public class ParseUtil {
 	public static void eatString(PushbackInputStream inputStream, String string) throws IOException {
 		for (char expected: string.toCharArray()) {
 			int ch = inputStream.read();
-			expect("char '" + ch + "'", expected, ch);
+			expect("char '" + expected + "'", expected, ch);
 		}
 	}
 	

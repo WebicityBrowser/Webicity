@@ -3,7 +3,7 @@ package com.github.webicitybrowser.spec.http;
 import java.io.IOException;
 
 import com.github.webicitybrowser.spec.http.imp.HTTPServiceImp;
-import com.github.webicitybrowser.spec.url.URL;
+import com.github.webicitybrowser.spec.http.response.HTTPResponse;
 
 public interface HTTPService {
 
@@ -13,7 +13,7 @@ public interface HTTPService {
 	
 	void registerTransferEncoding(HTTPTransferEncoding transferEncoding);
 	
-	HTTPResponse get(URL url) throws IOException;
+	HTTPResponse resolveRequest(HTTPRequest request) throws IOException;
 	
 	public static HTTPService create(String userAgent) {
 		return new HTTPServiceImp(userAgent);

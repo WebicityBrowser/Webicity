@@ -9,7 +9,7 @@ import com.github.webicitybrowser.webicity.core.ui.Frame;
 
 public interface RenderingEngine {
 
-	RendererHandle openRenderer(URL url);
+	RendererHandle openRenderer(URL url, Frame frame);
 	
 	Frame createFrame();
 	
