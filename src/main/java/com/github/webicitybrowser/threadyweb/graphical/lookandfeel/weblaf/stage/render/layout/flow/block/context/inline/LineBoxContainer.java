@@ -32,11 +32,11 @@ public class LineBoxContainer {
 	private LineBox currentLine;
 	private UnitGenerator currentFlow;
 
-	public LineBoxContainer(RenderContext renderContext, AbsoluteSize maxBounds, LineDimensionConverter dimensionConverter) {
+	public LineBoxContainer(RenderContext renderContext, AbsoluteSize maxBounds, LineDimensionConverter dimensionConverter, ContextSwitch[] contextSwitches) {
 		this.renderContext = renderContext;
 		this.maxBounds = maxBounds;
 		this.dimensionConverter = dimensionConverter;
-		this.switches = createContextSwitches();
+		this.switches = mergeDefaultContextSwitches(contextSwitches);
 		goToNextLine();
 	}
 
@@ -112,8 +112,11 @@ public class LineBoxContainer {
 		}
 	}
 	
-	private ContextSwitch[] createContextSwitches() {
-		return new ContextSwitch[] { new RecursiveContextSwitchHandler() };
+	private ContextSwitch[] mergeDefaultContextSwitches(ContextSwitch[] extraSwitches) {
+		ContextSwitch[] allSwitches = new ContextSwitch[extraSwitches.length + 1];
+		allSwitches[0] = new RecursiveContextSwitchHandler();
+		System.arraycopy(extraSwitches, 0, allSwitches, 1, extraSwitches.length);
+		return allSwitches;
 	}
 	
 	public void handleOutOfFlowBox(Box box) {

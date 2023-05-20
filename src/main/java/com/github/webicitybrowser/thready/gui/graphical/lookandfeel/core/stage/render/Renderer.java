@@ -7,4 +7,8 @@ public interface Renderer {
 
 	Unit render(RenderContext renderContext, AbsoluteSize precomputedSize);
 	
+	default void handleRenderMessage(RenderMessage renderMessage) {
+		renderMessage.handleDefault(this);
+	}
+	
 }
