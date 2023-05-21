@@ -54,6 +54,11 @@ public class ElementImp extends NodeImp implements Element {
 	}
 	
 	@Override
+	public boolean hasAttribute(String name) {
+		return attributes.containsKey(name);
+	}
+	
+	@Override
 	public NodeList getChildNodes() {
 		return new NodeListImp(childNodes);
 	}

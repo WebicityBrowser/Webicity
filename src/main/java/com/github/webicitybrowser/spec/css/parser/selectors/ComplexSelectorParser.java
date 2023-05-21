@@ -8,19 +8,23 @@ import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.TokenStream;
 import com.github.webicitybrowser.spec.css.parser.imp.TokenStreamImp;
 import com.github.webicitybrowser.spec.css.parser.selectors.selector.ClassSelectorParser;
+import com.github.webicitybrowser.spec.css.parser.selectors.selector.IDSelectorParser;
 import com.github.webicitybrowser.spec.css.parser.selectors.selector.TypeSelectorParser;
 import com.github.webicitybrowser.spec.css.parser.tokens.CommaToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.EOFToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.HashToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
+import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity;
 
 public class ComplexSelectorParser {
 
 	private final TypeSelectorParser typeSelectorParser = new TypeSelectorParser();
 	private final ClassSelectorParser classSelectorParser = new ClassSelectorParser();
+	private final IDSelectorParser idSelectorParser = new IDSelectorParser();
 	
 	public ComplexSelector[] parseMany(TokenLike[] prelude) {
 		TokenStream stream = new TokenStreamImp(prelude);
@@ -71,6 +75,8 @@ public class ComplexSelectorParser {
 			return typeSelectorParser.parse(stream);
 		} else if (isDelimiterToken(token, '.')) {
 			return classSelectorParser.parse(stream);
+		} else if (token instanceof HashToken) {
+			return idSelectorParser.parse(stream);
 		} else {
 			return null;
 		}
@@ -98,10 +104,12 @@ public class ComplexSelectorParser {
 
 	private ComplexSelector createComplexSelectorFromParts(List<ComplexSelectorPart> selectorParts) {
 		ComplexSelectorPart[] parts = selectorParts.toArray(ComplexSelectorPart[]::new);
+		SelectorSpecificity selectorSpecificity = SelectorSpecificityCalculator.calculateSpecificity(parts);
+		
 		return new ComplexSelector() {	
 			@Override
-			public int getSpecificity() {
-				return 0;
+			public SelectorSpecificity getSpecificity() {
+				return selectorSpecificity;
 			}
 			
 			@Override

@@ -9,5 +9,19 @@ public interface HashToken extends Token {
 	public static enum HashTypeFlag {
 		ID, UNRESTRICTED
 	}
+
+	public static HashToken create(String value, HashTypeFlag flag) {
+		return new HashToken() {
+			@Override
+			public String getValue() {
+				return value;
+			}
+
+			@Override
+			public HashTypeFlag getTypeFlag() {
+				return flag;
+			}
+		};
+	}
 	
 }

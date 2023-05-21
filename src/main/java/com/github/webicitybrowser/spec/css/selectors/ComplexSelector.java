@@ -4,6 +4,6 @@ public interface ComplexSelector extends ComplexSelectorPart {
 
 	ComplexSelectorPart[] getParts();
 	
-	int getSpecificity();
+	SelectorSpecificity getSpecificity();
 	
 }

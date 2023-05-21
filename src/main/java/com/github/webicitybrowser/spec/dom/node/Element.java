@@ -12,4 +12,6 @@ public interface Element extends Node {
 	
 	String getAttribute(String name);
 
+	boolean hasAttribute(String name);
+
 }

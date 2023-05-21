@@ -4,11 +4,13 @@ import com.github.webicitybrowser.spec.css.QualifiedName;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
 import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector;
 import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector.AttributeSelectorOperation;
+import com.github.webicitybrowser.spec.css.selectors.selector.IDSelector;
 import com.github.webicitybrowser.spec.css.selectors.selector.TypeSelector;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.attroneof.AttributeOneOfFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.id.IDFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.type.TypeFilter;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMFilterCreator;
 
@@ -21,6 +23,8 @@ public class CSSOMFilterCreatorImp implements CSSOMFilterCreator {
 			return new TypeFilter<>(name.getNamespace(), name.getName());
 		} else if (isAttributeSelector(complexSelectorPart, AttributeSelectorOperation.ONE_OF)) {
 			return new AttributeOneOfFilter<>((AttributeSelector) complexSelectorPart);
+		} else if (complexSelectorPart instanceof IDSelector idSelector) {
+			return new IDFilter<>(idSelector.getId());
 		} else {
 			throw new UnsupportedOperationException("Not implemented yet");
 		}

@@ -8,11 +8,14 @@ import org.junit.jupiter.api.Test;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.tokens.CommaToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.HashToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.HashToken.HashTypeFlag;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
 import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector;
+import com.github.webicitybrowser.spec.css.selectors.selector.IDSelector;
 import com.github.webicitybrowser.spec.css.selectors.selector.TypeSelector;
 
 public class ComplexSelectorParserTest {
@@ -108,6 +111,21 @@ public class ComplexSelectorParserTest {
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
 		AttributeSelector selector = (AttributeSelector) parts[0];
 		Assertions.assertEquals("hi", selector.getComparisonValue());
+	}
+	
+	@Test
+	@DisplayName("Pound delim token creates ID selector")
+	public void poundDelimTokenCreatesIDSelector() {
+		TokenLike[] tokens = new TokenLike[] {
+			HashToken.create("hi", HashTypeFlag.ID)
+		};
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens);
+		Assertions.assertEquals(1, selectors.length);
+		ComplexSelectorPart[] parts = selectors[0].getParts();
+		Assertions.assertEquals(1, parts.length);
+		Assertions.assertInstanceOf(IDSelector.class, parts[0]);
+		IDSelector selector = (IDSelector) parts[0];
+		Assertions.assertEquals("hi", selector.getId());
 	}
 	
 }
