@@ -22,6 +22,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.
 
 public class FlowInlineUnitGenerator implements UnitGenerator {
 
+	private final Box box;
 	private final Box[] children;
 	private final RenderContext renderContext;
 	private final ContextSwitch[] contextSwitches;
@@ -34,7 +35,8 @@ public class FlowInlineUnitGenerator implements UnitGenerator {
 	
 	private CursorTracker cursorTracker;
 
-	public FlowInlineUnitGenerator(Box[] children, RenderContext renderContext, ContextSwitch[] contextSwitches) {
+	public FlowInlineUnitGenerator(Box box, Box[] children, RenderContext renderContext, ContextSwitch[] contextSwitches) {
+		this.box = box;
 		this.children = children;
 		this.renderContext = renderContext;
 		this.contextSwitches = contextSwitches;
@@ -73,8 +75,9 @@ public class FlowInlineUnitGenerator implements UnitGenerator {
 		}
 		
 		Unit fullUnit = new FlowInlineUnit(
-			renderedChildren.toArray(RenderedInlineUnit[]::new),
-			cursorTracker.getSizeCovered());
+			box,
+			cursorTracker.getSizeCovered(),
+			renderedChildren.toArray(RenderedInlineUnit[]::new));
 		startNextUnit();
 		
 		return fullUnit;

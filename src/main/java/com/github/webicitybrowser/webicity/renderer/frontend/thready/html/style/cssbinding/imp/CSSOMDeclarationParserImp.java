@@ -23,6 +23,8 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	
 	public CSSOMDeclarationParserImp() {
 		namedDeclarationParsers.put("color", new CSSOMColorDeclarationParser());
+		namedDeclarationParsers.put("background-color", new CSSOMBackgroundColorDeclarationParser());
+		namedDeclarationParsers.put("background", new CSSOMBackgroundColorDeclarationParser()); // TODO
 		namedDeclarationParsers.put("display", new CSSOMDisplayDeclarationParser());
 	}
 	

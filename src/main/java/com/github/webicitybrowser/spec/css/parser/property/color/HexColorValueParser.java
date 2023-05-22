@@ -57,18 +57,22 @@ public class HexColorValueParser implements PropertyValueParser<ColorValue> {
 	
 	private ColorValue parse3DigitColor(String colorHash) {
 		return new RGBColorValueImp(
-			extractHexNumber(colorHash, 0, 1),
-			extractHexNumber(colorHash, 1, 1),
-			extractHexNumber(colorHash, 2, 1),
+			expandDouble(extractHexNumber(colorHash, 0, 1)),
+			expandDouble(extractHexNumber(colorHash, 1, 1)),
+			expandDouble(extractHexNumber(colorHash, 2, 1)),
 			255);
 	}
-	
+
 	private ColorValue parse4DigitColor(String colorHash) {
 		return new RGBColorValueImp(
-			extractHexNumber(colorHash, 0, 1),
-			extractHexNumber(colorHash, 1, 1),
-			extractHexNumber(colorHash, 2, 1),
-			extractHexNumber(colorHash, 3, 1));
+			expandDouble(extractHexNumber(colorHash, 0, 1)),
+			expandDouble(extractHexNumber(colorHash, 1, 1)),
+			expandDouble(extractHexNumber(colorHash, 2, 1)),
+			expandDouble(extractHexNumber(colorHash, 3, 1)));
+	}
+	
+	private int expandDouble(int value) {
+		return value * 16 + value;
 	}
 	
 	private int extractHexNumber(String hash, int position, int length) {

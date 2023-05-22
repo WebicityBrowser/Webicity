@@ -5,22 +5,31 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.dimensions.util.RectangleUtil;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.paint.BackgroundPainter;
 
 public class FlowInlineUnitPainter implements Painter {
 
-	private final RenderedInlineUnit[] children;
 	private final Rectangle documentRect;
+	private final RenderedInlineUnit[] children;
+	private final BackgroundPainter backgroundPainter;
 
-	public FlowInlineUnitPainter(RenderedInlineUnit[] children, Rectangle documentRect) {
-		this.children = children;
+	public FlowInlineUnitPainter(Box box, Rectangle documentRect, RenderedInlineUnit[] children) {
 		this.documentRect = documentRect;
+		this.children = children;
+		this.backgroundPainter = new BackgroundPainter(box, documentRect);
 	}
 
 	@Override
 	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewport) {
+		backgroundPainter.paint(context, canvas, viewport);
+		paintChildren(context, canvas, viewport);
+	}
+
+	private void paintChildren(PaintContext context, Canvas2D canvas, Rectangle viewport) {
 		for (RenderedInlineUnit child: children) {
 			if (childInViewport(child, viewport)) {
 				paintChild(child, context, canvas, viewport);

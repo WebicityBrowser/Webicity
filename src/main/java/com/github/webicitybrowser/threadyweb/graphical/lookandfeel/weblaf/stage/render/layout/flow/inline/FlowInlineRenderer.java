@@ -10,15 +10,17 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.T
 
 public class FlowInlineRenderer implements FluidRenderer {
 
-	private Box[] children;
+	private final Box box;
+	private final Box[] children;
 
 	public FlowInlineRenderer(Box box, Box[] children) {
+		this.box = box;
 		this.children = children;
 	}
 
 	@Override
 	public UnitGenerator renderFluid(RenderContext renderContext, ContextSwitch[] switches) {
-		return new FlowInlineUnitGenerator(children, renderContext, switches);
+		return new FlowInlineUnitGenerator(box, children, renderContext, switches);
 	}
 	
 	@Override

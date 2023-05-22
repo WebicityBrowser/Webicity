@@ -20,6 +20,10 @@ public class FluidChildrenPainter implements Painter {
 
 	@Override
 	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewport) {
+		paintChildren(context, canvas, viewport);
+	}
+
+	private void paintChildren(PaintContext context, Canvas2D canvas, Rectangle viewport) {
 		for (FluidChildRenderResult renderResult: renderResults) {
 			if (childInViewport(renderResult, viewport)) {
 				paintChild(renderResult, context, canvas, viewport);
