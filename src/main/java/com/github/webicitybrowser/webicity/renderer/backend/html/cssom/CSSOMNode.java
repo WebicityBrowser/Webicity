@@ -2,6 +2,7 @@ package com.github.webicitybrowser.webicity.renderer.backend.html.cssom;
 
 import java.util.List;
 
+import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.imp.CSSOMNodeImp;
 
 public interface CSSOMNode<T, U> {
@@ -15,6 +16,10 @@ public interface CSSOMNode<T, U> {
 	List<U> getNodeProperties();
 	
 	List<CSSOMFilterEntry<T, U>> getPossibleFilters(T item);
+	
+	void setSpecificity(SelectorSpecificity specificity);
+	
+	SelectorSpecificity getSpecificity();
 
 	static <T, U> CSSOMNode<T, U> create() {
 		return new CSSOMNodeImp<>();

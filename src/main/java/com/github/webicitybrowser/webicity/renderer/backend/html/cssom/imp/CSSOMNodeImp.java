@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMComposableFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilterComposition;
@@ -18,6 +19,8 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 	private final List<CSSOMFilterEntry<T, U>> links = new ArrayList<>(0);
 	private final Map<Class<?>, CSSOMFilterComposition<T, U, ?>> composableFilters = new HashMap<>(2);
 	private final List<U> allProperties = new ArrayList<>(1);
+	
+	private SelectorSpecificity specificity;
 	
 	@Override
 	public CSSOMNode<T, U> createChild(CSSOMFilter<T, U> filter, int staging) {
@@ -51,6 +54,16 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 	@Override
 	public List<U> getNodeProperties() {
 		return allProperties;
+	}
+	
+	@Override
+	public void setSpecificity(SelectorSpecificity specificity) {
+		this.specificity = specificity;
+	}
+
+	@Override
+	public SelectorSpecificity getSpecificity() {
+		return this.specificity;
 	}
 	
 	private <V extends CSSOMComposableFilter<T, U, V>> CSSOMFilterEntry<T, U> addCSSOMFilter(CSSOMFilter<T, U> filter, int staging) {

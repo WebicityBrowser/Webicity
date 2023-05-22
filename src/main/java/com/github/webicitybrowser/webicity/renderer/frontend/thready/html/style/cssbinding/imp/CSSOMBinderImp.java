@@ -56,7 +56,8 @@ public class CSSOMBinderImp implements CSSOMBinder {
 		ComplexSelector[] selectors = new ComplexSelectorParser().parseMany(prelude);
 		for (ComplexSelector selector: selectors) {
 			CSSOMNode<Node, DirectivePool> targetNode = getSelectedCSSOMNode(rootNode, selector);
-			addDeclarationsToCSSOMNode(targetNode, rule.getValue());
+			DirectivePool properties = createPoolWithDeclarations(rule.getValue());
+			targetNode.addNodeProperties(properties);
 		}
 	}
 
@@ -66,11 +67,12 @@ public class CSSOMBinderImp implements CSSOMBinder {
 			CSSOMFilter<Node, DirectivePool> filter = filterCreator.createFilterFor(complexSelectorPart);
 			current = current.createChild(filter, 0);
 		}
+		current.setSpecificity(selector.getSpecificity());
 		
 		return current;
 	}
 	
-	private void addDeclarationsToCSSOMNode(CSSOMNode<Node, DirectivePool> targetNode, SimpleBlock value) {
+	private DirectivePool createPoolWithDeclarations(SimpleBlock value) {
 		CSSRule[] rules = parseDeclarations(value);
 		DirectivePool directivePool = new BasicDirectivePool();
 		for (CSSRule rule: rules) {
@@ -87,7 +89,8 @@ public class CSSOMBinderImp implements CSSOMBinder {
 				directivePool.directive(declDirective);
 			}
 		}
-		targetNode.addNodeProperties(directivePool);
+		
+		return directivePool;
 	}
 
 
