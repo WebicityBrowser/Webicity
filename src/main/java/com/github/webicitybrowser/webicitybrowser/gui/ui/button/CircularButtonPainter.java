@@ -6,31 +6,24 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.builder.Paint2DBuilder;
-import com.github.webicitybrowser.thready.drawing.core.image.Image;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 
-public class CircularButtonPainter implements Painter {
+public final class CircularButtonPainter {
 
-	private final Box box;
-	private final Rectangle documentRect;
-	private final Image image;
+	private CircularButtonPainter() {}
 
-	public CircularButtonPainter(Box box, Rectangle documentRect, Image image) {
-		this.box = box;
-		this.documentRect = documentRect;
-		this.image = image;
+	public static void paint(CircularButtonUnit unit, LocalPaintContext localPaintContext) {
+		paintBackground(unit, localPaintContext);
 	}
 
-	@Override
-	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewportRect) {
-		paintBackground(canvas);
-	}
-
-	private void paintBackground(Canvas2D canvas) {
-		ColorFormat color = getBackgroundColor();
+	private static void paintBackground(CircularButtonUnit unit, LocalPaintContext localPaintContext) {
+		Canvas2D canvas = localPaintContext.canvas();
+		DirectivePool styleDirectives = unit.box().styleDirectives();
+		Rectangle documentRect = localPaintContext.documentRect();
+		
+		ColorFormat color = getBackgroundColor(styleDirectives);
 		Paint2D paint = Paint2DBuilder
 			.clone(canvas.getPaint())
 			.setColor(color)
@@ -48,12 +41,11 @@ public class CircularButtonPainter implements Painter {
 		canvas.drawTexture(
 			docX + docW / 2 - 10,
 			docY + docH / 2 - 10,
-			20, 20, image);
+			20, 20, unit.image());
 	}
 
-	private ColorFormat getBackgroundColor() {
-		return box
-			.getStyleDirectives()
+	private static ColorFormat getBackgroundColor(DirectivePool styleDirectives) {
+		return styleDirectives
 			.getDirectiveOrEmpty(BackgroundColorDirective.class)
 			.map(directive -> directive.getColor())
 			.orElse(Colors.TRANSPARENT);

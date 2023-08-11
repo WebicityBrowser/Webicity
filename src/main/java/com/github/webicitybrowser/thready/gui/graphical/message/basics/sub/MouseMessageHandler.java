@@ -107,7 +107,7 @@ public class MouseMessageHandler implements MessageHandler {
 		return new MouseEvent() {
 			@Override
 			public Component getComponent() {
-				return box.get().getOwningComponent();
+				return box.get().owningComponent();
 			}
 			
 			@Override
@@ -158,7 +158,7 @@ public class MouseMessageHandler implements MessageHandler {
 
 	private MouseListener getMouseListener() {
 		return box
-			.map(b -> b.getStyleDirectives())
+			.map(b -> b.styleDirectives())
 			.flatMap(directives -> directives.getDirectiveOrEmpty(MouseListenerDirective.class))
 			.map(directive -> directive.getMouseListener())
 			.orElse(null);
@@ -166,7 +166,7 @@ public class MouseMessageHandler implements MessageHandler {
 	
 	private MouseListener getExternalMouseListener() {
 		return box
-			.map(b -> b.getStyleDirectives())
+			.map(b -> b.styleDirectives())
 			.flatMap(directives -> directives.getDirectiveOrEmpty(ExternalMouseListenerDirective.class))
 			.map(directive -> directive.getMouseListener())
 			.orElse(null);

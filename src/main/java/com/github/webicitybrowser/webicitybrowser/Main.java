@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
-import com.github.webicitybrowser.thready.gui.directive.basics.style.NoopStyleGeneratorRoot;
+import com.github.webicitybrowser.thready.gui.directive.basics.style.OneOneStyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
@@ -103,7 +103,7 @@ public class Main {
 		LookAndFeel lookAndFeel = createLookAndFeel();
 		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
 		GUIContent content = new GUIContentImp();
-		content.setRoot(component, lookAndFeel, new NoopStyleGeneratorRoot());
+		content.setRoot(component, lookAndFeel, new OneOneStyleGeneratorRoot());
 		
 		graphicsSystem.createWindow(window -> {
 			DesktopWindow desktopWindow = (DesktopWindow) window;

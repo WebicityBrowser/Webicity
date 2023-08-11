@@ -47,7 +47,7 @@ public class SkijaRootCanvas2DImp extends SkijaCanvas2DImp implements SkijaRootC
 	}
 
 	private static Surface createSurface(DirectContext directContext, BackendRenderTarget renderTarget) {
-		return Surface.makeFromBackendRenderTarget(
+		return Surface.wrapBackendRenderTarget(
 			directContext,
 			renderTarget,
 			SurfaceOrigin.BOTTOM_LEFT,

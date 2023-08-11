@@ -1,12 +1,11 @@
 package com.github.webicitybrowser.thready.gui.graphical.layout.core;
 
-import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 
 public interface SolidLayoutManager {
 
-	Unit render(RenderContext renderContext, AbsoluteSize precomputedSize, Box[] solidChildren);
+	LayoutResult render(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext);
 
 }

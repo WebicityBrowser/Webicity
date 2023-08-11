@@ -9,12 +9,12 @@ switch (OperatingSystem.current()) {
 	case OperatingSystem.LINUX:
 		project.ext.lwjglNatives = "natives-linux"
 		project.ext.skijaNatives = "skija-linux-x64"
-		project.ext.skijaVersion = "0.109.2"
+		project.ext.skijaVersion = "0.116.1"
 		break
 	case OperatingSystem.WINDOWS:
 		project.ext.lwjglNatives = "natives-windows"
 		project.ext.skijaNatives = "skija-windows-x64"
-		project.ext.skijaVersion = "0.109.2"
+		project.ext.skijaVersion = "0.116.1"
 		break
 }
 
@@ -34,7 +34,7 @@ dependencies {
 	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 	
-	implementation 'com.github.marianobarrios:tls-channel:0.7.0'
+	implementation 'com.github.marianobarrios:tls-channel:0.8.0'
 	
 	implementation 'com.github.taucher2003:t2003-logger-impl:1.0.2'
 	implementation 'com.github.taucher2003:t2003-logger-binder:1.0.2'
@@ -43,8 +43,8 @@ dependencies {
 	
 	implementation "io.github.humbleui:${skijaNatives}:${skijaVersion}"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-    testImplementation 'org.mockito:mockito-core:5.3.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.4.0'
 }
 
 tasks.named('test') {

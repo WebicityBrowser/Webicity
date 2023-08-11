@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.thready.gui.graphical.base.imp;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,11 +15,19 @@ import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.Unit;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.WrapperBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.CharMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessage;
@@ -42,13 +52,15 @@ public class GUIContentImp implements GUIContent {
 	
 	private boolean redrawRequested = false;
 	private AbsoluteSize oldContentSize;
+	private Object rootContext;
 	private Box rootBox;
-	private Unit rootUnit;
+	private RenderedUnit rootUnit;
 
 	@Override
 	public void setRoot(Component component, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot) {
 		this.redrawRequested = true;
 		this.rootUI = createRootUI(component, lookAndFeel);
+		this.rootContext = rootUI.getRootDisplay().createContext(rootUI);
 		this.lookAndFeel = lookAndFeel;
 		this.styleGeneratorRoot = styleGeneratorRoot;
 		this.invalidationLevel = InvalidationLevel.BOX;
@@ -80,14 +92,20 @@ public class GUIContentImp implements GUIContent {
 			if (message instanceof KeyMessage || message instanceof CharMessage) {
 				focusManager.messageFocused(messageContext, message);
 			} else {
-				resetFocusIfClick(messageContext, message);
-				rootUnit
-					.getMessageHandler(createDocumentRect(contentSize))
-					.onMessage(messageContext, message);
+				messageRoot(messageContext, message, contentSize);
 			}
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	private <V extends RenderedUnit> void messageRoot(MessageContext messageContext, Message message, AbsoluteSize contentSize) {
+		resetFocusIfClick(messageContext, message);
+		UIDisplay<?, ?, V> display = (UIDisplay<?, ?, V>) rootUI.getRootDisplay();
+		display
+			.createMessageHandler((V) rootUnit, createDocumentRect(contentSize))
+			.onMessage(messageContext, message);
+	}
+
 	private void resetFocusIfClick(MessageContext messageContext, Message message) {
 		if (
 			message instanceof MouseMessage mouseMessage &&
@@ -110,6 +128,11 @@ public class GUIContentImp implements GUIContent {
 					redrawRequested = true;
 				}
 			}
+
+			@Override
+			public UIDisplay<?, ?, ?> getRootDisplay() {
+				return null;
+			}
 		};
 		
 		return lookAndFeel.createUIFor(component, dummyUI);
@@ -119,6 +142,7 @@ public class GUIContentImp implements GUIContent {
 		if (invalidationLevel == InvalidationLevel.BOX) {
 			performBoxCycle();
 		}
+		
 		if (this.rootBox == null) {
 			return;
 		}
@@ -143,38 +167,46 @@ public class GUIContentImp implements GUIContent {
 		}
 	}
 
-	private void performBoxCycle() {
-		BoxContext context = new BoxContextImp(lookAndFeel);
+	@SuppressWarnings("unchecked")
+	private <T extends Context> void performBoxCycle() {
+		BoxContext boxContext = new BoxContextImp(lookAndFeel);
 		StyleGenerator styleGenerator = styleGeneratorRoot.generateChildStyleGenerator(rootUI);
-		Box[] generatedBoxes = rootUI.generateBoxes(context, null, styleGenerator);
-		if (generatedBoxes.length == 0) {
+		UIDisplay<T, ?, ?> rootDisplay = (UIDisplay<T, ?, ?>) rootUI.getRootDisplay();
+		
+		List<? extends Box> generatedBoxes = rootDisplay.generateBoxes((T) rootContext, boxContext, styleGenerator);
+		if (generatedBoxes.size() == 0) {
 			this.rootBox = null;
 			return;
 		}
-		Box[] adjustedBoxes = generatedBoxes[0].getAdjustedBoxTree();
-		if (adjustedBoxes.length == 0) {
-			this.rootBox = null;
-			return;
-		}
-		Box rootBox = adjustedBoxes[0];
+		
+		Box rootBox = generatedBoxes.get(0);
 		this.rootBox = rootBox;
 	}
 
-	private void performRenderCycle(ScreenContentRedrawContext redrawContext) {
-		RenderContext renderContext = new RenderContextImp(redrawContext.resourceLoader());
-		Renderer rootRenderer = rootBox.createRenderer();
-		this.rootUnit = rootRenderer.render(renderContext, redrawContext.contentSize());
+	@SuppressWarnings("unchecked")
+	private <U extends Box> void performRenderCycle(ScreenContentRedrawContext redrawContext) {
+		AbsoluteSize contentSize = redrawContext.contentSize();
+		GlobalRenderContext globalRenderContext = new RenderContextImp(redrawContext.resourceLoader());
+		LocalRenderContext localRenderContext = LocalRenderContext.create(contentSize, new ContextSwitch[0]);
+		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();
+		
+		this.rootUnit = rootDisplay
+			.renderBox((U) rootBox, globalRenderContext, localRenderContext)
+			.generateNextUnit(contentSize, true);
 	}
 	
-	private void performPaintCycle(ScreenContentRedrawContext redrawContext) {
+	@SuppressWarnings("unchecked")
+	private <V extends RenderedUnit> void performPaintCycle(ScreenContentRedrawContext redrawContext) {
 		AbsoluteSize contentSize = redrawContext.contentSize();
 		Canvas2D canvas = redrawContext.canvas();
 		Rectangle viewport = new Rectangle(new AbsolutePosition(0, 0), contentSize);
 		
 		clearPaint(canvas, contentSize);
 		
-		rootUnit.getPainter(createDocumentRect(contentSize))
-			.paint(new PaintContextImp(redrawContext.invalidationScheduler()), canvas, viewport);
+		UIDisplay<?, ?, V> display = (UIDisplay<?, ?, V>) rootUI.getRootDisplay();
+		GlobalPaintContext globalPaintContext = new PaintContextImp(redrawContext.invalidationScheduler());
+		LocalPaintContext localPaintContext = new LocalPaintContext(canvas, createDocumentRect(contentSize), viewport);
+		display.paint((V) rootUnit, globalPaintContext, localPaintContext);
 	}
 
 	private void clearPaint(Canvas2D canvas, AbsoluteSize contentSize) {

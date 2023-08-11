@@ -18,7 +18,7 @@ public class SkijaResourceLoaderImp implements ResourceLoader {
 	@Override
 	public Image loadImage(ImageSource source) {
 		byte[] data = ((BytesImageSource) source).getBytes();
-		io.github.humbleui.skija.Image loadedImage = io.github.humbleui.skija.Image.makeFromEncoded(data);
+		io.github.humbleui.skija.Image loadedImage = io.github.humbleui.skija.Image.makeDeferredFromEncodedBytes(data);
 		return new SkijaImage(loadedImage);
 	}
 

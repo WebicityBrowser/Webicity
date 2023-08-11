@@ -7,34 +7,27 @@ import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.builder.Paint2DBuilder;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.webicitybrowser.gui.Styling;
 
-public class MenuButtonPainter implements Painter {
+public final class MenuButtonPainter {
+	
+	private MenuButtonPainter() {}
 
-	private final Box box;
-	private final Rectangle documentRect;
-	private final Font2D font;
-
-	public MenuButtonPainter(Box box, Rectangle documentRect, Font2D font) {
-		this.box = box;
-		this.documentRect = documentRect;
-		this.font = font;
+	public static void paint(MenuButtonUnit unit, LocalPaintContext localPaintContext) {
+		paintBackground(unit, localPaintContext);
+		paintText(unit, localPaintContext);
 	}
 
-	@Override
-	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewportRect) {
-		paintBackground(canvas);
-		paintText(context, canvas);
-	}
-
-	private void paintBackground(Canvas2D canvas) {
-		ColorFormat color = getBackgroundColor();
+	private static void paintBackground(MenuButtonUnit unit, LocalPaintContext localPaintContext) {
+		Canvas2D canvas = localPaintContext.canvas();
+		Rectangle documentRect = localPaintContext.documentRect();
+		DirectivePool styleDirectives = unit.box().styleDirectives();
+		
+		ColorFormat color = getBackgroundColor(styleDirectives);
 		Paint2D paint = Paint2DBuilder
-				
 			.clone(canvas.getPaint())
 			.setColor(color)
 			.build();
@@ -57,7 +50,11 @@ public class MenuButtonPainter implements Painter {
 			documentRect.size().height());
 	}
 	
-	private void paintText(PaintContext context, Canvas2D canvas) {
+	private static void paintText(MenuButtonUnit unit, LocalPaintContext localPaintContext) {
+		Canvas2D canvas = localPaintContext.canvas();
+		Rectangle documentRect = localPaintContext.documentRect();
+		Font2D font = unit.font();
+		
 		Paint2D paint = Paint2DBuilder
 			.clone(canvas.getPaint())
 			.setFont(font)
@@ -76,9 +73,8 @@ public class MenuButtonPainter implements Painter {
 				Styling.PRODUCT_NAME);
 	}
 
-	private ColorFormat getBackgroundColor() {
-		return box
-			.getStyleDirectives()
+	private static ColorFormat getBackgroundColor(DirectivePool styleDirectives) {
+		return styleDirectives
 			.getDirectiveOrEmpty(BackgroundColorDirective.class)
 			.map(directive -> directive.getColor())
 			.orElse(Colors.TRANSPARENT);

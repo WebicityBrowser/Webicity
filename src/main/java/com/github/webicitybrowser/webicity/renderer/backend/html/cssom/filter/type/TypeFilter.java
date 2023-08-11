@@ -34,7 +34,6 @@ public class TypeFilter<U> implements CSSOMComposableFilter<Node, U, TypeFilter<
 		return Objects.hash(namespace, elementName);
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object o) {
 		return

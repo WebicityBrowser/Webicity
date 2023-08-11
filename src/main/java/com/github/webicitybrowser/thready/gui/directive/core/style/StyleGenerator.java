@@ -7,7 +7,7 @@ public interface StyleGenerator {
 
 	StyleGenerator[] createChildStyleGenerators(ComponentUI[] children);
 	
-	DirectivePool[] getDirectivePools();
+	DirectivePool getStyleDirectives();
 	
 	// TODO: Special styles
 	// TODO: Listener for invalidation

@@ -5,43 +5,30 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.builder.Paint2DBuilder;
-import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
+import com.github.webicitybrowser.thready.gui.graphical.view.textfield.TextFieldContext;
 import com.github.webicitybrowser.thready.gui.graphical.view.textfield.TextFieldPainter;
-import com.github.webicitybrowser.thready.gui.graphical.viewmodel.textfield.TextFieldViewModel;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
 import com.github.webicitybrowser.webicitybrowser.gui.Styling;
 
-public class URLBarPainter implements Painter {
+public final class URLBarPainter {
 
-	private final Box box;
-	private final Rectangle documentRect;
-	private final Font2D font;
+	private URLBarPainter() {}
 	
-	private final TextFieldPainter foregroundPainter;
+	public static void paint(URLBarUnit unit, GlobalPaintContext globalContext, LocalPaintContext localContext) {
+		paintBackground(unit, localContext);
+		paintForeground(unit, globalContext, localContext);
+	}
 
-	public URLBarPainter(
-		Box box, Rectangle documentRect, Rectangle contentRect, ComponentUI componentUI, TextFieldViewModel textFieldViewModel, Font2D font
-	) {
-		this.box = box;
-		this.documentRect = documentRect;
-		this.font = font;
+	private static void paintBackground(URLBarUnit unit, LocalPaintContext context) {
+		Canvas2D canvas = context.canvas();
+		DirectivePool styleDirectives = unit.box().styleDirectives();
+		Rectangle documentRect = context.documentRect();
 		
-		this.foregroundPainter = new TextFieldPainter(contentRect, componentUI, textFieldViewModel, font);
-	}
-
-	@Override
-	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewportRect) {
-		paintBackground(canvas);
-		paintForeground(context, canvas, viewportRect);
-	}
-
-	private void paintBackground(Canvas2D canvas) {
-		ColorFormat color = WebDirectiveUtil.getBackgroundColor(box.getStyleDirectives());
+		ColorFormat color = WebDirectiveUtil.getBackgroundColor(styleDirectives);
 		Paint2D paint = Paint2DBuilder
 			.clone(canvas.getPaint())
 			.setColor(color)
@@ -62,16 +49,22 @@ public class URLBarPainter implements Painter {
 		ctx.drawEllipse(docX + docW - Styling.BUTTON_WIDTH, docY, Styling.BUTTON_WIDTH, Styling.BUTTON_WIDTH);
 	}
 	
-	private void paintForeground(PaintContext context, Canvas2D canvas, Rectangle viewportRect) {
-		ColorFormat color = SimpleDirectiveUtil.getForegroundColor(box.getStyleDirectives());
+	private static void paintForeground(URLBarUnit unit, GlobalPaintContext globalContext, LocalPaintContext localContext) {
+		Canvas2D canvas = localContext.canvas();
+		DirectivePool styleDirectives = unit.box().styleDirectives();
+		Rectangle contentRect = unit.getContentRect(localContext.documentRect());
+		
+		ColorFormat color = SimpleDirectiveUtil.getForegroundColor(styleDirectives);
 		Paint2D paint = Paint2DBuilder
 			.clone(canvas.getPaint())
 			.setColor(color)
-			.setFont(font)
+			.setFont(unit.font())
 			.build();
 		Canvas2D ctx = canvas.withPaint(paint);
 		
-		foregroundPainter.paint(context, ctx, viewportRect);
+		TextFieldContext textFieldContext = unit.context().textFieldContext();
+		LocalPaintContext textFieldLocalContext = new LocalPaintContext(ctx, contentRect, localContext.viewport());
+		TextFieldPainter.paint(textFieldContext, globalContext, textFieldLocalContext);
 	}
 	
 }

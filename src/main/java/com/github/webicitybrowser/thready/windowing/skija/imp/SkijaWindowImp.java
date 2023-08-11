@@ -28,6 +28,9 @@ public class SkijaWindowImp implements SkijaWindow {
 	
 	@Override
 	public void close() {
+		if (this.windowClosed) {
+			return;
+		}
 		this.windowClosed = true;
 		GLFW.glfwDestroyWindow(windowId);
 	}

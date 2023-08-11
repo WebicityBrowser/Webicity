@@ -170,7 +170,6 @@ public class WindowGUI {
 		return windowActionButtons;
 	}
 	
-	//TODO: Add actions to buttons
 	private Component createMinimizeButton() {
 		Component button = new CircularButtonComponent(ImageUtil.loadImageFromResource("icons/minimize.png"))
 			.directive(SizeDirective.of(new RelativeSize(0, Styling.BUTTON_WIDTH, 0, Styling.BUTTON_WIDTH)));

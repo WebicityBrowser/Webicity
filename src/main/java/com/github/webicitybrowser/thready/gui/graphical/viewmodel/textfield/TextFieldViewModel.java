@@ -13,7 +13,7 @@ public class TextFieldViewModel {
 	public TextFieldViewModel(TextFieldModel model, TextFieldViewModelListener listener) {
 		this.model = model;
 		this.listener = listener;
-		model.addListener(() -> listener.onStateChanged());
+		model.addListener(() -> listener.onStateChanged(this));
 	}
 	
 	public String getText() {
@@ -42,7 +42,7 @@ public class TextFieldViewModel {
 	
 	public void toggleReplaceMode() {
 		this.isReplaceMode = !isReplaceMode;
-		listener.onStateChanged();
+		listener.onStateChanged(this);
 	}
 	
 	public boolean isReplaceMode() {
@@ -58,12 +58,12 @@ public class TextFieldViewModel {
 	}
 
 	public void submit() {
-		listener.onSubmit();
+		listener.onSubmit(this);
 	}
 
 	public void setFocused(boolean focused) {
 		this.isFocused = focused;
-		listener.onStateChanged();
+		listener.onStateChanged(this);
 	}
 	
 	public boolean isFocused() {

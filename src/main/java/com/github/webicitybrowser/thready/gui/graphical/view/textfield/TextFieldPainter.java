@@ -7,87 +7,88 @@ import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.graphical.animation.InvalidationScheduler;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.viewmodel.textfield.TextFieldViewModel;
 
-public class TextFieldPainter implements Painter {
+public class TextFieldPainter {
+	
+	private TextFieldPainter() {}
 	
 	private static final int CURSOR_BLINK_CYCLE_MILLIS = 1500;
 
-	private final Rectangle documentRect;
-	private final ComponentUI componentUI;
-	private final TextFieldViewModel textFieldViewModel;
-	private final Font2D font;
-	
-	private CursorState lastCursorState = CursorState.INACTIVE;
-
-	public TextFieldPainter(Rectangle documentRect, ComponentUI componentUI, TextFieldViewModel textFieldViewModel, Font2D font) {
-		this.documentRect = documentRect;
-		this.componentUI = componentUI;
-		this.textFieldViewModel = textFieldViewModel;
-		this.font = font;
-	}
-	
-	@Override
-	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewport) {
-		String text = textFieldViewModel.getText();
+	public static void paint(TextFieldContext textFieldContext, GlobalPaintContext globalContext, LocalPaintContext localContext) {
+		String text = textFieldContext.getViewModel().getText();
 		
-		drawText(text, canvas);
-		CursorState currentCursorState = getCurrentCursorState();
-		if (textFieldViewModel.isFocused() && currentCursorState == CursorState.SHOWN) {
-			drawCursor(text, canvas);
-		}
+		drawText(localContext, text);
+		updateCursor(globalContext, localContext, text, textFieldContext);
+	}
+
+	private static void updateCursor(GlobalPaintContext globalContext, LocalPaintContext localContext, String text, TextFieldContext textFieldContext) {
+		TextFieldCursorState currentTextFieldCursorState = getCurrentTextFieldCursorState();
+		TextFieldViewModel textFieldViewModel = textFieldContext.getViewModel();
 		if (textFieldViewModel.isFocused()) {
-			if (lastCursorState != currentCursorState) {
-				scheduleNextInvalidation(context.getInvalidationScheduler());
-				lastCursorState = currentCursorState;
+			if (currentTextFieldCursorState == TextFieldCursorState.SHOWN) {
+				drawCursor(localContext, text, textFieldViewModel);
 			}
+			scheduleNextRedraw(globalContext, textFieldContext);
 		} else {
-			lastCursorState = CursorState.INACTIVE;
+			
 		}
 	}
 
-	private void drawText(String text, Canvas2D canvas) {
+	private static void scheduleNextRedraw(GlobalPaintContext globalContext, TextFieldContext textFieldContext) {
+		TextFieldCursorState currentTextFieldCursorState = getCurrentTextFieldCursorState();
+		if (textFieldContext.getLastCursorState() != currentTextFieldCursorState) {
+			scheduleNextInvalidation(globalContext.getInvalidationScheduler(), textFieldContext.getOwningComponentUI());
+			textFieldContext.setLastCursorState(currentTextFieldCursorState);
+		}
+	}
+
+	private static void drawText(LocalPaintContext localContext, String text) {
+		Canvas2D canvas = localContext.canvas();
+		Rectangle documentRect = localContext.documentRect();
+		
 		float docX = documentRect.position().x();
 		float docY = documentRect.position().y();
 		
 		canvas.drawText(docX, docY, text);
 	}
 	
-	private void drawCursor(String text, Canvas2D canvas) {
+	private static void drawCursor(LocalPaintContext localContext, String text, TextFieldViewModel textFieldViewModel) {
+		Rectangle documentRect = localContext.documentRect();
+		Canvas2D canvas = localContext.canvas();
+		
+		
 		float docX = documentRect.position().x();
 		float docY = documentRect.position().y();
 		float docH = documentRect.size().height();
 		
 		int cursorPos = textFieldViewModel.getCursorPos();
-		int cursorOffset = getCursorOffset(text, cursorPos);
+		int cursorOffset = getCursorOffset(canvas, text, cursorPos);
 		
 		canvas.drawLine(docX + cursorOffset, docY + docH / 4, 0, docH / 2);
 	}
 	
-	private CursorState getCurrentCursorState() {
+	private static TextFieldCursorState getCurrentTextFieldCursorState() {
 		boolean cursorShown = System.currentTimeMillis() % CURSOR_BLINK_CYCLE_MILLIS * 2 < CURSOR_BLINK_CYCLE_MILLIS;
-		return cursorShown ? CursorState.SHOWN : CursorState.NOT_SHOWN;
+		return cursorShown ? TextFieldCursorState.SHOWN : TextFieldCursorState.NOT_SHOWN;
 	}
 	
-	private void scheduleNextInvalidation(InvalidationScheduler scheduler) {
+	private static void scheduleNextInvalidation(InvalidationScheduler scheduler, ComponentUI invalidatedComponentUI) {
 		long nextInvalidationMillis = CURSOR_BLINK_CYCLE_MILLIS - System.currentTimeMillis() % CURSOR_BLINK_CYCLE_MILLIS;
-		scheduler.scheduleInvalidationInMillis(nextInvalidationMillis, componentUI, InvalidationLevel.PAINT);
+		scheduler.scheduleInvalidationInMillis(nextInvalidationMillis, invalidatedComponentUI, InvalidationLevel.PAINT);
 	}
 
-	private int getCursorOffset(String text, int cursorPos) {
+	private static int getCursorOffset(Canvas2D canvas, String text, int cursorPos) {
 		int cursorOffset = 0;
+		Font2D font = canvas.getPaint().getFont();
 		FontMetrics metrics = font.getMetrics();
 		for (int i = 0; i < cursorPos; i++) {
 			cursorOffset += metrics.getCharacterWidth(text.codePointAt(i));
 		}
 		
 		return cursorOffset;
-	}
-	
-	private enum CursorState {
-		INACTIVE, NOT_SHOWN, SHOWN
 	}
 
 }

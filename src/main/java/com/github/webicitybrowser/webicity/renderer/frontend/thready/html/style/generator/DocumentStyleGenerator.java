@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.webicitybrowser.spec.dom.node.Node;
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.NestingDirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.ComposedDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -13,12 +15,14 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMResu
 
 public class DocumentStyleGenerator implements StyleGenerator {
 	
-	private final Node node;
+	private final WebComponent component;
 	private final CSSOMResult<Node, DirectivePool>[] cssomResults;
+	private final DirectivePool styleDirectives;
 
-	public DocumentStyleGenerator(Node node, CSSOMResult<Node, DirectivePool>[] results) {
-		this.node = node;
-		this.cssomResults = results;
+	public DocumentStyleGenerator(WebComponent component, CSSOMResult<Node, DirectivePool>[] cssomResults, DirectivePool parentPool) {
+		this.component = component;
+		this.cssomResults = cssomResults;
+		this.styleDirectives = generateStyleDirectives(parentPool);
 	}
 
 	@Override
@@ -30,21 +34,31 @@ public class DocumentStyleGenerator implements StyleGenerator {
 		
 		return childGenerators;
 	}
-
+	
 	@Override
-	public DirectivePool[] getDirectivePools() {
-		List<DirectivePool> pools = new ArrayList<>(cssomResults.length);
+	public DirectivePool getStyleDirectives() {
+		return this.styleDirectives;
+	}
+
+	public DirectivePool generateStyleDirectives(DirectivePool parentPool) {
+		List<DirectivePool> matchingPools = new ArrayList<>(cssomResults.length);
 		for (CSSOMResult<Node, DirectivePool> result: cssomResults) {
-			for (CSSOMNode<Node, DirectivePool> node: result.getMatchingNodes(node)) {
-				pools.addAll(node.getNodeProperties());
+			for (CSSOMNode<Node, DirectivePool> node: result.getMatchingNodes(component.getNode())) {
+				matchingPools.addAll(node.getNodeProperties());
 			}
 		}
 		
-		return pools.toArray(DirectivePool[]::new);
+		ComposedDirectivePool<DirectivePool> combinedPool = new NestingDirectivePool(parentPool);
+		combinedPool.addDirectivePool(component.getStyleDirectives());
+		for (DirectivePool pool: matchingPools) {
+			combinedPool.addDirectivePool(pool);
+		}
+		
+		return combinedPool;
 	}
 	
 	private StyleGenerator createChildGenerator(ComponentUI childUI, int i) {
-		return new DocumentStyleGenerator(((WebComponent) childUI.getComponent()).getNode(), cssomResults);
+		return new DocumentStyleGenerator((WebComponent) childUI.getComponent(), cssomResults, styleDirectives);
 	}
 
 }

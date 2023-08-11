@@ -1,0 +1,69 @@
+package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.display.wrapper;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.render.unit.MappingRenderedUnitGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
+import com.github.webicitybrowser.thready.gui.message.MessageHandler;
+import com.github.webicitybrowser.thready.gui.tree.core.Component;
+
+public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends RenderedUnit> implements UIDisplay<SimpleWrapperContext<T>, SimpleWrapperBox<U>, SimpleWrapperUnit<V>> {
+
+	private final UIDisplay<T, U, V> childDisplay;
+
+	public SimpleWrapperDisplay(UIDisplay<T, U, V> childDisplay) {
+		this.childDisplay = childDisplay;
+	}
+	
+	@Override
+	public SimpleWrapperContext<T> createContext(ComponentUI componentUI) {
+		return new SimpleWrapperContext<>(componentUI, childDisplay.createContext(componentUI));
+	}
+
+	@Override
+	public List<SimpleWrapperBox<U>> generateBoxes(SimpleWrapperContext<T> displayContext, BoxContext boxContext, StyleGenerator styleGenerator) {
+		List<U> originalBoxes = childDisplay.generateBoxes(displayContext.childContext(), boxContext, styleGenerator);
+		List<SimpleWrapperBox<U>> wrappedBoxes = new ArrayList<>();
+		Component component = displayContext.componentUI().getComponent();
+		DirectivePool directives = styleGenerator.getStyleDirectives();
+		for (U originalBox: originalBoxes) {
+			wrappedBoxes.add(new SimpleWrapperBox<>(component, directives, this, originalBox));
+		}
+		
+		return wrappedBoxes;
+	}
+
+	@Override
+	public RenderedUnitGenerator<SimpleWrapperUnit<V>> renderBox(SimpleWrapperBox<U> box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
+		RenderedUnitGenerator<V> childGenerator = childDisplay.renderBox(box.innerBox(), renderContext, localRenderContext);
+		return new MappingRenderedUnitGenerator<>(childGenerator, childUnit -> new SimpleWrapperUnit<>(
+			childUnit.preferredSize(),
+			box.styleDirectives(),
+			childUnit));
+	}
+
+	@Override
+	public void paint(SimpleWrapperUnit<V> unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
+		SimpleWrapperPainter.<V>paint(unit, childDisplay, globalPaintContext, localPaintContext);
+	}
+
+	@Override
+	public MessageHandler createMessageHandler(SimpleWrapperUnit<V> unit, Rectangle documentRect) {
+		return childDisplay.createMessageHandler(unit.childUnit(), documentRect);
+	}
+
+}

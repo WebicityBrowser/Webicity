@@ -1,19 +1,26 @@
 package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box;
 
+import java.util.List;
+
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.Renderer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.PrerenderMessage;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public interface Box {
 	
-	Component getOwningComponent();
+	Component owningComponent();
 
-	void addChild(Box child);
-	
-	Box[] getAdjustedBoxTree();
+	DirectivePool styleDirectives();
 
-	DirectivePool getStyleDirectives();
+	default void message(PrerenderMessage message) {};
 	
-	Renderer createRenderer();
+	default boolean isFluid() {
+		return false;
+	};
+
+	default List<BoundBox<?, ?>> getAdjustedBoxTree(BoundBox<?, ?> self) {
+		return List.of(self);
+	};
 	
 }

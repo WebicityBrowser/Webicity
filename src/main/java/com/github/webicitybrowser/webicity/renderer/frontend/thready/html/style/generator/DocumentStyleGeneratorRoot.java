@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.Node;
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
@@ -32,7 +33,7 @@ public class DocumentStyleGeneratorRoot implements StyleGeneratorRoot {
 			results[i] = tree.apply(document, new DocumentParticipantTraverser());
 		}
 		
-		return new DocumentStyleGenerator(((WebComponent) componentUI.getComponent()).getNode(), results);
+		return new DocumentStyleGenerator((WebComponent) componentUI.getComponent(), results, new BasicDirectivePool());
 	}
 
 }

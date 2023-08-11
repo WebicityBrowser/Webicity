@@ -5,41 +5,32 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.builder.Paint2DBuilder;
-import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.PaintContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.Painter;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
 import com.github.webicitybrowser.webicitybrowser.gui.Styling;
-import com.github.webicitybrowser.webicitybrowser.gui.binding.component.tab.TabComponent;
 
-public class TabPainter implements Painter {
+public final class TabPainter {
 
-	private final Box box;
-	private final Rectangle documentRect;
-	private final TabComponent component;
-	private final Font2D font;
+	private TabPainter() {}
 
-	public TabPainter(Box box, Rectangle documentRect, TabComponent component, Font2D font) {
-		this.box = box;
-		this.documentRect = documentRect;
-		this.component = component;
-		this.font = font;
-	}
-
-	@Override
-	public void paint(PaintContext context, Canvas2D canvas, Rectangle viewportRect) {
-		if (component.isTopLevel()) {
-			paintTopLevelBackground(canvas);
+	public static void paint(TabUnit unit, LocalPaintContext localPaintContext) {
+		Canvas2D canvas = localPaintContext.canvas();
+		Rectangle documentRect = localPaintContext.documentRect();
+		DirectivePool styleDirectives = unit.box().styleDirectives();
+		
+		boolean isTopLevel = unit.box().owningComponent().isTopLevel();
+		if (isTopLevel) {
+			paintTopLevelBackground(canvas, documentRect, styleDirectives);
 		} else {
-			paintLowerLevelBackground(canvas);
+			paintLowerLevelBackground(canvas, documentRect, styleDirectives);
 		}
-		paintText(context, canvas);
+		paintText(canvas, documentRect, styleDirectives, unit);
 	}
 
-	private void paintTopLevelBackground(Canvas2D canvas) {
-		ColorFormat color = SimpleDirectiveUtil.getBackgroundColor(box.getStyleDirectives());
+	private static void paintTopLevelBackground(Canvas2D canvas, Rectangle documentRect, DirectivePool styleDirectives) {
+		ColorFormat color = SimpleDirectiveUtil.getBackgroundColor(styleDirectives);
 		Paint2D paint = Paint2DBuilder
 			.clone(canvas.getPaint())
 			.setColor(color)
@@ -64,8 +55,8 @@ public class TabPainter implements Painter {
 		ctx.drawEllipse(docX + docW - Styling.BUTTON_WIDTH, circleY, Styling.BUTTON_WIDTH, Styling.BUTTON_WIDTH);
 	}
 	
-	private void paintLowerLevelBackground(Canvas2D canvas) {
-		ColorFormat color = SimpleDirectiveUtil.getBackgroundColor(box.getStyleDirectives());
+	private static void paintLowerLevelBackground(Canvas2D canvas, Rectangle documentRect, DirectivePool styleDirectives) {
+		ColorFormat color = SimpleDirectiveUtil.getBackgroundColor(styleDirectives);
 		Paint2D paint = Paint2DBuilder
 			.clone(canvas.getPaint())
 			.setColor(color)
@@ -84,17 +75,17 @@ public class TabPainter implements Painter {
 		ctx.drawEllipse(docX + docW - Styling.BUTTON_WIDTH, circleY, Styling.BUTTON_WIDTH, Styling.BUTTON_WIDTH);
 	}
 
-	private void paintText(PaintContext context, Canvas2D canvas) {
-		ColorFormat color = SimpleDirectiveUtil.getForegroundColor(box.getStyleDirectives());
+	private static void paintText(Canvas2D canvas, Rectangle documentRect, DirectivePool styleDirectives, TabUnit unit) {
+		ColorFormat color = SimpleDirectiveUtil.getForegroundColor(styleDirectives);
 		Paint2D paint = Paint2DBuilder
 			.clone(canvas.getPaint())
 			.setColor(color)
-			.setFont(font)
+			.setFont(unit.font())
 			.build();
 		Canvas2D ctx = canvas.withPaint(paint);
 		
-		String text = component.getName();
-		FontMetrics metrics = font.getMetrics();
+		String text = unit.box().owningComponent().getName();
+		FontMetrics metrics = unit.font().getMetrics();
 		
 		float docX = documentRect.position().x();
 		float docY = documentRect.position().y();

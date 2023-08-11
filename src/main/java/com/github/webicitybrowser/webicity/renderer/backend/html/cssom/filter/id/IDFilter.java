@@ -31,7 +31,6 @@ public class IDFilter<U> implements CSSOMComposableFilter<Node, U, IDFilter<U>> 
 		return Objects.hash(idName);
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object o) {
 		return
