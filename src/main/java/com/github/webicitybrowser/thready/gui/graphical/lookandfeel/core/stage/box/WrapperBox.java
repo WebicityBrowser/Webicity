@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.PrerenderMessage;
 
 public interface WrapperBox extends Box {
     
@@ -23,6 +24,11 @@ public interface WrapperBox extends Box {
             return innerBox;
         }
     };
+
+	@Override
+	default void message(PrerenderMessage message) {
+		innerBox().getRaw().message(message);
+	}
 
     @Override
     @SuppressWarnings("unchecked")

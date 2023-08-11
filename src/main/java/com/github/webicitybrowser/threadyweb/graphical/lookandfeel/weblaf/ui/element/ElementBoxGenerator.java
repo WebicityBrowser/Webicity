@@ -25,9 +25,6 @@ public class ElementBoxGenerator {
 	public static List<ChildrenBox> generateBoxes(ElementContext elementContext, BoxContext boxContext, StyleGenerator styleGenerator) {
 		DirectivePool directives = styleGenerator.getStyleDirectives();
 		OuterDisplay boxDisplay = WebDirectiveUtil.getOuterDisplay(directives);
-		/*if (boxDisplay == OuterDisplay.CONTENTS) {
-			return generateContentsBoxes(elementContext, boxContext, styleGenerator);
-		}*/
 		
 		ChildrenBox rootBox = createBox(elementContext, directives, boxDisplay);
 		addChildrenToBox(rootBox, elementContext, boxContext, styleGenerator);
@@ -106,9 +103,7 @@ public class ElementBoxGenerator {
 	) {
 		List<BoundBox<?, ?>> childBoxes = new ArrayList<>();
 		for (BoundBox<?, ?> box: child.generateBoxes(context, styleGenerator)) {
-			for (BoundBox<?, ?> adjustedBox: box.getAdjustedBoxTree()) {
-				childBoxes.add(adjustedBox);
-			}
+			childBoxes.addAll(box.getAdjustedBoxTree());
 		};
 		
 		return childBoxes;

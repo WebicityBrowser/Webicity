@@ -6,10 +6,10 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.render.unit.MappingRenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
@@ -23,7 +23,7 @@ import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
-public class WebWrapperDisplay<T extends Context, U extends Box, V extends RenderedUnit> implements UIDisplay<WebWrapperContext<T>, WebWrapperBox<U, V>, WebWrapperUnit<V>> {
+public class WebWrapperDisplay<T extends Context, U extends Box, V extends RenderedUnit> implements UIDisplay<WebWrapperContext<T>, WebWrapperBox, WebWrapperUnit<V>> {
 
 	private final UIDisplay<T, U, V> innerDisplay;
 
@@ -37,15 +37,15 @@ public class WebWrapperDisplay<T extends Context, U extends Box, V extends Rende
 	}
 
 	@Override
-	public List<WebWrapperBox<U, V>> generateBoxes(WebWrapperContext<T> displayContext, BoxContext boxContext, StyleGenerator styleGenerator) {
+	public List<WebWrapperBox> generateBoxes(WebWrapperContext<T> displayContext, BoxContext boxContext, StyleGenerator styleGenerator) {
 		DirectivePool styleDirectives = styleGenerator.getStyleDirectives();
 		Component owningComponent = displayContext.componentUI().getComponent();
-		return WebWrapperBoxGenerator.generateBoxes(styleDirectives, () -> {
+		return WebWrapperBoxGenerator.generateBoxes(owningComponent, styleDirectives, () -> {
 			List<U> rawBoxes = innerDisplay.generateBoxes(displayContext.innerContext(), boxContext, styleGenerator);
-			List<WebWrapperBox<U, V>> wrapperBoxes = new ArrayList<>(rawBoxes.size());
+			List<BoundBox<?, ?>> wrapperBoxes = new ArrayList<>(rawBoxes.size());
 			for (U box: rawBoxes) {
-				BoundBox<U, V> boundBox = BoundBox.create(box, innerDisplay);
-				wrapperBoxes.add(new WebWrapperBox<U, V>(owningComponent, styleDirectives, innerDisplay, boundBox));
+				BoundBox<?, ?> boundBox = BoundBox.create(box, innerDisplay);
+				wrapperBoxes.add(boundBox);
 			}
 			
 			return wrapperBoxes;
@@ -54,9 +54,15 @@ public class WebWrapperDisplay<T extends Context, U extends Box, V extends Rende
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public RenderedUnitGenerator<WebWrapperUnit<V>> renderBox(WebWrapperBox<U, V> box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		RenderedUnitGenerator<V> innerGenerator = box.display().renderBox((U) box.innerBox().getRaw(), renderContext, localRenderContext);
-		return new MappingRenderedUnitGenerator<>(innerGenerator, g -> new WebWrapperUnit<>(g.preferredSize(), box, g, box.display()));
+	public RenderedUnitGenerator<WebWrapperUnit<V>> renderBox(WebWrapperBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
+		if (box instanceof WebWrapperWrapperBox) {
+			WebWrapperWrapperBox<U, V> wrapperBox = (WebWrapperWrapperBox<U, V>) box;
+			BoundRenderedUnitGenerator<V> innerGenerator = (BoundRenderedUnitGenerator<V>) wrapperBox.innerBox().render(renderContext, localRenderContext);
+
+			return new WebWrapperUnitWrapperGenerator<>(innerGenerator, wrapperBox);
+		} else {
+			throw new IllegalArgumentException("Box must be a WebWrapperWrapperBox");
+		}
 	}
 
 	@Override

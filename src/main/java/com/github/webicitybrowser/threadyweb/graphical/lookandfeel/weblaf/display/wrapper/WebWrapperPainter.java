@@ -10,7 +10,7 @@ public final class WebWrapperPainter {
 
 	public static <V extends RenderedUnit> void paint(WebWrapperUnit<V> unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		WebWrapperBackgroundPainter.paint(unit, localPaintContext);
-		unit.innerDisplay().paint(unit.innerUnit(), globalPaintContext, localPaintContext);
+		unit.innerUnit().paint(globalPaintContext, localPaintContext);
 	}
 	
 }
