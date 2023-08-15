@@ -15,6 +15,8 @@ public class TextUnitGenerator implements RenderedUnitGenerator<TextRenderedUnit
 	
 	private int windowStart = 0;
 	private int windowEnd = 0;
+
+	private TextRenderedUnit lastUnit;
 	
 	public TextUnitGenerator(TextBox box, String text, Font2D font, float[] charWidths) {
 		this.box = box;
@@ -25,7 +27,7 @@ public class TextUnitGenerator implements RenderedUnitGenerator<TextRenderedUnit
 	}
 	
 	@Override
-	public TextRenderedUnit generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
+	public GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
 		float totalWidth = 0;
 		windowStart = windowEnd;
 		while (!completed() && ((forceFit && totalWidth == 0) || !nextCharWillOverflow(totalWidth, preferredBounds))) {
@@ -34,12 +36,19 @@ public class TextUnitGenerator implements RenderedUnitGenerator<TextRenderedUnit
 		}
 		
 		if (windowStart == windowEnd) {
-			return null;
+			return GenerationResult.NO_FIT;
 		}
 		
 		String subtext = text.substring(windowStart, windowEnd);
 		AbsoluteSize textSize = new AbsoluteSize(totalWidth, height);
-		return new TextRenderedUnit(textSize, box.styleDirectives(), box, subtext, font);
+		lastUnit = new TextRenderedUnit(textSize, box.styleDirectives(), box, subtext, font);
+
+		return GenerationResult.NORMAL;
+	}
+
+	@Override
+	public TextRenderedUnit getLastGeneratedUnit() {
+		return lastUnit;
 	}
 
 	@Override

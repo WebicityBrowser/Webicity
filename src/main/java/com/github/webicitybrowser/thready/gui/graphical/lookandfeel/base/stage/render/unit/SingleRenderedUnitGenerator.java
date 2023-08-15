@@ -16,15 +16,24 @@ public class SingleRenderedUnitGenerator<T extends RenderedUnit> implements Rend
 	}
 
 	@Override
-	public T generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
+	public GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
 		if (completed) {
 			throw new IllegalStateException("Already returned rendered unit!");
 		}
 		if (!forceFit && !AbsoluteSizeMath.fits(renderedUnit.preferredSize(), preferredBounds)) {
-			return null;
+			return GenerationResult.NO_FIT;
 		}
 		
 		this.completed = true;
+
+		return GenerationResult.NORMAL;
+	}
+
+	@Override
+	public T getLastGeneratedUnit() {
+		if (!completed) {
+			return null;
+		}
 		return renderedUnit;
 	}
 

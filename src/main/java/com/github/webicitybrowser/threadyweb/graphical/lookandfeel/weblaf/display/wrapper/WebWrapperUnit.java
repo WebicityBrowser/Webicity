@@ -6,9 +6,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 
 public record WebWrapperUnit<V extends RenderedUnit>(WebWrapperWrapperBox<?, V> box, BoundRenderedUnit<V> innerUnit) implements RenderedUnit {
 
-    @Override
-    public AbsoluteSize preferredSize() {
-        return innerUnit.getRaw().preferredSize();
-    }
+	@Override
+	public AbsoluteSize preferredSize() {
+		return innerUnit.getRaw().preferredSize();
+	}
 
 }

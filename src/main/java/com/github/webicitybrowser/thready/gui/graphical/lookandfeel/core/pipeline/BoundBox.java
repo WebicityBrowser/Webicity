@@ -13,7 +13,7 @@ public interface BoundBox<U extends Box, V extends RenderedUnit> {
 
 	Box getRaw();
 	
-	BoundRenderedUnitGenerator<?> render(GlobalRenderContext globalRenderContext, LocalRenderContext childRenderContext);
+	BoundRenderedUnitGenerator<V> render(GlobalRenderContext globalRenderContext, LocalRenderContext childRenderContext);
 	
 	List<BoundBox<?, ?>> getAdjustedBoxTree();
 

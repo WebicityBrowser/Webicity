@@ -3,7 +3,7 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 
 public interface Context {
-    
-    ComponentUI componentUI();
+	
+	ComponentUI componentUI();
 
 }

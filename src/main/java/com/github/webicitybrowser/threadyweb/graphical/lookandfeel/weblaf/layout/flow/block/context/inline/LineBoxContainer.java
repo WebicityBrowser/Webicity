@@ -14,6 +14,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipelin
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.CursorTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineCursorTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension;
@@ -32,7 +33,9 @@ public class LineBoxContainer {
 	private LineBox currentLine;
 	private BoundRenderedUnitGenerator<?> currentFlow;
 
-	public LineBoxContainer(GlobalRenderContext renderContext, AbsoluteSize maxBounds, LineDimensionConverter dimensionConverter, ContextSwitch[] contextSwitches) {
+	public LineBoxContainer(
+		GlobalRenderContext renderContext, AbsoluteSize maxBounds, LineDimensionConverter dimensionConverter, ContextSwitch[] contextSwitches
+	) {
 		this.globalRenderContext = renderContext;
 		this.maxBounds = maxBounds;
 		this.dimensionConverter = dimensionConverter;
@@ -48,12 +51,12 @@ public class LineBoxContainer {
 		}
 	}
 
-	public LayoutResult collectRenderResults() {
+	public LayoutResult layout() {
 		List<ChildLayoutResult> renderedChildren = new ArrayList<>();
 		CursorTracker cursorTracker = new LineCursorTracker(dimensionConverter);
 		for (LineBox line: lineBoxes) {
 			AbsolutePosition linePosition = cursorTracker.getNextPosition();
-			renderedChildren.addAll(line.getRenderResults(linePosition));
+			renderedChildren.addAll(line.layoutAtPos(linePosition));
 			cursorTracker.add(line.getSize());
 			cursorTracker.nextLine();
 		}
@@ -82,7 +85,9 @@ public class LineBoxContainer {
 	private BoundRenderedUnit<?> appendNextUnit(boolean forceFit) {
 		// TODO: Obtain remaining bounds properly
 		AbsoluteSize remainingLineSize = getMaxChildBounds();
-		BoundRenderedUnit<?> unit = currentFlow.getUnit(g -> g.generateNextUnit(remainingLineSize, forceFit));
+		currentFlow.getRaw().generateNextUnit(remainingLineSize, forceFit);
+		BoundRenderedUnit<?> unit = currentFlow.getLastGeneratedUnit();
+
 		return unit;
 	}
 	
@@ -91,8 +96,9 @@ public class LineBoxContainer {
 		AbsoluteSize maxChildBounds = getMaxChildBounds();
 		LocalRenderContext childRenderContext = LocalRenderContext.create(maxChildBounds, contextSwitches);
 		BoundRenderedUnitGenerator<?> unitGenerator = child.render(globalRenderContext, childRenderContext);
-		BoundRenderedUnit<?> unit = unitGenerator.getUnit(g -> g.generateNextUnit(maxChildBounds, true));
-		currentLine.add(unit);
+		GenerationResult generationResult = unitGenerator.getRaw().generateNextUnit(maxChildBounds, true);
+		assert generationResult == GenerationResult.NORMAL && unitGenerator.getRaw().completed();
+		currentLine.add(unitGenerator.getLastGeneratedUnit());
 		goToNextLine();
 	}
 

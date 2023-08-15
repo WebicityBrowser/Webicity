@@ -30,7 +30,7 @@ public final class FlowFluidRenderer {
 		LineBoxContainer lines = new LineBoxContainer(globalRenderContext, precomputedInnerSize, dimensionConverter, contextSwitches);
 		renderChildren(children, lines);
 		
-		LayoutResult result = lines.collectRenderResults();
+		LayoutResult result = lines.layout();
 		InnerDisplayUnit unit = new InnerDisplayUnit(
 			result.fitSize(),
 			result.childLayoutResults());

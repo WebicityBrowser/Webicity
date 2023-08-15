@@ -31,14 +31,14 @@ public class LineBox {
 	}
 	
 	public boolean canFit(AbsoluteSize unitSize, AbsoluteSize maxLineSize) {
-		return cursorTracker.addWillOverflowLine(unitSize, maxLineSize);
+		return !cursorTracker.addWillOverflowLine(unitSize, maxLineSize);
 	}
 	
 	public AbsoluteSize getSize() {
 		return cursorTracker.getSizeCovered();
 	};
 
-	public List<ChildLayoutResult> getRenderResults(AbsolutePosition linePosition) {
+	public List<ChildLayoutResult> layoutAtPos(AbsolutePosition linePosition) {
 		List<ChildLayoutResult> renderResults = new ArrayList<>();
 		for (LineBoxRenderResult lineItem: lineItems) {
 			renderResults.add(createFinalRenderResult(lineItem, linePosition));

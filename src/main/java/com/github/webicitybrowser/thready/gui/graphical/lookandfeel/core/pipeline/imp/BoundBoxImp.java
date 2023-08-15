@@ -26,7 +26,7 @@ public class BoundBoxImp<U extends Box, V extends RenderedUnit> implements Bound
 	}
 
 	@Override
-	public BoundRenderedUnitGenerator<?> render(GlobalRenderContext globalRenderContext, LocalRenderContext childRenderContext) {
+	public BoundRenderedUnitGenerator<V> render(GlobalRenderContext globalRenderContext, LocalRenderContext childRenderContext) {
 		return BoundRenderedUnitGenerator.create(display.renderBox(box, globalRenderContext, childRenderContext), display);
 	}
 

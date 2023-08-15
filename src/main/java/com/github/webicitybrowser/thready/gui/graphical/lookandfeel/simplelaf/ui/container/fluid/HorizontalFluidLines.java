@@ -15,6 +15,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipelin
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 
 public class HorizontalFluidLines implements FluidLines {
 
@@ -41,13 +42,13 @@ public class HorizontalFluidLines implements FluidLines {
 		while (!unitGenerator.getRaw().completed()) { // A fluid box has multiple units to add to the line
 			AbsoluteSize preferredSize = calculatePreferredSize();
 			boolean forceFit = lineStart;
-			BoundRenderedUnit<?> unit = unitGenerator.getUnit(g -> g.generateNextUnit(preferredSize, forceFit));
-			if (unit != null) {
-				addUnitToLine(unit);
-				lineStart = false;
-			} else {
+			GenerationResult generationResult = unitGenerator.getRaw().generateNextUnit(preferredSize, forceFit);
+			if (generationResult == GenerationResult.NO_FIT) {
 				goToNextLine();
 				lineStart = true;
+			} else {
+				addUnitToLine(unitGenerator.getLastGeneratedUnit());
+				lineStart = false;
 			}
 		}
 	}

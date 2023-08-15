@@ -8,9 +8,9 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public record WebWrapperContentsBox(Component owningComponent, DirectivePool styleDirectives, List<BoundBox<?, ?>> childBoxes) implements WebWrapperBox {
 
-    @Override
-    public List<BoundBox<?, ?>> getAdjustedBoxTree(BoundBox<?, ?> self) {
-        return childBoxes;
+	@Override
+	public List<BoundBox<?, ?>> getAdjustedBoxTree(BoundBox<?, ?> self) {
+		return childBoxes;
 	};
-    
+	
 }

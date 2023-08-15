@@ -6,8 +6,14 @@ public interface RenderedUnitGenerator<T extends RenderedUnit> {
 
 	// ForceFit: Still make a minimal unit, even if it would not fit
 	// Returns null if no unit will fit and not forceFit.
-	T generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit);
+	GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit);
+
+	T getLastGeneratedUnit();
 
 	boolean completed();
+
+	public static enum GenerationResult {
+		NORMAL, NO_FIT, PAUSED
+	}
 	
 }

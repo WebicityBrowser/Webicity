@@ -36,6 +36,7 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 	private int nextCursor = 0;
 	
 	private CursorTracker cursorTracker;
+	private InnerDisplayUnit lastGeneratedUnit;
 
 	public FlowInlineUnitGenerator(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		this.globalRenderContext = globalRenderContext;
@@ -48,30 +49,44 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 	}
 	
 	@Override
-	public InnerDisplayUnit generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
+	public GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
 		if (completed()) {
 			throw new IllegalStateException("Unit generator already completed!");
 		}
 
 		startNextUnit();
+
+		GenerationResult result = GenerationResult.NORMAL;
 		
 		while (!completed()) {
 			AbsoluteSize remainingAvailableUnitSize = getRemainingAvailableUnitSize(preferredBounds);
-			BoundRenderedUnit<?> nextUnit = currentSubGenerator.getUnit(g -> g.generateNextUnit(remainingAvailableUnitSize, forceFit));
-			if (nextUnit == null) {
+			result = currentSubGenerator.getRaw().generateNextUnit(remainingAvailableUnitSize, forceFit);
+			if (result != GenerationResult.NORMAL) {
 				break;
 			}
+			BoundRenderedUnit<?> nextUnit = currentSubGenerator.getLastGeneratedUnit();
 			addUnit(nextUnit);
 			findNextSubGenerator();
 		}
 
 		if (renderedChildren.isEmpty()) {
-			return null;
+			return GenerationResult.NO_FIT;
 		}
 
-		return new InnerDisplayUnit(
+		lastGeneratedUnit = new InnerDisplayUnit(
 			cursorTracker.getSizeCovered(),
 			renderedChildren.toArray(ChildLayoutResult[]::new));
+
+		return result;
+	}
+
+	@Override
+	public InnerDisplayUnit getLastGeneratedUnit() {
+		if (lastGeneratedUnit == null) {
+			throw new IllegalStateException("No unit generated yet!");
+		}
+
+		return lastGeneratedUnit;
 	}
 
 	private void addUnit(BoundRenderedUnit<?> nextUnit) {
@@ -103,6 +118,7 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 	private void startNextUnit() {
 		this.renderedChildren = new ArrayList<>();
 		this.cursorTracker = new LineCursorTracker(dimensionConverter);
+		this.lastGeneratedUnit = null;
 	}
 	
 	private void findNextSubGenerator() {

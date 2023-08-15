@@ -18,6 +18,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipelin
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 
 public class FlowingLayoutManager implements SolidLayoutManager {
 
@@ -49,9 +50,11 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 		
 		BoundRenderedUnitGenerator<?> childUnitGenerator = childBox.render(globalRenderContext, childRenderContext);
 		// TODO: What if it is a fluid?
-		BoundRenderedUnit<?> childUnit = childUnitGenerator.getUnit(g -> g.generateNextUnit(precomputedSize, true));
+		GenerationResult generationResult = childUnitGenerator.getRaw().generateNextUnit(precomputedSize, true);
+		assert generationResult == GenerationResult.NORMAL && childUnitGenerator.getRaw().completed();
+		BoundRenderedUnit<?> childUnit = childUnitGenerator.getLastGeneratedUnit();
+
 		AbsoluteSize renderedSize = childUnit.getRaw().preferredSize();
-		
 		AbsoluteSize finalSize = computeFinalChildSize(renderedSize, precomputedSize, parentSize);
 		
 		AbsolutePosition computedPosition = computeNormalChildPosition(childBox, parentSize, finalSize, renderCursor);

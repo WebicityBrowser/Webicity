@@ -101,7 +101,9 @@ public class SkijaWindowImp implements SkijaWindow {
 	@Override
 	public void tick() {
 		closeWindowIfShouldClose();
-		screen.tick();
+		if (!windowClosed) {
+			screen.tick();
+		}
 	}
 	
 	//

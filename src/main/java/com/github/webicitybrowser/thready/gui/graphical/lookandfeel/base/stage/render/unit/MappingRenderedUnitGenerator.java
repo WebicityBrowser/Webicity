@@ -18,12 +18,13 @@ public class MappingRenderedUnitGenerator<T extends RenderedUnit, U extends Rend
 	}
 	
 	@Override
-	public U generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
-		T unit = backingGenerator.generateNextUnit(preferredBounds, forceFit);
-		if (unit == null) {
-			return null;
-		}
-		return mapper.apply(unit);
+	public GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
+		return backingGenerator.generateNextUnit(preferredBounds, forceFit);
+	}
+
+	@Override
+	public U getLastGeneratedUnit() {
+		return mapper.apply(backingGenerator.getLastGeneratedUnit());
 	}
 
 	@Override

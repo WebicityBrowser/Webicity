@@ -7,27 +7,34 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 
 public class WebWrapperUnitWrapperGenerator<V extends RenderedUnit> implements RenderedUnitGenerator<WebWrapperUnit<V>> {
-    
-    private final BoundRenderedUnitGenerator<V> innerUnitGenerator;
-    private final WebWrapperWrapperBox<?, V> wrapperBox;
+	
+	private final BoundRenderedUnitGenerator<V> innerUnitGenerator;
+	private final WebWrapperWrapperBox<?, V> wrapperBox;
 
-    public WebWrapperUnitWrapperGenerator(BoundRenderedUnitGenerator<V> innerUnitGenerator, WebWrapperWrapperBox<?, V> wrapperBox) {
-        this.innerUnitGenerator = innerUnitGenerator;
-        this.wrapperBox = wrapperBox;
-    }
+	private WebWrapperUnit<V> lastUnit;
 
-    @Override
-    public WebWrapperUnit<V> generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
-        BoundRenderedUnit<V> innerUnit = innerUnitGenerator.getUnit(g -> g.generateNextUnit(preferredBounds, forceFit));
-        if (innerUnit == null) {
-            return null;
-        }
-        return new WebWrapperUnit<>(wrapperBox, innerUnit);
-    }
+	public WebWrapperUnitWrapperGenerator(BoundRenderedUnitGenerator<V> innerUnitGenerator, WebWrapperWrapperBox<?, V> wrapperBox) {
+		this.innerUnitGenerator = innerUnitGenerator;
+		this.wrapperBox = wrapperBox;
+	}
 
-    @Override
-    public boolean completed() {
-        return innerUnitGenerator.getRaw().completed();
-    }
+	@Override
+	public GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
+		GenerationResult generationResult = innerUnitGenerator.getRaw().generateNextUnit(preferredBounds, forceFit);
+		BoundRenderedUnit<V> innerUnit = innerUnitGenerator.getLastGeneratedUnit();
+		lastUnit = innerUnit == null ? null : new WebWrapperUnit<>(wrapperBox, innerUnit);
+		
+		return generationResult;
+	}
+
+	@Override
+	public WebWrapperUnit<V> getLastGeneratedUnit() {
+		return lastUnit;
+	}
+
+	@Override
+	public boolean completed() {
+		return innerUnitGenerator.getRaw().completed();
+	}
 
 }

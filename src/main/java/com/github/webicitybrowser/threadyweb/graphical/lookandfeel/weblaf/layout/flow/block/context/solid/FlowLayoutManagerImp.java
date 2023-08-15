@@ -20,6 +20,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.FlowFluidRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementDisplay;
@@ -59,9 +60,12 @@ public class FlowLayoutManagerImp implements SolidLayoutManager {
 		BoundRenderedUnitGenerator<?> childUnitGenerator = childBox.getRaw() instanceof BasicAnonymousFluidBox ?
 			renderAnonBox(childBox, globalRenderContext, childRenderContext) :
 			childBox.render(globalRenderContext, childRenderContext);
-		BoundRenderedUnit<?> childUnit = childUnitGenerator.getUnit(g -> g.generateNextUnit(precomputedSize, true));
-		AbsoluteSize renderedSize = childUnit.getRaw().preferredSize();
 		
+		GenerationResult generationResult = childUnitGenerator.getRaw().generateNextUnit(precomputedSize, true);
+		assert generationResult == GenerationResult.NORMAL && childUnitGenerator.getRaw().completed();
+		BoundRenderedUnit<?> childUnit = childUnitGenerator.getLastGeneratedUnit();
+
+		AbsoluteSize renderedSize = childUnit.getRaw().preferredSize();
 		AbsoluteSize finalSize = computeFinalChildSize(renderedSize, precomputedSize, parentSize);
 		
 		AbsolutePosition computedPosition = computeNormalChildPosition(childBox, parentSize, finalSize, renderCursor);

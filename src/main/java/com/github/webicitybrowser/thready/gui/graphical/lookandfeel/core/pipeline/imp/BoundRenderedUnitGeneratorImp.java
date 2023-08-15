@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.imp;
 
-import java.util.function.Function;
-
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnitGenerator;
@@ -24,13 +22,10 @@ public class BoundRenderedUnitGeneratorImp<V extends RenderedUnit> implements Bo
 	}
 
 	@Override
-	public BoundRenderedUnit<V> getUnit(Function<RenderedUnitGenerator<V>, V> mapper) {
-		V unit = mapper.apply(unitGenerator);
-		if (unit == null) {
-			return null;
-		}
-		
-		return BoundRenderedUnit.create(unit, display);
+	public BoundRenderedUnit<V> getLastGeneratedUnit() {
+		return BoundRenderedUnit.create(
+			unitGenerator.getLastGeneratedUnit(),
+			display);
 	}
 
 }
