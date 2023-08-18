@@ -13,57 +13,48 @@ public class RGBA8Color implements RGBA8ColorFormat {
 
 	private final int color;
 
+	private static final int MAX_COLOR_COMPONENT_VALUE = 255;
+	private static final int RED_MASK = 0xFF000000;
+	private static final int GREEN_MASK = 0x00FF0000;
+	private static final int BLUE_MASK = 0x0000FF00;
+	private static final int ALPHA_MASK = 0x000000FF;
+
 	public RGBA8Color(int r, int g, int b, int a) {
-		color = (r << 24) + (g << 16) + (b << 8) + a;
+		color = (r << 24) | (g << 16) | (b << 8) | a;
 	}
-	
+
 	public RGBA8Color(int r, int g, int b) {
-		this(r, g, b, 255);
+		this(r, g, b, MAX_COLOR_COMPONENT_VALUE);
 	}
-	
-	// Thanks to joeyjoejoe from Discord for suggesting these constructors!
-	public RGBA8Color(int rgb) {
-		this(rgb, 255);
-	}
-	
-	public RGBA8Color(int rgb, int alpha) {
-		color = (rgb << 8) + alpha;
-	}
-	//
-	
+
 	@Override
 	public int getRed() {
-		return (color >>> 24) & 0xFF;
+		return (color & RED_MASK) >>> 24;
 	}
-	
+
 	@Override
 	public int getGreen() {
-		return (color >>> 16) & 255;
+		return (color & GREEN_MASK) >>> 16;
 	}
-	
+
 	@Override
 	public int getBlue() {
-		return (color >>> 8) & 255;
+		return (color & BLUE_MASK) >>> 8;
 	}
-	
+
 	@Override
 	public int getAlpha() {
-		return color & 255;
+		return color & ALPHA_MASK;
 	}
-	
+
 	@Override
 	public RawColor toRawColor() {
 		return InternalColorImp.ofRGBA8(getRed(), getGreen(), getBlue(), getAlpha());
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Color [a=" + getAlpha() + ", r="+getRed() + ", g=" + getGreen() + ", b=" + getBlue() + "]";
+		return String.format("Color [a=%d, r=%d, g=%d, b=%d]", getAlpha(), getRed(), getGreen(), getBlue());
 	}
-	
-	public static RGBA8Color fromRawColor(RawColor rawColor) {
-		InternalColorImp color = (InternalColorImp) rawColor;
-		return new RGBA8Color(color.getRed8(), color.getGreen8(), color.getBlue8(), color.getAlpha8());
-	}
-	
+
 }
