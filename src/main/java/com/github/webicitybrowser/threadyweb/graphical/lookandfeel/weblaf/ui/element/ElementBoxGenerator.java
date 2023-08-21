@@ -8,11 +8,11 @@ import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerato
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.PipelinedContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.UIPipeline;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective.OuterDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayLayout;
@@ -40,10 +40,10 @@ public class ElementBoxGenerator {
 		
 		switch (boxDisplay) {
 		case BLOCK:
-			return new ElementBlockBox(component, directives, layout);
+			return new ElementBlockBox(elementContext.display(), component, directives, layout);
 		case INLINE:
 		default:
-			return new ElementInlineBox(component, directives, layout);
+			return new ElementInlineBox(elementContext.display(), component, directives, layout);
 		}
 	}
 
@@ -54,35 +54,27 @@ public class ElementBoxGenerator {
 	// Children
 	
 	private static void addChildrenToBox(ChildrenBox rootBox, ElementContext elementContext, BoxContext boxContext, StyleGenerator styleGenerator) {
-		for (BoundBox<?, ?> box: getChildrenBoxes(elementContext, boxContext, styleGenerator)) {
+		for (Box box: getChildrenBoxes(elementContext, boxContext, styleGenerator)) {
 			rootBox.getChildrenTracker().addChild(box);
 		}
 	}
 	
-	private static List<BoundBox<?, ?>> getChildrenBoxes(ElementContext elementContext, BoxContext boxContext, StyleGenerator styleGenerator) {
-		List<BoundBox<?, ?>> childrenBoxes = new ArrayList<>();
+	private static List<Box> getChildrenBoxes(ElementContext elementContext, BoxContext boxContext, StyleGenerator styleGenerator) {
+		List<Box> childrenBoxes = new ArrayList<>();
 		
-		PipelinedContext<?, ?, ?>[] pipelines = computeCurrentChildUIs(elementContext, boxContext.getLookAndFeel());
+		Context[] pipelines = computeCurrentChildUIs(elementContext, boxContext.getLookAndFeel());
 		ComponentUI[] children = getComponentUIsFromPipelines(pipelines);
 		StyleGenerator[] childStyleGenerators = styleGenerator.createChildStyleGenerators(children);
 		for (int i = 0; i < pipelines.length; i++) {
-			List<BoundBox<?, ?>> childBoxes = getChildBoxes(pipelines[i], boxContext, childStyleGenerators[i]);
+			List<Box> childBoxes = getChildBoxes(pipelines[i], boxContext, childStyleGenerators[i]);
 			childrenBoxes.addAll(childBoxes);
 		}
 		
 		return childrenBoxes;
 	}
 
-	private static ComponentUI[] getComponentUIsFromPipelines(PipelinedContext<?, ?, ?>[] pipelines) {
-		ComponentUI[] componentUIs = new ComponentUI[pipelines.length];
-		for (int i = 0; i < pipelines.length; i++) {
-			componentUIs[i] = pipelines[i].getRaw().componentUI();
-		}
-		return componentUIs;
-	}
-
-	private static PipelinedContext<?, ?, ?>[] computeCurrentChildUIs(ElementContext elementContext, LookAndFeel lookAndFeel) {
-		MappingCache<Component, PipelinedContext<?, ?, ?>> childCache = elementContext.getChildCache();
+	private static Context[] computeCurrentChildUIs(ElementContext elementContext, LookAndFeel lookAndFeel) {
+		MappingCache<Component, Context> childCache = elementContext.getChildCache();
 		ComponentUI parentUI = elementContext.componentUI();
 		
 		WebComponent[] componentChildren = elementContext.getChildren();
@@ -92,17 +84,25 @@ public class ElementBoxGenerator {
 		
 		return elementContext.getChildCache().getComputedMappings();
 	}
+
+	private static ComponentUI[] getComponentUIsFromPipelines(Context[] pipelines) {
+		ComponentUI[] componentUIs = new ComponentUI[pipelines.length];
+		for (int i = 0; i < pipelines.length; i++) {
+			componentUIs[i] = pipelines[i].componentUI();
+		}
+		return componentUIs;
+	}
 	
-	private static PipelinedContext<?, ?, ?> createUIContext(Component component, ComponentUI parentUI, LookAndFeel lookAndFeel) {
-		ComponentUI child = lookAndFeel.createUIFor(component, parentUI);
-		return UIPipeline.create(child.getRootDisplay()).createContext(child);
+	private static Context createUIContext(Component component, ComponentUI parentUI, LookAndFeel lookAndFeel) {
+		ComponentUI childUI = lookAndFeel.createUIFor(component, parentUI);
+		return childUI.getRootDisplay().createContext(childUI);
 	}
 
-	private static List<BoundBox<?, ?>> getChildBoxes(
-		PipelinedContext<?, ?, ?> child, BoxContext context, StyleGenerator styleGenerator
+	private static List<Box> getChildBoxes(
+		Context childContext, BoxContext boxContext, StyleGenerator styleGenerator
 	) {
-		List<BoundBox<?, ?>> childBoxes = new ArrayList<>();
-		for (BoundBox<?, ?> box: child.generateBoxes(context, styleGenerator)) {
+		List<Box> childBoxes = new ArrayList<>();
+		for (Box box: UIPipeline.generateBoxes(childContext, boxContext, styleGenerator)) {
 			childBoxes.addAll(box.getAdjustedBoxTree());
 		};
 		

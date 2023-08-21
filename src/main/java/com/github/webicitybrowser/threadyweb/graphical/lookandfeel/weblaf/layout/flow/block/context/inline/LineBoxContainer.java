@@ -8,12 +8,13 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnitGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.CursorTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineCursorTracker;
@@ -31,7 +32,7 @@ public class LineBoxContainer {
 	private final List<LineBox> lineBoxes = new ArrayList<>();
 	
 	private LineBox currentLine;
-	private BoundRenderedUnitGenerator<?> currentFlow;
+	private RenderedUnitGenerator<?> currentFlow;
 
 	public LineBoxContainer(
 		GlobalRenderContext renderContext, AbsoluteSize maxBounds, LineDimensionConverter dimensionConverter, ContextSwitch[] contextSwitches
@@ -43,8 +44,8 @@ public class LineBoxContainer {
 		goToNextLine();
 	}
 
-	public void addBox(BoundBox<?, ?> child) {
-		if (child.getRaw().isFluid()) {
+	public void addBox(Box child) {
+		if (child.isFluid()) {
 			addFluidBox(child);
 		} else {
 			addSolidBox(child);
@@ -65,13 +66,13 @@ public class LineBoxContainer {
 			cursorTracker.getSizeCovered());
 	}
 	
-	private void addFluidBox(BoundBox<?, ?> child) {
+	private void addFluidBox(Box child) {
 		LocalRenderContext childRenderContext = LocalRenderContext.create(
 			new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED),
 			contextSwitches);
-		currentFlow = child.render(globalRenderContext, childRenderContext);
-		while (!currentFlow.getRaw().completed()) {
-			BoundRenderedUnit<?> unit = appendNextUnit(false);
+		currentFlow = UIPipeline.render(child, globalRenderContext, childRenderContext);
+		while (!currentFlow.completed()) {
+			RenderedUnit unit = appendNextUnit(false);
 			if (unit == null) {
 				goToNextLine();
 				unit = appendNextUnit(true);
@@ -82,22 +83,22 @@ public class LineBoxContainer {
 		currentFlow = null;
 	}
 
-	private BoundRenderedUnit<?> appendNextUnit(boolean forceFit) {
+	private RenderedUnit appendNextUnit(boolean forceFit) {
 		// TODO: Obtain remaining bounds properly
 		AbsoluteSize remainingLineSize = getMaxChildBounds();
-		currentFlow.getRaw().generateNextUnit(remainingLineSize, forceFit);
-		BoundRenderedUnit<?> unit = currentFlow.getLastGeneratedUnit();
+		currentFlow.generateNextUnit(remainingLineSize, forceFit);
+		RenderedUnit unit = currentFlow.getLastGeneratedUnit();
 
 		return unit;
 	}
 	
-	private void addSolidBox(BoundBox<?, ?> child) {
+	private void addSolidBox(Box child) {
 		goToNextLine();
 		AbsoluteSize maxChildBounds = getMaxChildBounds();
 		LocalRenderContext childRenderContext = LocalRenderContext.create(maxChildBounds, contextSwitches);
-		BoundRenderedUnitGenerator<?> unitGenerator = child.render(globalRenderContext, childRenderContext);
-		GenerationResult generationResult = unitGenerator.getRaw().generateNextUnit(maxChildBounds, true);
-		assert generationResult == GenerationResult.NORMAL && unitGenerator.getRaw().completed();
+		RenderedUnitGenerator<?> unitGenerator = UIPipeline.render(child, globalRenderContext, childRenderContext);
+		GenerationResult generationResult = unitGenerator.generateNextUnit(maxChildBounds, true);
+		assert generationResult == GenerationResult.NORMAL && unitGenerator.completed();
 		currentLine.add(unitGenerator.getLastGeneratedUnit());
 		goToNextLine();
 	}
@@ -120,7 +121,7 @@ public class LineBoxContainer {
 		return allSwitches;
 	}
 	
-	public void handleOutOfFlowBox(BoundBox<?, ?> box) {
+	public void handleOutOfFlowBox(Box box) {
 		// TODO: Make sure block boxes cause proper wrap again
 		// commitCurrentFlow();
 		addSolidBox(box);
@@ -130,7 +131,7 @@ public class LineBoxContainer {
 
 		@Override
 		public void onBoxEnter(BoxEnterContext context) {
-			if (!(context.getBox().getRaw().isFluid())) {
+			if (!(context.getBox().isFluid())) {
 				context.skipBox();
 				handleOutOfFlowBox(context.getBox());
 			}

@@ -1,19 +1,28 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.document;
 
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 
 public class DocumentContext implements Context {
 
+	private final UIDisplay<?, ?, ?> display;
 	private final ComponentUI componentUI;
 	
 	private ComponentUI childComponentUI;
 
-	public DocumentContext(ComponentUI componentUI) {
+	public DocumentContext(UIDisplay<?, ?, ?> display, ComponentUI componentUI) {
+		this.display = display;
 		this.componentUI = componentUI;
 	}
+
+	@Override
+	public UIDisplay<?, ?, ?> display() {
+		return this.display;
+	}
 	
+	@Override
 	public ComponentUI componentUI() {
 		return this.componentUI;
 	}

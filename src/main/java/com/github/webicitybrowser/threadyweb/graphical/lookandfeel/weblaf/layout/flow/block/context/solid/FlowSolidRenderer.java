@@ -17,7 +17,7 @@ public final class FlowSolidRenderer {
 
 	public static RenderedUnitGenerator<InnerDisplayUnit> render(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		LayoutResult layoutResult = INNER_LAYOUT_MANAGER.render(box, globalRenderContext, localRenderContext);
-		InnerDisplayUnit renderedUnit = new InnerDisplayUnit(layoutResult.fitSize(), layoutResult.childLayoutResults());
+		InnerDisplayUnit renderedUnit = new InnerDisplayUnit(box.display(), layoutResult.fitSize(), layoutResult.childLayoutResults());
 		return new SingleRenderedUnitGenerator<InnerDisplayUnit>(renderedUnit);
 	}
 	

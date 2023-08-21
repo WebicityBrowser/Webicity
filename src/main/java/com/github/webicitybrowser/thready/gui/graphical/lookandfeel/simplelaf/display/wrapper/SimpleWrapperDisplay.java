@@ -31,7 +31,7 @@ public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends Re
 	
 	@Override
 	public SimpleWrapperContext<T> createContext(ComponentUI componentUI) {
-		return new SimpleWrapperContext<>(componentUI, childDisplay.createContext(componentUI));
+		return new SimpleWrapperContext<>(this, componentUI, childDisplay.createContext(componentUI));
 	}
 
 	@Override
@@ -51,9 +51,8 @@ public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends Re
 	public RenderedUnitGenerator<SimpleWrapperUnit<V>> renderBox(SimpleWrapperBox<U> box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		RenderedUnitGenerator<V> childGenerator = childDisplay.renderBox(box.innerBox(), renderContext, localRenderContext);
 		return new MappingRenderedUnitGenerator<>(childGenerator, childUnit -> new SimpleWrapperUnit<>(
-			childUnit.preferredSize(),
-			box.styleDirectives(),
-			childUnit));
+			this, childUnit.preferredSize(),
+			box.styleDirectives(), childUnit));
 	}
 
 	@Override

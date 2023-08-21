@@ -2,6 +2,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.do
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.SolidBoxChildrenTracker;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoundBoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
@@ -9,16 +10,23 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.W
 
 public class DocumentBox implements ChildrenBox {
 	
+	private final UIDisplay<?, ?, ?> display;
 	private final Component owningComponent;
 	private final DirectivePool styleDirectives;
 	private final BoundBoxChildrenTracker childrenTracker;
 
-	public DocumentBox(Component owningComponent, DirectivePool styleDirectives) {
+	public DocumentBox(UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives) {
+		this.display = display;
 		this.owningComponent = owningComponent;
 		this.styleDirectives = styleDirectives;
 		this.childrenTracker = new SolidBoxChildrenTracker(this, WebDefaults.INLINE_DISPLAY);
 	}
 	
+	@Override
+	public UIDisplay<?, ?, ?> display() {
+		return this.display;
+	}
+
 	@Override
 	public Component owningComponent() {
 		return this.owningComponent;

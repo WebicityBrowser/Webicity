@@ -22,7 +22,7 @@ public class TabDisplay implements UIDisplay<TabContext, TabBox, TabUnit> {
 
 	@Override
 	public TabContext createContext(ComponentUI componentUI) {
-		return new TabContext(componentUI);
+		return new TabContext(this, componentUI);
 	}
 
 	@Override

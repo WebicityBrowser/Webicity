@@ -5,7 +5,7 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.render.unit.SingleRenderedUnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -22,7 +22,7 @@ public final class FlowFluidRenderer {
 	private FlowFluidRenderer() {}
 
 	public static RenderedUnitGenerator<InnerDisplayUnit> render(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		List<BoundBox<?, ?>> children = box.getChildrenTracker().getChildren();
+		List<Box> children = box.getChildrenTracker().getChildren();
 		
 		LineDimensionConverter dimensionConverter = new HorizontalLineDimensionConverter();
 		ContextSwitch[] contextSwitches = createContextSwitches(children);
@@ -32,28 +32,29 @@ public final class FlowFluidRenderer {
 		
 		LayoutResult result = lines.layout();
 		InnerDisplayUnit unit = new InnerDisplayUnit(
+			box.display(),
 			result.fitSize(),
 			result.childLayoutResults());
 		
 		return new SingleRenderedUnitGenerator<InnerDisplayUnit>(unit);
 	}
 	
-	private static ContextSwitch[] createContextSwitches(List<BoundBox<?, ?>> children) {
+	private static ContextSwitch[] createContextSwitches(List<Box> children) {
 		TextConsolidation consolidation = collectText(children);
 		TextAdjustContextSwitch adjustSwitch = createTextAdjustContextSwitch(consolidation);
 		return new ContextSwitch[] { adjustSwitch };
 	}
 
-	private static void renderChildren(List<BoundBox<?, ?>> children, LineBoxContainer lines) {
-		for (BoundBox<?, ?> child: children) {
+	private static void renderChildren(List<Box> children, LineBoxContainer lines) {
+		for (Box child: children) {
 			lines.addBox(child);
 		}
 	}
 
-	private static TextConsolidation collectText(List<BoundBox<?, ?>> children) {
+	private static TextConsolidation collectText(List<Box> children) {
 		TextConsolidation consolidation = TextConsolidation.create();
-		for (BoundBox<?, ?> child: children) {
-			child.getRaw().message((TextConsolidationPrerenderMessage) () -> consolidation);
+		for (Box child: children) {
+			child.message((TextConsolidationPrerenderMessage) () -> consolidation);
 		}
 		return consolidation;
 	}

@@ -5,6 +5,7 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.dimensions.util.RectangleUtil;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 
@@ -27,7 +28,7 @@ public final class ContainerPainter {
 
 	private static void paintChild(ChildLayoutResult resultToPaint, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		LocalPaintContext childPaintContext = createChildPaintContext(resultToPaint, localPaintContext);
-		resultToPaint.unit().paint(globalPaintContext, childPaintContext);
+		UIPipeline.paint(resultToPaint.unit(), globalPaintContext, childPaintContext);
 	}
 	
 	private static LocalPaintContext createChildPaintContext(ChildLayoutResult resultToPaint, LocalPaintContext localPaintContext) {

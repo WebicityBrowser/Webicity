@@ -8,13 +8,14 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnitGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.CursorTracker;
@@ -27,12 +28,13 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 
 	private final GlobalRenderContext globalRenderContext;
 	private final LocalRenderContext localRenderContext;
-	private final List<BoundBox<?, ?>> children;
+	private final UIDisplay<?, ?, ?> display;
+	private final List<Box> children;
 	private final FlowRecursiveContextSwitch recursiveSwitch;
 	private final LineDimensionConverter dimensionConverter;
 	
 	private List<ChildLayoutResult> renderedChildren;
-	private BoundRenderedUnitGenerator<?> currentSubGenerator;
+	private RenderedUnitGenerator<?> currentSubGenerator;
 	private int nextCursor = 0;
 	
 	private CursorTracker cursorTracker;
@@ -41,6 +43,7 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 	public FlowInlineUnitGenerator(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		this.globalRenderContext = globalRenderContext;
 		this.localRenderContext = localRenderContext;
+		this.display = box.display();
 		this.children = box.getChildrenTracker().getChildren();
 		this.recursiveSwitch = findRecursiveSwitch();
 		this.dimensionConverter = new HorizontalLineDimensionConverter();
@@ -60,11 +63,11 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 		
 		while (!completed()) {
 			AbsoluteSize remainingAvailableUnitSize = getRemainingAvailableUnitSize(preferredBounds);
-			result = currentSubGenerator.getRaw().generateNextUnit(remainingAvailableUnitSize, forceFit);
+			result = currentSubGenerator.generateNextUnit(remainingAvailableUnitSize, forceFit);
 			if (result != GenerationResult.NORMAL) {
 				break;
 			}
-			BoundRenderedUnit<?> nextUnit = currentSubGenerator.getLastGeneratedUnit();
+			RenderedUnit nextUnit = currentSubGenerator.getLastGeneratedUnit();
 			addUnit(nextUnit);
 			findNextSubGenerator();
 		}
@@ -74,6 +77,7 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 		}
 
 		lastGeneratedUnit = new InnerDisplayUnit(
+			display,
 			cursorTracker.getSizeCovered(),
 			renderedChildren.toArray(ChildLayoutResult[]::new));
 
@@ -82,17 +86,13 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 
 	@Override
 	public InnerDisplayUnit getLastGeneratedUnit() {
-		if (lastGeneratedUnit == null) {
-			throw new IllegalStateException("No unit generated yet!");
-		}
-
 		return lastGeneratedUnit;
 	}
 
-	private void addUnit(BoundRenderedUnit<?> nextUnit) {
+	private void addUnit(RenderedUnit nextUnit) {
 		AbsolutePosition unitPosition = cursorTracker.getNextPosition();
 		renderedChildren.add(createRenderResult(nextUnit, unitPosition));
-		cursorTracker.add(nextUnit.getRaw().preferredSize());
+		cursorTracker.add(nextUnit.preferredSize());
 	}
 
 	private AbsoluteSize getRemainingAvailableUnitSize(AbsoluteSize preferredBounds) {
@@ -133,12 +133,12 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 	private void startSubGeneratorAtCursor() {
 		// TODO: Call to the context
 		// TODO: Figure out what I meant by the above TODO statement
-		BoundBox<?, ?> box = children.get(nextCursor);
-		currentSubGenerator = box.render(globalRenderContext, localRenderContext);
+		Box box = children.get(nextCursor);
+		currentSubGenerator = UIPipeline.render(box, globalRenderContext, localRenderContext);
 		startOrSkipSubGenerator(box);
 	}
 	
-	private void startOrSkipSubGenerator(BoundBox<?, ?> box) {
+	private void startOrSkipSubGenerator(Box box) {
 		if (recursiveSwitch == null) {
 			return;
 		}
@@ -149,7 +149,7 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 			}
 			
 			@Override
-			public BoundBox<?, ?> getBox() {
+			public Box getBox() {
 				return box;
 			}
 		});
@@ -157,7 +157,7 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 	}
 
 	private void exitCurrentSubGeneratorIfCompleted() {
-		if (currentSubGenerator != null && currentSubGenerator.getRaw().completed()) {
+		if (currentSubGenerator != null && currentSubGenerator.completed()) {
 			exitCurrentSubGenerator();
 		}
 	}
@@ -176,8 +176,8 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 		return null;
 	}
 	
-	private ChildLayoutResult createRenderResult(BoundRenderedUnit<?> unit, AbsolutePosition unitPosition) {
-		Rectangle relativeRect = new Rectangle(unitPosition, unit.getRaw().preferredSize());
+	private ChildLayoutResult createRenderResult(RenderedUnit unit, AbsolutePosition unitPosition) {
+		Rectangle relativeRect = new Rectangle(unitPosition, unit.preferredSize());
 		return new ChildLayoutResult(relativeRect, unit);
 	}
 	

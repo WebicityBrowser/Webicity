@@ -4,6 +4,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.message.basics.DefaultGraphicalMessageHandler;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 
@@ -17,7 +18,7 @@ public final class ContainerMessageHandler {
 		for (int i = 0; i < childLayoutResults.length; i++) {
 			ChildLayoutResult childLayoutResult = childLayoutResults[i];
 			Rectangle childDocumentRect = computeResultDocumentRect(documentRect, childLayoutResult.relativeRect());
-			childHandlers[i] = childLayoutResult.unit().createMessageHandler(childDocumentRect);
+			childHandlers[i] = UIPipeline.createMessageHandler(childLayoutResult.unit(), childDocumentRect);
 		}
 		return new DefaultGraphicalMessageHandler(documentRect, unit.box(), childHandlers);
 	}

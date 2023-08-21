@@ -12,12 +12,13 @@ import com.github.webicitybrowser.thready.gui.graphical.layout.base.flowing.imp.
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnitGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 
 public class FlowingLayoutManager implements SolidLayoutManager {
@@ -32,7 +33,7 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 	private ChildLayoutResult[] renderChildren(
 		ChildrenBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext, RenderCursorTracker renderCursor
 	) {
-		List<BoundBox<?, ?>> children = box.getChildrenTracker().getChildren();
+		List<Box> children = box.getChildrenTracker().getChildren();
 		ChildLayoutResult[] results = new ChildLayoutResult[children.size()];
 		for (int i = 0; i < children.size(); i++) {
 			results[i] = renderChild(renderContext, localRenderContext, children.get(i), renderCursor);
@@ -42,19 +43,19 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 	}
 
 	private ChildLayoutResult renderChild(
-		GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext, BoundBox<?, ?> childBox, RenderCursorTracker renderCursor
+		GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext, Box childBox, RenderCursorTracker renderCursor
 	) {
 		AbsoluteSize parentSize = localRenderContext.getPreferredSize();
 		AbsoluteSize precomputedSize = precomputeChildSize(childBox, parentSize);
 		LocalRenderContext childRenderContext = LocalRenderContext.create(precomputedSize, localRenderContext.getContextSwitches());
 		
-		BoundRenderedUnitGenerator<?> childUnitGenerator = childBox.render(globalRenderContext, childRenderContext);
+		RenderedUnitGenerator<?> childUnitGenerator = UIPipeline.render(childBox, globalRenderContext, childRenderContext);;
 		// TODO: What if it is a fluid?
-		GenerationResult generationResult = childUnitGenerator.getRaw().generateNextUnit(precomputedSize, true);
-		assert generationResult == GenerationResult.NORMAL && childUnitGenerator.getRaw().completed();
-		BoundRenderedUnit<?> childUnit = childUnitGenerator.getLastGeneratedUnit();
+		GenerationResult generationResult = childUnitGenerator.generateNextUnit(precomputedSize, true);
+		assert generationResult == GenerationResult.NORMAL && childUnitGenerator.completed();
+		RenderedUnit childUnit = childUnitGenerator.getLastGeneratedUnit();
 
-		AbsoluteSize renderedSize = childUnit.getRaw().preferredSize();
+		AbsoluteSize renderedSize = childUnit.preferredSize();
 		AbsoluteSize finalSize = computeFinalChildSize(renderedSize, precomputedSize, parentSize);
 		
 		AbsolutePosition computedPosition = computeNormalChildPosition(childBox, parentSize, finalSize, renderCursor);
@@ -65,9 +66,8 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 		return new ChildLayoutResult(relativeRect, childUnit);
 	}
 
-	private AbsoluteSize precomputeChildSize(BoundBox<?, ?> childBox, AbsoluteSize parentSize) {
+	private AbsoluteSize precomputeChildSize(Box childBox, AbsoluteSize parentSize) {
 		return childBox
-			.getRaw()
 			.styleDirectives()
 			.getDirectiveOrEmpty(SizeDirective.class)
 			.map(directive -> directive.getSize())
@@ -88,10 +88,9 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 	}
 	
 	private AbsolutePosition computeNormalChildPosition(
-		BoundBox<?, ?> child, AbsoluteSize parentSize, AbsoluteSize finalSize, RenderCursorTracker renderCursor
+		Box child, AbsoluteSize parentSize, AbsoluteSize finalSize, RenderCursorTracker renderCursor
 	) {
 		return child
-			.getRaw()
 			.styleDirectives()
 			.getDirectiveOrEmpty(PositionDirective.class)
 			.map(directive -> directive.getPosition())

@@ -3,25 +3,31 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoundBoxChildrenTracker;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 
 public class FluidBoxChildrenTracker implements BoundBoxChildrenTracker {
 
-	private final List<BoundBox<?, ?>> children = new ArrayList<>(1);
+	private final List<Box> children = new ArrayList<>(1);
+
+	private final Box parentBox;
+
+	public FluidBoxChildrenTracker(Box parentBox) {
+		this.parentBox = parentBox;
+	}
 	
 	@Override
-	public void addChild(BoundBox<?, ?> child) {
+	public void addChild(Box child) {
 		children.add(child);
 	}
 
 	@Override
-	public List<BoundBox<?, ?>> getAdjustedBoxTree(BoundBox<?, ?> self) {
-		return List.of(self);
+	public List<Box> getAdjustedBoxTree() {
+		return List.of(parentBox);
 	}
 
 	@Override
-	public List<BoundBox<?, ?>> getChildren() {
+	public List<Box> getChildren() {
 		return List.copyOf(children);
 	}
 

@@ -14,7 +14,7 @@ public final class TabRenderer {
 			.getResourceLoader()
 			.loadFont(SimpleDirectiveUtil.getFontSettings(box.styleDirectives()));
 		// TODO: Make sure preferred size is not unbounded
-		return new TabUnit(localRenderContext.getPreferredSize(), box, font);
+		return new TabUnit(box.display(), localRenderContext.getPreferredSize(), box, font);
 	}
 
 }

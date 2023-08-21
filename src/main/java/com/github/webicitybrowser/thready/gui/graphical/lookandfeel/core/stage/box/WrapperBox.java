@@ -3,23 +3,22 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.PrerenderMessage;
 
 public interface WrapperBox extends Box {
 	
-	BoundBox<?, ?> innerBox();
+	Box innerBox();
 
-	WrapperBox rewrap(BoundBox<?, ?> newInnerBox);
+	WrapperBox rewrap(Box newInnerBox);
 
 	default boolean isFluid() {
-		return innerBox().getRaw().isFluid();
+		return innerBox().isFluid();
 	};
 
-	default BoundBox<?, ?> innerMostBox() {
-		BoundBox<?, ?> innerBox = innerBox();
-		if (innerBox.getRaw() instanceof WrapperBox) {
-			return ((WrapperBox) innerBox.getRaw()).innerMostBox();
+	default Box innerMostBox() {
+		Box innerBox = innerBox();
+		if (innerBox instanceof WrapperBox innerBoxWrapper) {
+			return innerBoxWrapper.innerMostBox();
 		} else {
 			return innerBox;
 		}
@@ -27,16 +26,15 @@ public interface WrapperBox extends Box {
 
 	@Override
 	default void message(PrerenderMessage message) {
-		innerBox().getRaw().message(message);
+		innerBox().message(message);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	default List<BoundBox<?, ?>> getAdjustedBoxTree(BoundBox<?, ?> self) {
-		List<BoundBox<?, ?>> innerBoxes = innerBox().getAdjustedBoxTree();
-		List<BoundBox<?, ?>> wrappedBoxes = new ArrayList<>(innerBoxes.size());
-		for (BoundBox<?, ?> innerBox : innerBoxes) {
-			wrappedBoxes.add(((BoundBox<WrapperBox, ?>) self).offshoot(rewrap(innerBox)));
+	default List<Box> getAdjustedBoxTree() {
+		List<Box> innerBoxes = innerBox().getAdjustedBoxTree();
+		List<Box> wrappedBoxes = new ArrayList<>(innerBoxes.size());
+		for (Box innerBox : innerBoxes) {
+			wrappedBoxes.add(rewrap(innerBox));
 		}
 
 		return wrappedBoxes;

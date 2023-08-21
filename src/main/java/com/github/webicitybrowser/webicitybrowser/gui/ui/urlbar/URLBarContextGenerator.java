@@ -2,6 +2,7 @@ package com.github.webicitybrowser.webicitybrowser.gui.ui.urlbar;
 
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.view.textfield.TextFieldContext;
 import com.github.webicitybrowser.thready.gui.graphical.viewmodel.textfield.TextFieldViewModel;
 import com.github.webicitybrowser.thready.gui.graphical.viewmodel.textfield.TextFieldViewModelListener;
@@ -12,9 +13,9 @@ public final class URLBarContextGenerator {
 
 	private URLBarContextGenerator() {}
 	
-	public static URLBarContext generateContext(ComponentUI componentUI) {
+	public static URLBarContext generateContext(UIDisplay<?, ?, ?> display, ComponentUI componentUI) {
 		TextFieldContext textFieldContext = new TextFieldContext(componentUI, createViewModel(componentUI));
-		return new URLBarContext(componentUI, textFieldContext);
+		return new URLBarContext(display, componentUI, textFieldContext);
 	}
 	
 	private static TextFieldViewModel createViewModel(ComponentUI componentUI) {

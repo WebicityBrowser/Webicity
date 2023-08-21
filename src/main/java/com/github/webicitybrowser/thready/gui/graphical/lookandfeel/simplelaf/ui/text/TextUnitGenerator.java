@@ -41,7 +41,7 @@ public class TextUnitGenerator implements RenderedUnitGenerator<TextRenderedUnit
 		
 		String subtext = text.substring(windowStart, windowEnd);
 		AbsoluteSize textSize = new AbsoluteSize(totalWidth, height);
-		lastUnit = new TextRenderedUnit(textSize, box.styleDirectives(), box, subtext, font);
+		lastUnit = new TextRenderedUnit(box.display(), textSize, box.styleDirectives(), box, subtext, font);
 
 		return GenerationResult.NORMAL;
 	}

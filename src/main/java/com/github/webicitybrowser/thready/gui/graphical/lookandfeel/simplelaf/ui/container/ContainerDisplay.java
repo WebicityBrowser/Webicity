@@ -24,14 +24,16 @@ public class ContainerDisplay implements UIDisplay<ContainerContext, ChildrenBox
 	@Override
 	public ContainerContext createContext(ComponentUI componentUI) {
 		MappingCache<Component, ContainerChildEntry> childCache = new MappingCacheImp<>(ContainerChildEntry[]::new, entry -> entry.component());
-		return new ContainerContext(componentUI, childCache);
+		return new ContainerContext(this, componentUI, childCache);
 	}
 
 	@Override
 	public List<ChildrenBox> generateBoxes(
 		ContainerContext displayContext, BoxContext boxContext, StyleGenerator styleGenerator
 	) {
-		ContainerBox rootBox = new ContainerBox(displayContext.owningComponent(), styleGenerator.getStyleDirectives(), WebDefaults.INLINE_DISPLAY);
+		ContainerBox rootBox = new ContainerBox(
+			this, displayContext.owningComponent(),
+			styleGenerator.getStyleDirectives(), WebDefaults.INLINE_DISPLAY);
 		ContainerChildrenBoxGenerator.addChildrenBoxes(displayContext, rootBox, boxContext, styleGenerator);
 		return List.of(rootBox);
 	}

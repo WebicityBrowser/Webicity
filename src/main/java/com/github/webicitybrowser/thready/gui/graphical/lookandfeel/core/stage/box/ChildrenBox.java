@@ -2,14 +2,13 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.
 
 import java.util.List;
 
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
-
 public interface ChildrenBox extends Box {
 
 	BoundBoxChildrenTracker getChildrenTracker();
 	
-	default List<BoundBox<?, ?>> getAdjustedBoxTree(BoundBox<?, ?> self) {
-		return getChildrenTracker().getAdjustedBoxTree(self);
+	@Override
+	default List<Box> getAdjustedBoxTree() {
+		return getChildrenTracker().getAdjustedBoxTree();
 	};
 	
 }

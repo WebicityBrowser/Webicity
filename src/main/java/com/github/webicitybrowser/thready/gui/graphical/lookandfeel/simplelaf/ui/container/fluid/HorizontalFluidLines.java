@@ -9,17 +9,18 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnitGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 
 public class HorizontalFluidLines implements FluidLines {
 
-	private final GlobalRenderContext renderContext;
+	private final GlobalRenderContext globalRenderContext;
 	private final AbsoluteSize maxBounds;
 	private final ContextSwitch[] switches;
 	
@@ -29,20 +30,20 @@ public class HorizontalFluidLines implements FluidLines {
 	private float totalWidth = 0;
 	private float curLineHeight = 0;
 
-	public HorizontalFluidLines(GlobalRenderContext renderContext, AbsoluteSize maxBounds) {
-		this.renderContext = renderContext;
+	public HorizontalFluidLines(GlobalRenderContext globalRenderContext, AbsoluteSize maxBounds) {
+		this.globalRenderContext = globalRenderContext;
 		this.maxBounds = maxBounds;
 		this.switches = new ContextSwitch[] {};
 	}
 
 	@Override
-	public void addBox(BoundBox<?, ?> child) {
-		BoundRenderedUnitGenerator<?> unitGenerator = child.render(renderContext, createLocalRenderContext(switches));
+	public void addBox(Box child) {
+		RenderedUnitGenerator<?> unitGenerator = UIPipeline.render(child, globalRenderContext, createLocalRenderContext(switches));
 		boolean lineStart = true;
-		while (!unitGenerator.getRaw().completed()) { // A fluid box has multiple units to add to the line
+		while (!unitGenerator.completed()) { // A fluid box has multiple units to add to the line
 			AbsoluteSize preferredSize = calculatePreferredSize();
 			boolean forceFit = lineStart;
-			GenerationResult generationResult = unitGenerator.getRaw().generateNextUnit(preferredSize, forceFit);
+			GenerationResult generationResult = unitGenerator.generateNextUnit(preferredSize, forceFit);
 			if (generationResult == GenerationResult.NO_FIT) {
 				goToNextLine();
 				lineStart = true;
@@ -64,8 +65,8 @@ public class HorizontalFluidLines implements FluidLines {
 		return LocalRenderContext.create(maxBounds, switches);
 	}
 
-	private void addUnitToLine(BoundRenderedUnit<?> unit) {
-		AbsoluteSize size = unit.getRaw().preferredSize();
+	private void addUnitToLine(RenderedUnit unit) {
+		AbsoluteSize size = unit.preferredSize();
 		curLineHeight = Math.max(size.height(), curLineHeight);
 		
 		AbsolutePosition startPosition = new AbsolutePosition(posX, posY);

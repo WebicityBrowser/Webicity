@@ -21,14 +21,14 @@ public class TextDisplay implements UIDisplay<TextContext, TextBox, TextRendered
 
 	@Override
 	public TextContext createContext(ComponentUI componentUI) {
-		return new TextContext(componentUI);
+		return new TextContext(this, componentUI);
 	}
 
 	@Override
 	public List<TextBox> generateBoxes(TextContext displayContext, BoxContext boxContext, StyleGenerator styleGenerator) {
 		TextComponent component = (TextComponent) displayContext.componentUI().getComponent();
 		DirectivePool directives = styleGenerator.getStyleDirectives();
-		return List.of(new TextBox(component, directives));
+		return List.of(new TextBox(this, component, directives));
 	}
 
 	@Override

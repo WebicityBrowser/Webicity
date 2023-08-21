@@ -26,7 +26,7 @@ public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, 
 	
 	@Override
 	public DocumentContext createContext(ComponentUI componentUI) {
-		return new DocumentContext(componentUI);
+		return new DocumentContext(this, componentUI);
 	}
 
 	@Override

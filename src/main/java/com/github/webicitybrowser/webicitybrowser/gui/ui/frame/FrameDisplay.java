@@ -22,7 +22,7 @@ public class FrameDisplay implements UIDisplay<FrameContext, FrameBox, FrameUnit
 
 	@Override
 	public FrameContext createContext(ComponentUI componentUI) {
-		return new FrameContext(componentUI);
+		return new FrameContext(this, componentUI);
 	}
 
 	@Override

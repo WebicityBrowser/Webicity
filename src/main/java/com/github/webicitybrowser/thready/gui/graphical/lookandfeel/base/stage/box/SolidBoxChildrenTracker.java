@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoundBoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 
 public class SolidBoxChildrenTracker implements BoundBoxChildrenTracker {
 	
-private final List<BoundBox<?, ?>> children = new ArrayList<>(1);
+	private final List<Box> children = new ArrayList<>(1);
 	
 	private final Box parentBox;
 	private final UIDisplay<?, ChildrenBox, ?> anonDisplay;
@@ -25,8 +24,8 @@ private final List<BoundBox<?, ?>> children = new ArrayList<>(1);
 	}
 	
 	@Override
-	public void addChild(BoundBox<?, ?> child) {
-		if (child.getRaw().isFluid()) {
+	public void addChild(Box child) {
+		if (child.isFluid()) {
 			addFluidBox(child);
 		} else {
 			addSolidBox(child);
@@ -34,16 +33,16 @@ private final List<BoundBox<?, ?>> children = new ArrayList<>(1);
 	}
 
 	@Override
-	public List<BoundBox<?, ?>> getAdjustedBoxTree(BoundBox<?, ?> self) {
-		return List.of(self);
+	public List<Box> getAdjustedBoxTree() {
+		return List.of(parentBox);
 	}
 	
 	@Override
-	public List<BoundBox<?, ?>> getChildren() {
+	public List<Box> getChildren() {
 		return List.copyOf(children);
 	}
 	
-	private void addSolidBox(BoundBox<?, ?> child) {
+	private void addSolidBox(Box child) {
 		if (!isSolidBoxContext) {
 			startSolidBoxContext();
 		}
@@ -51,7 +50,7 @@ private final List<BoundBox<?, ?>> children = new ArrayList<>(1);
 		currentFluidChildrenTracker = null;
 	}
 	
-	private void addFluidBox(BoundBox<?, ?> child) {
+	private void addFluidBox(Box child) {
 		if (!isSolidBoxContext) {
 			children.add(child);
 			return;
@@ -68,9 +67,9 @@ private final List<BoundBox<?, ?>> children = new ArrayList<>(1);
 		}
 		
 
-		List<BoundBox<?, ?>> priorChildren = List.copyOf(children);
+		List<Box> priorChildren = List.copyOf(children);
 		startFluidGroup(true);
-		for (BoundBox<?, ?> priorChild: priorChildren) {
+		for (Box priorChild: priorChildren) {
 			currentFluidChildrenTracker.addChild(priorChild);
 		}
 	}
@@ -80,14 +79,13 @@ private final List<BoundBox<?, ?>> children = new ArrayList<>(1);
 			return;
 		}
 		
-		ChildrenBox anonymousBox = new BasicAnonymousFluidBox(parentBox.owningComponent(), parentBox.styleDirectives());
-		BoundBox<ChildrenBox, ?> boundedAnonymousBox = BoundBox.create(anonymousBox, anonDisplay);
+		ChildrenBox anonymousBox = new BasicAnonymousFluidBox(anonDisplay, parentBox.owningComponent(), parentBox.styleDirectives());
 		// TODO: Is the passed-through renderer generator fine?
 		if (clearPrior) {
 			children.clear();
 		}
 		
-		children.add(boundedAnonymousBox);
+		children.add(anonymousBox);
 		this.currentFluidChildrenTracker = anonymousBox.getChildrenTracker();
 	}
 

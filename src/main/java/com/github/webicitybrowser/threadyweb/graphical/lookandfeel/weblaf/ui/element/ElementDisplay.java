@@ -25,7 +25,7 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, In
 
 	@Override
 	public ElementContext createContext(ComponentUI componentUI) {
-		return new ElementContext(componentUI);
+		return new ElementContext(this, componentUI);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.dimensions.util.RectangleUtil;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
@@ -33,7 +34,7 @@ public final class ElementPainter {
 			localPaintContext.viewport());
 		
 		// TODO: Pass properly clipped canvas
-		childLayoutResult.unit().paint(globalPaintContext, childPaintContext);
+		UIPipeline.paint(childLayoutResult.unit(), globalPaintContext, childPaintContext);
 	}
 	
 	private static boolean childInViewport(Rectangle childRect, Rectangle viewport) {

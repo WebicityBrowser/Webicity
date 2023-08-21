@@ -22,7 +22,7 @@ public class CircularButtonDisplay implements UIDisplay<CircularButtonContext, C
 
 	@Override
 	public CircularButtonContext createContext(ComponentUI componentUI) {
-		return new CircularButtonContext(componentUI);
+		return new CircularButtonContext(this, componentUI);
 	}
 
 	@Override

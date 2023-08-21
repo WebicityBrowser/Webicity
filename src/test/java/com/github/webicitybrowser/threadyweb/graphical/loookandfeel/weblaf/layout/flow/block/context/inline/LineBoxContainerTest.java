@@ -9,8 +9,7 @@ import org.mockito.Mockito;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.render.unit.FixedRenderedUnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnitGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
@@ -35,19 +34,17 @@ public class LineBoxContainerTest {
 	@Test
 	@DisplayName("Can add fluid box to line box container")
 	public void canAddFluidBoxToContainer() {
-		BoundBox<?, ?> boundBox = createFluidBox(new AbsoluteSize(40, 50));
-		container.addBox(boundBox);
+		Box box = createFluidBox(new AbsoluteSize(40, 50));
+		container.addBox(box);
 		LayoutResult layoutResult = container.layout();
 		Assertions.assertEquals(new AbsoluteSize(40, 50), layoutResult.fitSize());
 		Assertions.assertEquals(1, layoutResult.childLayoutResults().length);
 	}
 
-	@SuppressWarnings("unchecked")
-	private BoundBox<?, ?> createFluidBox(AbsoluteSize... unitSizes) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Box createFluidBox(AbsoluteSize... unitSizes) {
 		Box box = Mockito.mock(Box.class);
 		Mockito.when(box.isFluid()).thenReturn(true);
-		BoundBox<?, RenderedUnit> boundBox = Mockito.mock(BoundBox.class);
-		Mockito.when(boundBox.getRaw()).thenReturn(box);
 
 		RenderedUnit[] units = new RenderedUnit[unitSizes.length];
 		for (int i = 0; i < unitSizes.length; i++) {
@@ -57,11 +54,15 @@ public class LineBoxContainerTest {
 
 		FixedRenderedUnitGenerator<RenderedUnit> unitGenerator = new FixedRenderedUnitGenerator<>(units);
 
+		UIDisplay<?, Box, RenderedUnit> display = Mockito.mock(UIDisplay.class);
 		Mockito
-			.when(boundBox.render(Mockito.any(), Mockito.any()))
-			.thenReturn(BoundRenderedUnitGenerator.create(unitGenerator, null));
+			.when(display.renderBox(box, Mockito.any(), Mockito.any()))
+			.thenReturn(unitGenerator);
+		Mockito
+			.when(box.display())
+			.thenReturn((UIDisplay) display);
 
-		return boundBox;
+		return box;
 	}
 
 }

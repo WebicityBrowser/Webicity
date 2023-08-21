@@ -9,17 +9,24 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class ContainerBox implements ChildrenBox {
 
+	private final UIDisplay<?, ?, ?> display;
 	private final Component owningComponent;
 	private final DirectivePool styleDirectives;
 	
 	private final BoundBoxChildrenTracker childTracker;
 	
-	public ContainerBox(Component owningComponent, DirectivePool styleDirectives, UIDisplay<?, ChildrenBox, ?> anonDisplay) {
+	public ContainerBox(UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, UIDisplay<?, ChildrenBox, ?> anonDisplay) {
+		this.display = display;
 		this.owningComponent = owningComponent;
 		this.styleDirectives = styleDirectives;
 		this.childTracker = new SolidBoxChildrenTracker(this, anonDisplay);
 	}
 	
+	@Override
+	public UIDisplay<?, ?, ?> display() {
+		return this.display;
+	}
+
 	@Override
 	public Component owningComponent() {
 		return this.owningComponent;

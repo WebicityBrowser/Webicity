@@ -21,7 +21,7 @@ public class URLBarDisplay implements UIDisplay<URLBarContext, URLBarBox, URLBar
 
 	@Override
 	public URLBarContext createContext(ComponentUI componentUI) {
-		return URLBarContextGenerator.generateContext(componentUI);
+		return URLBarContextGenerator.generateContext(this, componentUI);
 	}
 
 	@Override

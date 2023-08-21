@@ -1,8 +1,8 @@
 package com.github.webicitybrowser.thready.gui.graphical.layout.core;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundRenderedUnit;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
-public record ChildLayoutResult(Rectangle relativeRect, BoundRenderedUnit<?> unit) {
+public record ChildLayoutResult(Rectangle relativeRect, RenderedUnit unit) {
 	
 }

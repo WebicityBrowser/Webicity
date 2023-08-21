@@ -2,14 +2,12 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.
 
 import java.util.List;
 
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.pipeline.BoundBox;
-
 public interface BoundBoxChildrenTracker {
 
-	void addChild(BoundBox<?, ?> child);
+	void addChild(Box child);
 	
-	List<BoundBox<?, ?>> getChildren();
+	List<Box> getChildren();
 	
-	List<BoundBox<?, ?>> getAdjustedBoxTree(BoundBox<?, ?> self);
+	List<Box> getAdjustedBoxTree();
 	
 }

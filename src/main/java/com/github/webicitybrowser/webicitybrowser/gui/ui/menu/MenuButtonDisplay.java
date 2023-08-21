@@ -22,7 +22,7 @@ public class MenuButtonDisplay implements UIDisplay<MenuButtonContext, MenuButto
 
 	@Override
 	public MenuButtonContext createContext(ComponentUI componentUI) {
-		return new MenuButtonContext(componentUI);
+		return new MenuButtonContext(this, componentUI);
 	}
 
 	@Override
