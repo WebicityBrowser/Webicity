@@ -54,9 +54,8 @@ public class ElementBoxGenerator {
 	// Children
 	
 	private static void addChildrenToBox(ChildrenBox rootBox, ElementContext elementContext, BoxContext boxContext, StyleGenerator styleGenerator) {
-		for (Box box: getChildrenBoxes(elementContext, boxContext, styleGenerator)) {
-			rootBox.getChildrenTracker().addChild(box);
-		}
+		List<Box> children = getChildrenBoxes(elementContext, boxContext, styleGenerator);
+		rootBox.getChildrenTracker().addAllChildren(children);
 	}
 	
 	private static List<Box> getChildrenBoxes(ElementContext elementContext, BoxContext boxContext, StyleGenerator styleGenerator) {
@@ -66,8 +65,7 @@ public class ElementBoxGenerator {
 		ComponentUI[] children = getComponentUIsFromPipelines(pipelines);
 		StyleGenerator[] childStyleGenerators = styleGenerator.createChildStyleGenerators(children);
 		for (int i = 0; i < pipelines.length; i++) {
-			List<Box> childBoxes = getChildBoxes(pipelines[i], boxContext, childStyleGenerators[i]);
-			childrenBoxes.addAll(childBoxes);
+			childrenBoxes.addAll(UIPipeline.generateBoxes(pipelines[i], boxContext, childStyleGenerators[i]));
 		}
 		
 		return childrenBoxes;
@@ -96,17 +94,6 @@ public class ElementBoxGenerator {
 	private static Context createUIContext(Component component, ComponentUI parentUI, LookAndFeel lookAndFeel) {
 		ComponentUI childUI = lookAndFeel.createUIFor(component, parentUI);
 		return childUI.getRootDisplay().createContext(childUI);
-	}
-
-	private static List<Box> getChildBoxes(
-		Context childContext, BoxContext boxContext, StyleGenerator styleGenerator
-	) {
-		List<Box> childBoxes = new ArrayList<>();
-		for (Box box: UIPipeline.generateBoxes(childContext, boxContext, styleGenerator)) {
-			childBoxes.addAll(box.getAdjustedBoxTree());
-		};
-		
-		return childBoxes;
 	}
 	
 }

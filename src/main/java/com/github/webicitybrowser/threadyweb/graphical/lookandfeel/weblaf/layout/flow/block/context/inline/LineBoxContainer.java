@@ -20,7 +20,6 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineCursorTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.inline.FlowRecursiveContextSwitch;
 
 public class LineBoxContainer {
 
@@ -40,7 +39,7 @@ public class LineBoxContainer {
 		this.globalRenderContext = renderContext;
 		this.maxBounds = maxBounds;
 		this.dimensionConverter = dimensionConverter;
-		this.contextSwitches = mergeDefaultContextSwitches(contextSwitches);
+		this.contextSwitches = contextSwitches;
 		goToNextLine();
 	}
 
@@ -112,31 +111,6 @@ public class LineBoxContainer {
 	private void goToNextLine() {
 		currentLine = new LineBox(dimensionConverter);
 		lineBoxes.add(currentLine);
-	}
-	
-	private ContextSwitch[] mergeDefaultContextSwitches(ContextSwitch[] extraSwitches) {
-		ContextSwitch[] allSwitches = new ContextSwitch[extraSwitches.length + 1];
-		allSwitches[0] = new RecursiveContextSwitchHandler();
-		System.arraycopy(extraSwitches, 0, allSwitches, 1, extraSwitches.length);
-		return allSwitches;
-	}
-	
-	public void handleOutOfFlowBox(Box box) {
-		// TODO: Make sure block boxes cause proper wrap again
-		// commitCurrentFlow();
-		addSolidBox(box);
-	}
-
-	private class RecursiveContextSwitchHandler implements FlowRecursiveContextSwitch {
-
-		@Override
-		public void onBoxEnter(BoxEnterContext context) {
-			if (!(context.getBox().isFluid())) {
-				context.skipBox();
-				handleOutOfFlowBox(context.getBox());
-			}
-		}
-		
 	}
 	
 }

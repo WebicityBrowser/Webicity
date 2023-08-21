@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoundBoxChildrenTracker;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 
-public class SolidBoxChildrenTracker implements BoundBoxChildrenTracker {
+public class SolidBoxChildrenTracker implements BoxChildrenTracker {
 	
 	private final List<Box> children = new ArrayList<>(1);
 	
@@ -16,7 +16,7 @@ public class SolidBoxChildrenTracker implements BoundBoxChildrenTracker {
 	private final UIDisplay<?, ChildrenBox, ?> anonDisplay;
 	
 	private boolean isSolidBoxContext;
-	private BoundBoxChildrenTracker currentFluidChildrenTracker;
+	private BoxChildrenTracker currentFluidChildrenTracker;
 	
 	public SolidBoxChildrenTracker(Box parentBox, UIDisplay<?, ChildrenBox, ?> anonDisplay) {
 		this.parentBox = parentBox;
@@ -25,10 +25,8 @@ public class SolidBoxChildrenTracker implements BoundBoxChildrenTracker {
 	
 	@Override
 	public void addChild(Box child) {
-		if (child.isFluid()) {
-			addFluidBox(child);
-		} else {
-			addSolidBox(child);
+		for (Box adjustedChild: child.getAdjustedBoxTree()) {
+			addAdjustedChild(adjustedChild);
 		}
 	}
 
@@ -40,6 +38,14 @@ public class SolidBoxChildrenTracker implements BoundBoxChildrenTracker {
 	@Override
 	public List<Box> getChildren() {
 		return List.copyOf(children);
+	}
+
+	private void addAdjustedChild(Box box) {
+		if (box.isFluid()) {
+			addFluidBox(box);
+		} else {
+			addSolidBox(box);
+		}
 	}
 	
 	private void addSolidBox(Box child) {

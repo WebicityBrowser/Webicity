@@ -9,8 +9,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.prerender.PrerenderResult;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.prerender.legacy.LegacyPrerenderResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
@@ -23,11 +21,6 @@ public interface UIDisplay<T extends Context, U extends Box, V extends RenderedU
 	
 	List<U> generateBoxes(T displayContext, BoxContext boxContext, StyleGenerator styleGenerator);
 
-	default PrerenderResult prerenderBox(U box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		return new LegacyPrerenderResult<>(renderBox(box, globalRenderContext, localRenderContext));
-	}
-	
-	@Deprecated
 	RenderedUnitGenerator<V> renderBox(U box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext);
 	
 	void paint(V unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext);

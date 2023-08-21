@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ChildrenBox extends Box {
 
-	BoundBoxChildrenTracker getChildrenTracker();
+	BoxChildrenTracker getChildrenTracker();
 	
 	@Override
 	default List<Box> getAdjustedBoxTree() {

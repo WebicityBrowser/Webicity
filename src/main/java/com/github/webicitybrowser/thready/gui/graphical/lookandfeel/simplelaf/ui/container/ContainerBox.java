@@ -3,7 +3,7 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.u
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.SolidBoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoundBoxChildrenTracker;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
@@ -13,7 +13,7 @@ public class ContainerBox implements ChildrenBox {
 	private final Component owningComponent;
 	private final DirectivePool styleDirectives;
 	
-	private final BoundBoxChildrenTracker childTracker;
+	private final BoxChildrenTracker childTracker;
 	
 	public ContainerBox(UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, UIDisplay<?, ChildrenBox, ?> anonDisplay) {
 		this.display = display;
@@ -38,7 +38,7 @@ public class ContainerBox implements ChildrenBox {
 	}
 
 	@Override
-	public BoundBoxChildrenTracker getChildrenTracker() {
+	public BoxChildrenTracker getChildrenTracker() {
 		return childTracker;
 	}
 

@@ -29,7 +29,7 @@ public final class ContainerChildrenBoxGenerator {
 		StyleGenerator[] childStyleGenerators = createChildStyleGenerators(styleGenerator, children);
 		for (int i = 0; i < children.length; i++) {
 			List<Box> boxesToAdd = UIPipeline.generateBoxes(children[i].context(), boxContext, childStyleGenerators[i]);
-			addChildBoxes(rootBox, boxesToAdd);
+			rootBox.getChildrenTracker().addAllChildren(boxesToAdd);
 		}
 	}
 
@@ -65,14 +65,6 @@ public final class ContainerChildrenBoxGenerator {
 		
 		// TODO: Support other UI nodes
 		return Arrays.copyOf(uiChildren, uiChildren.length, Component[].class);
-	}
-
-	private static void addChildBoxes(ChildrenBox rootBox, List<Box> children) {
-		for (Box box: children) {
-			for (Box adjustedBox: box.getAdjustedBoxTree()) {
-				rootBox.getChildrenTracker().addChild(adjustedBox);
-			}
-		};
 	}
 	
 }

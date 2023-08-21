@@ -9,11 +9,11 @@ public class WebWrapperUnitWrapperGenerator<V extends RenderedUnit> implements R
 	
 	private final UIDisplay<?, ?, ?> display;
 	private final RenderedUnitGenerator<V> innerUnitGenerator;
-	private final WebWrapperWrapperBox wrapperBox;
+	private final WebWrapperBox wrapperBox;
 
 	private WebWrapperUnit<V> lastUnit;
 
-	public WebWrapperUnitWrapperGenerator(UIDisplay<?, ?, ?> display, RenderedUnitGenerator<V> innerUnitGenerator, WebWrapperWrapperBox wrapperBox) {
+	public WebWrapperUnitWrapperGenerator(UIDisplay<?, ?, ?> display, RenderedUnitGenerator<V> innerUnitGenerator, WebWrapperBox wrapperBox) {
 		this.display = display;
 		this.innerUnitGenerator = innerUnitGenerator;
 		this.wrapperBox = wrapperBox;

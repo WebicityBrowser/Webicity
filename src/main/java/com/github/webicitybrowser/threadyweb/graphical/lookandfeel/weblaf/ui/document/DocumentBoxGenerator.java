@@ -36,9 +36,7 @@ public final class DocumentBoxGenerator {
 		ChildrenBox rootBox = new DocumentBox(null, owningComponent, new BasicDirectivePool());
 		
 		for (Box childBox: childBoxes) {
-			for (Box adjustedChildBox: childBox.getAdjustedBoxTree()) {
-				rootBox.getChildrenTracker().addChild(adjustedChildBox);
-			}
+			rootBox.getChildrenTracker().addChild(childBox);
 		}
 		
 		return rootBox;

@@ -23,6 +23,6 @@ public interface Box {
 
 	default List<Box> getAdjustedBoxTree() {
 		return List.of(this);
-	};
+	}
 	
 }

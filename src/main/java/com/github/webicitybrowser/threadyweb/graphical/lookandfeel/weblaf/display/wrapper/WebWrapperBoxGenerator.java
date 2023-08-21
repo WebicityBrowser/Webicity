@@ -18,38 +18,33 @@ public final class WebWrapperBoxGenerator {
 
 	private WebWrapperBoxGenerator() {}
 	
-	public static <T extends Context> List<WebWrapperBox> generateBoxes(
+	public static <T extends Context> List<Box> generateBoxes(
 		WebWrapperContext<T> displayContext, DirectivePool directives, Supplier<List<Box>> defaultBoxGenerator
 	) {
 		OuterDisplay outerDisplay = WebDirectiveUtil.getOuterDisplay(directives);
-		Component owningComponent = displayContext.componentUI().getComponent();
 		UIDisplay<?, ?, ?> display = displayContext.display();
+		Component owningComponent = displayContext.componentUI().getComponent();
 
 		switch (outerDisplay) {
 		case CONTENTS:
-			return getContents(displayContext, directives, defaultBoxGenerator);
+			return getContents(directives, defaultBoxGenerator);
 
 		case NONE:
 			return List.of();
 
 		default:
 			List<Box> innerBoxes = defaultBoxGenerator.get();
-			List<WebWrapperBox> wrapperBoxes = new ArrayList<>(innerBoxes.size());
+			List<Box> wrapperBoxes = new ArrayList<>(innerBoxes.size());
 			for (Box innerBox : innerBoxes) {
-				wrapperBoxes.add(new WebWrapperWrapperBox(display, owningComponent, directives, innerBox));
+				wrapperBoxes.add(new WebWrapperBox(display, owningComponent, directives, innerBox));
 			}
 			return wrapperBoxes;
 		}
 	}
 
-	private static <T extends Context> List<WebWrapperBox> getContents(
-		WebWrapperContext<T> displayContext, DirectivePool directives, Supplier<List<Box>> defaultBoxGenerator
-	) {
-		Component owningComponent = displayContext.componentUI().getComponent();
-		UIDisplay<?, ?, ?> display = displayContext.display();
-
+	private static <T extends Context> List<Box> getContents(DirectivePool directives, Supplier<List<Box>> defaultBoxGenerator) {
 		// TODO: Obtain the children boxes in a more reliable way
-		List<Box> children = defaultBoxGenerator
+		return defaultBoxGenerator
 			.get()
 			.stream()
 			.map(box -> {
@@ -63,8 +58,6 @@ public final class WebWrapperBoxGenerator {
 			.flatMap(box -> ((ChildrenBox) box).getChildrenTracker().getChildren().stream())
 			.flatMap(box -> box.getAdjustedBoxTree().stream())
 			.toList();
-
-		return List.of(new WebWrapperContentsBox(display, owningComponent, directives, children));
 	}
 	
 }

@@ -20,7 +20,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 
-public class WebWrapperDisplay<T extends Context, U extends Box, V extends RenderedUnit> implements UIDisplay<WebWrapperContext<T>, WebWrapperBox, WebWrapperUnit<V>> {
+public class WebWrapperDisplay<T extends Context, U extends Box, V extends RenderedUnit> implements UIDisplay<WebWrapperContext<T>, Box, WebWrapperUnit<V>> {
 
 	private final UIDisplay<T, U, V> innerDisplay;
 
@@ -34,7 +34,7 @@ public class WebWrapperDisplay<T extends Context, U extends Box, V extends Rende
 	}
 
 	@Override
-	public List<WebWrapperBox> generateBoxes(WebWrapperContext<T> displayContext, BoxContext boxContext, StyleGenerator styleGenerator) {
+	public List<Box> generateBoxes(WebWrapperContext<T> displayContext, BoxContext boxContext, StyleGenerator styleGenerator) {
 		DirectivePool styleDirectives = styleGenerator.getStyleDirectives();
 		return WebWrapperBoxGenerator.generateBoxes(
 			displayContext, styleDirectives,
@@ -42,13 +42,13 @@ public class WebWrapperDisplay<T extends Context, U extends Box, V extends Rende
 	}
 
 	@Override
-	public RenderedUnitGenerator<WebWrapperUnit<V>> renderBox(WebWrapperBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		if (box instanceof WebWrapperWrapperBox wrapperBox) {
+	public RenderedUnitGenerator<WebWrapperUnit<V>> renderBox(Box box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
+		if (box instanceof WebWrapperBox wrapperBox) {
 			RenderedUnitGenerator<V> innerGenerator = UIPipeline.render(wrapperBox.innerBox(), renderContext, localRenderContext);
 
 			return new WebWrapperUnitWrapperGenerator<>(this, innerGenerator, wrapperBox);
 		} else {
-			throw new IllegalArgumentException("Box must be a WebWrapperWrapperBox");
+			throw new IllegalArgumentException("Box must be a WebWrapperBox");
 		}
 	}
 

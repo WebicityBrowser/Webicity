@@ -14,7 +14,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
@@ -22,7 +21,6 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineCursorTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.inline.FlowRecursiveContextSwitch.BoxEnterContext;
 
 public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDisplayUnit> {
 
@@ -30,7 +28,6 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 	private final LocalRenderContext localRenderContext;
 	private final UIDisplay<?, ?, ?> display;
 	private final List<Box> children;
-	private final FlowRecursiveContextSwitch recursiveSwitch;
 	private final LineDimensionConverter dimensionConverter;
 	
 	private List<ChildLayoutResult> renderedChildren;
@@ -45,7 +42,6 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 		this.localRenderContext = localRenderContext;
 		this.display = box.display();
 		this.children = box.getChildrenTracker().getChildren();
-		this.recursiveSwitch = findRecursiveSwitch();
 		this.dimensionConverter = new HorizontalLineDimensionConverter();
 		startNextUnit();
 		findNextSubGenerator();
@@ -135,25 +131,6 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 		// TODO: Figure out what I meant by the above TODO statement
 		Box box = children.get(nextCursor);
 		currentSubGenerator = UIPipeline.render(box, globalRenderContext, localRenderContext);
-		startOrSkipSubGenerator(box);
-	}
-	
-	private void startOrSkipSubGenerator(Box box) {
-		if (recursiveSwitch == null) {
-			return;
-		}
-		recursiveSwitch.onBoxEnter(new BoxEnterContext() {
-			@Override
-			public void skipBox() {
-				currentSubGenerator = null;
-			}
-			
-			@Override
-			public Box getBox() {
-				return box;
-			}
-		});
-		
 	}
 
 	private void exitCurrentSubGeneratorIfCompleted() {
@@ -164,16 +141,6 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 
 	private void exitCurrentSubGenerator() {
 		currentSubGenerator = null;
-	}
-	
-	private FlowRecursiveContextSwitch findRecursiveSwitch() {
-		for (ContextSwitch contextSwitch: localRenderContext.getContextSwitches()) {
-			if (contextSwitch instanceof FlowRecursiveContextSwitch recursiveSwitch) {
-				return recursiveSwitch;
-			}
-		}
-		
-		return null;
 	}
 	
 	private ChildLayoutResult createRenderResult(RenderedUnit unit, AbsolutePosition unitPosition) {

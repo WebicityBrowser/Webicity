@@ -34,7 +34,14 @@ public interface WrapperBox extends Box {
 		List<Box> innerBoxes = innerBox().getAdjustedBoxTree();
 		List<Box> wrappedBoxes = new ArrayList<>(innerBoxes.size());
 		for (Box innerBox : innerBoxes) {
-			wrappedBoxes.add(rewrap(innerBox));
+			// TODO: Not very elegant, very error prone
+			// This is a temporary way to handle moved boxes that should not have additional wrappers
+			// It is built on some assumptions that will not hold in the future
+			if (innerBox instanceof WrapperBox) {
+				wrappedBoxes.add(innerBox); 
+			} else {
+				wrappedBoxes.add(rewrap(innerBox));
+			}
 		}
 
 		return wrappedBoxes;
