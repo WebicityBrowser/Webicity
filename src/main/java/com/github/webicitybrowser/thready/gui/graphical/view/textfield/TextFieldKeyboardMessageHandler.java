@@ -54,6 +54,7 @@ public class TextFieldKeyboardMessageHandler implements MessageHandler {
 			break;
 		case KeyboardConstants.VK_END:
 			textFieldViewModel.setCursorToEnd();
+			break;
 		case KeyboardConstants.VK_DELETE:
 			textFieldViewModel.delete(1);
 			break;

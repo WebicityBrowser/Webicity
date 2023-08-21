@@ -28,7 +28,7 @@ public class HTTP11Version implements HTTPVersion {
 		InputStream inputStream = context.transport().inputStream();
 		HTTP11ResponseData httpData = HTTP11ResponseHeaderParser.parse(inputStream);
 		if (isRedirect(httpData.status().statusCode())) {
-			return createRedirectResponse(httpData);
+			return createRedirectResponse(url, httpData);
 		}
 		
 		InputStream responseStream = createResponseStream(inputStream, context, httpData.headers());
@@ -80,9 +80,9 @@ public class HTTP11Version implements HTTPVersion {
 		};
 	}
 	
-	private HTTPRedirectResponse createRedirectResponse(HTTP11ResponseData httpData) throws IOException {
+	private HTTPRedirectResponse createRedirectResponse(URL base, HTTP11ResponseData httpData) throws IOException {
 		try {
-			URL redirectURL = URL.of(httpData.headers().get("Location"));
+			URL redirectURL = URL.of(base, httpData.headers().get("Location"));
 			return () -> redirectURL;
 		} catch (InvalidURLException e) {
 			throw new IOException(e);

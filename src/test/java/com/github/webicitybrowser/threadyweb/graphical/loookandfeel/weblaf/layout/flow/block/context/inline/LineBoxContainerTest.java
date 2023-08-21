@@ -56,7 +56,7 @@ public class LineBoxContainerTest {
 
 		UIDisplay<?, Box, RenderedUnit> display = Mockito.mock(UIDisplay.class);
 		Mockito
-			.when(display.renderBox(box, Mockito.any(), Mockito.any()))
+			.when(display.renderBox(Mockito.eq(box), Mockito.any(), Mockito.any()))
 			.thenReturn(unitGenerator);
 		Mockito
 			.when(box.display())

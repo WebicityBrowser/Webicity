@@ -8,6 +8,13 @@ import java.net.URLStreamHandler;
 import com.github.webicitybrowser.spec.url.imp.URLImp;
 
 public interface URL {
+
+	static final URLStreamHandler NULL_URL_STREAM_HANDLER = new URLStreamHandler() {		
+		@Override
+		protected URLConnection openConnection(java.net.URL u) throws IOException {
+			return null;
+		}
+	};
 	
 	String getScheme();
 	
@@ -21,12 +28,16 @@ public interface URL {
 
 	public static URL of(String href) throws InvalidURLException {
 		try {
-			return new URLImp(new java.net.URL(null, href, new URLStreamHandler() {		
-				@Override
-				protected URLConnection openConnection(java.net.URL u) throws IOException {
-					return null;
-				}
-			}));
+			return new URLImp(new java.net.URL(null, href, NULL_URL_STREAM_HANDLER));
+		} catch (MalformedURLException e) {
+			throw new InvalidURLException();
+		}
+	}
+
+	public static URL of(URL base, String href) throws InvalidURLException {
+		try {
+			java.net.URL baseRaw = new java.net.URL(null, base.toString(), NULL_URL_STREAM_HANDLER);
+			return new URLImp(new java.net.URL(baseRaw, href, NULL_URL_STREAM_HANDLER));
 		} catch (MalformedURLException e) {
 			throw new InvalidURLException();
 		}

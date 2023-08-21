@@ -56,7 +56,8 @@ mainClassName = "com.github.webicitybrowser.webicitybrowser.Main"
 jar {
 	manifest {
 		attributes(
-			"Main-Class": mainClassName
+			"Main-Class": mainClassName,
+			"Multi-Release": "true"
 		)
 	}
 }
