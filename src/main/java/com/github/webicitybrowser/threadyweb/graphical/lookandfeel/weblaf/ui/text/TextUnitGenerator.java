@@ -28,6 +28,11 @@ public class TextUnitGenerator implements RenderedUnitGenerator<TextRenderedUnit
 	
 	@Override
 	public GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
+		lastUnit = null;
+		if (completed()) {
+			return GenerationResult.COMPLETED;
+		}
+
 		float totalWidth = 0;
 		windowStart = windowEnd;
 		while (!completed() && ((forceFit && totalWidth == 0) || !nextCharWillOverflow(totalWidth, preferredBounds))) {
@@ -36,7 +41,8 @@ public class TextUnitGenerator implements RenderedUnitGenerator<TextRenderedUnit
 		}
 		
 		if (windowStart == windowEnd) {
-			return null;
+			assert !forceFit;
+			return GenerationResult.NO_FIT;
 		}
 		
 		String subtext = text.substring(windowStart, windowEnd);

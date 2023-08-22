@@ -24,7 +24,11 @@ public class MappingRenderedUnitGenerator<T extends RenderedUnit, U extends Rend
 
 	@Override
 	public U getLastGeneratedUnit() {
-		return mapper.apply(backingGenerator.getLastGeneratedUnit());
+		T lastGeneratedUnit = backingGenerator.getLastGeneratedUnit();
+		if (lastGeneratedUnit == null) {
+			return null;
+		}
+		return mapper.apply(lastGeneratedUnit);
 	}
 
 	@Override

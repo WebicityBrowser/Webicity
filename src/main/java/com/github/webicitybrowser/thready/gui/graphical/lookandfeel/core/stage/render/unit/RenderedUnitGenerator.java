@@ -13,7 +13,7 @@ public interface RenderedUnitGenerator<T extends RenderedUnit> {
 	boolean completed();
 
 	public static enum GenerationResult {
-		NORMAL, NO_FIT, PAUSED
+		NORMAL, NO_FIT, COMPLETED
 	}
 	
 }

@@ -24,6 +24,10 @@ public class LineBox {
 		this.cursorTracker = new LineCursorTracker(dimensionConverter);
 	}
 	
+	public boolean isEmpty() {
+		return lineItems.isEmpty();
+	}
+
 	public void add(RenderedUnit unit) {
 		AbsoluteSize size = unit.preferredSize();
 		AbsolutePosition startPosition = cursorTracker.getNextPosition();

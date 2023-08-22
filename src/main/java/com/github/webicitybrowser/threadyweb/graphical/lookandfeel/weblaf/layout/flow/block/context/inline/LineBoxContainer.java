@@ -71,7 +71,7 @@ public class LineBoxContainer {
 			contextSwitches);
 		currentFlow = UIPipeline.render(child, globalRenderContext, childRenderContext);
 		while (!currentFlow.completed()) {
-			RenderedUnit unit = appendNextUnit(false);
+			RenderedUnit unit = appendNextUnit(currentLine.isEmpty());
 			if (unit == null) {
 				goToNextLine();
 				unit = appendNextUnit(true);
@@ -104,7 +104,8 @@ public class LineBoxContainer {
 
 	private AbsoluteSize getMaxChildBounds() {
 		LineDimension maxLineBounds = dimensionConverter.getLineDimension(maxBounds);
-		LineDimension childLineBounds = new LineDimension(maxLineBounds.run(), -1);
+		LineDimension currentLineBounds = dimensionConverter.getLineDimension(currentLine.getSize());
+		LineDimension childLineBounds = new LineDimension(maxLineBounds.run() - currentLineBounds.run(), -1);
 		return dimensionConverter.getAbsoluteSize(childLineBounds);
 	}
 	

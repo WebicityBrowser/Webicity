@@ -9,29 +9,31 @@ public class SingleRenderedUnitGenerator<T extends RenderedUnit> implements Rend
 
 	private final T renderedUnit;
 	
-	private boolean completed;
+	private byte stage = 0;
 	
 	public SingleRenderedUnitGenerator(T renderedUnit) {
+		assert renderedUnit != null;
 		this.renderedUnit = renderedUnit;
 	}
 
 	@Override
 	public GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
-		if (completed) {
-			throw new IllegalStateException("Already returned rendered unit!");
+		if (stage > 0) {
+			this.stage = 2;
+			return GenerationResult.COMPLETED;
 		}
 		if (!forceFit && !AbsoluteSizeMath.fits(renderedUnit.preferredSize(), preferredBounds)) {
 			return GenerationResult.NO_FIT;
 		}
 		
-		this.completed = true;
+		this.stage = 1;
 
 		return GenerationResult.NORMAL;
 	}
 
 	@Override
 	public T getLastGeneratedUnit() {
-		if (!completed) {
+		if (this.stage != 1) {
 			return null;
 		}
 		return renderedUnit;
@@ -39,7 +41,7 @@ public class SingleRenderedUnitGenerator<T extends RenderedUnit> implements Rend
 
 	@Override
 	public boolean completed() {
-		return completed;
+		return this.stage > 0;
 	}
 
 }

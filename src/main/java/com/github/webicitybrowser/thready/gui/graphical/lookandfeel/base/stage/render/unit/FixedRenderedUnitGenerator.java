@@ -18,7 +18,8 @@ public class FixedRenderedUnitGenerator<T extends RenderedUnit> implements Rende
 	@Override
 	public GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
 		if (completed()) {
-			throw new IllegalStateException("Generation is already completed!");
+			index = units.length + 1;
+			return GenerationResult.COMPLETED;
 		}
 		if (!forceFit && units[index].preferredSize().width() > preferredBounds.width()) {
 			return GenerationResult.NO_FIT;
@@ -30,7 +31,7 @@ public class FixedRenderedUnitGenerator<T extends RenderedUnit> implements Rende
 
 	@Override
 	public T getLastGeneratedUnit() {
-		if (index == 0) {
+		if (index == 0 || index > units.length) {
 			return null;
 		}
 		return units[index - 1];

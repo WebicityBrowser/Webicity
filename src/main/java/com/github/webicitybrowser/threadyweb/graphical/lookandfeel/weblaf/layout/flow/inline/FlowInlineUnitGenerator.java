@@ -49,8 +49,9 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 	
 	@Override
 	public GenerationResult generateNextUnit(AbsoluteSize preferredBounds, boolean forceFit) {
+		lastGeneratedUnit = null;
 		if (completed()) {
-			throw new IllegalStateException("Unit generator already completed!");
+			return GenerationResult.COMPLETED;
 		}
 
 		startNextUnit();
@@ -63,13 +64,15 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 			if (result != GenerationResult.NORMAL) {
 				break;
 			}
+
+			forceFit = false;
 			RenderedUnit nextUnit = currentSubGenerator.getLastGeneratedUnit();
 			addUnit(nextUnit);
 			findNextSubGenerator();
 		}
 
 		if (renderedChildren.isEmpty()) {
-			return GenerationResult.NO_FIT;
+			return result;
 		}
 
 		lastGeneratedUnit = new InnerDisplayUnit(
@@ -77,7 +80,7 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 			cursorTracker.getSizeCovered(),
 			renderedChildren.toArray(ChildLayoutResult[]::new));
 
-		return result;
+		return GenerationResult.NORMAL;
 	}
 
 	@Override
@@ -92,18 +95,12 @@ public class FlowInlineUnitGenerator implements RenderedUnitGenerator<InnerDispl
 	}
 
 	private AbsoluteSize getRemainingAvailableUnitSize(AbsoluteSize preferredBounds) {
-		if (completed()) {
-			return AbsoluteSize.ZERO_SIZE;
-		}
-
 		AbsoluteSize filledSpace = cursorTracker.getSizeCovered();
 
 		float remainingWidth = preferredBounds.width() - filledSpace.width();
-		float remainingHeight = preferredBounds.height() - filledSpace.height();
 		remainingWidth = preferredBounds.width() == RelativeDimension.UNBOUNDED ? RelativeDimension.UNBOUNDED : Math.max(0, remainingWidth);
-		remainingHeight = preferredBounds.height() == RelativeDimension.UNBOUNDED ? RelativeDimension.UNBOUNDED : Math.max(0, remainingHeight);
 
-		return new AbsoluteSize(remainingWidth, remainingHeight);
+		return new AbsoluteSize(remainingWidth, filledSpace.height());
 	}
 
 	@Override
