@@ -11,7 +11,10 @@ public class ChildFilter<T, U> implements CSSOMFilter<T, U> {
 
 	@Override
 	public List<T> filter(Set<CSSOMNode<T, U>> prematched, T item, CSSOMParticipantTraverser<T> traverser) {
-		return List.of(traverser.getChildren(item));
+		// CSSOM processes selectors in reverse order, so this node
+		// is the child and we need to check if the parent matched
+		T parent = traverser.getParent(item);
+		return parent == null ? List.of() : List.of(parent);
 	}
 
 }

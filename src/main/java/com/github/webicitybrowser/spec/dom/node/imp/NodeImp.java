@@ -74,7 +74,7 @@ public abstract class NodeImp implements Node {
 		return "[Node " + super.toString() + "]";
 	}
 	
-	protected void setParent(Node parentNode) {
+	public void setParent(Node parentNode) {
 		this.parentNode = parentNode;
 	}
 	

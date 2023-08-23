@@ -33,6 +33,7 @@ public class DocumentImp extends NodeImp implements Document {
 	public void appendChild(Node node) {
 		// TODO: Run prechecks
 		childNodes.add(node);
+		((NodeImp) node).setParent(this);
 	}
 	
 	@Override

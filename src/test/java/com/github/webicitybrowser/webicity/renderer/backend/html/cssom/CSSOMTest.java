@@ -15,7 +15,7 @@ public class CSSOMTest {
 	@Test
 	@DisplayName("Root CSSOMNode matches root participant")
 	public void rootCSSOMNodeMatchesRootParticipant() {
-		CSSOMNode<TestCSSOMParticipant, Object> rootNode = CSSOMNode.create();
+		CSSOMNode<TestCSSOMParticipant, Object> rootNode = CSSOMNode.create(null, null);
 		CSSOMTree<TestCSSOMParticipant, Object> cssomTree = CSSOMTree.create(rootNode);
 		TestCSSOMParticipant rootParticipant = new TestCSSOMParticipant(null);
 		CSSOMResult<TestCSSOMParticipant, Object> result = cssomTree.apply(rootParticipant, new TestCSSOMParticipantTraverser());
@@ -26,9 +26,11 @@ public class CSSOMTest {
 	
 	@Test
 	@DisplayName("Child CSSOMNode matches child filter")
-	public void childCSSOMNodeMatchesGlobFilter() {
-		CSSOMNode<TestCSSOMParticipant, Object> rootNode = CSSOMNode.create();
-		CSSOMNode<TestCSSOMParticipant, Object> childNode = rootNode.createChild(new ChildFilter<>(), 0);
+	public void childCSSOMNodeMatchesChildFilter() {
+		CSSOMNode<TestCSSOMParticipant, Object> rootNode = CSSOMNode.create(null, null);
+		CSSOMNode<TestCSSOMParticipant, Object> combinatorNode = rootNode.createChild(new ChildFilter<>(), 0);
+		CSSOMNode<TestCSSOMParticipant, Object> childNode = combinatorNode.createChild((_1, el, _2) -> List.of(el), 0);
+		childNode.addNodeProperties(new Object()); // Due to optimizations, the node must be populated
 		CSSOMTree<TestCSSOMParticipant, Object> cssomTree = CSSOMTree.create(rootNode);
 		TestCSSOMParticipant rootParticipant = new TestCSSOMParticipant(null);
 		TestCSSOMParticipant childParticipant = new TestCSSOMParticipant(rootParticipant);
@@ -38,8 +40,8 @@ public class CSSOMTest {
 		Assertions.assertEquals(1, rootMatchingNodes.size());
 		Assertions.assertEquals(rootNode, rootMatchingNodes.get(0));
 		List<CSSOMNode<TestCSSOMParticipant, Object>> childMatchingNodes = List.copyOf(result.getMatchingNodes(childParticipant));
-		Assertions.assertEquals(1, childMatchingNodes.size());
-		Assertions.assertEquals(childNode, childMatchingNodes.get(0));
+		Assertions.assertEquals(3, childMatchingNodes.size()); // Root node, combinator node, child node
+		Assertions.assertTrue(childMatchingNodes.contains(childNode));
 	}
 	
 }

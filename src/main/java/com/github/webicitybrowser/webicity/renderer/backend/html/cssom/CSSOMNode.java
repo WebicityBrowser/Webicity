@@ -7,22 +7,26 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.imp.CSSOM
 
 public interface CSSOMNode<T, U> {
 
+	CSSOMNode<T, U> getParent();
+
 	CSSOMNode<T, U> createChild(CSSOMFilter<T, U> filter, int staging);
-	
-	void linkChild(CSSOMFilter<T, U> filter, int staging, CSSOMNode<T, U> linkedNode);
 	
 	void addNodeProperties(U properties);
 	
 	List<U> getNodeProperties();
+
+	CSSOMFilter<T, U> getFilter();
 	
-	List<CSSOMFilterEntry<T, U>> getPossibleFilters(T item);
+	boolean isPopulated();
+	
+	List<CSSOMNode<T, U>> getChildren();
 	
 	void setSpecificity(SelectorSpecificity specificity);
 	
 	SelectorSpecificity getSpecificity();
 
-	static <T, U> CSSOMNode<T, U> create() {
-		return new CSSOMNodeImp<>();
+	static <T, U> CSSOMNode<T, U> create(CSSOMNode<T, U> parent, CSSOMFilter<T, U> filter) {
+		return new CSSOMNodeImp<>(parent, filter);
 	}
 	
 }

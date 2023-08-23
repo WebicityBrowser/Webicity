@@ -67,12 +67,14 @@ public class ElementImp extends NodeImp implements Element {
 	public void insertBefore(Node node, Node child) {
 		// TODO: Run prechecks
 		InsertUtil.insertBefore(childNodes, node, child);
+		((NodeImp) child).setParent(this);
 	}
 
 	@Override
 	public void appendChild(Node node) {
 		// TODO: Run prechecks
 		childNodes.add(node);
+		((NodeImp) node).setParent(this);
 	}
 	
 	// toString is useful for debugging. Not guaranteed to produce valid or correct HTML

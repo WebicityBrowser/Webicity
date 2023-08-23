@@ -2,52 +2,34 @@ package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.imp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMComposableFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilterComposition;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilterEntry;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 
 public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 
-	private final Map<CSSOMFilter<T, U>, CSSOMFilterEntry<T, U>> filters = new HashMap<>(4);
-	private final Set<CSSOMFilterEntry<T, U>> normalFilters = new HashSet<>(0);
-	private final Set<CSSOMFilterEntry<T, U>> links = new HashSet<>(0);
-	private final Map<Class<?>, CSSOMFilterComposition<T, U, ?>> composableFilters = new HashMap<>(2);
+	private final CSSOMNode<T, U> parent;
+	private final CSSOMFilter<T, U> filter;
+	private final HashMap<CSSOMFilter<T, U>, CSSOMNode<T, U>> children = new HashMap<>(4);
 	private final List<U> allProperties = new ArrayList<>(1);
 	
 	private SelectorSpecificity specificity;
-	
-	@Override
-	public CSSOMNode<T, U> createChild(CSSOMFilter<T, U> filter, int staging) {
-		return filters
-			.computeIfAbsent(filter, key -> addCSSOMFilter(filter, staging))
-			.cssomNode();
+
+	public CSSOMNodeImp(CSSOMNode<T, U> parent, CSSOMFilter<T, U> filter) {
+		this.parent = parent;
+		this.filter = filter;
 	}
 
 	@Override
-	public void linkChild(CSSOMFilter<T, U> filter, int staging, CSSOMNode<T, U> linkedNode) {
-		boolean added = links.add(new CSSOMFilterEntry<>(staging, filter, linkedNode));
-		if (!added) return;
-		filter.setupMatchingNode(linkedNode, staging);
+	public CSSOMNode<T, U> getParent() {
+		return parent;
 	}
-	
+
 	@Override
-	public List<CSSOMFilterEntry<T, U>> getPossibleFilters(T item) {
-		List<CSSOMFilterEntry<T, U>> entries = new ArrayList<>(filters.size() + links.size());
-		entries.addAll(normalFilters);
-		entries.addAll(links);
-		for (CSSOMFilterComposition<T, U, ?> composition: composableFilters.values()) {
-			entries.addAll(composition.getPossibleFilters(item));
-		}
-		
-		return entries;
+	public CSSOMNode<T, U> createChild(CSSOMFilter<T, U> filter, int staging) {
+		return children.computeIfAbsent(filter, key -> createChildNode(filter, staging));
 	}
 
 	@Override
@@ -61,6 +43,21 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 	}
 	
 	@Override
+	public CSSOMFilter<T, U> getFilter() {
+		return filter;
+	}
+
+	@Override
+	public boolean isPopulated() {
+		return !allProperties.isEmpty();
+	}
+
+	@Override
+	public List<CSSOMNode<T, U>> getChildren() {
+		return new ArrayList<>(children.values());
+	}
+
+	@Override
 	public void setSpecificity(SelectorSpecificity specificity) {
 		this.specificity = specificity;
 	}
@@ -70,24 +67,8 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 		return this.specificity;
 	}
 	
-	private <V extends CSSOMComposableFilter<T, U, V>> CSSOMFilterEntry<T, U> addCSSOMFilter(CSSOMFilter<T, U> filter, int staging) {
-		CSSOMNodeImp<T, U> childNode = new CSSOMNodeImp<T, U>();
-		CSSOMFilterEntry<T, U> filterEntry = new CSSOMFilterEntry<>(staging, filter, childNode);
-		
-		boolean added;
-		if (filter instanceof CSSOMComposableFilter<T, U, ?> composableFilter) {
-			added = composableFilters
-				.computeIfAbsent(composableFilter.getFilterType(), _1 -> composableFilter.createFilterComposition())
-				.addFilter(filterEntry);
-		} else {
-			added = normalFilters.add(filterEntry);
-		}
-
-		if (added) {
-			filter.setupMatchingNode(childNode, staging);
-		}
-
-		return filterEntry;
+	private CSSOMNode<T, U> createChildNode(CSSOMFilter<T, U> filter, int staging) {
+		return new CSSOMNodeImp<>(this, filter);
 	}
 
 }

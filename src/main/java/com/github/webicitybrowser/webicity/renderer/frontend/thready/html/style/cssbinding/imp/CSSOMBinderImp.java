@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp;
 
-import java.util.List;
-
 import com.github.webicitybrowser.spec.css.componentvalue.SimpleBlock;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.imp.CSSParserImp;
@@ -19,7 +17,6 @@ import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.imp.CSSOMNodeImp;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMFilterCreator;
@@ -31,9 +28,8 @@ public class CSSOMBinderImp implements CSSOMBinder {
 	
 	@Override
 	public CSSOMTree<Node, DirectivePool> createCSSOMFor(CSSRuleList ruleList) {
-		CSSOMNode<Node, DirectivePool> rootNode = new CSSOMNodeImp<>();
+		CSSOMNode<Node, DirectivePool> rootNode = CSSOMNode.create(null, null);
 		addRuleListToCSSOMNode(rootNode, ruleList);
-		rootNode.linkChild((_1, node, traverser) -> List.of(traverser.getChildren(node)), 0, rootNode);
 		
 		return CSSOMTree.create(rootNode);
 	}

@@ -36,10 +36,10 @@ public class AttributeOneOfFilterComposition<U> implements CSSOMFilterCompositio
 		if (node instanceof Element element) {
 			ArrayList<CSSOMFilterEntry<Node, U>> possibleFilters = new ArrayList<>();
 			for (Entry<String, Map<String, Set<CSSOMFilterEntry<Node, U>>>> attrEntry: filters.entrySet()) {
-				String attributeValue = attrEntry.getKey();
-				if (attributeValue == null) {
-					return List.of();
-				}
+				String attributeName = attrEntry.getKey();
+				String attributeValue = element.getAttribute(attributeName);
+				if (attributeValue == null) return List.of();
+
 				for (Entry<String, Set<CSSOMFilterEntry<Node, U>>> valueEntry: attrEntry.getValue().entrySet()) {
 					if (attributeValue.indexOf(valueEntry.getKey()) != -1) {
 						possibleFilters.addAll(valueEntry.getValue());
