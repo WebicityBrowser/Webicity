@@ -9,6 +9,11 @@ public class RGBColorValueImp implements ColorValue {
 	public RGBColorValueImp(int r, int g, int b, int a) {
 		color = (r << 24) + (g << 16) + (b << 8) + a;
 	}
+
+	public RGBColorValueImp(int r, int g, int b) {
+		this(r, g, b, 255);
+	}
+
 	
 	@Override
 	public int getRed() {
