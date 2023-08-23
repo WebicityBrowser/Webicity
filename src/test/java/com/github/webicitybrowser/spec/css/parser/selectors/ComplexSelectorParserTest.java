@@ -11,9 +11,13 @@ import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.HashToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.HashToken.HashTypeFlag;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.LSBracketToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.RSBracketToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
+import com.github.webicitybrowser.spec.css.selectors.combinator.ChildCombinator;
+import com.github.webicitybrowser.spec.css.selectors.combinator.DescendantCombinator;
 import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector;
 import com.github.webicitybrowser.spec.css.selectors.selector.IDSelector;
 import com.github.webicitybrowser.spec.css.selectors.selector.TypeSelector;
@@ -61,8 +65,8 @@ public class ComplexSelectorParserTest {
 	}
 	
 	@Test
-	@DisplayName("Two delimited ident tokens create type selectors")
-	public void twoDelimitedIdentTokensCreateTypeSelectors() {
+	@DisplayName("Two comma delimited ident tokens create type selectors")
+	public void twoCommaDelimitedIdentTokensCreateTypeSelectors() {
 		TokenLike[] tokens = new TokenLike[] {
 			(IdentToken) () -> "hi", new CommaToken() {}, (IdentToken) () -> "bye"
 		};
@@ -127,5 +131,105 @@ public class ComplexSelectorParserTest {
 		IDSelector selector = (IDSelector) parts[0];
 		Assertions.assertEquals("hi", selector.getId());
 	}
+
+	@Test
+	@DisplayName("Left square bracket token creates attribute selector")
+	public void leftSquareBracketTokenCreatesAttributeSelector() {
+		TokenLike[] tokens = new TokenLike[] {
+			new LSBracketToken() {}, (IdentToken) () -> "hi", new RSBracketToken() {}
+		};
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens);
+		Assertions.assertEquals(1, selectors.length);
+		ComplexSelectorPart[] parts = selectors[0].getParts();
+		Assertions.assertEquals(1, parts.length);
+		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
+		AttributeSelector selector = (AttributeSelector) parts[0];
+		Assertions.assertEquals("hi", selector.getAttributeName().getName());
+	}
 	
+	@Test
+	@DisplayName("Two subsequent dot delim tokens creates multi-class selector")
+	public void twoSubsequentDotDelimTokensCreatesMultiClassSelector() {
+		TokenLike[] tokens = new TokenLike[] {
+			(DelimToken) () -> '.', (IdentToken) () -> "hi", (DelimToken) () -> '.', (IdentToken) () -> "bye"
+		};
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens);
+		Assertions.assertEquals(1, selectors.length);
+		ComplexSelectorPart[] parts = selectors[0].getParts();
+		Assertions.assertEquals(2, parts.length);
+
+		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
+		AttributeSelector selector = (AttributeSelector) parts[0];
+		Assertions.assertEquals("hi", selector.getComparisonValue());
+
+		Assertions.assertInstanceOf(AttributeSelector.class, parts[1]);
+		selector = (AttributeSelector) parts[1];
+		Assertions.assertEquals("bye", selector.getComparisonValue());
+	}
+
+	@Test
+	@DisplayName("Two subsequent left square bracket tokens creates multi-attribute selector")
+	public void twoSubsequentLeftSquareBracketTokensCreatesMultiAttributeSelector() {
+		TokenLike[] tokens = new TokenLike[] {
+			new LSBracketToken() {}, (IdentToken) () -> "hi", new RSBracketToken() {},
+			new LSBracketToken() {}, (IdentToken) () -> "bye", new RSBracketToken() {}
+		};
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens);
+		Assertions.assertEquals(1, selectors.length);
+		ComplexSelectorPart[] parts = selectors[0].getParts();
+		Assertions.assertEquals(2, parts.length);
+
+		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
+		AttributeSelector selector = (AttributeSelector) parts[0];
+		Assertions.assertEquals("hi", selector.getAttributeName().getName());
+
+		Assertions.assertInstanceOf(AttributeSelector.class, parts[1]);
+		selector = (AttributeSelector) parts[1];
+		Assertions.assertEquals("bye", selector.getAttributeName().getName());
+	}
+
+	@Test
+	@DisplayName("Can parse complex selector with basic combinators")
+	public void canParseComplexSelectorWithBasicCombinators() {
+		TokenLike[] tokens = new TokenLike[] {
+			(IdentToken) () -> "hi", (DelimToken) () -> '>', (IdentToken) () -> "bye"
+		};
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens);
+		Assertions.assertEquals(1, selectors.length);
+		ComplexSelectorPart[] parts = selectors[0].getParts();
+		Assertions.assertEquals(3, parts.length);
+
+		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
+		TypeSelector selector = (TypeSelector) parts[0];
+		Assertions.assertEquals("hi", selector.getQualifiedName().getName());
+
+		Assertions.assertInstanceOf(ChildCombinator.class, parts[1]);
+
+		Assertions.assertInstanceOf(TypeSelector.class, parts[2]);
+		selector = (TypeSelector) parts[2];
+		Assertions.assertEquals("bye", selector.getQualifiedName().getName());
+	}
+
+	@Test
+	@DisplayName("Can parse complex selector with descendant combinator")
+	public void canParseComplexSelectorWithDescendantCombinator() {
+		TokenLike[] tokens = new TokenLike[] {
+			(IdentToken) () -> "hi", new WhitespaceToken() {}, (IdentToken) () -> "bye"
+		};
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens);
+		Assertions.assertEquals(1, selectors.length);
+		ComplexSelectorPart[] parts = selectors[0].getParts();
+		Assertions.assertEquals(3, parts.length);
+
+		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
+		TypeSelector selector = (TypeSelector) parts[0];
+		Assertions.assertEquals("hi", selector.getQualifiedName().getName());
+
+		Assertions.assertInstanceOf(DescendantCombinator.class, parts[1]);
+
+		Assertions.assertInstanceOf(TypeSelector.class, parts[2]);
+		selector = (TypeSelector) parts[2];
+		Assertions.assertEquals("bye", selector.getQualifiedName().getName());
+	}
+
 }

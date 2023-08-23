@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import com.github.webicitybrowser.spec.css.parser.TokenStream;
 import com.github.webicitybrowser.spec.css.parser.imp.TokenStreamImp;
 import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.EOFToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.Token;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.selectors.combinator.ChildCombinator;
@@ -33,6 +34,7 @@ public class CombinatorParserTest {
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { spaceToken });
 		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(DescendantCombinator.class, combinator);
+		Assertions.assertInstanceOf(EOFToken.class, tokenStream.read());
 	}
 	
 	@Test
@@ -43,6 +45,7 @@ public class CombinatorParserTest {
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken });
 		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(ChildCombinator.class, combinator);
+		Assertions.assertInstanceOf(EOFToken.class, tokenStream.read());
 	}
 	
 	@Test
@@ -53,6 +56,7 @@ public class CombinatorParserTest {
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken });
 		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(NextSiblingCombinator.class, combinator);
+		Assertions.assertInstanceOf(EOFToken.class, tokenStream.read());
 	}
 	
 	@Test
@@ -63,6 +67,7 @@ public class CombinatorParserTest {
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken });
 		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(SubsequentSiblingCombinator.class, combinator);
+		Assertions.assertInstanceOf(EOFToken.class, tokenStream.read());
 	}
 	
 	@Test
@@ -74,6 +79,7 @@ public class CombinatorParserTest {
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { spaceToken, delimToken, spaceToken });
 		Combinator combinator = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		Assertions.assertInstanceOf(SubsequentSiblingCombinator.class, combinator);
+		Assertions.assertInstanceOf(EOFToken.class, tokenStream.read());
 	}
 	
 }

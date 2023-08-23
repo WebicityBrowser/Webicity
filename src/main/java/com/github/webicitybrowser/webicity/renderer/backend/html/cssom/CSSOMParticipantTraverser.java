@@ -4,4 +4,6 @@ public interface CSSOMParticipantTraverser<T> {
 
 	T[] getChildren(T item);
 
+	T getParent(T item);
+
 }

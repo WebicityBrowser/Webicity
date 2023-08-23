@@ -10,4 +10,9 @@ public class DocumentParticipantTraverser implements CSSOMParticipantTraverser<N
 		return node.getChildNodes().toArray();
 	}
 
+	@Override
+	public Node getParent(Node item) {
+		return item.getParentNode();
+	}
+
 }

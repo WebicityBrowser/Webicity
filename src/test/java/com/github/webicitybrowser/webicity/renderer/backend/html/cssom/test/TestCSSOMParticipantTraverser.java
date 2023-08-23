@@ -9,4 +9,9 @@ public class TestCSSOMParticipantTraverser implements CSSOMParticipantTraverser<
 		return item.getChildren();
 	}
 
+	@Override
+	public TestCSSOMParticipant getParent(TestCSSOMParticipant item) {
+		return item.getParent();
+	}
+
 }

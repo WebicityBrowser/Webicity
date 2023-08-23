@@ -11,7 +11,7 @@ public class ParseFormatException extends Exception {
 		this.tokenPosition = tokenPosition;
 	}
 
-	int getTokenPosition() {
+	public int getTokenPosition() {
 		return tokenPosition;
 	};
 	

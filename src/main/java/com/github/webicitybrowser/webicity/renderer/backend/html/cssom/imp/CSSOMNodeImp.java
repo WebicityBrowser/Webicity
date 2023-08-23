@@ -2,8 +2,10 @@ package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.imp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMComposableFilter;
@@ -15,8 +17,8 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode
 public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 
 	private final Map<CSSOMFilter<T, U>, CSSOMFilterEntry<T, U>> filters = new HashMap<>(4);
-	private final List<CSSOMFilterEntry<T, U>> normalFilters = new ArrayList<>(0);
-	private final List<CSSOMFilterEntry<T, U>> links = new ArrayList<>(0);
+	private final Set<CSSOMFilterEntry<T, U>> normalFilters = new HashSet<>(0);
+	private final Set<CSSOMFilterEntry<T, U>> links = new HashSet<>(0);
 	private final Map<Class<?>, CSSOMFilterComposition<T, U, ?>> composableFilters = new HashMap<>(2);
 	private final List<U> allProperties = new ArrayList<>(1);
 	
@@ -31,7 +33,9 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 
 	@Override
 	public void linkChild(CSSOMFilter<T, U> filter, int staging, CSSOMNode<T, U> linkedNode) {
-		links.add(new CSSOMFilterEntry<>(staging, filter, linkedNode));
+		boolean added = links.add(new CSSOMFilterEntry<>(staging, filter, linkedNode));
+		if (!added) return;
+		filter.setupMatchingNode(linkedNode, staging);
 	}
 	
 	@Override
@@ -67,14 +71,22 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 	}
 	
 	private <V extends CSSOMComposableFilter<T, U, V>> CSSOMFilterEntry<T, U> addCSSOMFilter(CSSOMFilter<T, U> filter, int staging) {
-		CSSOMFilterEntry<T, U> filterEntry = new CSSOMFilterEntry<>(staging, filter, new CSSOMNodeImp<T, U>());
+		CSSOMNodeImp<T, U> childNode = new CSSOMNodeImp<T, U>();
+		CSSOMFilterEntry<T, U> filterEntry = new CSSOMFilterEntry<>(staging, filter, childNode);
+		
+		boolean added;
 		if (filter instanceof CSSOMComposableFilter<T, U, ?> composableFilter) {
-			composableFilters
+			added = composableFilters
 				.computeIfAbsent(composableFilter.getFilterType(), _1 -> composableFilter.createFilterComposition())
 				.addFilter(filterEntry);
 		} else {
-			normalFilters.add(filterEntry);
+			added = normalFilters.add(filterEntry);
 		}
+
+		if (added) {
+			filter.setupMatchingNode(childNode, staging);
+		}
+
 		return filterEntry;
 	}
 

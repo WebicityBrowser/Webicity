@@ -27,9 +27,11 @@ public class AttributeOneOfFilter<U> implements CSSOMComposableFilter<Node, U, A
 			if (attrValue == null) {
 				return List.of();
 			}
+			
 			String target = attributeSelector.getComparisonValue();
 			return attrContainsTarget(attrValue, target) ? List.of(item) : List.of();
 		}
+
 		return List.of();
 	}
 	

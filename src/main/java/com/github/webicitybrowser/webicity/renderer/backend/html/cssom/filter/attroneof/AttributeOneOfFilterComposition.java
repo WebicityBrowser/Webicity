@@ -2,9 +2,11 @@ package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.a
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
@@ -14,15 +16,15 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilt
 
 public class AttributeOneOfFilterComposition<U> implements CSSOMFilterComposition<Node, U, AttributeOneOfFilter<U>> {
 
-	private final Map<String, Map<String, List<CSSOMFilterEntry<Node, U>>>> filters = new HashMap<>();
+	private final Map<String, Map<String, Set<CSSOMFilterEntry<Node, U>>>> filters = new HashMap<>();
 	
 	@Override
-	public void addFilter(CSSOMFilterEntry<Node, U> filterEntry) {
+	public boolean addFilter(CSSOMFilterEntry<Node, U> filterEntry) {
 		CSSOMFilter<Node, U> filter = filterEntry.filter();
 		if (filter instanceof AttributeOneOfFilter<U> oneOfFilter) {
-			filters
+			return filters
 				.computeIfAbsent(oneOfFilter.getAttributeName(), _1 -> new HashMap<>(1))
-				.computeIfAbsent(oneOfFilter.getComparisonValue(), _1 -> new ArrayList<>(1))
+				.computeIfAbsent(oneOfFilter.getComparisonValue(), _1 -> new HashSet<>(1))
 				.add(filterEntry);
 		} else {
 			throw new IllegalArgumentException();
@@ -33,12 +35,12 @@ public class AttributeOneOfFilterComposition<U> implements CSSOMFilterCompositio
 	public List<CSSOMFilterEntry<Node, U>> getPossibleFilters(Node node) {
 		if (node instanceof Element element) {
 			ArrayList<CSSOMFilterEntry<Node, U>> possibleFilters = new ArrayList<>();
-			for (Entry<String, Map<String, List<CSSOMFilterEntry<Node, U>>>> attrEntry: filters.entrySet()) {
+			for (Entry<String, Map<String, Set<CSSOMFilterEntry<Node, U>>>> attrEntry: filters.entrySet()) {
 				String attributeValue = attrEntry.getKey();
 				if (attributeValue == null) {
 					return List.of();
 				}
-				for (Entry<String, List<CSSOMFilterEntry<Node, U>>> valueEntry: attrEntry.getValue().entrySet()) {
+				for (Entry<String, Set<CSSOMFilterEntry<Node, U>>> valueEntry: attrEntry.getValue().entrySet()) {
 					if (attributeValue.indexOf(valueEntry.getKey()) != -1) {
 						possibleFilters.addAll(valueEntry.getValue());
 					}
