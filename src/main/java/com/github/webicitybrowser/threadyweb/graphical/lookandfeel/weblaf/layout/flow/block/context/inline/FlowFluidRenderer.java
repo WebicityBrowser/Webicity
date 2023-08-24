@@ -11,11 +11,14 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
+import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective.WhiteSpaceCollapse;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedTextCollapser;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidationPrerenderMessage;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
 
 public final class FlowFluidRenderer {
 
@@ -25,7 +28,7 @@ public final class FlowFluidRenderer {
 		List<Box> children = box.getChildrenTracker().getChildren();
 		
 		LineDimensionConverter dimensionConverter = new HorizontalLineDimensionConverter();
-		ContextSwitch[] contextSwitches = createContextSwitches(children);
+		ContextSwitch[] contextSwitches = createContextSwitches(box, children);
 		AbsoluteSize precomputedInnerSize = localRenderContext.getPreferredSize();
 		LineBoxContainer lines = new LineBoxContainer(globalRenderContext, precomputedInnerSize, dimensionConverter, contextSwitches);
 		renderChildren(children, lines);
@@ -39,9 +42,8 @@ public final class FlowFluidRenderer {
 		return new SingleRenderedUnitGenerator<InnerDisplayUnit>(unit);
 	}
 	
-	private static ContextSwitch[] createContextSwitches(List<Box> children) {
-		TextConsolidation consolidation = collectText(children);
-		TextAdjustContextSwitch adjustSwitch = createTextAdjustContextSwitch(consolidation);
+	private static ContextSwitch[] createContextSwitches(ChildrenBox box, List<Box> children) {
+		TextAdjustContextSwitch adjustSwitch = adjustChildText(box, collectText(children));
 		return new ContextSwitch[] { adjustSwitch };
 	}
 
@@ -57,6 +59,12 @@ public final class FlowFluidRenderer {
 			child.message((TextConsolidationPrerenderMessage) () -> consolidation);
 		}
 		return consolidation;
+	}
+
+	private static TextAdjustContextSwitch adjustChildText(ChildrenBox box, TextConsolidation consolidation) {
+		WhiteSpaceCollapse collapseMode = WebDirectiveUtil.getWhiteSpaceCollapse(box.styleDirectives());
+		ConsolidatedTextCollapser.collapse(consolidation.getTextView(), collapseMode);
+		return createTextAdjustContextSwitch(consolidation);
 	}
 
 	private static TextAdjustContextSwitch createTextAdjustContextSwitch(TextConsolidation consolidation) {

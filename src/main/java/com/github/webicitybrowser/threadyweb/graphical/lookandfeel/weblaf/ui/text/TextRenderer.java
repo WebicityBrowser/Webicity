@@ -6,8 +6,11 @@ import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.TextAdjustContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.tree.TextComponent;
 
 public final class TextRenderer {
 
@@ -15,10 +18,21 @@ public final class TextRenderer {
 		FontSettings fontSettings = getFontSettings(box);
 		Font2D font = renderContext.getResourceLoader().loadFont(fontSettings);
 		
-		String text = box.owningComponent().getText();
+		String text = getAdjustedText(box, localRenderContext.getContextSwitches());
 		float[] charWidths = calculateCharWidths(text, font.getMetrics());
 		
 		return new TextUnitGenerator(box, text, font, charWidths);
+	}
+
+	private static String getAdjustedText(TextBox box, ContextSwitch[] contextSwitches) {
+		TextComponent owningComponent = box.owningComponent();
+		for (ContextSwitch contextSwitch : contextSwitches) {
+			if (contextSwitch instanceof TextAdjustContextSwitch textAdjustContextSwitch) {
+				return textAdjustContextSwitch.getNextText(owningComponent);
+			}
+		}
+
+		return owningComponent.getText();
 	}
 
 	private static FontSettings getFontSettings(TextBox box) {

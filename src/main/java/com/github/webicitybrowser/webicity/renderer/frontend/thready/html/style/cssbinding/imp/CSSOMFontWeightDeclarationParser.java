@@ -16,7 +16,9 @@ public class CSSOMFontWeightDeclarationParser implements CSSOMNamedDeclarationPa
 
 	@Override
 	public Directive[] translatePropertyValue(FontWeightValue value) {
-		return new Directive[] { FontWeightDirective.of(value) };
+		return new Directive[] {
+			FontWeightDirective.of(parentWeight -> value.getWeight(parentWeight))
+		};
 	}
 	
 }

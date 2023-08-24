@@ -110,5 +110,20 @@ public class ConsolidatedCollapsibleTextViewTest {
 		Assertions.assertEquals('b', textView.getCurrentCodepoint());
 		Assertions.assertTrue(textView.atStart());
 	}
+
+	@Test
+	@DisplayName("Can move pointer to start")
+	public void canMovePointerToStart() {
+		List<String> backingStrings = new ArrayList<>();
+		backingStrings.add("a");
+		backingStrings.add("b");
+		ConsolidatedCollapsibleTextView textView = ConsolidatedCollapsibleTextView.create(backingStrings);
+		textView.advance();
+		textView.advance();
+		Assertions.assertTrue(textView.atEnd());
+		textView.restart();
+		Assertions.assertTrue(textView.atStart());
+		Assertions.assertFalse(textView.atEnd());
+	}
 	
 }

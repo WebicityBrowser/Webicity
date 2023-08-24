@@ -21,6 +21,7 @@ public class ConsolidatedCollapsibleTextViewImp implements ConsolidatedCollapsib
 
 	@Override
 	public boolean atEnd() {
+		if (backingStrings.isEmpty()) return true;
 		String lastString = backingStrings.get(backingStrings.size() - 1);
 		return textCursor == lastString.length() && lineCursor == backingStrings.size() - 1;
 	}
@@ -66,6 +67,21 @@ public class ConsolidatedCollapsibleTextViewImp implements ConsolidatedCollapsib
 		backingStrings.set(lineCursor, replaced);
 		textCursor++;
 		advanceIfStringEnd();
+	}
+
+	@Override
+	public void restart() {
+		lineCursor = firstNonEmptyLineIndex;
+		textCursor = 0;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		for (String string : backingStrings) {
+			builder.append(string);
+		}
+		return builder.toString();
 	}
 	
 	private void advanceIfStringEnd() {

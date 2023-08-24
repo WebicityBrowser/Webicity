@@ -19,6 +19,8 @@ public interface ConsolidatedCollapsibleTextView {
 	void delete();
 	
 	void replace(char ch);
+
+	void restart();
 	
 	public static ConsolidatedCollapsibleTextView create(List<String> backingStrings) {
 		return new ConsolidatedCollapsibleTextViewImp(backingStrings);

@@ -11,12 +11,12 @@ public interface OuterDisplayDirective extends Directive {
 		return OuterDisplayDirective.class;
 	}
 	
-	public static enum OuterDisplay {
+	enum OuterDisplay {
 		BLOCK, INLINE,
 		NONE, CONTENTS
 	}
 
-	public static OuterDisplayDirective of(OuterDisplay display) {
+	static OuterDisplayDirective of(OuterDisplay display) {
 		return () -> display;
 	}
 	
