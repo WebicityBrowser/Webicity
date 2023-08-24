@@ -1,9 +1,12 @@
 package com.github.webicitybrowser.webicitybrowser;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
 import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
+import com.github.webicitybrowser.thready.drawing.core.image.BytesImageSource;
+import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
 import com.github.webicitybrowser.thready.gui.directive.basics.style.OneOneStyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
@@ -114,6 +117,14 @@ public class Main {
 			
 			desktopWindow.setTitle("Webicity");
 			desktopWindow.setDecorated(false);
+
+			try {
+				desktopWindow.setIcons(new ImageSource[] {
+					new BytesImageSource(ClassLoader.getSystemClassLoader().getResourceAsStream("webicity.png").readAllBytes())
+				});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 			callback.accept(new DesktopGUIWindow((DesktopWindow) window));
 		});

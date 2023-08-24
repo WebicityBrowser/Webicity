@@ -2,6 +2,7 @@ package com.github.webicitybrowser.thready.windowing.core;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
 
 public interface DesktopWindow extends Window {
 
@@ -53,5 +54,11 @@ public interface DesktopWindow extends Window {
 	 *  uses native decorations.
 	 */
 	void setDecorated(boolean decorated);
+
+	/**
+	 * Set the icons of this window.
+	 * @param icons The icons of this window.
+	 */
+	void setIcons(ImageSource[] icons);
 	
 }

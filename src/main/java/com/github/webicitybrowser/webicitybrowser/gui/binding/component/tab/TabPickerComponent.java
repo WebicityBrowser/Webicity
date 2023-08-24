@@ -7,8 +7,13 @@ import java.util.function.Supplier;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeSize;
+import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
+import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
+import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
+import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.gui.directive.basics.ChildrenDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
+import com.github.webicitybrowser.thready.gui.graphical.directive.FontDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.PositionDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.SizeDirective;
 import com.github.webicitybrowser.thready.gui.tree.basics.ContainerComponent;
@@ -47,7 +52,7 @@ public class TabPickerComponent extends TabDisplayComponent {
 		return tabDisplayPane;
 	}
 	
-	public void addTab(Tab tab) {
+	public TabComponent addTab(Tab tab) {
 		TabComponent tabComponent = new ContentTabComponent(configs, tab);
 		setupTabComponent(tabComponent);
 		tabs.add(tabComponent);
@@ -56,6 +61,8 @@ public class TabPickerComponent extends TabDisplayComponent {
 		}
 		
 		regenerateContents();
+
+		return tabComponent;
 	}
 
 	private void selectTab(TabComponent tabComponent) {
@@ -67,6 +74,11 @@ public class TabPickerComponent extends TabDisplayComponent {
 	private void setupTabComponent(TabComponent tabComponent) {
 		addButtonBehavior(tabComponent, () -> selectTab(tabComponent), () -> selectedTab == tabComponent);
 		tabComponent.setIsTopLevel(isTopLevel);
+
+		tabComponent.directive(FontDirective.of(new FontSettings(
+			new NamedFontSource("Open Sans"),
+			12, CommonFontWeights.NORMAL, new FontDecoration[0]
+		)));
 	}
 
 	private void updateTabDisplay() {
@@ -96,7 +108,10 @@ public class TabPickerComponent extends TabDisplayComponent {
 
 	private Component createNewTabButton() {
 		Component button = new CircularButtonComponent(ImageUtil.loadImageFromResource("icons/newtab.png"));
-		addButtonBehavior(button, () -> addTab(configs.createTab()), () -> false);
+		addButtonBehavior(button, () -> {
+			TabComponent newTab = addTab(configs.createTab());
+			selectTab(newTab);
+		}, () -> false);
 		
 		return button
 			.directive(PositionDirective.of(new AbsolutePosition(0, Styling.ELEMENT_PADDING)))

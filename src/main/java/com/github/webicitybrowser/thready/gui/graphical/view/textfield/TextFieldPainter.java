@@ -48,11 +48,15 @@ public class TextFieldPainter {
 	private static void drawText(LocalPaintContext localContext, String text) {
 		Canvas2D canvas = localContext.canvas();
 		Rectangle documentRect = localContext.documentRect();
+		FontMetrics metrics = canvas.getPaint().getFont().getMetrics();
 		
 		float docX = documentRect.position().x();
 		float docY = documentRect.position().y();
+		float docH = documentRect.size().height();
+
+		float yOffset = docH / 2 - metrics.getCapHeight() / 2;
 		
-		canvas.drawText(docX, docY, text);
+		canvas.drawText(docX, docY + yOffset, text);
 	}
 	
 	private static void drawCursor(LocalPaintContext localContext, String text, TextFieldViewModel textFieldViewModel) {

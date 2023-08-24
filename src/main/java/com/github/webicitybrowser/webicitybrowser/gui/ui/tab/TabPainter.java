@@ -9,6 +9,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebStringUtils;
 import com.github.webicitybrowser.webicitybrowser.gui.Styling;
 
 public final class TabPainter {
@@ -90,9 +91,15 @@ public final class TabPainter {
 		float docX = documentRect.position().x();
 		float docY = documentRect.position().y();
 		float docW = documentRect.size().width();
-		float textOffsetX = docW / 2 - metrics.getStringWidth(text) / 2;
+		float docH = documentRect.size().height();
+
+		float expectedWidth = docW /* - Styling.BUTTON_WIDTH*/ - 2 * Styling.ELEMENT_PADDING;
+		String trimmedText = WebStringUtils.trim(metrics, text, expectedWidth);
+
+		float textOffsetX = docW / 2 - metrics.getStringWidth(trimmedText) / 2;
+		float textOffsetY = docH / 2 - metrics.getCapHeight() / 2;
 		
-		ctx.drawText(docX + textOffsetX, docY, text);
+		ctx.drawText(docX + textOffsetX, docY + textOffsetY, trimmedText);
 	}
 	
 }

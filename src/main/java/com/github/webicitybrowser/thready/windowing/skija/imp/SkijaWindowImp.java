@@ -1,13 +1,24 @@
 package com.github.webicitybrowser.thready.windowing.skija.imp;
 
+import java.nio.ByteBuffer;
+
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.drawing.core.image.BytesImageSource;
+import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaScreen;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindow;
+
+import io.github.humbleui.skija.Bitmap;
+import io.github.humbleui.skija.ColorAlphaType;
+import io.github.humbleui.skija.ColorType;
+import io.github.humbleui.skija.Image;
+import io.github.humbleui.skija.ImageInfo;
 
 public class SkijaWindowImp implements SkijaWindow {
 
@@ -40,8 +51,22 @@ public class SkijaWindowImp implements SkijaWindow {
 		GLFW.glfwSetWindowTitle(windowId, title);
 	}
 
+	@Override
+	public void setIcons(ImageSource[] icons) {
+		GLFWImage.Buffer iconsBuffer = GLFWImage.create(icons.length);
+		for (int i = 0; i < icons.length; i++) {
+			if (icons[i] instanceof BytesImageSource bytesImageSource) {
+				GLFWImage image = loadImage(bytesImageSource);
+				iconsBuffer.put(i, image);
+			} else {
+				throw new UnsupportedOperationException("Unsupported image source type: " + icons[i].getClass().getName());
+			}
+		}
+		GLFW.glfwSetWindowIcon(windowId, iconsBuffer);
+	}
+
 	//
-	
+
 	@Override
 	public void setDecorated(boolean decorated) {
 		GLFW.glfwSetWindowAttrib(windowId, GLFW.GLFW_DECORATED, glfwBool(decorated));
@@ -121,11 +146,28 @@ public class SkijaWindowImp implements SkijaWindow {
 	private boolean isMaximized() {
 		return GLFW.glfwGetWindowAttrib(windowId, GLFW.GLFW_MAXIMIZED) == GLFW.GLFW_TRUE;
 	}
+
+	private GLFWImage loadImage(BytesImageSource bytesImageSource) {
+		byte[] bytes = bytesImageSource.getBytes();
+		Image skijaImage = Image.makeDeferredFromEncodedBytes(bytes);
+		Bitmap buffer = Bitmap.makeFromImage(skijaImage);
+		// Make an ImageInfo that uses RGBA
+		ImageInfo imageInfo = new ImageInfo(buffer.getWidth(), buffer.getHeight(), ColorType.RGBA_8888, ColorAlphaType.PREMUL);
+		byte[] bufferBytes = buffer.readPixels(imageInfo, buffer.getRowBytes(), 0, 0);
+		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bufferBytes.length);
+		byteBuffer.put(bufferBytes);
+		byteBuffer.flip();
+		return GLFWImage.create()
+			.set(skijaImage.getWidth(), skijaImage.getHeight(), byteBuffer);
+	}
 	
 	//
 
 	public static SkijaWindow create(SkijaGraphicsSystem graphicsSystem) {
 		initGlfw();
+		// Trying to set the window attrib after creation doesn't seem to work
+		// TODO: Don't assume the window is undecorated
+		GLFW.glfwWindowHint(GLFW.GLFW_DECORATED, GLFW.GLFW_FALSE);
 		long windowId = GLFW.glfwCreateWindow(800, 600, "Untitled Application", 0, 0);
 		GLFW.glfwMakeContextCurrent(windowId);
 		GL.createCapabilities();

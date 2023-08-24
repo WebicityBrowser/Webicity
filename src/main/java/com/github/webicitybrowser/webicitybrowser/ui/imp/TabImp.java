@@ -33,6 +33,10 @@ public class TabImp implements Tab {
 
 	@Override
 	public String getName() {
+		String frameName = frame.getName();
+		if (frameName == null || frameName.isEmpty()) {
+			return frame.getURL().toString();
+		}
 		return frame.getName();
 	}
 

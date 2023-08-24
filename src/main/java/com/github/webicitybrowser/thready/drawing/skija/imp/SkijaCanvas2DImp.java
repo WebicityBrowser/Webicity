@@ -17,7 +17,6 @@ import com.github.webicitybrowser.thready.windowing.skija.imp.SkijaCanvasSetting
 import io.github.humbleui.skija.Canvas;
 import io.github.humbleui.skija.Font;
 import io.github.humbleui.skija.Paint;
-import io.github.humbleui.skija.TextBlob;
 import io.github.humbleui.types.RRect;
 import io.github.humbleui.types.Rect;
 
@@ -53,20 +52,9 @@ public class SkijaCanvas2DImp implements Canvas2D {
 		SkijaFont2D loadedFont = (SkijaFont2D) paint.getFont();
 		Font font = loadedFont.getRaw();
 		FontMetrics metrics = loadedFont.getMetrics();
-		
-		short[] glyphs = new short[text.length()];
-		float[] xpos = new float[glyphs.length];
-		int distance = 0;
-		for (int i = 0; i < xpos.length; i++) {
-			int codePoint = text.codePointAt(i);
-			glyphs[i] = loadedFont.getCharacterGlyph(codePoint);
-			xpos[i] = distance;
-			distance += metrics.getCharacterWidth(codePoint);
-		}
-		
-		TextBlob textBlob = TextBlob.makeFromPosH(glyphs, xpos, 0, font);
-		float adjustedY = y + metrics.getHeight() - metrics.getLeading();
-		canvas.drawTextBlob(textBlob, x, adjustedY, rawPaint);
+		float adjustedY = y + metrics.getCapHeight();
+
+		canvas.drawString(text, x, adjustedY, font, rawPaint);
 	}
 	
 	@Override

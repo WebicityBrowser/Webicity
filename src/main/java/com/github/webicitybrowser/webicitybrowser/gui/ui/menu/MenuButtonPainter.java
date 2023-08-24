@@ -7,6 +7,7 @@ import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.builder.Paint2DBuilder;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
+import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
@@ -59,18 +60,23 @@ public final class MenuButtonPainter {
 			.clone(canvas.getPaint())
 			.setFont(font)
 			.build();
+
+		FontMetrics metrics = font.getMetrics();
+
+		float docX = documentRect.position().x();
+		float docY = documentRect.position().y();
+		float docW = documentRect.size().width();
+		float docH = documentRect.size().height();
 		
 		float textWidth = font.getMetrics().getStringWidth(Styling.PRODUCT_NAME);
 		float textXOffset =
-			(documentRect.size().width() - Styling.BUTTON_WIDTH / 2) / 2 -
+			(docW - Styling.BUTTON_WIDTH / 2) / 2 -
 			textWidth / 2;
+		float textOffsetY = docH / 2 - metrics.getCapHeight() / 2;
 		
 		canvas
 			.withPaint(paint)
-			.drawText(
-				documentRect.position().x() + textXOffset,
-				documentRect.position().y(),
-				Styling.PRODUCT_NAME);
+			.drawText(docX + textXOffset, docY + textOffsetY, Styling.PRODUCT_NAME);
 	}
 
 	private static ColorFormat getBackgroundColor(DirectivePool styleDirectives) {
