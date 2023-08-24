@@ -1,12 +1,13 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text;
 
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
+import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
 
 public final class TextRenderer {
 
@@ -21,7 +22,11 @@ public final class TextRenderer {
 	}
 
 	private static FontSettings getFontSettings(TextBox box) {
-		return SimpleDirectiveUtil.getFontSettings(box.styleDirectives());
+		return new FontSettings(
+			WebDirectiveUtil.getFontSource(box.styleDirectives()),
+			WebDirectiveUtil.getFontSize(box.styleDirectives()),
+			WebDirectiveUtil.getFontWeight(box.styleDirectives()).getWeight(400),
+			new FontDecoration[0]);
 	}
 	
 	private static float[] calculateCharWidths(String text, FontMetrics metrics) {

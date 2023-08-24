@@ -1,11 +1,24 @@
 a {
-	color: #0000FF;
+    color: #0000FF;
 }
 
 div, body, html {
-	display: block;
+    display: block;
 }
 
 head, style, script {
-	display: none;
+    display: none;
 }
+
+/* For content after this line, see licenses/WHATWG.txt for license information. */
+article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section {
+    display: block;
+}
+
+/* I have removed margin info as margins are not yet supported. */
+h1 { font-size: 2.00em; font-weight: bold; }
+h2 { font-size: 1.50em; font-weight: bold; }
+h3 { font-size: 1.17em; font-weight: bold; }
+h4 { font-size: 1.00em; font-weight: bold; }
+h5 { font-size: 0.83em; font-weight: bold; }
+h6 { font-size: 0.67em; font-weight: bold; }

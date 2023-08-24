@@ -7,7 +7,7 @@ import com.github.webicitybrowser.thready.dimensions.RelativePosition;
 import com.github.webicitybrowser.thready.dimensions.RelativeSize;
 import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
-import com.github.webicitybrowser.thready.drawing.core.text.FontWeight;
+import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.gui.directive.basics.ChildrenDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
@@ -103,7 +103,7 @@ public class TabGUI {
 		component
 			.setValue(tab.getURL().toString())
 			.directive(BackgroundColorDirective.of(colors.getBackgroundSecondary()))
-			.directive(FontDirective.of(new FontSettings(new NamedFontSource("Open Sans"), 12, FontWeight.NORMAL, new FontDecoration[0])));
+			.directive(FontDirective.of(new FontSettings(new NamedFontSource("Open Sans"), 12, CommonFontWeights.NORMAL, new FontDecoration[0])));
 		
 		component.setAction(url -> {
 			try {

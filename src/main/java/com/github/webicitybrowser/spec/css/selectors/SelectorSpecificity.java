@@ -1,6 +1,6 @@
 package com.github.webicitybrowser.spec.css.selectors;
 
-public record SelectorSpecificity(int idSelectors, int attributeSelectors, int typeSelectors) implements Comparable<SelectorSpecificity> {
+public record SelectorSpecificity(int idSelectors, int attributeSelectors, int typeSelectors, int order) implements Comparable<SelectorSpecificity> {
 
 	@Override
 	public int compareTo(SelectorSpecificity specificity) {
@@ -10,8 +10,10 @@ public record SelectorSpecificity(int idSelectors, int attributeSelectors, int t
 			return attributeSelectors > specificity.attributeSelectors() ? 1 : -1;
 		} else if (typeSelectors != specificity.typeSelectors()) {
 			return typeSelectors > specificity.typeSelectors() ? 1 : -1;
+		} else if (order != specificity.order()) {
+			return order > specificity.order() ? 1 : -1;
 		} else {
-			return 0;
+			return 1;
 		}
 	}
 

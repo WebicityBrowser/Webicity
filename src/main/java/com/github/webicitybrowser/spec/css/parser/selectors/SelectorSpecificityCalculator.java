@@ -12,12 +12,12 @@ public final class SelectorSpecificityCalculator {
 
 	private SelectorSpecificityCalculator() {}
 	
-	public static SelectorSpecificity calculateSpecificity(ComplexSelectorPart[] parts) {
+	public static SelectorSpecificity calculateSpecificity(ComplexSelectorPart[] parts, int order) {
 		int idCount = countSelectors(parts, selector -> selector instanceof IDSelector);
 		int attributeCount = countSelectors(parts, selector -> selector instanceof AttributeSelector);
 		int typeCount = countSelectors(parts, selector -> selector instanceof TypeSelector);
 		
-		return new SelectorSpecificity(idCount, attributeCount, typeCount);
+		return new SelectorSpecificity(idCount, attributeCount, typeCount, order);
 	}
 
 	private static int countSelectors(ComplexSelectorPart[] parts, Function<ComplexSelectorPart, Boolean> filter) {

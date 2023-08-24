@@ -10,7 +10,7 @@ import com.github.webicitybrowser.thready.dimensions.RelativePosition;
 import com.github.webicitybrowser.thready.dimensions.RelativeSize;
 import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
-import com.github.webicitybrowser.thready.drawing.core.text.FontWeight;
+import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.gui.directive.basics.ChildrenDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
@@ -91,7 +91,7 @@ public class WindowGUI {
 		
 		addWindowListener(window, tabPickerComponent);
 		
-		FontSettings font = new FontSettings(new NamedFontSource("Open Sans"), 16, FontWeight.NORMAL, new FontDecoration[0]);
+		FontSettings font = new FontSettings(new NamedFontSource("Open Sans"), 16, CommonFontWeights.NORMAL, new FontDecoration[0]);
 		return ContainerComponent.create()
 			.directive(BackgroundColorDirective.of(Colors.WHITE))
 			.directive(FontDirective.of(font))

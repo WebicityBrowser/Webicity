@@ -23,6 +23,8 @@ public interface CSSOMNode<T, U> {
 	
 	void setSpecificity(SelectorSpecificity specificity);
 	
+	// TODO: Since some CSSOMNodes are merged but have different positions in the DOM tree,
+	// specificity should be moved to individual node properties.
 	SelectorSpecificity getSpecificity();
 
 	static <T, U> CSSOMNode<T, U> create(CSSOMNode<T, U> parent, CSSOMFilter<T, U> filter) {

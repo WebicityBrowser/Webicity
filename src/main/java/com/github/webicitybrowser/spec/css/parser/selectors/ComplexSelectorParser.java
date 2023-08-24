@@ -32,14 +32,14 @@ public class ComplexSelectorParser {
 	
 	private final CombinatorParser combinatorParser = new CombinatorParser();
 	
-	public ComplexSelector[] parseMany(TokenLike[] prelude) {
+	public ComplexSelector[] parseMany(TokenLike[] prelude, int order) {
 		TokenStream stream = new TokenStreamImp(prelude);
 		List<ComplexSelector> selectors = new ArrayList<>();
 		
 		while (!(stream.peek() instanceof EOFToken)) {
 			ComplexSelector complexSelector;
 			try {
-				complexSelector = consumeComplexSelector(stream);
+				complexSelector = consumeComplexSelector(stream, order);
 				if (complexSelector != null) {
 					selectors.add(complexSelector);
 				} else {
@@ -53,7 +53,7 @@ public class ComplexSelectorParser {
 		return selectors.toArray(ComplexSelector[]::new);
 	}
 
-	private ComplexSelector consumeComplexSelector(TokenStream stream) throws ParseFormatException {
+	private ComplexSelector consumeComplexSelector(TokenStream stream, int order) throws ParseFormatException {
 		List<ComplexSelectorPart> selectorParts = new ArrayList<>();
 		
 		consumeWhitespace(stream);
@@ -73,7 +73,7 @@ public class ComplexSelectorParser {
 		
 		stream.read();
 		
-		return createComplexSelectorFromParts(selectorParts);
+		return createComplexSelectorFromParts(selectorParts, order);
 	}
 
 	private void consumeSimpleSelectors(TokenStream stream, List<ComplexSelectorPart> selectorParts) throws ParseFormatException {
@@ -121,9 +121,9 @@ public class ComplexSelectorParser {
 		while (!isSeperatingToken(stream.read()));
 	}
 
-	private ComplexSelector createComplexSelectorFromParts(List<ComplexSelectorPart> selectorParts) {
+	private ComplexSelector createComplexSelectorFromParts(List<ComplexSelectorPart> selectorParts, int order) {
 		ComplexSelectorPart[] parts = selectorParts.toArray(ComplexSelectorPart[]::new);
-		SelectorSpecificity selectorSpecificity = SelectorSpecificityCalculator.calculateSpecificity(parts);
+		SelectorSpecificity selectorSpecificity = SelectorSpecificityCalculator.calculateSpecificity(parts, order);
 		
 		return new ComplexSelector() {	
 			@Override

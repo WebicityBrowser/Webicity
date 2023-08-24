@@ -37,19 +37,19 @@ public class CSSOMBinderImp implements CSSOMBinder {
 	private void addRuleListToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, CSSRuleList ruleList) {
 		for (int i = 0; i < ruleList.getLength(); i++) {
 			CSSRule rule = ruleList.getItem(i);
-			addCSSRuleToCSSOMNode(rootNode, rule);
+			addCSSRuleToCSSOMNode(rootNode, rule, i);
 		}
 	}
 
-	private void addCSSRuleToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, CSSRule rule) {
+	private void addCSSRuleToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, CSSRule rule, int order) {
 		if (rule instanceof QualifiedRule qualifiedRule) {
-			addQualifiedRuleToCSSOMNode(rootNode, qualifiedRule);
+			addQualifiedRuleToCSSOMNode(rootNode, qualifiedRule, order);
 		}
 	}
 
-	private void addQualifiedRuleToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, QualifiedRule rule) {
+	private void addQualifiedRuleToCSSOMNode(CSSOMNode<Node, DirectivePool> rootNode, QualifiedRule rule, int order) {
 		TokenLike[] prelude = rule.getPrelude();
-		ComplexSelector[] selectors = new ComplexSelectorParser().parseMany(prelude);
+		ComplexSelector[] selectors = new ComplexSelectorParser().parseMany(prelude, order);
 		for (ComplexSelector selector: selectors) {
 			CSSOMNode<Node, DirectivePool> targetNode = getSelectedCSSOMNode(rootNode, selector);
 			DirectivePool properties = createPoolWithDeclarations(rule.getValue());

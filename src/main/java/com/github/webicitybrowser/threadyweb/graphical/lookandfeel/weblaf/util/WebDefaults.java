@@ -2,7 +2,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util;
 
 import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
-import com.github.webicitybrowser.thready.drawing.core.text.FontWeight;
+import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
@@ -14,7 +14,7 @@ public final class WebDefaults {
 
 	public static FontSettings FONT = new FontSettings(
 		new NamedFontSource("Times New Roman"),
-		16, FontWeight.NORMAL, new FontDecoration[0]);
+		16, CommonFontWeights.NORMAL, new FontDecoration[0]);
 	
 	private WebDefaults() {}
 	

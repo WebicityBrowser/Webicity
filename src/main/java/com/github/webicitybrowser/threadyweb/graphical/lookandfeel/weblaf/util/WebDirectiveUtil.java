@@ -1,12 +1,14 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util;
 
+import com.github.webicitybrowser.spec.css.property.fontweight.FontWeightValue;
 import com.github.webicitybrowser.thready.color.Colors;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
-import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
+import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
+import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
-import com.github.webicitybrowser.thready.gui.graphical.directive.FontDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.ForegroundColorDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.FontWeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective.OuterDisplay;
 
@@ -14,11 +16,19 @@ public final class WebDirectiveUtil {
 
 	private WebDirectiveUtil() {}
 	
-	public static FontSettings getFontSettings(DirectivePool directives) {
+	public static FontSource getFontSource(DirectivePool directives) {
+		return WebDefaults.FONT.fontSource();
+	}
+
+	public static int getFontSize(DirectivePool directives) {
+		return WebDefaults.FONT.fontSize();
+	}
+
+	public static FontWeightValue getFontWeight(DirectivePool directives) {
 		return directives
-			.inheritDirectiveOrEmpty(FontDirective.class)
-			.map(directive -> directive.getFontSettings())
-			.orElse(WebDefaults.FONT);
+			.inheritDirectiveOrEmpty(FontWeightDirective.class)
+			.map(directive -> directive.getFontWeight())
+			.orElse(_1 -> CommonFontWeights.NORMAL);
 	}
 
 	public static ColorFormat getForegroundColor(DirectivePool directives) {

@@ -23,4 +23,14 @@ public class DescendantFilter<T, U> implements CSSOMFilter<T, U> {
 		return parents;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof DescendantFilter;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getClass().hashCode();
+	}
+
 }
