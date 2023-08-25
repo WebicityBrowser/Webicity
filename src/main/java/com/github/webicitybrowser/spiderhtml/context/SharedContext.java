@@ -65,7 +65,7 @@ public class SharedContext {
 		}
 	}
 
-	public void recordError(ParseError unexpectedNullCharacter) {
+	public void recordError(ParseError parseError) {
 		// TODO Auto-generated method stub
 	}
 

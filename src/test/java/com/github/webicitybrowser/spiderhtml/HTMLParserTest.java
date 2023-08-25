@@ -299,7 +299,180 @@ public class HTMLParserTest {
 		testElement(headChildren.get(0), "link", 0);
 		testElement(headChildren.get(1), "link", 0);
 	}
-	
+
+	@Test
+	@DisplayName("Can parse list with multiple li")
+	public void canParseListWithMultipleLi() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><ul><li>Text<li>Test</ul></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		HTMLElement bodyNode = testToBody(document, 1);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		HTMLElement ulElement = testElement(bodyChildren.get(0), "ul", 2);
+		NodeList ulChildren = ulElement.getChildNodes();
+		testElement(ulChildren.get(0), "li", 1);
+		NodeList liChildren1 = ulChildren.get(0).getChildNodes();
+		assertText("Text", liChildren1.get(0));
+		testElement(ulChildren.get(1), "li", 1);
+		NodeList liChildren2 = ulChildren.get(1).getChildNodes();
+		assertText("Test", liChildren2.get(0));
+	}
+
+	@Test
+	@DisplayName("Can parse multiple p")
+	public void canParseMultipleP() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><p>Text<p>Test</body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		HTMLElement bodyNode = testToBody(document, 2);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		testElement(bodyChildren.get(0), "p", 1);
+		NodeList pChildren1 = bodyChildren.get(0).getChildNodes();
+		assertText("Text", pChildren1.get(0));
+		testElement(bodyChildren.get(1), "p", 1);
+		NodeList pChildren2 = bodyChildren.get(1).getChildNodes();
+		assertText("Test", pChildren2.get(0));
+	}
+
+	@Test
+	@DisplayName("Can parse multiple dt and dd")
+	public void canParseMultipleDtAndDd() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><dl><dt>Text<dd>Test<dt>Test2<dd>Test3</dl></body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		HTMLElement bodyNode = testToBody(document, 1);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		HTMLElement dlElement = testElement(bodyChildren.get(0), "dl", 4);
+		NodeList dlChildren = dlElement.getChildNodes();
+		testElement(dlChildren.get(0), "dt", 1);
+		NodeList dtChildren1 = dlChildren.get(0).getChildNodes();
+		assertText("Text", dtChildren1.get(0));
+		testElement(dlChildren.get(1), "dd", 1);
+		NodeList ddChildren1 = dlChildren.get(1).getChildNodes();
+		assertText("Test", ddChildren1.get(0));
+		testElement(dlChildren.get(2), "dt", 1);
+		NodeList dtChildren2 = dlChildren.get(2).getChildNodes();
+		assertText("Test2", dtChildren2.get(0));
+		testElement(dlChildren.get(3), "dd", 1);
+		NodeList ddChildren2 = dlChildren.get(3).getChildNodes();
+		assertText("Test3", ddChildren2.get(0));
+	}
+
+	@Test
+	@DisplayName("Can close ol and ul")
+	public void canCloseOlAndUl() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><ol><li>Test</ol><ul><li>Test2</ul>End</body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		HTMLElement bodyNode = testToBody(document, 3);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		HTMLElement olElement = testElement(bodyChildren.get(0), "ol", 1);
+		NodeList olChildren = olElement.getChildNodes();
+		testElement(olChildren.get(0), "li", 1);
+		NodeList liChildren1 = olChildren.get(0).getChildNodes();
+		assertText("Test", liChildren1.get(0));
+		testElement(bodyChildren.get(1), "ul", 1);
+		NodeList ulChildren = bodyChildren.get(1).getChildNodes();
+		testElement(ulChildren.get(0), "li", 1);
+		NodeList liChildren2 = ulChildren.get(0).getChildNodes();
+		assertText("Test2", liChildren2.get(0));
+		assertText("End", bodyChildren.get(2));
+	}
+
+	@Test
+	@DisplayName("hr is self-closing")
+	public void hrIsSelfClosing() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><hr>test</body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		HTMLElement bodyNode = testToBody(document, 2);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		testElement(bodyChildren.get(0), "hr", 0);
+		assertText("test", bodyChildren.get(1));
+	}
+
+	@Test
+	@DisplayName("Can parse multiple tr and td")
+	public void canParseMultipleTrAndTd() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader("<!doctype html><html><head></head><body><table><tr><td>Test<td>Test2<tr><td>Test3<td>Test4</td></tr></table>End</body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		HTMLElement bodyNode = testToBody(document, 2);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		HTMLElement tableElement = testElement(bodyChildren.get(0), "table", 1);
+		NodeList tableChildren = tableElement.getChildNodes();
+		HTMLElement tbodyElement = testElement(tableChildren.get(0), "tbody", 2);
+		NodeList tbodyChildren = tbodyElement.getChildNodes();
+		HTMLElement trElement1 = testElement(tbodyChildren.get(0), "tr", 2);
+		NodeList trChildren1 = trElement1.getChildNodes();
+		testElement(trChildren1.get(0), "td", 1);
+		NodeList tdChildren1 = trChildren1.get(0).getChildNodes();
+		assertText("Test", tdChildren1.get(0));
+		testElement(trChildren1.get(1), "td", 1);
+		NodeList tdChildren2 = trChildren1.get(1).getChildNodes();
+		assertText("Test2", tdChildren2.get(0));
+		HTMLElement trElement2 = testElement(tbodyChildren.get(1), "tr", 2);
+		NodeList trChildren2 = trElement2.getChildNodes();
+		testElement(trChildren2.get(0), "td", 1);
+		NodeList tdChildren3 = trChildren2.get(0).getChildNodes();
+		assertText("Test3", tdChildren3.get(0));
+		testElement(trChildren2.get(1), "td", 1);
+		NodeList tdChildren4 = trChildren2.get(1).getChildNodes();
+		assertText("Test4", tdChildren4.get(0));
+		assertText("End", bodyChildren.get(1));
+	}
+
+	@Test
+	@DisplayName("Can parse table with thead, tbody, and tfoot")
+	public void canParseTableWithTheadAndTbodyAndTfoot() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader(
+			"<!doctype html><html><head></head><body><table>" +
+			"<thead><tr><th>Test</th></tr></thead>" +
+			"<tbody><tr><td>Test2" + // Test without end tags, too
+			"<tfoot><tr><td>Test3" +
+			"</table>End</body></html>");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		HTMLElement bodyNode = testToBody(document, 2);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		HTMLElement tableElement = testElement(bodyChildren.get(0), "table", 3);
+		NodeList tableChildren = tableElement.getChildNodes();
+		HTMLElement theadElement = testElement(tableChildren.get(0), "thead", 1);
+		NodeList theadChildren = theadElement.getChildNodes();
+		HTMLElement trElement = testElement(theadChildren.get(0), "tr", 1);
+		NodeList trChildren = trElement.getChildNodes();
+		testElement(trChildren.get(0), "th", 1);
+		NodeList thChildren = trChildren.get(0).getChildNodes();
+		assertText("Test", thChildren.get(0));
+		HTMLElement tbodyElement = testElement(tableChildren.get(1), "tbody", 1);
+		NodeList tbodyChildren = tbodyElement.getChildNodes();
+		HTMLElement trElement2 = testElement(tbodyChildren.get(0), "tr", 1);
+		NodeList trChildren2 = trElement2.getChildNodes();
+		testElement(trChildren2.get(0), "td", 1);
+		NodeList tdChildren = trChildren2.get(0).getChildNodes();
+		assertText("Test2", tdChildren.get(0));
+		HTMLElement tfootElement = testElement(tableChildren.get(2), "tfoot", 1);
+		NodeList tfootChildren = tfootElement.getChildNodes();
+		HTMLElement trElement3 = testElement(tfootChildren.get(0), "tr", 1);
+		NodeList trChildren3 = trElement3.getChildNodes();
+		testElement(trChildren3.get(0), "td", 1);
+		assertText("End", bodyChildren.get(1));
+	}
+
 	private HTMLElement testToBody(Document document, int numBodyChildren) {
 		HTMLElement htmlNode = testToHtml(document, 2);
 		NodeList htmlChildren = htmlNode.getChildNodes();

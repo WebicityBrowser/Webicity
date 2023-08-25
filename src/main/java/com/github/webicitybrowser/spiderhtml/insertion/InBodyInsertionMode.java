@@ -72,8 +72,39 @@ public class InBodyInsertionMode implements InsertionMode {
 		case "title":
 			inHeadInsertionMode.emit(context, insertionContext, token);
 			break;
+		case "address":
+		case "article":
+		case "aside":
+		case "blockquote":
+		case "center":
+		case "details":
+		case "dialog":
+		case "dir":
 		case "div":
+		case "dl":
+		case "fieldset":
+		case "figcaption":
+		case "figure":
+		case "foot":
+		case "header":
+		case "hgroup":
+		case "main":
+		case "menu":
+		case "nav":
+		case "ol":
+		case "p":
+		case "search":
+		case "section":
+		case "summary":
+		case "ul":
 			handleMiscNoPStartTag(context, insertionContext, token);
+			break;
+		case "li":
+			handleLiStartTag(context, insertionContext, token);
+			break;
+		case "dd":
+		case "dt":
+			handleDdDtStartTag(context, insertionContext, token);
 			break;
 		case "table":
 			handleTableStartTag(context, insertionContext, token);
@@ -86,16 +117,98 @@ public class InBodyInsertionMode implements InsertionMode {
 		case "wbr":
 			handleSelfClosingStartTag(context, insertionContext, token);
 			break;
+		case "hr":
+			handleHrStartTag(context, insertionContext, token);
+			break;
 		default:
 			handleOrdinaryElementStartTag(context, insertionContext, token);
 		}
 	}
 
 	private void handleMiscNoPStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		ElementStack stack = insertionContext.getOpenElementStack();
+		if (StackLogic.hasElementInButtonScope(stack, "p", Namespace.HTML_NAMESPACE)) {
+			StackLogic.closeAPElement(stack, context);
+		}
+		InsertionLogic.insertHTMLElement(insertionContext, token);
+	}
+
+	private void handleLiStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		// TODO: Set frameset-ok flag
+		ElementStack stack = insertionContext.getOpenElementStack();
+		for (int pos = 0; pos < stack.size(); pos++) {
+			Node node = stack.peek(pos);
+			if (ElementUtil.isHTMLElementWithName(node, "li")) {
+				StackLogic.generateImpliedEndTags(stack, "li");
+				if (!ElementUtil.isHTMLElementWithName(stack.peek(), "li")) {
+					context.recordError();
+				}
+				while (!stack.pop().equals(node));
+				break;
+			}
+			if (node instanceof Element element) {
+				if (
+					ElementUtil.isSpecial(element) &&
+					!ElementUtil.isHTMLElementWithOneOfName(element, "address", "div", "p")
+				) {
+					break;
+				}
+			}
+		}
+
 		// TODO: Close p if in button scope
 		InsertionLogic.insertHTMLElement(insertionContext, token);
 	}
+
+	private void handleDdDtStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		// TODO: Set frameset-ok flag
+		ElementStack stack = insertionContext.getOpenElementStack();
+		for (int pos = 0; pos < stack.size(); pos++) {
+			Node node = stack.peek(pos);
+			if (closeIfDdOrDt(node, context, stack, "dd") || closeIfDdOrDt(node, context, stack, "dt")) {
+				break;
+			}
+			if (node instanceof Element element) {
+				if (
+					ElementUtil.isSpecial(element) &&
+					!ElementUtil.isHTMLElementWithOneOfName(element, "address", "div", "p")
+				) {
+					break;
+				}
+			}
+		}
+
+		if (StackLogic.hasElementInButtonScope(stack, "p", Namespace.HTML_NAMESPACE)) {
+			StackLogic.closeAPElement(stack, context);
+		}
+
+		InsertionLogic.insertHTMLElement(insertionContext, token);
+	}
 	
+	private boolean closeIfDdOrDt(Node node, SharedContext context, ElementStack stack, String target) {
+		if (ElementUtil.isHTMLElementWithOneOfName(node, target)) {
+			StackLogic.generateImpliedEndTags(stack, target);
+			if (!ElementUtil.isHTMLElementWithName(stack.peek(), target)) {
+				context.recordError();
+			}
+			while (!ElementUtil.isHTMLElementWithName(stack.pop(), target));
+			return true;
+		}
+
+		return false;
+	}
+
+	private void handleTableStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		// TODO: Check if we are in quirks mode
+		ElementStack stack = insertionContext.getOpenElementStack();
+		if (StackLogic.hasElementInButtonScope(stack, "p", Namespace.HTML_NAMESPACE)) {
+			StackLogic.closeAPElement(stack, context);
+		}
+		InsertionLogic.insertHTMLElement(insertionContext, token);
+		// TODO: Set frameset-ok flag
+		context.setInsertionMode(inTableInsertionMode);
+	}
+
 	private void handleSelfClosingStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
 		// TODO: Handle any active formatting elements
 		InsertionLogic.insertHTMLElement(insertionContext, token);
@@ -105,12 +218,18 @@ public class InBodyInsertionMode implements InsertionMode {
 		}
 		// TODO: Set frameset-ok flag
 	}
-	
-	private void handleTableStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
-		// TODO: Close a p element if not quirks
+
+	private void handleHrStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		ElementStack stack = insertionContext.getOpenElementStack();
+		if (StackLogic.hasElementInButtonScope(stack, "p", Namespace.HTML_NAMESPACE)) {
+			StackLogic.closeAPElement(stack, context);
+		}
 		InsertionLogic.insertHTMLElement(insertionContext, token);
+		insertionContext.getOpenElementStack().pop();
+		if (token.isSelfClosingTag()) {
+			token.acknowledgeSelfClosingTag();
+		}
 		// TODO: Set frameset-ok flag
-		context.setInsertionMode(inTableInsertionMode);
 	}
 	
 	private void handleOrdinaryElementStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
@@ -124,7 +243,33 @@ public class InBodyInsertionMode implements InsertionMode {
 		case "body":
 			handleBodyEndTag(context, insertionContext, token);
 			break;
+		case "address":
+		case "article":
+		case "aside":
+		case "blockquote":
+		case "button":
+		case "center":
+		case "details":
+		case "dialog":
+		case "dir":
 		case "div":
+		case "dl":
+		case "fieldset":
+		case "figcaption":
+		case "figure":
+		case "footer":
+		case "header":
+		case "hgroup":
+		case "listing":
+		case "main":
+		case "menu":
+		case "nav":
+		case "ol":
+		case "p":
+		case "search":
+		case "section":
+		case "summary":
+		case "ul":
 			handleMiscNoPEndTag(context, insertionContext, token);
 			break;
 		default:

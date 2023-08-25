@@ -30,6 +30,13 @@ public final class ElementUtil {
 			element.getNamespace().equals(Namespace.HTML_NAMESPACE);
 	}
 
+	public static boolean isHTMLElementWithOneOfName(Node node, String... name) {
+		return
+			node instanceof Element element &&
+			element.getNamespace().equals(Namespace.HTML_NAMESPACE) &&
+			List.of(name).contains(element.getLocalName());
+	}
+
 	public static boolean isSpecial(Element element) {
 		// TODO: Support elements in other namespaces
 		switch (element.getNamespace()) {

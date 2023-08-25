@@ -64,7 +64,7 @@ public class BeforeHTMLInsertionMode implements InsertionMode {
 	}
 	
 	private void handleCommentToken(InsertionContext insertionContext, CommentToken commentToken) {
-		Node htmlNode = insertionContext.getOpenElementStack().peek();
+		Node htmlNode = insertionContext.getTreeBuilder().getDocument();
 		InsertionLocation position = new InsertionLocation(htmlNode, null);
 		InsertionLogic.insertComment(insertionContext, commentToken, position);
 	}
