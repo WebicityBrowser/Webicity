@@ -1,7 +1,9 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.attroneof;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
+import java.util.function.Function;
 
 import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector;
 import com.github.webicitybrowser.spec.dom.node.Element;
@@ -11,18 +13,20 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilt
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipantTraverser;
 
-public class AttributeOneOfFilter<U> implements CSSOMComposableFilter<Node, U, AttributeOneOfFilter<U>> {
+public class AttributeOneOfFilter<T, U> implements CSSOMComposableFilter<T, U, AttributeOneOfFilter<T, U>> {
 
 	private final AttributeSelector attributeSelector;
+	private final Function<T, Node> nodeGetter;
 
-	public AttributeOneOfFilter(AttributeSelector attributeSelector) {
+	public AttributeOneOfFilter(AttributeSelector attributeSelector, Function<T, Node> nodeGetter) {
 		this.attributeSelector = attributeSelector;
+		this.nodeGetter = nodeGetter;
 	}
 	
 	@Override
-	public List<Node> filter(Set<CSSOMNode<Node, U>> prematched, Node item, CSSOMParticipantTraverser<Node> traverser) {
+	public List<T> filter(Collection<CSSOMNode<T, U>> prematched, T item, CSSOMParticipantTraverser<T, U> traverser) {
 		// TODO Check attribute namespace
-		if (item instanceof Element element) {
+		if (nodeGetter.apply(item) instanceof Element element) {
 			String attrValue = element.getAttribute(attributeSelector.getAttributeName().getName());
 			if (attrValue == null) {
 				return List.of();
@@ -41,8 +45,21 @@ public class AttributeOneOfFilter<U> implements CSSOMComposableFilter<Node, U, A
 	}
 
 	@Override
-	public CSSOMFilterComposition<Node, U, AttributeOneOfFilter<U>> createFilterComposition() {
-		return new AttributeOneOfFilterComposition<U>();
+	public CSSOMFilterComposition<T, U, AttributeOneOfFilter<T, U>> createFilterComposition() {
+		return new AttributeOneOfFilterComposition<T, U>(nodeGetter);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return
+			obj instanceof AttributeOneOfFilter attributeOneOfFilter &&
+			attributeOneOfFilter.attributeSelector.equals(attributeSelector) &&
+			attributeOneOfFilter.nodeGetter.equals(nodeGetter);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(attributeSelector, nodeGetter);
 	}
 	
 	public String getAttributeName() {

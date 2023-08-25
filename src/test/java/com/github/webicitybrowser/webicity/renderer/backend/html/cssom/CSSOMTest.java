@@ -18,8 +18,8 @@ public class CSSOMTest {
 		CSSOMNode<TestCSSOMParticipant, Object> rootNode = CSSOMNode.create(null, null);
 		CSSOMTree<TestCSSOMParticipant, Object> cssomTree = CSSOMTree.create(rootNode);
 		TestCSSOMParticipant rootParticipant = new TestCSSOMParticipant(null);
-		CSSOMResult<TestCSSOMParticipant, Object> result = cssomTree.apply(rootParticipant, new TestCSSOMParticipantTraverser());
-		List<CSSOMNode<TestCSSOMParticipant, Object>> matchingNodes = List.copyOf(result.getMatchingNodes(rootParticipant));
+		cssomTree.apply(rootParticipant, new TestCSSOMParticipantTraverser());
+		List<CSSOMNode<TestCSSOMParticipant, Object>> matchingNodes = List.copyOf(rootParticipant.getMatchingNodes());
 		Assertions.assertEquals(1, matchingNodes.size());
 		Assertions.assertEquals(rootNode, matchingNodes.get(0));
 	}
@@ -35,11 +35,11 @@ public class CSSOMTest {
 		TestCSSOMParticipant rootParticipant = new TestCSSOMParticipant(null);
 		TestCSSOMParticipant childParticipant = new TestCSSOMParticipant(rootParticipant);
 		rootParticipant.addChild(childParticipant);
-		CSSOMResult<TestCSSOMParticipant, Object> result = cssomTree.apply(rootParticipant, new TestCSSOMParticipantTraverser());
-		List<CSSOMNode<TestCSSOMParticipant, Object>> rootMatchingNodes = List.copyOf(result.getMatchingNodes(rootParticipant));
+		cssomTree.apply(rootParticipant, new TestCSSOMParticipantTraverser());
+		List<CSSOMNode<TestCSSOMParticipant, Object>> rootMatchingNodes = List.copyOf(rootParticipant.getMatchingNodes());
 		Assertions.assertEquals(1, rootMatchingNodes.size());
 		Assertions.assertEquals(rootNode, rootMatchingNodes.get(0));
-		List<CSSOMNode<TestCSSOMParticipant, Object>> childMatchingNodes = List.copyOf(result.getMatchingNodes(childParticipant));
+		List<CSSOMNode<TestCSSOMParticipant, Object>> childMatchingNodes = List.copyOf(childParticipant.getMatchingNodes());
 		Assertions.assertEquals(3, childMatchingNodes.size()); // Root node, combinator node, child node
 		Assertions.assertTrue(childMatchingNodes.contains(childNode));
 	}

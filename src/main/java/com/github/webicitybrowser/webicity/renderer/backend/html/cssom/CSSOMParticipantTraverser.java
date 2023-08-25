@@ -1,9 +1,15 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.cssom;
 
-public interface CSSOMParticipantTraverser<T> {
+import java.util.Collection;
 
-	T[] getChildren(T item);
+public interface CSSOMParticipantTraverser<T, U> {
 
-	T getParent(T item);
+	T[] getChildren(T participant);
+
+	T getParent(T participant);
+
+    Collection<CSSOMNode<T, U>> getMatchingNodes(T participant);
+
+	void addMatchingNode(T participant, CSSOMNode<T, U> baseNode);
 
 }

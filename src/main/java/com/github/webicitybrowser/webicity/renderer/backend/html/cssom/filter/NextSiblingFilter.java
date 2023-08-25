@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
@@ -10,7 +10,7 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMPart
 public class NextSiblingFilter<T, U> implements CSSOMFilter<T, U> {
 
 	@Override
-	public List<T> filter(Set<CSSOMNode<T, U>> prematched, T item, CSSOMParticipantTraverser<T> traverser) {
+	public List<T> filter(Collection<CSSOMNode<T, U>> prematched, T item, CSSOMParticipantTraverser<T, U> traverser) {
 		// CSSOM processes selectors in reverse order, so we actually
 		// need to check if the previous sibling matched
 
@@ -29,6 +29,16 @@ public class NextSiblingFilter<T, U> implements CSSOMFilter<T, U> {
 		}
 		
 		return List.of();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof NextSiblingFilter;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getClass().hashCode();
 	}
 	
 }

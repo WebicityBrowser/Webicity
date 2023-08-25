@@ -1,14 +1,11 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.imp;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipantTraverser;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMResult;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 
 public class CSSOMTreeImp<T, U> implements CSSOMTree<T, U> {
@@ -20,15 +17,11 @@ public class CSSOMTreeImp<T, U> implements CSSOMTree<T, U> {
 	}
 
 	@Override
-	public CSSOMResult<T, U> apply(T participant, CSSOMParticipantTraverser<T> traverser) {
-		Map<T, CSSOMParticipantTracker<T, U>> matches = new HashMap<>();
-		
+	public void apply(T participant, CSSOMParticipantTraverser<T, U> traverser) {
 		CSSOMTips<T, U> tips = createCSSOMTips();
 
-		TraverseContext<T, U> context = new TraverseContext<>(traverser, matches, tips);
+		TraverseContext<T, U> context = new TraverseContext<>(traverser, tips);
 		traverseDOM(participant, context);
-		
-		return new CSSOMResultImp<>(matches);
 	}
 
 	private CSSOMTips<T, U> createCSSOMTips() {
@@ -40,12 +33,13 @@ public class CSSOMTreeImp<T, U> implements CSSOMTree<T, U> {
 	}
 
 	private void traverseDOM(T participant, TraverseContext<T, U> context) {
-		context.matchingNodes(participant).addMatchingNode(rootCSSOMNode);
+		CSSOMParticipantTraverser<T, U> traverser = context.traverser();
+		traverser.addMatchingNode(participant, rootCSSOMNode);
 
 		Set<CSSOMNode<T, U>> possibleCSSOMNodes = context.tips().getPossibleCSSOMNodes(participant, context);
 		for (CSSOMNode<T, U> possibleCSSOMNode : possibleCSSOMNodes) {
 			if (traceToMatchingNode(participant, possibleCSSOMNode.getParent(), context)) {
-				context.matchingNodes(participant).addMatchingNode(possibleCSSOMNode);
+				traverser.addMatchingNode(participant, possibleCSSOMNode);
 			};
 		}
 		
@@ -55,23 +49,26 @@ public class CSSOMTreeImp<T, U> implements CSSOMTree<T, U> {
 	}
 
 	private boolean traceToMatchingNode(T participant, CSSOMNode<T, U> baseNode, TraverseContext<T, U> context) {
+		CSSOMParticipantTraverser<T, U> traverser = context.traverser();
+
 		if (baseNode.getParent() == null) {
 			return true;
 		}
-		if (context.matchingNodes(participant).getMatchingNodes().contains(baseNode)) {
+
+		if (traverser.getMatchingNodes(participant).contains(baseNode)) {
 			return true;
 		}
 
 		CSSOMFilter<T, U> filter = baseNode.getFilter();
 		List<T> matches = filter.filter(
-			context.matchingNodes(participant).getMatchingNodes(),
+			traverser.getMatchingNodes(participant),
 			participant,
 			context.traverser()
 		);
 
 		for (T match : matches) {
 			if (traceToMatchingNode(match, baseNode.getParent(), context)) {
-				context.matchingNodes(participant).addMatchingNode(baseNode);
+				traverser.addMatchingNode(participant, baseNode);
 				return true;
 			}
 		}

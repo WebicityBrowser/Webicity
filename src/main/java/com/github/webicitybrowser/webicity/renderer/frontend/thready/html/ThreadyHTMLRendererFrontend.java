@@ -10,7 +10,6 @@ import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
 import com.github.webicitybrowser.spec.css.parser.tokens.Token;
 import com.github.webicitybrowser.spec.css.rule.CSSRule;
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
-import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.html.node.HTMLDocument;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
@@ -29,6 +28,7 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBac
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGenerator;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGeneratorRoot;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleSheetSet;
 
@@ -83,8 +83,8 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private CSSOMTree<Node, DirectivePool>[] createCSSOMTrees(DocumentStyleSheetSet styleSheetSet) {
-		List<CSSOMTree<Node, DirectivePool>> cssomTrees = new ArrayList<>();
+	private CSSOMTree<DocumentStyleGenerator, DirectivePool>[] createCSSOMTrees(DocumentStyleSheetSet styleSheetSet) {
+		List<CSSOMTree<DocumentStyleGenerator, DirectivePool>> cssomTrees = new ArrayList<>();
 		CSSOMBinder binder = CSSOMBinder.create();
 		for (CSSRuleList rules: styleSheetSet.getRuleLists()) {
 			cssomTrees.add(binder.createCSSOMFor(rules));

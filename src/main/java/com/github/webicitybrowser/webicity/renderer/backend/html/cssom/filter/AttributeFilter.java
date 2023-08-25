@@ -1,7 +1,8 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Function;
 
 import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector;
 import com.github.webicitybrowser.spec.dom.node.Element;
@@ -10,18 +11,20 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilt
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipantTraverser;
 
-public class AttributeFilter<U> implements CSSOMFilter<Node, U> {
+public class AttributeFilter<T, U> implements CSSOMFilter<T, U> {
 
 	private final AttributeSelector attributeSelector;
+	private final Function<T, Node> nodeGetter;
 
-	public AttributeFilter(AttributeSelector attributeSelector) {
+	public AttributeFilter(AttributeSelector attributeSelector, Function<T, Node> nodeGetter) {
 		this.attributeSelector = attributeSelector;
+		this.nodeGetter = nodeGetter;
 	}
 
 	@Override
-	public List<Node> filter(Set<CSSOMNode<Node, U>> prematched, Node item, CSSOMParticipantTraverser<Node> traverser) {
+	public List<T> filter(Collection<CSSOMNode<T, U>> prematched, T item, CSSOMParticipantTraverser<T, U> traverser) {
 		// TODO Check attribute namespace
-		if (item instanceof Element element) {
+		if (nodeGetter.apply(item) instanceof Element element) {
 			String attrValue = element.getAttribute(attributeSelector.getAttributeName().getName());
 			if (attrValue == null) {
 				return List.of();

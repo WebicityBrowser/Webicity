@@ -1,18 +1,31 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator;
 
-import com.github.webicitybrowser.spec.dom.node.Node;
+import java.util.Collection;
+
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipantTraverser;
 
-public class DocumentParticipantTraverser implements CSSOMParticipantTraverser<Node> {
+public class DocumentParticipantTraverser implements CSSOMParticipantTraverser<DocumentStyleGenerator, DirectivePool> {
 
 	@Override
-	public Node[] getChildren(Node node) {
-		return node.getChildNodes().toArray();
+	public DocumentStyleGenerator[] getChildren(DocumentStyleGenerator participant) {
+		return participant.getChildren();
 	}
 
 	@Override
-	public Node getParent(Node item) {
-		return item.getParentNode();
+	public DocumentStyleGenerator getParent(DocumentStyleGenerator participant) {
+		return participant.getParent();
+	}
+
+	@Override
+	public Collection<CSSOMNode<DocumentStyleGenerator, DirectivePool>> getMatchingNodes(DocumentStyleGenerator participant) {
+		return participant.getMatchingCSSOMNodes();
+	}
+
+	@Override
+	public void addMatchingNode(DocumentStyleGenerator participant, CSSOMNode<DocumentStyleGenerator, DirectivePool> baseNode) {
+		participant.addMatchingNode(baseNode);
 	}
 
 }

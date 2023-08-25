@@ -47,7 +47,7 @@ public class CSSOMTips<T, U> {
 		T node, TraverseContext<T, U> context, Set<CSSOMNode<T, U>> possibleCSSOMNodes, CSSOMFilterEntry<T, U> filterEntry
 	) {
 		List<T> matches = filterEntry.filter().filter(
-			context.matchingNodes(node).getMatchingNodes(),
+			context.traverser().getMatchingNodes(node),
 			node,
 			context.traverser());
 		if (matches.contains(node)) {

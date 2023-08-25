@@ -3,37 +3,33 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 import java.util.function.Supplier;
 
 import com.github.webicitybrowser.spec.dom.node.Document;
-import com.github.webicitybrowser.spec.dom.node.Node;
-import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
-import com.github.webicitybrowser.threadyweb.tree.WebComponent;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMResult;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 
 public class DocumentStyleGeneratorRoot implements StyleGeneratorRoot {
 	
 	private final Document document;
-	private final Supplier<CSSOMTree<Node, DirectivePool>[]> cssomTreesSupplier;
+	private final Supplier<CSSOMTree<DocumentStyleGenerator, DirectivePool>[]> cssomTreesSupplier;
 
-	public DocumentStyleGeneratorRoot(Document document, Supplier<CSSOMTree<Node, DirectivePool>[]> cssomTreesSupplier) {
+	public DocumentStyleGeneratorRoot(Document document, Supplier<CSSOMTree<DocumentStyleGenerator, DirectivePool>[]> cssomTreesSupplier) {
 		this.document = document;
 		this.cssomTreesSupplier = cssomTreesSupplier;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public StyleGenerator generateChildStyleGenerator(ComponentUI componentUI) {
-		CSSOMTree<Node, DirectivePool>[] cssomTrees = cssomTreesSupplier.get();
-		CSSOMResult<Node, DirectivePool>[] results = (CSSOMResult<Node, DirectivePool>[]) new CSSOMResult[cssomTrees.length];
-		for (int i = 0; i < cssomTrees.length; i++) {
-			CSSOMTree<Node, DirectivePool> tree = cssomTrees[i];
-			results[i] = tree.apply(document, new DocumentParticipantTraverser());
+		DocumentStyleGenerator rootGenerator = new DocumentStyleGenerator(document, null);
+
+		CSSOMTree<DocumentStyleGenerator, DirectivePool>[] cssomTrees = cssomTreesSupplier.get();
+		for (CSSOMTree<DocumentStyleGenerator, DirectivePool> tree: cssomTrees) {
+			tree.apply(rootGenerator, new DocumentParticipantTraverser());
 		}
+		rootGenerator.generateStyleDirectives(null, componentUI.getComponent().getStyleDirectives());
 		
-		return new DocumentStyleGenerator((WebComponent) componentUI.getComponent(), results, new BasicDirectivePool());
+		return rootGenerator;
 	}
 
 }

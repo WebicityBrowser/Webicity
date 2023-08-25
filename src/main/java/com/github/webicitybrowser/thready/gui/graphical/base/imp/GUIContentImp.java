@@ -216,9 +216,9 @@ public class GUIContentImp implements GUIContent {
 	}
 	
 	private void detectPipelineInvalidations(ScreenContentRedrawContext redrawContext) {
-		if (!redrawContext.contentSize().equals(oldContentSize)) {
+		if (!redrawContext.contentSize().equals(oldContentSize) && invalidationLevel.compareTo(InvalidationLevel.RENDER) < 0) {
 			oldContentSize = redrawContext.contentSize();
-			this.invalidationLevel = InvalidationLevel.BOX;
+			this.invalidationLevel = InvalidationLevel.RENDER;
 		}
 	}
 	

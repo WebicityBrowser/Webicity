@@ -1,8 +1,8 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
@@ -11,7 +11,7 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMPart
 public class DescendantFilter<T, U> implements CSSOMFilter<T, U> {
 
 	@Override
-	public List<T> filter(Set<CSSOMNode<T, U>> prematched, T item, CSSOMParticipantTraverser<T> traverser) {
+	public List<T> filter(Collection<CSSOMNode<T, U>> prematched, T item, CSSOMParticipantTraverser<T, U> traverser) {
 		// CSSOM processes selectors in reverse order, so this node
 		// is the child and we need to check if any parents matched
 		List<T> parents = new ArrayList<>();

@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp;
 
+import java.util.function.Function;
+
 import com.github.webicitybrowser.spec.css.QualifiedName;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
 import com.github.webicitybrowser.spec.css.selectors.combinator.ChildCombinator;
@@ -17,31 +19,34 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.At
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.ChildFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.DescendantFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.NextSiblingFilter;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.SebsequentSiblingFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.SubsequentSiblingFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.attroneof.AttributeOneOfFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.id.IDFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.type.TypeFilter;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMFilterCreator;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGenerator;
 
 public class CSSOMFilterCreatorImp implements CSSOMFilterCreator {
 
+	private static final Function<DocumentStyleGenerator, Node> NODE_GETTER = item -> item.getDOMNode();
+
 	@Override
-	public CSSOMFilter<Node, DirectivePool> createFilterFor(ComplexSelectorPart complexSelectorPart) {
+	public CSSOMFilter<DocumentStyleGenerator, DirectivePool> createFilterFor(ComplexSelectorPart complexSelectorPart) {
 		if (complexSelectorPart instanceof TypeSelector typeSelector) {
 			QualifiedName name = typeSelector.getQualifiedName();
-			return new TypeFilter<>(name.getNamespace(), name.getName());
+			return new TypeFilter<>(name.getNamespace(), name.getName(), NODE_GETTER);
 		} else if (isAttributeSelector(complexSelectorPart, AttributeSelectorOperation.ONE_OF)) {
-			return new AttributeOneOfFilter<>((AttributeSelector) complexSelectorPart);
+			return new AttributeOneOfFilter<>((AttributeSelector) complexSelectorPart, NODE_GETTER);
 		} else if (complexSelectorPart instanceof AttributeSelector attributeSelector) {
-			return new AttributeFilter<>(attributeSelector);
+			return new AttributeFilter<>(attributeSelector, NODE_GETTER);
 		} else if (complexSelectorPart instanceof IDSelector idSelector) {
-			return new IDFilter<>(idSelector.getId());
+			return new IDFilter<>(idSelector.getId(), NODE_GETTER);
 		} else if (complexSelectorPart instanceof ChildCombinator) {
 			return new ChildFilter<>();
 		} else if (complexSelectorPart instanceof DescendantCombinator) {
 			return new DescendantFilter<>();
 		} else if (complexSelectorPart instanceof SubsequentSiblingCombinator) {
-			return new SebsequentSiblingFilter<>();
+			return new SubsequentSiblingFilter<>();
 		} else if (complexSelectorPart instanceof NextSiblingCombinator) {
 			return new NextSiblingFilter<>();
 		} else {
