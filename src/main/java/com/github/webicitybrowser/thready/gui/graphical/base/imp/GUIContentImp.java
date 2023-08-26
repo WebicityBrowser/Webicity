@@ -25,8 +25,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.CharMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessage;
@@ -188,11 +186,7 @@ public class GUIContentImp implements GUIContent {
 		GlobalRenderContext globalRenderContext = new RenderContextImp(redrawContext.resourceLoader());
 		LocalRenderContext localRenderContext = LocalRenderContext.create(contentSize, new ContextSwitch[0]);
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();
-		RenderedUnitGenerator<?> unitGenerator = rootDisplay.renderBox((U) rootBox, globalRenderContext, localRenderContext);
-		GenerationResult generationResult = unitGenerator.generateNextUnit(contentSize, true);
-		assert generationResult == GenerationResult.NORMAL && unitGenerator.completed();
-		
-		this.rootUnit = unitGenerator.getLastGeneratedUnit();
+		this.rootUnit = rootDisplay.renderBox((U) rootBox, globalRenderContext, localRenderContext);
 	}
 	
 	@SuppressWarnings("unchecked")

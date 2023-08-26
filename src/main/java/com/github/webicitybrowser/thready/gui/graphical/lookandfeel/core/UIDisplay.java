@@ -12,7 +12,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 
 public interface UIDisplay<T extends Context, U extends Box, V extends RenderedUnit> {
@@ -21,7 +20,7 @@ public interface UIDisplay<T extends Context, U extends Box, V extends RenderedU
 	
 	List<U> generateBoxes(T displayContext, BoxContext boxContext, StyleGenerator styleGenerator);
 
-	RenderedUnitGenerator<V> renderBox(U box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext);
+	V renderBox(U box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext);
 	
 	void paint(V unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext);
 

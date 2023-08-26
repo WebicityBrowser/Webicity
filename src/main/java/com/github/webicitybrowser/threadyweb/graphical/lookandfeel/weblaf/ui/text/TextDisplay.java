@@ -12,12 +12,11 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.message.basics.DefaultGraphicalMessageHandler;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.threadyweb.tree.TextComponent;
 
-public class TextDisplay implements UIDisplay<TextContext, TextBox, TextRenderedUnit> {
+public class TextDisplay implements UIDisplay<TextContext, TextBox, TextUnit> {
 
 	@Override
 	public TextContext createContext(ComponentUI componentUI) {
@@ -32,17 +31,17 @@ public class TextDisplay implements UIDisplay<TextContext, TextBox, TextRendered
 	}
 
 	@Override
-	public RenderedUnitGenerator<TextRenderedUnit> renderBox(TextBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		return TextRenderer.createTextUnitGenerator(box, globalRenderContext, localRenderContext);
+	public TextUnit renderBox(TextBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+		return TextRenderer.createTextUnit(box, globalRenderContext, localRenderContext);
 	}
 
 	@Override
-	public void paint(TextRenderedUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
+	public void paint(TextUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		TextPainter.paint(unit, localPaintContext);
 	}
 
 	@Override
-	public MessageHandler createMessageHandler(TextRenderedUnit unit, Rectangle documentRect) {
+	public MessageHandler createMessageHandler(TextUnit unit, Rectangle documentRect) {
 		return new DefaultGraphicalMessageHandler(documentRect, unit.box());
 	}
 

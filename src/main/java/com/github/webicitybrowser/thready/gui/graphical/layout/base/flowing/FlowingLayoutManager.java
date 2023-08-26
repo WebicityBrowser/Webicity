@@ -18,8 +18,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 
 public class FlowingLayoutManager implements SolidLayoutManager {
 
@@ -49,11 +47,7 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 		AbsoluteSize precomputedSize = precomputeChildSize(childBox, parentSize);
 		LocalRenderContext childRenderContext = LocalRenderContext.create(precomputedSize, localRenderContext.getContextSwitches());
 		
-		RenderedUnitGenerator<?> childUnitGenerator = UIPipeline.render(childBox, globalRenderContext, childRenderContext);;
-		// TODO: What if it is a fluid?
-		GenerationResult generationResult = childUnitGenerator.generateNextUnit(precomputedSize, true);
-		assert generationResult == GenerationResult.NORMAL && childUnitGenerator.completed();
-		RenderedUnit childUnit = childUnitGenerator.getLastGeneratedUnit();
+		RenderedUnit childUnit = UIPipeline.render(childBox, globalRenderContext, childRenderContext);
 
 		AbsoluteSize renderedSize = childUnit.preferredSize();
 		AbsoluteSize finalSize = computeFinalChildSize(renderedSize, precomputedSize, parentSize);

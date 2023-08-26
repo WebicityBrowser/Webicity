@@ -18,9 +18,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.FlowFluidRenderer;
 
 public class FlowLayoutManagerImp implements SolidLayoutManager {
@@ -53,13 +50,9 @@ public class FlowLayoutManagerImp implements SolidLayoutManager {
 		AbsoluteSize precomputedSize = precomputeChildSize(childBox, parentSize);
 		LocalRenderContext childRenderContext = LocalRenderContext.create(precomputedSize, localRenderContext.getContextSwitches());
 		
-		RenderedUnitGenerator<?> childUnitGenerator = childBox instanceof BasicAnonymousFluidBox inlineBox ?
+		RenderedUnit childUnit = childBox instanceof BasicAnonymousFluidBox inlineBox ?
 			renderAnonBox(inlineBox, globalRenderContext, childRenderContext) :
 			UIPipeline.render(childBox, globalRenderContext, childRenderContext);
-		
-		GenerationResult generationResult = childUnitGenerator.generateNextUnit(precomputedSize, true);
-		assert generationResult == GenerationResult.NORMAL && childUnitGenerator.completed();
-		RenderedUnit childUnit = childUnitGenerator.getLastGeneratedUnit();
 
 		AbsoluteSize renderedSize = childUnit.preferredSize();
 		AbsoluteSize finalSize = computeFinalChildSize(renderedSize, precomputedSize, parentSize);
@@ -72,9 +65,8 @@ public class FlowLayoutManagerImp implements SolidLayoutManager {
 		return new ChildLayoutResult(renderedRectangle, childUnit);
 	}
 
-	private RenderedUnitGenerator<?> renderAnonBox(BasicAnonymousFluidBox inlineBox, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		RenderedUnitGenerator<InnerDisplayUnit> renderedUnitGenerator = FlowFluidRenderer.render(inlineBox, globalRenderContext, localRenderContext);
-		return renderedUnitGenerator;
+	private RenderedUnit renderAnonBox(BasicAnonymousFluidBox inlineBox, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+		return FlowFluidRenderer.render(inlineBox, globalRenderContext, localRenderContext);
 	}
 
 	private AbsoluteSize precomputeChildSize(Box childBox, AbsoluteSize parentSize) {

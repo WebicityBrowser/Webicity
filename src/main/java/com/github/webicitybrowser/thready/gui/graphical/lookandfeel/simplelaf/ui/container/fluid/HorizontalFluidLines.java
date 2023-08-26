@@ -15,8 +15,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator.GenerationResult;
 
 public class HorizontalFluidLines implements FluidLines {
 
@@ -38,19 +36,16 @@ public class HorizontalFluidLines implements FluidLines {
 
 	@Override
 	public void addBox(Box child) {
-		RenderedUnitGenerator<?> unitGenerator = UIPipeline.render(child, globalRenderContext, createLocalRenderContext(switches));
-		boolean lineStart = true;
-		while (!unitGenerator.completed()) { // A fluid box has multiple units to add to the line
-			AbsoluteSize preferredSize = calculatePreferredSize();
-			boolean forceFit = lineStart;
-			GenerationResult generationResult = unitGenerator.generateNextUnit(preferredSize, forceFit);
-			if (generationResult == GenerationResult.NO_FIT) {
-				goToNextLine();
-				lineStart = true;
-			} else {
-				addUnitToLine(unitGenerator.getLastGeneratedUnit());
-				lineStart = false;
-			}
+		// TODO: Re-add splitting functionality
+		RenderedUnit unit = UIPipeline.render(child, globalRenderContext, createLocalRenderContext(switches));
+		if (!(
+			unit.preferredSize().width() <= maxBounds.width() - posX ||
+			posX == 0 ||
+			unit.preferredSize().width() == RelativeDimension.UNBOUNDED
+		)) {
+			goToNextLine();
+		} else {
+			addUnitToLine(unit);
 		}
 	}
 	
@@ -81,11 +76,6 @@ public class HorizontalFluidLines implements FluidLines {
 		posX = 0;
 		posY += curLineHeight;
 		curLineHeight = 0;
-	}
-	
-	private AbsoluteSize calculatePreferredSize() {
-		float remainingWidth = maxBounds.width() - posX;
-		return new AbsoluteSize(remainingWidth, RelativeDimension.UNBOUNDED);
 	}
 	
 }

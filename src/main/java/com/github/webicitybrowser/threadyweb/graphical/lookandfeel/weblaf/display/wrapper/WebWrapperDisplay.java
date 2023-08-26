@@ -16,7 +16,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 
@@ -42,11 +41,11 @@ public class WebWrapperDisplay<T extends Context, U extends Box, V extends Rende
 	}
 
 	@Override
-	public RenderedUnitGenerator<WebWrapperUnit<V>> renderBox(Box box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
+	public WebWrapperUnit<V> renderBox(Box box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		if (box instanceof WebWrapperBox wrapperBox) {
-			RenderedUnitGenerator<V> innerGenerator = UIPipeline.render(wrapperBox.innerBox(), renderContext, localRenderContext);
+			V innerUnit = UIPipeline.render(wrapperBox.innerBox(), renderContext, localRenderContext);
 
-			return new WebWrapperUnitWrapperGenerator<>(this, innerGenerator, wrapperBox);
+			return new WebWrapperUnit<>(this, wrapperBox, innerUnit);
 		} else {
 			throw new IllegalArgumentException("Box must be a WebWrapperBox");
 		}

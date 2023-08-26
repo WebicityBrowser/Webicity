@@ -12,7 +12,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 
 public final class UIPipeline {
@@ -28,7 +27,7 @@ public final class UIPipeline {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <U extends Box, V extends RenderedUnit> RenderedUnitGenerator<V> render(
+	public static <U extends Box, V extends RenderedUnit> V render(
 		Box box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
 	) {
 		UIDisplay<?, U, V> display = (UIDisplay<?, U, V>) box.display();

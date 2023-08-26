@@ -6,8 +6,16 @@ import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
-public record TextRenderedUnit(
-	UIDisplay<?, ?, ?> display, AbsoluteSize preferredSize, DirectivePool styleDirectives, TextBox box, String text, Font2D font
+public record TextUnit(
+	AbsoluteSize preferredSize, TextBox box, String text, Font2D font
 ) implements RenderedUnit {
+
+	public UIDisplay<?, ?, ?> display() {
+		return box.display();
+	}
+
+	public DirectivePool styleDirectives() {
+		return box.styleDirectives();
+	}
 
 }

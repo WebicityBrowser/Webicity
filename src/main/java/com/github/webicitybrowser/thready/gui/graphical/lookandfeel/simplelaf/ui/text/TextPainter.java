@@ -13,7 +13,7 @@ public final class TextPainter {
 
 	private TextPainter() {}
 
-	public static void paint(TextRenderedUnit unit, LocalPaintContext localPaintContext) {
+	public static void paint(TextUnit unit, LocalPaintContext localPaintContext) {
 		Canvas2D canvas = localPaintContext.canvas();
 		Paint2D paint = createPaint(unit, canvas);
 		Rectangle documentRect = localPaintContext.documentRect();
@@ -26,14 +26,14 @@ public final class TextPainter {
 				unit.text());
 	}
 
-	private static Paint2D createPaint(TextRenderedUnit unit, Canvas2D canvas) {
+	private static Paint2D createPaint(TextUnit unit, Canvas2D canvas) {
 		return Paint2DBuilder.clone(canvas.getPaint())
 			.setColor(getForegroundColor(unit))
 			.setFont(unit.font())
 			.build();
 	}
 
-	private static ColorFormat getForegroundColor(TextRenderedUnit unit) {
+	private static ColorFormat getForegroundColor(TextUnit unit) {
 		DirectivePool styleDirectives = unit.styleDirectives();
 		return SimpleDirectiveUtil.getForegroundColor(styleDirectives);
 	}

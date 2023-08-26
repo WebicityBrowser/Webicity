@@ -6,7 +6,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.container.fluid.ContainerFluidRenderer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.ui.container.solid.ContainerSolidRenderer;
 
@@ -14,7 +13,7 @@ public final class ContainerRenderer {
 	
 	private ContainerRenderer() {}
 	
-	public static RenderedUnitGenerator<ContainerRenderedUnit> render(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+	public static ContainerRenderedUnit render(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		if (isStaticContext(box)) {
 			return ContainerSolidRenderer.render(box, globalRenderContext, localRenderContext);
 		} else {

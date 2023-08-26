@@ -5,7 +5,6 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.render.unit.SingleRenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -13,7 +12,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.message.basics.DefaultGraphicalMessageHandler;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.webicity.core.component.FrameComponent;
@@ -38,8 +36,8 @@ public class FrameDisplay implements UIDisplay<FrameContext, FrameBox, FrameUnit
 	}
 
 	@Override
-	public RenderedUnitGenerator<FrameUnit> renderBox(FrameBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		return new SingleRenderedUnitGenerator<>(FrameRenderer.render(box, renderContext, localRenderContext));
+	public FrameUnit renderBox(FrameBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
+		return FrameRenderer.render(box, renderContext, localRenderContext);
 	}
 
 	@Override

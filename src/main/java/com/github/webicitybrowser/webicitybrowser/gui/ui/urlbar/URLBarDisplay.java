@@ -5,7 +5,6 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.render.unit.SingleRenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -13,7 +12,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.webicitybrowser.component.URLBarComponent;
 
@@ -32,8 +30,8 @@ public class URLBarDisplay implements UIDisplay<URLBarContext, URLBarBox, URLBar
 	}
 
 	@Override
-	public RenderedUnitGenerator<URLBarUnit> renderBox(URLBarBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		return new SingleRenderedUnitGenerator<>(URLBarRenderer.render(box, renderContext, localRenderContext, this));
+	public URLBarUnit renderBox(URLBarBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
+		return URLBarRenderer.render(box, renderContext, localRenderContext, this);
 	}
 
 	@Override

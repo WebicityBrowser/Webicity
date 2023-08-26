@@ -6,7 +6,6 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.render.unit.MappingRenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -17,7 +16,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnitGenerator;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
@@ -48,11 +46,9 @@ public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends Re
 	}
 
 	@Override
-	public RenderedUnitGenerator<SimpleWrapperUnit<V>> renderBox(SimpleWrapperBox<U> box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		RenderedUnitGenerator<V> childGenerator = childDisplay.renderBox(box.innerBox(), renderContext, localRenderContext);
-		return new MappingRenderedUnitGenerator<>(childGenerator, childUnit -> new SimpleWrapperUnit<>(
-			this, childUnit.preferredSize(),
-			box.styleDirectives(), childUnit));
+	public SimpleWrapperUnit<V> renderBox(SimpleWrapperBox<U> box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
+		V childUnit = childDisplay.renderBox(box.innerBox(), renderContext, localRenderContext);
+		return new SimpleWrapperUnit<>(this, childUnit.preferredSize(), box.styleDirectives(), childUnit);
 	}
 
 	@Override
