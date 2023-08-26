@@ -12,15 +12,23 @@ import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutR
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicAnonymousFluidBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.FlowFluidRenderer;
 
 public class FlowLayoutManagerImp implements SolidLayoutManager {
+
+	private final UIDisplay<?, ?, InnerDisplayUnit> innerDisplay;
+
+	public FlowLayoutManagerImp(UIDisplay<?, ?, InnerDisplayUnit> innerDisplay) {
+		this.innerDisplay = innerDisplay;
+	}
 
 	@Override
 	public LayoutResult render(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
@@ -62,11 +70,11 @@ public class FlowLayoutManagerImp implements SolidLayoutManager {
 		
 		Rectangle renderedRectangle = new Rectangle(finalPosition, finalSize);
 		
-		return new ChildLayoutResult(renderedRectangle, childUnit);
+		return new ChildLayoutResult(childUnit, renderedRectangle);
 	}
 
 	private RenderedUnit renderAnonBox(BasicAnonymousFluidBox inlineBox, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		return FlowFluidRenderer.render(inlineBox, globalRenderContext, localRenderContext);
+		return FlowFluidRenderer.render(inlineBox, globalRenderContext, localRenderContext, innerDisplay);
 	}
 
 	private AbsoluteSize precomputeChildSize(Box childBox, AbsoluteSize parentSize) {

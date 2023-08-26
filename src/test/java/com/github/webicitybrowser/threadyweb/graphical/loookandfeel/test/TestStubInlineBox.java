@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.loookandfeel.weblaf.stage.box;
+package com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
@@ -22,6 +22,11 @@ public class TestStubInlineBox implements CloneBox {
 	}
 
 	@Override
+	public boolean managesSelf() {
+		return false;
+	}
+
+	@Override
 	public UIDisplay<?, ?, ?> display() {
 		throw new UnsupportedOperationException("Unimplemented method 'display'");
 	}
@@ -33,7 +38,7 @@ public class TestStubInlineBox implements CloneBox {
 
 	@Override
 	public DirectivePool styleDirectives() {
-		throw new UnsupportedOperationException("Unimplemented method 'styleDirectives'");
+		return null;
 	}
 	
 }

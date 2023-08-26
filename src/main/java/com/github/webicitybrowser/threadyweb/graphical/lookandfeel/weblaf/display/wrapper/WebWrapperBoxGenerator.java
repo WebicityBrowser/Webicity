@@ -36,7 +36,11 @@ public final class WebWrapperBoxGenerator {
 			List<Box> innerBoxes = defaultBoxGenerator.get();
 			List<Box> wrapperBoxes = new ArrayList<>(innerBoxes.size());
 			for (Box innerBox : innerBoxes) {
-				wrapperBoxes.add(new WebWrapperBox(display, owningComponent, directives, innerBox));
+				if (innerBox.isFluid() && !innerBox.managesSelf()) {
+					wrapperBoxes.add(innerBox);
+				} else {
+					wrapperBoxes.add(new WebWrapperBox(display, owningComponent, directives, innerBox));
+				}
 			}
 			return wrapperBoxes;
 		}

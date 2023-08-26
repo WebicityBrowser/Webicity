@@ -9,11 +9,7 @@ public interface CursorTracker {
 	
 	boolean addWillOverflowLine(AbsoluteSize unitSize, AbsoluteSize bounds);
 	
-	void nextLine();
-
 	AbsoluteSize getSizeCovered();
-
-	AbsoluteSize sizeCoveredAfterAdd(AbsoluteSize sizeAfterAppend);
 
 	AbsolutePosition getNextPosition();
 

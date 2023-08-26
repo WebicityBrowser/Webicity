@@ -14,14 +14,11 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowInnerDisplayLayout;
 
 public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, InnerDisplayUnit> {
 	
-	private static final InnerDisplayLayout FLOW_INNER_DISPLAY_LAYOUT = new FlowInnerDisplayLayout();
-
 	@Override
 	public ElementContext createContext(ComponentUI componentUI) {
 		return new ElementContext(this, componentUI);
@@ -37,7 +34,7 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, In
 		if (box instanceof ElementBox elementBox) {
 			return elementBox.layout().renderBox(box, globalRenderContext, localRenderContext);
 		} else {
-			return FLOW_INNER_DISPLAY_LAYOUT.renderBox(box, globalRenderContext, localRenderContext);
+			return new FlowInnerDisplayLayout(this).renderBox(box, globalRenderContext, localRenderContext);
 		}
 	}
 

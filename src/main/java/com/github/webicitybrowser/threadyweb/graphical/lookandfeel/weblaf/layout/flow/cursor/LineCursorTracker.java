@@ -38,20 +38,8 @@ public class LineCursorTracker implements CursorTracker {
 	}
 
 	@Override
-	public AbsoluteSize sizeCoveredAfterAdd(AbsoluteSize unitSize) {
-		LineDimension unitLineSize = dimensionConverter.getLineDimension(unitSize);
-		LineDimension linzeSizeAfterAdd = lineSizeCoveredAfterAdd(unitLineSize);
-		return dimensionConverter.getAbsoluteSize(linzeSizeAfterAdd);
-	}
-
-	@Override
 	public AbsolutePosition getNextPosition() {
 		return dimensionConverter.getAbsolutePosition(currentPointer);
-	}
-
-	@Override
-	public void nextLine() {
-		currentPointer = new LineDimension(0, currentSize.depth());
 	}
 	
 	private LineDimension lineSizeCoveredAfterAdd(LineDimension unitLineSize) {

@@ -13,7 +13,10 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.LineBox;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitEnterMarker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitExitMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 
 public class LineBoxTest {
 
@@ -21,7 +24,7 @@ public class LineBoxTest {
 
 	@BeforeEach
 	public void setup() {
-		lineBox = new LineBox(new HorizontalLineDimensionConverter());
+		lineBox = new LineBox(new HorizontalLineDimensionConverter(), null);
 	}
 
 	@Test
@@ -105,6 +108,51 @@ public class LineBoxTest {
 		List<ChildLayoutResult> results = lineBox.layoutAtPos(new AbsolutePosition(100, 200));
 		Assertions.assertEquals(1, results.size());
 		Assertions.assertEquals(new AbsolutePosition(100, 200), results.get(0).relativeRect().position());
+	}
+
+	@Test
+	@DisplayName("Can mark nested unit start")
+	public void canMarkNestedUnitStart() {
+		RenderedUnit unit1 = Mockito.mock(RenderedUnit.class);
+		Mockito.when(unit1.preferredSize()).thenReturn(new AbsoluteSize(100, 100));
+		lineBox.addMarker(new UnitEnterMarker(true, null));
+		lineBox.add(unit1);
+		lineBox.addMarker(new UnitExitMarker(null));
+		List<ChildLayoutResult> results = lineBox.layoutAtPos(new AbsolutePosition(0, 0));
+		Assertions.assertEquals(1, results.size());
+		ChildLayoutResult outerResult = results.get(0);
+		Assertions.assertEquals(new AbsolutePosition(0, 0), outerResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(100, 100), outerResult.relativeRect().size());
+		Assertions.assertInstanceOf(BuildableRenderedUnit.class, outerResult.unit());
+		BuildableRenderedUnit buildableUnit = (BuildableRenderedUnit) outerResult.unit();
+		Assertions.assertTrue(buildableUnit.wasMarkedFinished());
+		Assertions.assertEquals(1, buildableUnit.childLayoutResults().length);
+		ChildLayoutResult childUnitEntry = buildableUnit.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childUnitEntry.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(100, 100), childUnitEntry.relativeRect().size());
+		Assertions.assertEquals(unit1, childUnitEntry.unit());
+	}
+
+	@Test
+	@DisplayName("Can detect implicit unit end")
+	public void canDetectImplicitUnitEnd() {
+		RenderedUnit unit1 = Mockito.mock(RenderedUnit.class);
+		Mockito.when(unit1.preferredSize()).thenReturn(new AbsoluteSize(100, 100));
+		lineBox.addMarker(new UnitEnterMarker(true, null));
+		lineBox.add(unit1);
+		List<ChildLayoutResult> results = lineBox.layoutAtPos(new AbsolutePosition(0, 0));
+		Assertions.assertEquals(1, results.size());
+		ChildLayoutResult outerResult = results.get(0);
+		Assertions.assertEquals(new AbsolutePosition(0, 0), outerResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(100, 100), outerResult.relativeRect().size());
+		Assertions.assertInstanceOf(BuildableRenderedUnit.class, outerResult.unit());
+		BuildableRenderedUnit buildableUnit = (BuildableRenderedUnit) outerResult.unit();
+		Assertions.assertFalse(buildableUnit.wasMarkedFinished());
+		Assertions.assertEquals(1, buildableUnit.childLayoutResults().length);
+		ChildLayoutResult childUnitEntry = buildableUnit.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childUnitEntry.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(100, 100), childUnitEntry.relativeRect().size());
+		Assertions.assertEquals(unit1, childUnitEntry.unit());
 	}
 
 }

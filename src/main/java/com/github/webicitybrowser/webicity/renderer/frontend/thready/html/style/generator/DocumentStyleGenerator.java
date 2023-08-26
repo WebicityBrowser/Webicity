@@ -108,9 +108,11 @@ public class DocumentStyleGenerator implements StyleGenerator {
 	private static class NodeComparator implements Comparator<CSSOMNode<DocumentStyleGenerator, DirectivePool>> {
 		@Override
 		public int compare(CSSOMNode<DocumentStyleGenerator, DirectivePool> o1, CSSOMNode<DocumentStyleGenerator, DirectivePool> o2) {
-			if (o1.getSpecificity() == null || o2.getSpecificity() == null) {
-				// Shouldn't matter, as long as it is non-zero
-				// Anything that will affect display should have a specificity set
+			if (o1.getSpecificity() == o2.getSpecificity()) {
+				return 0;
+			} else if (o1.getSpecificity() == null) {
+				return -1;
+			} else if (o2.getSpecificity() == null) {
 				return 1;
 			}
 			return -o1.getSpecificity().compareTo(o2.getSpecificity());

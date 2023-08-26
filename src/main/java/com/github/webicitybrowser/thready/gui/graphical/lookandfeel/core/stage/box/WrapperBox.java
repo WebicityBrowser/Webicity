@@ -3,8 +3,6 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.PrerenderMessage;
-
 public interface WrapperBox extends Box {
 	
 	Box innerBox();
@@ -23,11 +21,6 @@ public interface WrapperBox extends Box {
 			return innerBox;
 		}
 	};
-
-	@Override
-	default void message(PrerenderMessage message) {
-		innerBox().message(message);
-	}
 
 	@Override
 	default List<Box> getAdjustedBoxTree() {

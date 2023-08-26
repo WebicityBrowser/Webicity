@@ -67,7 +67,7 @@ public class HorizontalFluidLines implements FluidLines {
 		AbsolutePosition startPosition = new AbsolutePosition(posX, posY);
 		Rectangle relativeRect = new Rectangle(startPosition, size);
 		
-		rendered.add(new ChildLayoutResult(relativeRect, unit));
+		rendered.add(new ChildLayoutResult(unit, relativeRect));
 		
 		posX += size.width();
 	}

@@ -36,7 +36,7 @@ public class ElementBoxGenerator {
 	
 	private static ChildrenBox createBox(ElementContext elementContext, DirectivePool directives, OuterDisplay boxDisplay) {
 		Component component = elementContext.component();
-		InnerDisplayLayout layout = getLayout(directives);
+		InnerDisplayLayout layout = getLayout(elementContext, directives);
 		
 		switch (boxDisplay) {
 		case BLOCK:
@@ -47,8 +47,8 @@ public class ElementBoxGenerator {
 		}
 	}
 
-	private static InnerDisplayLayout getLayout(DirectivePool directives) {
-		return new FlowInnerDisplayLayout();
+	private static InnerDisplayLayout getLayout(ElementContext elementContext, DirectivePool directives) {
+		return new FlowInnerDisplayLayout(elementContext.display());
 	}
 	
 	// Children

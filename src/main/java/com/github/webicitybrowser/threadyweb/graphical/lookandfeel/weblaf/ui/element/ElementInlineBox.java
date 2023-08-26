@@ -4,11 +4,9 @@ import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.CloneBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.PrerenderMessage;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.box.InlineBoxChildrenTracker;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidationPrerenderMessage;
 
 public class ElementInlineBox implements ElementBox, CloneBox {
 
@@ -57,12 +55,8 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 	}
 
 	@Override
-	public void message(PrerenderMessage message) {
-		if (message instanceof TextConsolidationPrerenderMessage) {
-			childrenTracker.getChildren().forEach(child -> child.message(message));
-		} else {
-			message.handleDefault(this);
-		}
+	public boolean managesSelf() {
+		return false;
 	}
 
 	@Override

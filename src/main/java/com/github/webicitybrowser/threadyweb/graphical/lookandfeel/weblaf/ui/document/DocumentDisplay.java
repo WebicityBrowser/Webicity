@@ -17,11 +17,12 @@ import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootInnerDisplayLayout;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementPainter;
 
 public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, InnerDisplayUnit> {
 
-	private final InnerDisplayLayout INNER_DISPLAY_LAYOUT = new FlowRootInnerDisplayLayout();
+	private final InnerDisplayLayout INNER_DISPLAY_LAYOUT = new FlowRootInnerDisplayLayout(new ElementDisplay());
 	
 	@Override
 	public DocumentContext createContext(ComponentUI componentUI) {

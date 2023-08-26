@@ -6,6 +6,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.Compone
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 import com.github.webicitybrowser.threadyweb.tree.WebComponent;
 
@@ -15,16 +16,16 @@ public class ElementContext implements Context {
 		Context[]::new,
 		context -> context.componentUI().getComponent());
 	
-	private final UIDisplay<?, ?, ?> display;
+	private final UIDisplay<?, ?, InnerDisplayUnit> display;
 	private final ComponentUI componentUI;
 
-	public ElementContext(UIDisplay<?, ?, ?> display, ComponentUI componentUI) {
+	public ElementContext(UIDisplay<?, ?, InnerDisplayUnit> display, ComponentUI componentUI) {
 		this.display = display;
 		this.componentUI = componentUI;
 	}
 
 	@Override
-	public UIDisplay<?, ?, ?> display() {
+	public UIDisplay<?, ?, InnerDisplayUnit> display() {
 		return this.display;
 	}
 	

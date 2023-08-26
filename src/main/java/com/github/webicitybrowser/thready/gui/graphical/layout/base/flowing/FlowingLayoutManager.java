@@ -57,7 +57,7 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 		
 		Rectangle relativeRect = new Rectangle(finalPosition, finalSize);
 		
-		return new ChildLayoutResult(relativeRect, childUnit);
+		return new ChildLayoutResult(childUnit, relativeRect);
 	}
 
 	private AbsoluteSize precomputeChildSize(Box childBox, AbsoluteSize parentSize) {

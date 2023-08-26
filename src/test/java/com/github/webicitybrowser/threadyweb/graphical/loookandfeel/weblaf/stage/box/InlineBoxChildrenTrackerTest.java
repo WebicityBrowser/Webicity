@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.CloneBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.box.InlineBoxChildrenTracker;
+import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubInlineBox;
 
 public class InlineBoxChildrenTrackerTest {
 	

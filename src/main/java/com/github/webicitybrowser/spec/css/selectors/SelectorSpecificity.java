@@ -13,7 +13,7 @@ public record SelectorSpecificity(int idSelectors, int attributeSelectors, int t
 		} else if (order != specificity.order()) {
 			return order > specificity.order() ? 1 : -1;
 		} else {
-			return 1;
+			return 0;
 		}
 	}
 
