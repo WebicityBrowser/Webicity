@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
@@ -16,6 +17,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.FlowFluidRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextDisplay;
+import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestFontMetrics;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubChildrenBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubContentBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubInlineBox;
@@ -156,6 +160,50 @@ public class FlowFluidRendererTest {
 		ChildLayoutResult childLayoutResult2 = result.childLayoutResults()[1];
 		Assertions.assertEquals(new AbsolutePosition(0, 10), childLayoutResult2.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(15, 10), childLayoutResult2.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Text spaces are collapsed (default settings)")
+	public void textSpacesAreCollapsed() {
+		ChildrenBox box = new TestStubChildrenBox();
+		TextBox textBox = createTextBox("Hello  World");
+		box.getChildrenTracker().addChild(textBox);
+		GlobalRenderContext globalRenderContext = Mockito.mock(GlobalRenderContext.class);
+		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(100, 100), new ContextSwitch[0]);
+		InnerDisplayUnit result = FlowFluidRenderer.render(box, globalRenderContext, localRenderContext, null);
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult child = result.childLayoutResults()[0];
+		// 11 characters, 8 pixels per character - "Hello World"
+		Assertions.assertEquals(8 * 11, child.unit().preferredSize().width());
+	}
+
+	@Test
+	@DisplayName("Large text wraps")
+	public void largeTextWraps() {
+		ChildrenBox box = new TestStubChildrenBox();
+		TextBox textBox = createTextBox("Hello World");
+		box.getChildrenTracker().addChild(textBox);
+		GlobalRenderContext globalRenderContext = Mockito.mock(GlobalRenderContext.class);
+		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(50, 100), new ContextSwitch[0]);
+		InnerDisplayUnit result = FlowFluidRenderer.render(box, globalRenderContext, localRenderContext, null);
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult child1 = result.childLayoutResults()[0];
+		ChildLayoutResult child2 = result.childLayoutResults()[1];
+		Assertions.assertEquals(8 * 6, child1.unit().preferredSize().width());
+		Assertions.assertEquals(8 * 5, child2.unit().preferredSize().width());
+	}
+
+	private TextBox createTextBox(String text) {
+		Font2D font = createTestFont();
+
+		return new TextBox(new TextDisplay(), null, null, text, font);
+	}
+
+	private Font2D createTestFont() {
+		Font2D font = Mockito.mock(Font2D.class);
+		Mockito.when(font.getMetrics()).thenReturn(new TestFontMetrics());
+
+		return font;
 	}
 
 }

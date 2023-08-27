@@ -10,6 +10,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.LineMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
 
 public class FlowFluidRendererState {
 
@@ -17,7 +18,9 @@ public class FlowFluidRendererState {
 	private final GlobalRenderContext globalRenderContext;
 	private final LocalRenderContext localRenderContext;
 	private final UIDisplay<?, ?, InnerDisplayUnit> innerDisplay;
+
 	private final List<LineBox> lines = new ArrayList<>();
+	private final TextConsolidation textConsolidation = TextConsolidation.create();
 
 	private LineBox currentLine;
 
@@ -60,6 +63,10 @@ public class FlowFluidRendererState {
 
 	public LocalRenderContext getLocalRenderContext() {
 		return localRenderContext;
+	}
+
+	public TextConsolidation getTextConsolidation() {
+		return textConsolidation;
 	}
 
 	private void copyUnresolvedMarkers(LineBox newLine) {

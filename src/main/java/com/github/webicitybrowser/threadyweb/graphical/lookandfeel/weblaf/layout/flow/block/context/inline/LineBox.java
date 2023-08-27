@@ -74,18 +74,7 @@ public class LineBox {
 		Stack<LineSectionBuilder> sectionBuilderStack = new Stack<>();
 		LineRootSectionBuilder rootSectionBuilder = new LineRootSectionBuilder(linePosition);
 		sectionBuilderStack.push(rootSectionBuilder);
-		for (LineEntry lineEntry: lineItems) {
-			if (lineEntry instanceof LineMarkerEntry lineMarkerEntry) {
-				handleMarkerLayout(sectionBuilderStack, lineMarkerEntry.marker(), cursorTracker);
-			} else if (lineEntry instanceof LineBoxRenderResultEntry lineItem) {
-				LineSectionBuilder sectionBuilder = sectionBuilderStack.peek();
-				Rectangle lineItemBounds = new Rectangle(
-					cursorTracker.getNextPosition(),
-					lineItem.unit().preferredSize());
-				sectionBuilder.addUnit(lineItemBounds, lineItem.unit());
-				cursorTracker.add(lineItemBounds.size());
-			}
-		}
+		addLineItemsToSectionBuilders(sectionBuilderStack, cursorTracker);
 
 		closeAllSubsections(sectionBuilderStack, cursorTracker);
 		
@@ -94,6 +83,16 @@ public class LineBox {
 
 	//
 
+	private void addLineItemsToSectionBuilders(Stack<LineSectionBuilder> sectionBuilderStack, CursorTracker cursorTracker) {
+		for (LineEntry lineEntry: lineItems) {
+			if (lineEntry instanceof LineMarkerEntry lineMarkerEntry) {
+				handleMarkerLayout(sectionBuilderStack, lineMarkerEntry.marker(), cursorTracker);
+			} else if (lineEntry instanceof LineBoxRenderResultEntry lineItem) {
+				handleBoxLayout(sectionBuilderStack, lineItem, cursorTracker);
+			}
+		}
+	}
+
 	private void handleMarkerLayout(Stack<LineSectionBuilder> sectionStack, LineMarker marker, CursorTracker cursorTracker) {
 		if (marker instanceof UnitEnterMarker unitEnterMarker) {
 			sectionStack.push(new LineSubsectionBuilder(cursorTracker.getNextPosition(), innerDisplay));
@@ -101,6 +100,15 @@ public class LineBox {
 			cursorTracker.add(new AbsoluteSize(unitExitMarker.rightEdgeSize(), unitExitMarker.bottomEdgeSize()));
 			closeSubsection(sectionStack, cursorTracker, true);
 		}
+	}
+
+	private void handleBoxLayout(Stack<LineSectionBuilder> sectionBuilderStack, LineBoxRenderResultEntry lineItem, CursorTracker cursorTracker) {
+		LineSectionBuilder sectionBuilder = sectionBuilderStack.peek();
+		Rectangle lineItemBounds = new Rectangle(
+			cursorTracker.getNextPosition(),
+			lineItem.unit().preferredSize());
+		sectionBuilder.addUnit(lineItemBounds, lineItem.unit());
+		cursorTracker.add(lineItemBounds.size());
 	}
 
 	private void closeAllSubsections(Stack<LineSectionBuilder> sectionBuilderStack, CursorTracker cursorTracker) {

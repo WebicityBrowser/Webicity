@@ -15,7 +15,10 @@ public final class TextRenderer {
 		String text = box.owningComponent().getText();
 
 		float width = font.getMetrics().getStringWidth(text);
-		float height = font.getMetrics().getCapHeight();
+		float height =
+			font.getMetrics().getCapHeight() +
+			font.getMetrics().getDescent() +
+			font.getMetrics().getLeading();
 		AbsoluteSize preferredSize = new AbsoluteSize(width, height);
 
 		return new TextUnit(preferredSize, box, text, font);
