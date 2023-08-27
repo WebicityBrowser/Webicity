@@ -87,7 +87,7 @@ public class TabGUI {
 		float urlBarPosition = Styling.BORDER_PADDING + controlButtonsSize;
 		
 		Component navigationButtons = createNavigationButtonsContainer()
-			.directive(PositionDirective.of(new AbsolutePosition(Styling.BORDER_PADDING, Styling.ELEMENT_PADDING / 2)));
+			.directive(PositionDirective.of(new AbsolutePosition(Styling.BORDER_PADDING / 2, Styling.ELEMENT_PADDING / 2)));
 		
 		Component urlBar = createURLBar()
 			.directive(PositionDirective.of(new AbsolutePosition(urlBarPosition, Styling.ELEMENT_PADDING / 2)))
@@ -158,7 +158,7 @@ public class TabGUI {
 	private void addButtonBehavior(Component button, Runnable handler) {
 		ActionButtonBehavior.configure(
 			button, handler,
-			colors.getBackgroundSecondary(), colors.getBackgroundSecondaryHover(),
+			colors.getBackgroundPrimary(), colors.getBackgroundSecondaryHover(),
 			colors.getBackgroundSecondarySelected(), colors.getBackgroundSecondaryActive(),
 			() -> false);
 	}

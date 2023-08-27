@@ -6,10 +6,6 @@
 
 Webicity is a simple web browser that I am working on (it is unfinished).
 
-Switch to the "ribbon" branch for the last working version.
-I have a habit of not working on projects for a long time and then rewriting them, so it's
-been a long time since there was a working version of Webicity.
-
 Webicity consists of multiple components:
 *   Webicity browser: A graphical UI for Webicity, so that users can actually use Webicity.
 *   Webicity: Responsible for rendering content.
@@ -24,7 +20,7 @@ Want to talk about Webicity? Consider joining our [Discord server](https://disco
 
 ## Requirements
 
-Webicity is meant to be compatible with both Windows and Linux distributions with Java support, but is only tested on Windows.
+Webicity is meant to be compatible with both Windows and Linux distributions with Java support.
 MacOS and other OSs are not supported. The recommended JDK/JRE version is Zulu JDK 17. Other versions of
 the JDK or JRE are not guaranteed to work.
 

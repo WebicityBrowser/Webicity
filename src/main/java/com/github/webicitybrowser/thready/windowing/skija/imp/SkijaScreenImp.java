@@ -14,7 +14,10 @@ import io.github.humbleui.skija.DirectContext;
 
 public class SkijaScreenImp implements SkijaScreen {
 
-	private static final int FULL_TICKS = 2;
+	// I have no idea why this needs to be a 3.
+	// We're double buffered - it should be a 2
+	// But noooooo, it has to be a 3.
+	private static final int FULL_TICKS = 3;
 	
 	private final SkijaWindow window;
 	private final Long windowId;
