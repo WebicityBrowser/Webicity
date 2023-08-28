@@ -2,9 +2,11 @@ package com.github.webicitybrowser.spiderhtml.tokenize;
 
 import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.html.parse.ParseError;
 import com.github.webicitybrowser.spiderhtml.context.ParsingContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
+import com.github.webicitybrowser.spiderhtml.token.EOFToken;
 import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 
 public class AttributeValueDoubleQuotedState implements TokenizeState {
@@ -20,7 +22,6 @@ public class AttributeValueDoubleQuotedState implements TokenizeState {
 	
 	@Override
 	public void process(SharedContext context, ParsingContext parsingContext, int ch) {
-		// TODO
 		switch (ch) {
 		case '"':
 			context.setTokenizeState(afterAttributeValueQuotedState);
@@ -29,6 +30,15 @@ public class AttributeValueDoubleQuotedState implements TokenizeState {
 			context.setReturnState(this);
 			context.setTokenizeState(characterReferenceState);
 			break;
+		case 0:
+			context.recordError(ParseError.UNEXPECTED_NULL_CHARACTER);
+			parsingContext.getCurrentToken(StartTagToken.class)
+				.appendToAttributeValue('\uFFFD');
+			break;
+		case -1:
+				context.recordError(ParseError.EOF_IN_TAG);
+				context.emit(new EOFToken());
+				break;
 		default:
 			parsingContext.getCurrentToken(StartTagToken.class)
 				.appendToAttributeValue(ch);

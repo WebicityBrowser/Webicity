@@ -2,10 +2,12 @@ package com.github.webicitybrowser.spiderhtml.tokenize;
 
 import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.html.parse.ParseError;
 import com.github.webicitybrowser.spec.infra.util.ASCIIUtil;
 import com.github.webicitybrowser.spiderhtml.context.ParsingContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
+import com.github.webicitybrowser.spiderhtml.token.EOFToken;
 import com.github.webicitybrowser.spiderhtml.token.TagToken;
 
 public class TagNameState implements TokenizeState {
@@ -31,6 +33,7 @@ public class TagNameState implements TokenizeState {
 		case '\n':
 		case '\f':
 		case ' ':
+			// TODO: End tags will crash the parser if we get here
 			context.setTokenizeState(beforeAttributeNameState);
 			break;
 		case '/':
@@ -39,6 +42,14 @@ public class TagNameState implements TokenizeState {
 		case '>':
 			context.setTokenizeState(dataState);
 			context.emit(currentTagToken);
+			break;
+		case 0:
+			context.recordError(ParseError.UNEXPECTED_NULL_CHARACTER);
+			currentTagToken.appendToName('\uFFFD');
+			break;
+		case -1:
+			context.recordError(ParseError.EOF_IN_TAG);
+			context.emit(new EOFToken());
 			break;
 		default:
 			currentTagToken.appendToName(ASCIIUtil.toASCIILowerCase(ch));

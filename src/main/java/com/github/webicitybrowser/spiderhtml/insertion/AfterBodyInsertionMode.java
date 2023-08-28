@@ -11,6 +11,7 @@ import com.github.webicitybrowser.spiderhtml.misc.InsertionLocation;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.CommentToken;
+import com.github.webicitybrowser.spiderhtml.token.EOFToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
 
@@ -41,6 +42,8 @@ public class AfterBodyInsertionMode implements InsertionMode {
 			token instanceof EndTagToken endToken &&
 			handleEndTagToken(context, insertionContext, endToken)
 		) {
+			return;
+		} else if (token instanceof EOFToken) {
 			return;
 		} else {
 			throw new UnsupportedOperationException();
