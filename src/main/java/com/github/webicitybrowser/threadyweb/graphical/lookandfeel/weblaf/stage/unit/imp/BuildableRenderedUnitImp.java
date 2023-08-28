@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
@@ -14,12 +15,14 @@ public class BuildableRenderedUnitImp implements BuildableRenderedUnit {
 
 	private final List<ChildLayoutResult> childUnits = new ArrayList<>(1);
 	private final UIDisplay<?, ?, ?> display;
+	private final DirectivePool styleDirectives;
 	
 	private AbsoluteSize preferredSize;
 	private boolean markedFinished;
 
-	public BuildableRenderedUnitImp(UIDisplay<?, ?, ?> display) {
+	public BuildableRenderedUnitImp(UIDisplay<?, ?, ?> display, DirectivePool styleDirectives) {
 		this.display = display;
+		this.styleDirectives = styleDirectives;
 	}
 
 	@Override
@@ -38,6 +41,11 @@ public class BuildableRenderedUnitImp implements BuildableRenderedUnit {
 	@Override
 	public UIDisplay<?, ?, ?> display() {
 		return this.display;
+	}
+
+	@Override
+	public DirectivePool styleDirectives() {
+		return this.styleDirectives;
 	}
 
 	@Override

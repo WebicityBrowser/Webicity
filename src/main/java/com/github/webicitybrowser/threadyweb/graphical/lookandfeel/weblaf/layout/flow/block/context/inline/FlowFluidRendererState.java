@@ -3,10 +3,9 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.FlowBlockRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.LineMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
@@ -15,23 +14,17 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.T
 public class FlowFluidRendererState {
 
 	private final LineDimensionConverter dimensionConverter;
-	private final GlobalRenderContext globalRenderContext;
-	private final LocalRenderContext localRenderContext;
-	private final UIDisplay<?, ?, InnerDisplayUnit> innerDisplay;
+	private final FlowBlockRenderContext context;
 
 	private final List<LineBox> lines = new ArrayList<>();
 	private final TextConsolidation textConsolidation = TextConsolidation.create();
 
 	private LineBox currentLine;
 
-	public FlowFluidRendererState(
-		LineDimensionConverter dimensionConverter, GlobalRenderContext globalRenderContext,
-		LocalRenderContext localRenderContext, UIDisplay<?, ?, InnerDisplayUnit> innerDisplay
-	) {
+	public FlowFluidRendererState(LineDimensionConverter dimensionConverter, FlowBlockRenderContext context) {
 		this.dimensionConverter = dimensionConverter;
-		this.globalRenderContext = globalRenderContext;
-		this.localRenderContext = localRenderContext;
-		this.innerDisplay = innerDisplay;
+		this.context = context;
+		
 		startNewLine();
 	}
 
@@ -46,7 +39,7 @@ public class FlowFluidRendererState {
 			return currentLine;
 		}
 
-		LineBox newLine = new LineBox(dimensionConverter, innerDisplay);
+		LineBox newLine = new LineBox(dimensionConverter, context.innerUnitGenerator());
 		copyUnresolvedMarkers(newLine);
 		this.currentLine = newLine;
 		lines.add(currentLine);
@@ -58,11 +51,11 @@ public class FlowFluidRendererState {
 	}
 
 	public GlobalRenderContext getGlobalRenderContext() {
-		return globalRenderContext;
+		return context.globalRenderContext();
 	}
 
 	public LocalRenderContext getLocalRenderContext() {
-		return localRenderContext;
+		return context.localRenderContext();
 	}
 
 	public TextConsolidation getTextConsolidation() {

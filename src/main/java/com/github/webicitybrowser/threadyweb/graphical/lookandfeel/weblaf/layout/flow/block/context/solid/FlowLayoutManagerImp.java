@@ -1,33 +1,41 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.solid;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.directive.PositionDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.SizeDirective;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicAnonymousFluidBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.FlowBlockRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.FlowFluidRenderer;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 
 public class FlowLayoutManagerImp implements SolidLayoutManager {
 
-	private final UIDisplay<?, ?, InnerDisplayUnit> innerDisplay;
+	private final BiFunction<LayoutResult, DirectivePool, RenderedUnit> anonBoxGenerator;
+	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator;
 
-	public FlowLayoutManagerImp(UIDisplay<?, ?, InnerDisplayUnit> innerDisplay) {
-		this.innerDisplay = innerDisplay;
+	public FlowLayoutManagerImp(
+		BiFunction<LayoutResult, DirectivePool, RenderedUnit> anonBoxGenerator,
+		Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator
+	) {
+		this.anonBoxGenerator = anonBoxGenerator;
+		this.innerUnitGenerator = innerUnitGenerator;
 	}
 
 	@Override
@@ -74,7 +82,10 @@ public class FlowLayoutManagerImp implements SolidLayoutManager {
 	}
 
 	private RenderedUnit renderAnonBox(BasicAnonymousFluidBox inlineBox, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		return FlowFluidRenderer.render(inlineBox, globalRenderContext, localRenderContext, innerDisplay);
+		LayoutResult result = FlowFluidRenderer.render(new FlowBlockRenderContext(
+			inlineBox, globalRenderContext, localRenderContext,
+			anonBoxGenerator, innerUnitGenerator));
+		return anonBoxGenerator.apply(result, inlineBox.styleDirectives());
 	}
 
 	private AbsoluteSize precomputeChildSize(Box childBox, AbsoluteSize parentSize) {

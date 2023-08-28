@@ -3,9 +3,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 
 public class LineSubsectionBuilder implements LineSectionBuilder {
@@ -15,9 +13,11 @@ public class LineSubsectionBuilder implements LineSectionBuilder {
 
 	private float totalHeight = 0;
 
-	public LineSubsectionBuilder(AbsolutePosition offsetPosition, UIDisplay<?, ?, InnerDisplayUnit> innerDisplay) {
+	public LineSubsectionBuilder(
+		AbsolutePosition offsetPosition, BuildableRenderedUnit unit
+	) {
 		this.startPosition = offsetPosition;
-		this.unit = BuildableRenderedUnit.create(innerDisplay);
+		this.unit = unit;
 	}
 
 	@Override

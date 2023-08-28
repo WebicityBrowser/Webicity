@@ -3,34 +3,35 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.LineMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitExitMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.CursorTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineCursorTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 
 public class LineBox {
 
 	private final CursorTracker cursorTracker;
 	private final LineDimensionConverter dimensionConverter;
-	private final UIDisplay<?, ?, InnerDisplayUnit> innerDisplay;
+	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator;
 	
 	private final List<LineEntry> lineItems = new ArrayList<>();
 	private final List<LineMarker> activeMarkers = new ArrayList<>();
 
-	public LineBox(LineDimensionConverter dimensionConverter, UIDisplay<?, ?, InnerDisplayUnit> innerDisplay) {
+	public LineBox(LineDimensionConverter dimensionConverter, Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator) {
 		this.cursorTracker = new LineCursorTracker(dimensionConverter);
 		this.dimensionConverter = dimensionConverter;
-		this.innerDisplay = innerDisplay;
+		this.innerUnitGenerator = innerUnitGenerator;
 	}
 	
 	public boolean isEmpty() {
@@ -95,7 +96,8 @@ public class LineBox {
 
 	private void handleMarkerLayout(Stack<LineSectionBuilder> sectionStack, LineMarker marker, CursorTracker cursorTracker) {
 		if (marker instanceof UnitEnterMarker unitEnterMarker) {
-			sectionStack.push(new LineSubsectionBuilder(cursorTracker.getNextPosition(), innerDisplay));
+			BuildableRenderedUnit innerUnit = innerUnitGenerator.apply(unitEnterMarker.styleDirectives());
+			sectionStack.push(new LineSubsectionBuilder(cursorTracker.getNextPosition(), innerUnit));
 		} else if (marker instanceof UnitExitMarker unitExitMarker) {
 			cursorTracker.add(new AbsoluteSize(unitExitMarker.rightEdgeSize(), unitExitMarker.bottomEdgeSize()));
 			closeSubsection(sectionStack, cursorTracker, true);

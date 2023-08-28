@@ -5,42 +5,31 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective.WhiteSpaceCollapse;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.FlowBlockRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitExitMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedCollapsibleTextView;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedTextCollapser;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextUnit;
 
 public final class FlowFluidRenderer {
 	
 	private FlowFluidRenderer() {}
 
-	public static InnerDisplayUnit render(
-		ChildrenBox box, GlobalRenderContext globalRenderContext,
-		LocalRenderContext localRenderContext, UIDisplay<?, ?, InnerDisplayUnit> innerDisplay
-	) {
+	public static LayoutResult render(FlowBlockRenderContext context) {
 		LineDimensionConverter lineDimensionConverter = new HorizontalLineDimensionConverter();
-		FlowFluidRendererState state = new FlowFluidRendererState(
-			lineDimensionConverter, globalRenderContext,
-			localRenderContext, innerDisplay);
+		FlowFluidRendererState state = new FlowFluidRendererState(lineDimensionConverter, context);
+		ChildrenBox box = context.box();
 
-		preadjustTextBoxes(state, box);
+		FlowFluidTextRenderer.preadjustTextBoxes(state, box);
 
 		for (Box childBox: box.getChildrenTracker().getChildren()) {
 			addBoxToLine(state, childBox);
@@ -49,56 +38,13 @@ public final class FlowFluidRenderer {
 		return createInnerDisplayUnit(box, state);
 	}
 
-	private static void preadjustTextBoxes(FlowFluidRendererState state, ChildrenBox box) {
-		collectPreadjustTextBoxes(state, box);
-		ConsolidatedCollapsibleTextView textView = state.getTextConsolidation().getTextView();
-		ConsolidatedTextCollapser.collapse(textView, WhiteSpaceCollapse.COLLAPSE);
-	}
-
-	private static void collectPreadjustTextBoxes(FlowFluidRendererState state, ChildrenBox box) {
-		for (Box childBox: box.getChildrenTracker().getChildren()) {
-			if (childBox instanceof TextBox textBox) {
-				state.getTextConsolidation().addText(textBox, textBox.text());
-			} else if (childBox instanceof ChildrenBox && !childBox.managesSelf()) {
-				collectPreadjustTextBoxes(state, (ChildrenBox) childBox);
-			}
-		}
-	}
-
 	private static void addBoxToLine(FlowFluidRendererState state, Box childBox) {
 		if (childBox instanceof TextBox textBox) {
-			addTextBoxToLine(state, textBox);
+			FlowFluidTextRenderer.addTextBoxToLine(state, textBox);
 		} else if (childBox.managesSelf()) {
 			addSelfManagedBoxToLine(state, childBox);
 		} else {
 			addInlineBoxToLine(state, childBox);
-		}
-	}
-
-	private static void addTextBoxToLine(FlowFluidRendererState state, TextBox textBox) {
-		TextConsolidation textConsolidation = state.getTextConsolidation();
-		String adjustedText = textConsolidation.readNextText(textBox);
-		Font2D font = textBox.getFont(state.getGlobalRenderContext());
-		
-		TextSplitter splitter = new TextSplitter(adjustedText, font);
-		while (!splitter.completed()) {
-			boolean forceFit = state.currentLine().isEmpty();
-			float parentWidth = state.getLocalRenderContext().getPreferredSize().width();
-			float remainingWidth = parentWidth == RelativeDimension.UNBOUNDED ?
-				parentWidth :
-				parentWidth - state.currentLine().getSize().width();
-			String text = splitter.getFittingText(forceFit, remainingWidth);
-			if (text == null) {
-				startNewLine(state);
-				continue;
-			}
-
-			AbsoluteSize preferredSize = new AbsoluteSize(
-				splitter.getLastTextWidth(),
-				font.getMetrics().getCapHeight()
-			);
-			
-			state.currentLine().add(new TextUnit(preferredSize, textBox, text, font));
 		}
 	}
 
@@ -136,15 +82,11 @@ public final class FlowFluidRenderer {
 		LineBox currentLine = state.currentLine();
 		LocalRenderContext localRenderContext = state.getLocalRenderContext();
 		if (!currentLine.canFit(preferredSize, localRenderContext.getPreferredSize())) {
-			startNewLine(state);
+			state.startNewLine();
 		}
 	}
 
-	private static void startNewLine(FlowFluidRendererState state) {
-		state.startNewLine();
-	}
-
-	private static InnerDisplayUnit createInnerDisplayUnit(ChildrenBox box, FlowFluidRendererState state) {
+	private static LayoutResult createInnerDisplayUnit(ChildrenBox box, FlowFluidRendererState state) {
 		List<ChildLayoutResult> childLayoutResults = new ArrayList<>();
 
 		AbsolutePosition linePosition = new AbsolutePosition(0, 0);
@@ -160,10 +102,7 @@ public final class FlowFluidRenderer {
 			);
 		}
 
-		return InnerDisplayUnit.create(
-			box.display(),
-			totalSize,
-			childLayoutResults.toArray(new ChildLayoutResult[0]));
+		return LayoutResult.create(childLayoutResults.toArray(ChildLayoutResult[]::new), totalSize);
 	}
 
 }

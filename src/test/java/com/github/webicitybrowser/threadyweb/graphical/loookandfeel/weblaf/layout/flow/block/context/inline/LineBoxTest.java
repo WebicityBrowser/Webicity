@@ -17,6 +17,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitExitMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.imp.BuildableRenderedUnitImp;
 
 public class LineBoxTest {
 
@@ -24,7 +25,9 @@ public class LineBoxTest {
 
 	@BeforeEach
 	public void setup() {
-		lineBox = new LineBox(new HorizontalLineDimensionConverter(), null);
+		lineBox = new LineBox(
+			new HorizontalLineDimensionConverter(),
+			directives -> new BuildableRenderedUnitImp(null, directives));
 	}
 
 	@Test
