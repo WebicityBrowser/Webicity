@@ -36,7 +36,16 @@ public class SkijaFontMetricsImp implements com.github.webicitybrowser.thready.d
 	
 	@Override
 	public float getStringWidth(String text) {
-		return font.measureTextWidth(text);
+		float textWidth = 0;
+		for (int i = 0; i < text.length(); i++) {
+			int codePoint = text.codePointAt(i);
+			if (codePoint >= 256) {
+				return font.measureTextWidth(text);
+			}
+			textWidth += getCharacterWidth(codePoint);
+		}
+		
+		return textWidth;
 	}
 
 	@Override

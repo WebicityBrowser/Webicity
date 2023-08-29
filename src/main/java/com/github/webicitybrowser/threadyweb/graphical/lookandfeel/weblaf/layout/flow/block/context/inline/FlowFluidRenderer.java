@@ -14,6 +14,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.FlowBlockRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitExitMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
@@ -54,20 +55,21 @@ public final class FlowFluidRenderer {
 		// TODO: We need to use a custom localRenderContext.
 		RenderedUnit boxUnit = UIPipeline.render(childBox, globalRenderContext, localRenderContext);
 		startNewLineIfNotFits(state, boxUnit.preferredSize());
-		state.currentLine().add(boxUnit);
+		state.lineContext().currentLine().add(boxUnit);
 	}
 
 	private static void addInlineBoxToLine(FlowFluidRendererState state, Box childBox) {
 		assert childBox instanceof ChildrenBox;
+		LineContext lineContext = state.lineContext();
 		UnitEnterMarker unitEnterMarker = new UnitEnterMarker(true, childBox.styleDirectives());
 		startNewLineIfNotFits(state, createSizeFromUnitEnterMarker(unitEnterMarker));
-		state.currentLine().addMarker(unitEnterMarker);
+		lineContext.currentLine().addMarker(unitEnterMarker);
 		for (Box inlineChildBox: ((ChildrenBox) childBox).getChildrenTracker().getChildren()) {
 			addBoxToLine(state, inlineChildBox);
 		}
 		UnitExitMarker unitExitMarker = new UnitExitMarker(childBox.styleDirectives());
 		startNewLineIfNotFits(state, createSizeFromUnitExitMarker(unitExitMarker));
-		state.currentLine().addMarker(unitExitMarker);
+		lineContext.currentLine().addMarker(unitExitMarker);
 	}
 
 	private static AbsoluteSize createSizeFromUnitEnterMarker(UnitEnterMarker marker) {
@@ -79,10 +81,11 @@ public final class FlowFluidRenderer {
 	}
 
 	private static void startNewLineIfNotFits(FlowFluidRendererState state, AbsoluteSize preferredSize) {
-		LineBox currentLine = state.currentLine();
+		LineContext lineContext = state.lineContext();
+		LineBox currentLine = lineContext.currentLine();
 		LocalRenderContext localRenderContext = state.getLocalRenderContext();
 		if (!currentLine.canFit(preferredSize, localRenderContext.getPreferredSize())) {
-			state.startNewLine();
+			lineContext.startNewLine();
 		}
 	}
 
@@ -91,7 +94,7 @@ public final class FlowFluidRenderer {
 
 		AbsolutePosition linePosition = new AbsolutePosition(0, 0);
 		AbsoluteSize totalSize = new AbsoluteSize(0, 0);
-		for (LineBox line: state.lines()) {
+		for (LineBox line: state.lineContext().lines()) {
 			List<ChildLayoutResult> lineChildLayoutResults = line.layoutAtPos(linePosition);
 			childLayoutResults.addAll(lineChildLayoutResults);
 			// TODO: Use the LineDimensionConverter so we can handle vertical lines.

@@ -15,7 +15,7 @@ public final class BackgroundPainter {
 
 	private BackgroundPainter() {}
 
-	public static void paint(DirectivePool directives, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
+	public static void paintBackground(DirectivePool directives, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		paintColorBackground(directives, localPaintContext);
 	}
 

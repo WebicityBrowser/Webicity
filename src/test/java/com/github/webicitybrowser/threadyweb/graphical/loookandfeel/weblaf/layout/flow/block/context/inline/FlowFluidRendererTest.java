@@ -181,6 +181,20 @@ public class FlowFluidRendererTest {
 	}
 
 	@Test
+	@DisplayName("Text spaces at start are removed (default settings)")
+	public void textSpacesAtStartAreRemoved() {
+		ChildrenBox box = new TestStubChildrenBox();
+		TextBox textBox = createTextBox(" Hello World");
+		box.getChildrenTracker().addChild(textBox);
+		GlobalRenderContext globalRenderContext = Mockito.mock(GlobalRenderContext.class);
+		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(100, 100), new ContextSwitch[0]);
+		LayoutResult result = FlowFluidRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult child = result.childLayoutResults()[0];
+		Assertions.assertEquals(8 * 11, child.unit().preferredSize().width());
+	}
+
+	@Test
 	@DisplayName("Large text wraps")
 	public void largeTextWraps() {
 		ChildrenBox box = new TestStubChildrenBox();

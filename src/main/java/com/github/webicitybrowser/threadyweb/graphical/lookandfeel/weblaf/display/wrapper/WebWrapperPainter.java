@@ -11,7 +11,7 @@ public final class WebWrapperPainter {
 	private WebWrapperPainter() {}
 
 	public static <V extends RenderedUnit> void paint(WebWrapperUnit<V> unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
-		BackgroundPainter.paint(unit.box().styleDirectives(), globalPaintContext, localPaintContext);
+		BackgroundPainter.paintBackground(unit.box().styleDirectives(), globalPaintContext, localPaintContext);
 		UIPipeline.paint(unit.innerUnit(), globalPaintContext, localPaintContext);
 	}
 	

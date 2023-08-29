@@ -11,10 +11,7 @@ public class TextSplitter {
 	private final Font2D font;
 	private final float[] charWidths;
 
-	private int windowStart = 0;
 	private int windowEnd = 0;
-
-	private float lastTextWidth = 0;
 
 	public TextSplitter(String text, Font2D font) {
 		this.text = text;
@@ -28,7 +25,7 @@ public class TextSplitter {
 		}
 
 		float currentWidth = 0;
-		windowStart = windowEnd;
+		int windowStart = windowEnd;
 		while (!completed() && ((forceFit && currentWidth == 0) || !nextCharWillOverflow(currentWidth, maxWidth))) {
 			currentWidth += charWidths[windowEnd];
 			windowEnd++;
@@ -38,17 +35,11 @@ public class TextSplitter {
 			return null;
 		}
 
-		this.lastTextWidth = currentWidth;
-
 		return text.substring(windowStart, windowEnd);
 	}
 
 	public boolean completed() {
 		return windowEnd >= text.length();
-	}
-
-	public float getLastTextWidth() {
-		return lastTextWidth;
 	}
 
 	private float[] generateCharWidths() {

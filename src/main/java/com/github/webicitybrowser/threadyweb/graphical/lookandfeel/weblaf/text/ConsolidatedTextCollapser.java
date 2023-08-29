@@ -22,7 +22,8 @@ public final class ConsolidatedTextCollapser {
 		while (!textView.atEnd()) {
 			replaceTabWithSpace(textView);
 			removeExtraSpacesTabs(textView);
-			removePreviousSpaceIfSegmentBreak(textView);
+			removePreviousCharIfIsChar(textView, ' ', SEGMENT_BREAK);
+			removePreviousCharIfIsChar(textView, SEGMENT_BREAK, ' ');
 			textView.advance();
 		}
 	}
@@ -50,15 +51,15 @@ public final class ConsolidatedTextCollapser {
 		}
 	}
 
-	private static void removePreviousSpaceIfSegmentBreak(ConsolidatedCollapsibleTextView textView) {
+	private static void removePreviousCharIfIsChar(ConsolidatedCollapsibleTextView textView, int prev, int next) {
 		if (textView.atStart()) {
 			return;
 		}
 
 		int codepoint = textView.getCurrentCodepoint();
-		if (codepoint == SEGMENT_BREAK) {
+		if (codepoint == next) {
 			textView.regress();
-			if (textView.getCurrentCodepoint() == ' ') {
+			if (textView.getCurrentCodepoint() == prev) {
 				textView.delete();
 			} else {
 				textView.advance();

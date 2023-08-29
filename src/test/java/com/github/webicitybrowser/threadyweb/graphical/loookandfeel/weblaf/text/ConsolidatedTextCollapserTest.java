@@ -43,4 +43,14 @@ public class ConsolidatedTextCollapserTest {
 		Assertions.assertEquals("Hello World", textView.toString());
 	}
 
+	@Test
+	@DisplayName("String of just tabs and newlines collapsed in COLLAPSE mode")
+	public void collapseModeCollapsesJustTabsAndNewlines() {
+		List<String> backingStrings = new ArrayList<>();
+		backingStrings.add("\n\t");
+		ConsolidatedCollapsibleTextView textView = ConsolidatedCollapsibleTextView.create(backingStrings);
+		ConsolidatedTextCollapser.collapse(textView, WhiteSpaceCollapse.COLLAPSE);
+		Assertions.assertEquals(" ", textView.toString());
+	}
+
 }

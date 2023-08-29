@@ -82,6 +82,10 @@ public class LineBox {
 		return rootSectionBuilder.getChildLayoutResults();
 	}
 
+	public List<LineEntry> getLineItems() {
+		return lineItems;
+	}
+
 	//
 
 	private void addLineItemsToSectionBuilders(Stack<LineSectionBuilder> sectionBuilderStack, CursorTracker cursorTracker) {
@@ -132,8 +136,8 @@ public class LineBox {
 		parentSectionBuilder.addUnit(subsectionBounds, subsectionBuilder.getUnit());
 	}
 
-	private interface LineEntry {}
-	private record LineMarkerEntry(LineMarker marker, AbsolutePosition position) implements LineEntry {}
-	private record LineBoxRenderResultEntry(RenderedUnit unit, AbsolutePosition position) implements LineEntry {}
+	public interface LineEntry {}
+	public record LineMarkerEntry(LineMarker marker, AbsolutePosition position) implements LineEntry {}
+	public record LineBoxRenderResultEntry(RenderedUnit unit, AbsolutePosition position) implements LineEntry {}
 	
 }
