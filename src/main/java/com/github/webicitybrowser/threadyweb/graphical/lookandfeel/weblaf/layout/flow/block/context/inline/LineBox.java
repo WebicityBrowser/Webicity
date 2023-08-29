@@ -39,10 +39,14 @@ public class LineBox {
 	}
 
 	public void add(RenderedUnit unit) {
-		AbsoluteSize size = unit.preferredSize();
+		add(unit, unit.fitSize());
+	}
+
+	public void add(RenderedUnit unit, AbsoluteSize adjustedSize) {
 		AbsolutePosition startPosition = cursorTracker.getNextPosition();
-		lineItems.add(new LineBoxRenderResultEntry(unit, startPosition));
-		cursorTracker.add(size);
+		Rectangle bounds = new Rectangle(startPosition, adjustedSize);
+		lineItems.add(new LineBoxRenderResultEntry(unit, bounds));
+		cursorTracker.add(adjustedSize);
 	}
 
 	public void addMarker(LineMarker marker) {
@@ -112,7 +116,7 @@ public class LineBox {
 		LineSectionBuilder sectionBuilder = sectionBuilderStack.peek();
 		Rectangle lineItemBounds = new Rectangle(
 			cursorTracker.getNextPosition(),
-			lineItem.unit().preferredSize());
+			lineItem.bounds().size());
 		sectionBuilder.addUnit(lineItemBounds, lineItem.unit());
 		cursorTracker.add(lineItemBounds.size());
 	}
@@ -131,13 +135,13 @@ public class LineBox {
 		}
 		Rectangle subsectionBounds = new Rectangle(
 			subsectionBuilder.getStartPosition(),
-			subsectionBuilder.getUnit().preferredSize());
+			subsectionBuilder.getUnit().fitSize());
 		LineSectionBuilder parentSectionBuilder = sectionStack.peek();
 		parentSectionBuilder.addUnit(subsectionBounds, subsectionBuilder.getUnit());
 	}
 
 	public interface LineEntry {}
 	public record LineMarkerEntry(LineMarker marker, AbsolutePosition position) implements LineEntry {}
-	public record LineBoxRenderResultEntry(RenderedUnit unit, AbsolutePosition position) implements LineEntry {}
+	public record LineBoxRenderResultEntry(RenderedUnit unit, Rectangle bounds) implements LineEntry {}
 	
 }

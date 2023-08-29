@@ -12,7 +12,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 
 public record FlowBlockRenderContext(
-		ChildrenBox box, GlobalRenderContext globalRenderContext,
+		ChildrenBox box,
+		GlobalRenderContext globalRenderContext,
 		LocalRenderContext localRenderContext,
 		BiFunction<LayoutResult, DirectivePool, RenderedUnit> anonUnitGenerator,
 		Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator

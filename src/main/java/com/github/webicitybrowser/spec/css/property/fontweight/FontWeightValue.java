@@ -1,6 +1,8 @@
 package com.github.webicitybrowser.spec.css.property.fontweight;
 
-public interface FontWeightValue {
+import com.github.webicitybrowser.spec.css.property.CSSValue;
+
+public interface FontWeightValue extends CSSValue {
 
 	int getWeight(int parentWeight);
 

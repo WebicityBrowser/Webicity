@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.color.ColorPropertyValueParser;
@@ -6,9 +6,10 @@ import com.github.webicitybrowser.spec.css.property.color.ColorValue;
 import com.github.webicitybrowser.thready.color.colors.RGBA8Color;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.thready.gui.graphical.directive.ForegroundColorDirective;
+import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColorDirective;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 
-public class CSSOMColorDeclarationParser implements CSSOMNamedDeclarationParser<ColorValue> {
+public class CSSOMBackgroundColorDeclarationParser implements CSSOMNamedDeclarationParser<ColorValue> {
 
 	private final PropertyValueParser<ColorValue> colorParser = new ColorPropertyValueParser();
 	
@@ -20,7 +21,7 @@ public class CSSOMColorDeclarationParser implements CSSOMNamedDeclarationParser<
 	@Override
 	public Directive[] translatePropertyValue(ColorValue value) {
 		return new Directive[] {
-			ForegroundColorDirective.of(createColorFrom(value))
+			BackgroundColorDirective.of(createColorFrom(value))
 		};
 	}
 	

@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.directive;
 
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
+import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
 
 public interface WhiteSpaceCollapseDirective extends Directive {
 
@@ -13,10 +14,6 @@ public interface WhiteSpaceCollapseDirective extends Directive {
 
 	static WhiteSpaceCollapseDirective of(WhiteSpaceCollapse whiteSpaceCollapse) {
 		return () -> whiteSpaceCollapse;
-	}
-
-	enum WhiteSpaceCollapse {
-		COLLAPSE, DISCARD, PRESERVE, PRESERVE_BREAKS, PRESERVE_SPACES, BREAK_SPACES
 	}
 	
 }

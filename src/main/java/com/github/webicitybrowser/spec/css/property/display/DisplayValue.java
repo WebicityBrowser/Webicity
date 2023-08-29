@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.spec.css.property.display;
 
-public record DisplayValue(OuterDisplayType outerDisplayType) {
+import com.github.webicitybrowser.spec.css.property.CSSValue;
+
+public record DisplayValue(OuterDisplayType outerDisplayType) implements CSSValue {
 
 }

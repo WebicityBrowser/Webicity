@@ -32,7 +32,7 @@ public class LineSubsectionBuilder implements LineSectionBuilder {
 
 	@Override
 	public void finalize(AbsolutePosition endPosition) {
-		unit.setPreferredSize(new AbsoluteSize(
+		unit.setFitSize(new AbsoluteSize(
 			endPosition.x() - startPosition.x(),
 			totalHeight
 		));

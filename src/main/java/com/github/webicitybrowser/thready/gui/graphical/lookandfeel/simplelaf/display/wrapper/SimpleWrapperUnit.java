@@ -6,7 +6,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDispl
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
 public record SimpleWrapperUnit<V extends RenderedUnit>(
-	UIDisplay<?, ?, ?> display, AbsoluteSize preferredSize, DirectivePool styleDirectives, V childUnit
+	UIDisplay<?, ?, ?> display, AbsoluteSize fitSize, DirectivePool styleDirectives, V childUnit
 ) implements RenderedUnit {
 
 }

@@ -13,7 +13,7 @@ public record CircularButtonUnit(Image image, CircularButtonBox box) implements 
 	}
 
 	@Override
-	public AbsoluteSize preferredSize() {
+	public AbsoluteSize fitSize() {
 		return new AbsoluteSize(22, 22);
 	}
 

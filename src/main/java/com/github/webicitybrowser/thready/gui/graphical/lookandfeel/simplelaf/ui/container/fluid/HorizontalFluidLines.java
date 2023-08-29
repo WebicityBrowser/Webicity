@@ -39,9 +39,9 @@ public class HorizontalFluidLines implements FluidLines {
 		// TODO: Re-add splitting functionality
 		RenderedUnit unit = UIPipeline.render(child, globalRenderContext, createLocalRenderContext(switches));
 		if (!(
-			unit.preferredSize().width() <= maxBounds.width() - posX ||
+			unit.fitSize().width() <= maxBounds.width() - posX ||
 			posX == 0 ||
-			unit.preferredSize().width() == RelativeDimension.UNBOUNDED
+			unit.fitSize().width() == RelativeDimension.UNBOUNDED
 		)) {
 			goToNextLine();
 		} else {
@@ -61,7 +61,7 @@ public class HorizontalFluidLines implements FluidLines {
 	}
 
 	private void addUnitToLine(RenderedUnit unit) {
-		AbsoluteSize size = unit.preferredSize();
+		AbsoluteSize size = unit.fitSize();
 		curLineHeight = Math.max(size.height(), curLineHeight);
 		
 		AbsolutePosition startPosition = new AbsolutePosition(posX, posY);

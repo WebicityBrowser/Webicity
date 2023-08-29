@@ -7,7 +7,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDispl
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
 public record TextUnit(
-	AbsoluteSize preferredSize, TextBox box, String text, Font2D font
+	AbsoluteSize fitSize, TextBox box, String text, Font2D font
 ) implements RenderedUnit {
 
 	public UIDisplay<?, ?, ?> display() {

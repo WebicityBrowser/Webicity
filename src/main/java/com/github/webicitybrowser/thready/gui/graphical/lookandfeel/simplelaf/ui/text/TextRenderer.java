@@ -19,9 +19,9 @@ public final class TextRenderer {
 			font.getMetrics().getCapHeight() +
 			font.getMetrics().getDescent() +
 			font.getMetrics().getLeading();
-		AbsoluteSize preferredSize = new AbsoluteSize(width, height);
+		AbsoluteSize fitSize = new AbsoluteSize(width, height);
 
-		return new TextUnit(preferredSize, box, text, font);
+		return new TextUnit(fitSize, box, text, font);
 	}
 
 	private static FontSettings getFontSettings(TextBox box) {

@@ -34,7 +34,7 @@ public class TestStubContentBox implements Box {
 	public UIDisplay<?, ?, ?> display() {
 		UIDisplay<?, TestStubContentBox, RenderedUnit> display = Mockito.mock(UIDisplay.class);
 		RenderedUnit renderedUnit = Mockito.mock(RenderedUnit.class);
-		Mockito.when(renderedUnit.preferredSize()).thenReturn(size);
+		Mockito.when(renderedUnit.fitSize()).thenReturn(size);
 		Mockito.when(display.renderBox(Mockito.eq(this), Mockito.any(), Mockito.any())).thenReturn(renderedUnit);
 		return display;
 	}

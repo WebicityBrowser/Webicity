@@ -1,13 +1,14 @@
 package com.github.webicitybrowser.spec.css.parser.property;
 
 import com.github.webicitybrowser.spec.css.parser.property.imp.PropertyValueParseResultImp;
+import com.github.webicitybrowser.spec.css.property.CSSValue;
 
 public final class PropertyValueParserUtil {
 
 	private PropertyValueParserUtil() {}
 	
 	@SafeVarargs
-	public static <T> PropertyValueParseResult<T> takeLongestResult(PropertyValueParseResult<T>... results) {
+	public static <T extends CSSValue> PropertyValueParseResult<T> takeLongestResult(PropertyValueParseResult<T>... results) {
 		PropertyValueParseResult<T> longestResult = PropertyValueParseResultImp.empty();
 		int highestLength = 0;
 		

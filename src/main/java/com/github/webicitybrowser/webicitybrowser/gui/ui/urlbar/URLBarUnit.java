@@ -8,7 +8,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDispl
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.webicitybrowser.gui.Styling;
 
-public record URLBarUnit(AbsoluteSize preferredSize, Font2D font, URLBarBox box) implements RenderedUnit {
+public record URLBarUnit(AbsoluteSize fitSize, Font2D font, URLBarBox box) implements RenderedUnit {
 
 	@Override
 	public UIDisplay<?, ?, ?> display() {

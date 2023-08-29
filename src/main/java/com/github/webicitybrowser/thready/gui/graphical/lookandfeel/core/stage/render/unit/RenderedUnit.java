@@ -7,6 +7,6 @@ public interface RenderedUnit {
 
 	UIDisplay<?, ?, ?> display();
 	
-	AbsoluteSize preferredSize();
+	AbsoluteSize fitSize();
 	
 }

@@ -48,7 +48,7 @@ public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends Re
 	@Override
 	public SimpleWrapperUnit<V> renderBox(SimpleWrapperBox<U> box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		V childUnit = childDisplay.renderBox(box.innerBox(), renderContext, localRenderContext);
-		return new SimpleWrapperUnit<>(this, childUnit.preferredSize(), box.styleDirectives(), childUnit);
+		return new SimpleWrapperUnit<>(this, childUnit.fitSize(), box.styleDirectives(), childUnit);
 	}
 
 	@Override

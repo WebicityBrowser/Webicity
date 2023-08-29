@@ -16,7 +16,7 @@ public interface BuildableRenderedUnit extends RenderedUnit {
 
 	DirectivePool styleDirectives();
 
-	void setPreferredSize(AbsoluteSize preferredSize);
+	void setFitSize(AbsoluteSize fitSize);
 
 	void markFinished();
 

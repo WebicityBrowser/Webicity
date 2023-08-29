@@ -5,7 +5,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
-public record MenuButtonUnit(AbsoluteSize preferredSize, MenuButtonBox box, Font2D font) implements RenderedUnit {
+public record MenuButtonUnit(AbsoluteSize fitSize, MenuButtonBox box, Font2D font) implements RenderedUnit {
 
 	@Override
 	public UIDisplay<?, ?, ?> display() {

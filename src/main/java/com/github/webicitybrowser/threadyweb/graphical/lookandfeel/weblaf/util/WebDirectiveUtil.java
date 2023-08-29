@@ -9,10 +9,12 @@ import com.github.webicitybrowser.thready.gui.graphical.directive.BackgroundColo
 import com.github.webicitybrowser.thready.gui.graphical.directive.ForegroundColorDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.FontWeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.FontWeightDirective.FontWeight;
+import com.github.webicitybrowser.threadyweb.graphical.directive.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective.OuterDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective.WhiteSpaceCollapse;
+import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
+import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
+import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
 
 public final class WebDirectiveUtil {
 
@@ -59,6 +61,13 @@ public final class WebDirectiveUtil {
 			.getDirectiveOrEmpty(WhiteSpaceCollapseDirective.class)
 			.map(directive -> directive.getWhiteSpaceCollapse())
 			.orElse(WhiteSpaceCollapse.COLLAPSE);
+	}
+
+	public static SizeCalculation getHeight(DirectivePool styleDirectives) {
+		return styleDirectives
+			.getDirectiveOrEmpty(HeightDirective.class)
+			.map(directive -> directive.getHeightCalculation())
+			.orElse(SizeCalculation.SIZE_AUTO);
 	}
 	
 }

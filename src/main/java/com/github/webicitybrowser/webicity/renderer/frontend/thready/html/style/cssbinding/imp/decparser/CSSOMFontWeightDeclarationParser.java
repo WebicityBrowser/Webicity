@@ -1,9 +1,10 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
 
 import com.github.webicitybrowser.spec.css.parser.property.fontweight.FontWeightValueParser;
 import com.github.webicitybrowser.spec.css.property.fontweight.FontWeightValue;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.threadyweb.graphical.directive.FontWeightDirective;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 
 public class CSSOMFontWeightDeclarationParser implements CSSOMNamedDeclarationParser<FontWeightValue> {
 

@@ -11,9 +11,15 @@ import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.util.TokenUtils;
+import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMBackgroundColorDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMColorDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMDisplayDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontWeightDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMHeightDeclarationParser;
 
 public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	
@@ -26,8 +32,8 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("background-color", new CSSOMBackgroundColorDeclarationParser());
 		namedDeclarationParsers.put("background", new CSSOMBackgroundColorDeclarationParser()); // TODO
 		namedDeclarationParsers.put("display", new CSSOMDisplayDeclarationParser());
+		namedDeclarationParsers.put("height", new CSSOMHeightDeclarationParser());
 		namedDeclarationParsers.put("font-weight", new CSSOMFontWeightDeclarationParser());
-
 	}
 	
 	@Override
@@ -42,7 +48,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> Directive[] invokeParser(CSSOMNamedDeclarationParser<?> namedParser, Declaration rule) {
+	private <T extends CSSValue> Directive[] invokeParser(CSSOMNamedDeclarationParser<?> namedParser, Declaration rule) {
 		CSSOMNamedDeclarationParser<T> castedParser = (CSSOMNamedDeclarationParser<T>) namedParser;
 		Optional<T> result = getResult(rule, castedParser.getPropertyValueParser());
 		return result
@@ -50,7 +56,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 			.orElse(null);
 	}
 
-	private <T> Optional<T> getResult(Declaration rule, PropertyValueParser<T> parser) {
+	private <T extends CSSValue> Optional<T> getResult(Declaration rule, PropertyValueParser<T> parser) {
 		TokenLike[] tokens = TokenUtils.stripWhitespace(rule.getValue());
 		PropertyValueParseResult<T> result = parser.parse(tokens, 0, tokens.length);
 		return result.getResult();

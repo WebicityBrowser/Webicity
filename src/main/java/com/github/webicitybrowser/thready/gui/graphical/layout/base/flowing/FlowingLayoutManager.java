@@ -49,7 +49,7 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 		
 		RenderedUnit childUnit = UIPipeline.render(childBox, globalRenderContext, childRenderContext);
 
-		AbsoluteSize renderedSize = childUnit.preferredSize();
+		AbsoluteSize renderedSize = childUnit.fitSize();
 		AbsoluteSize finalSize = computeFinalChildSize(renderedSize, precomputedSize, parentSize);
 		
 		AbsolutePosition computedPosition = computeNormalChildPosition(childBox, parentSize, finalSize, renderCursor);

@@ -7,7 +7,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
 public record ContainerRenderedUnit(
-	ChildrenBox box, AbsoluteSize preferredSize, ChildLayoutResult[] childLayoutResults
+	ChildrenBox box, AbsoluteSize fitSize, ChildLayoutResult[] childLayoutResults
 ) implements RenderedUnit {
 
 	@Override

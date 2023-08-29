@@ -7,7 +7,6 @@ import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
-import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective.WhiteSpaceCollapse;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.LineBox.LineEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.LineBox.LineMarkerEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.contexts.LineContext;
@@ -17,6 +16,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.C
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextUnit;
+import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
 
 public final class FlowFluidTextRenderer {
 	
@@ -31,7 +31,7 @@ public final class FlowFluidTextRenderer {
 	public static void addTextBoxToLine(FlowFluidRendererState state, TextBox textBox) {
 		TextConsolidation textConsolidation = state.getTextConsolidation();
 		String adjustedText = textConsolidation.readNextText(textBox);
-		Font2D font = textBox.getFont(state.getGlobalRenderContext());	
+		Font2D font = textBox.getFont(state.getGlobalRenderContext(), state.getLocalRenderContext());	
 		TextSplitter splitter = new TextSplitter(adjustedText, font);
 		while (!splitter.completed()) {
 			String text = getNextSplit(state, splitter);
@@ -57,7 +57,7 @@ public final class FlowFluidTextRenderer {
 	) {
 		if (text.isEmpty()) return;
 
-		AbsoluteSize preferredSize = new AbsoluteSize(
+		AbsoluteSize fitSize = new AbsoluteSize(
 			font.getMetrics().getStringWidth(text),
 			font.getMetrics().getCapHeight()
 		);
@@ -65,7 +65,7 @@ public final class FlowFluidTextRenderer {
 		state
 			.lineContext()
 			.currentLine()
-			.add(new TextUnit(preferredSize, textBox, text, font));
+			.add(new TextUnit(fitSize, textBox, text, font));
 	}
 
 	private static String trimTextIfLineStart(FlowFluidRendererState state, String text) {

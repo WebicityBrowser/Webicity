@@ -1,6 +1,6 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text;
 
-import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective.WhiteSpaceCollapse;
+import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
 
 public final class ConsolidatedTextCollapser {
 

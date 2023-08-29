@@ -9,7 +9,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 public record ElementUnit(UIDisplay<?, ?, ?> display, DirectivePool styleDirectives, LayoutResult layoutResults) implements RenderedUnit {
 
 	@Override
-	public AbsoluteSize preferredSize() {
+	public AbsoluteSize fitSize() {
 		return layoutResults.fitSize();
 	}
 	

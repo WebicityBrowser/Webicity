@@ -21,7 +21,7 @@ public final class ElementInlinePainter {
 		return new ElementUnit(
 			unit.display(),
 			unit.styleDirectives(),
-			LayoutResult.create(unit.childLayoutResults(), unit.preferredSize()));
+			LayoutResult.create(unit.childLayoutResults(), unit.fitSize()));
 	}
 	
 }

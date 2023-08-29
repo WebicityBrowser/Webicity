@@ -6,7 +6,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDispl
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
 
-public record FrameUnit(AbsoluteSize preferredSize, FrameBox box, ResourceLoader resourceLoader, ScreenContent screenContent) implements RenderedUnit {
+public record FrameUnit(AbsoluteSize fitSize, FrameBox box, ResourceLoader resourceLoader, ScreenContent screenContent) implements RenderedUnit {
 
 	@Override
 	public UIDisplay<?, ?, ?> display() {

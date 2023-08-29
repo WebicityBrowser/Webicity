@@ -26,12 +26,12 @@ public class BuildableRenderedUnitImp implements BuildableRenderedUnit {
 	}
 
 	@Override
-	public void setPreferredSize(AbsoluteSize preferredSize) {
+	public void setFitSize(AbsoluteSize preferredSize) {
 		this.preferredSize = preferredSize;
 	}
 
 	@Override
-	public AbsoluteSize preferredSize() {
+	public AbsoluteSize fitSize() {
 		if (this.preferredSize == null) {
 			throw new IllegalStateException("Preferred size not set");
 		}

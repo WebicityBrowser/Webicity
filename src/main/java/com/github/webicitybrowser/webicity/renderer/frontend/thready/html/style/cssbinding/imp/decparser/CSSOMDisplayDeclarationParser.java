@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.display.DisplayPropertyValueParser;
@@ -6,7 +6,8 @@ import com.github.webicitybrowser.spec.css.property.display.DisplayValue;
 import com.github.webicitybrowser.spec.css.property.display.OuterDisplayType;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective.OuterDisplay;
+import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 
 public class CSSOMDisplayDeclarationParser implements CSSOMNamedDeclarationParser<DisplayValue> {
 	

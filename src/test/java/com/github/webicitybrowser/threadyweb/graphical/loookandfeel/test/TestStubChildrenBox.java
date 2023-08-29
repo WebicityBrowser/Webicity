@@ -10,10 +10,20 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 public class TestStubChildrenBox implements ChildrenBox {
 
 	private final BoxChildrenTracker childrenTracker = new SolidBoxChildrenTracker(this, null);
+	private final DirectivePool styleDirectives;
+
+	public TestStubChildrenBox(DirectivePool styleDirectives) {
+		this.styleDirectives = styleDirectives;
+	}
 
 	@Override
 	public BoxChildrenTracker getChildrenTracker() {
 		return childrenTracker;
+	}
+
+	@Override
+	public DirectivePool styleDirectives() {
+		return styleDirectives;
 	}
 
 	@Override
@@ -24,11 +34,6 @@ public class TestStubChildrenBox implements ChildrenBox {
 	@Override
 	public Component owningComponent() {
 		throw new UnsupportedOperationException("Unimplemented method 'owningComponent'");
-	}
-
-	@Override
-	public DirectivePool styleDirectives() {
-		throw new UnsupportedOperationException("Unimplemented method 'styleDirectives'");
 	}
 	
 }

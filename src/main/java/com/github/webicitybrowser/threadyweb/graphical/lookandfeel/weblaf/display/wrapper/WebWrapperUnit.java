@@ -7,8 +7,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 public record WebWrapperUnit<V extends RenderedUnit>(UIDisplay<?, ?, ?> display, WebWrapperBox box, V innerUnit) implements RenderedUnit {
 
 	@Override
-	public AbsoluteSize preferredSize() {
-		return innerUnit.preferredSize();
+	public AbsoluteSize fitSize() {
+		return innerUnit.fitSize();
 	}
 
 }

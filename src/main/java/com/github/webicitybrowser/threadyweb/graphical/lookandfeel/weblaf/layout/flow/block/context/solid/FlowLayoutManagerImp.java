@@ -70,7 +70,7 @@ public class FlowLayoutManagerImp implements SolidLayoutManager {
 			renderAnonBox(inlineBox, globalRenderContext, childRenderContext) :
 			UIPipeline.render(childBox, globalRenderContext, childRenderContext);
 
-		AbsoluteSize renderedSize = childUnit.preferredSize();
+		AbsoluteSize renderedSize = childUnit.fitSize();
 		AbsoluteSize finalSize = computeFinalChildSize(renderedSize, precomputedSize, parentSize);
 		
 		AbsolutePosition computedPosition = computeNormalChildPosition(childBox, parentSize, finalSize, renderCursor);

@@ -183,7 +183,7 @@ public class GUIContentImp implements GUIContent {
 	@SuppressWarnings("unchecked")
 	private <U extends Box> void performRenderCycle(ScreenContentRedrawContext redrawContext) {
 		AbsoluteSize contentSize = redrawContext.contentSize();
-		GlobalRenderContext globalRenderContext = new RenderContextImp(redrawContext.resourceLoader());
+		GlobalRenderContext globalRenderContext = new RenderContextImp(contentSize, redrawContext.resourceLoader());
 		LocalRenderContext localRenderContext = LocalRenderContext.create(contentSize, new ContextSwitch[0]);
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();
 		this.rootUnit = rootDisplay.renderBox((U) rootBox, globalRenderContext, localRenderContext);

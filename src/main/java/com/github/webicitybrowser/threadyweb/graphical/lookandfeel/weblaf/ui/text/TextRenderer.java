@@ -7,15 +7,15 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 
 public final class TextRenderer {
 
-	public static TextUnit createTextUnit(TextBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		Font2D font = box.getFont(renderContext);
+	public static TextUnit createTextUnit(TextBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+		Font2D font = box.getFont(globalRenderContext, localRenderContext);
 		String text = box.text();
 
 		float width = font.getMetrics().getStringWidth(text);
 		float height = font.getMetrics().getCapHeight();
-		AbsoluteSize preferredSize = new AbsoluteSize(width, height);
+		AbsoluteSize fitSize = new AbsoluteSize(width, height);
 
-		return new TextUnit(preferredSize, box, text, font);
+		return new TextUnit(fitSize, box, text, font);
 	}
 
 }
