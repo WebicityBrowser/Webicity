@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 

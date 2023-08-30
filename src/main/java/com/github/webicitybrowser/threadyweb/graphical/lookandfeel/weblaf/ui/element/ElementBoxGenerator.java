@@ -2,13 +2,12 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.el
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
@@ -16,9 +15,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
@@ -27,14 +24,9 @@ import com.github.webicitybrowser.threadyweb.tree.WebComponent;
 
 public class ElementBoxGenerator {
 
-	private final BiFunction<LayoutResult, DirectivePool, RenderedUnit> anonBoxGenerator;
 	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator;
 
-	public ElementBoxGenerator(
-		BiFunction<LayoutResult, DirectivePool, RenderedUnit> anonBoxGenerator,
-		Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator
-	) {
-		this.anonBoxGenerator = anonBoxGenerator;
+	public ElementBoxGenerator(Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator) {
 		this.innerUnitGenerator = innerUnitGenerator;
 	}
 	
@@ -52,7 +44,7 @@ public class ElementBoxGenerator {
 	
 	private ChildrenBox createBox(ElementContext elementContext, DirectivePool directives, OuterDisplay boxDisplay) {
 		Component component = elementContext.component();
-		InnerDisplayLayout layout = getLayout(elementContext, directives);
+		SolidLayoutManager layout = getLayout(elementContext, directives);
 		
 		switch (boxDisplay) {
 		case BLOCK:
@@ -63,8 +55,8 @@ public class ElementBoxGenerator {
 		}
 	}
 
-	private InnerDisplayLayout getLayout(ElementContext elementContext, DirectivePool directives) {
-		return new FlowInnerDisplayLayout(anonBoxGenerator, innerUnitGenerator);
+	private SolidLayoutManager getLayout(ElementContext elementContext, DirectivePool directives) {
+		return new FlowInnerDisplayLayout(innerUnitGenerator);
 	}
 	
 	// Children

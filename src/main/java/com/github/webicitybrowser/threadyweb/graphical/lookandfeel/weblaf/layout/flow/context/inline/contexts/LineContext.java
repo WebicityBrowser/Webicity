@@ -1,23 +1,23 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.contexts;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.FlowBlockRenderContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.LineBox;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.LineMarker;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitEnterMarker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.LineMarker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
 
 public class LineContext {
 
 	private final LineDimensionConverter dimensionConverter;
-	private final FlowBlockRenderContext context;
+	private final FlowRenderContext context;
 	private final List<LineBox> lines = new ArrayList<>();
 
 	private LineBox currentLine;
 
-	public LineContext(LineDimensionConverter dimensionConverter, FlowBlockRenderContext context) {
+	public LineContext(LineDimensionConverter dimensionConverter, FlowRenderContext context) {
 		this.dimensionConverter = dimensionConverter;
 		this.context = context;
 		

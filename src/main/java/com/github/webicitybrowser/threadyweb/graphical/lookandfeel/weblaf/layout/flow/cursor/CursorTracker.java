@@ -8,6 +8,8 @@ public interface CursorTracker {
 	void add(AbsoluteSize minimumSize);
 	
 	boolean addWillOverflowLine(AbsoluteSize unitSize, AbsoluteSize bounds);
+
+	void nextLine();
 	
 	AbsoluteSize getSizeCovered();
 

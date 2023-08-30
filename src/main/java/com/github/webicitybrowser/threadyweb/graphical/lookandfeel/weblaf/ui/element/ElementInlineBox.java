@@ -1,11 +1,11 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.CloneBox;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.InnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.box.InlineBoxChildrenTracker;
 
 public class ElementInlineBox implements ElementBox, CloneBox {
@@ -15,9 +15,9 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 	private final UIDisplay<?, ?, ?> display;
 	private final Component owningComponent;
 	private final DirectivePool styleDirectives;
-	private final InnerDisplayLayout layout;
+	private final SolidLayoutManager layout;
 
-	public ElementInlineBox(UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, InnerDisplayLayout layout) {
+	public ElementInlineBox(UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, SolidLayoutManager layout) {
 		this.display = display;
 		this.owningComponent = owningComponent;
 		this.styleDirectives = styleDirectives;
@@ -45,7 +45,7 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 	}
 	
 	@Override
-	public InnerDisplayLayout layout() {
+	public SolidLayoutManager layout() {
 		return this.layout;
 	}
 	

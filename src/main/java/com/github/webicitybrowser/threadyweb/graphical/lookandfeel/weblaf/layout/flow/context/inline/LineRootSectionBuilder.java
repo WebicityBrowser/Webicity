@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline;
 
 import java.util.ArrayList;
 import java.util.List;

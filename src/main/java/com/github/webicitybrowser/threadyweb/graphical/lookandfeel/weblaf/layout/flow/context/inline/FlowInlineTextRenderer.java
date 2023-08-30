@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline;
 
 import java.util.List;
 
@@ -7,10 +7,10 @@ import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.LineBox.LineEntry;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.LineBox.LineMarkerEntry;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.contexts.LineContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitEnterMarker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineEntry;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineMarkerEntry;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedCollapsibleTextView;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedTextCollapser;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
@@ -18,17 +18,17 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.tex
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextUnit;
 import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
 
-public final class FlowFluidTextRenderer {
+public final class FlowInlineTextRenderer {
 	
-	private FlowFluidTextRenderer() {}
+	private FlowInlineTextRenderer() {}
 
-	public static void preadjustTextBoxes(FlowFluidRendererState state, ChildrenBox box) {
+	public static void preadjustTextBoxes(FlowInlineRendererState state, ChildrenBox box) {
 		collectPreadjustTextBoxes(state, box);
 		ConsolidatedCollapsibleTextView textView = state.getTextConsolidation().getTextView();
 		ConsolidatedTextCollapser.collapse(textView, WhiteSpaceCollapse.COLLAPSE);
 	}
 
-	public static void addTextBoxToLine(FlowFluidRendererState state, TextBox textBox) {
+	public static void addTextBoxToLine(FlowInlineRendererState state, TextBox textBox) {
 		TextConsolidation textConsolidation = state.getTextConsolidation();
 		String adjustedText = textConsolidation.readNextText(textBox);
 		Font2D font = textBox.getFont(state.getGlobalRenderContext(), state.getLocalRenderContext());	
@@ -39,7 +39,7 @@ public final class FlowFluidTextRenderer {
 		}
 	}
 
-	private static String getNextSplit(FlowFluidRendererState state, TextSplitter splitter) {
+	private static String getNextSplit(FlowInlineRendererState state, TextSplitter splitter) {
 		LineContext lineContext = state.lineContext();
 		boolean forceFit = lineContext.currentLine().isEmpty();
 		float remainingWidth = calculateRemainingLineWidth(state);
@@ -53,7 +53,7 @@ public final class FlowFluidTextRenderer {
 	}
 
 	private static void addTextToCurrentLine(
-		FlowFluidRendererState state, String text, TextBox textBox, Font2D font
+		FlowInlineRendererState state, String text, TextBox textBox, Font2D font
 	) {
 		if (text.isEmpty()) return;
 
@@ -68,7 +68,7 @@ public final class FlowFluidTextRenderer {
 			.add(new TextUnit(fitSize, textBox, text, font));
 	}
 
-	private static String trimTextIfLineStart(FlowFluidRendererState state, String text) {
+	private static String trimTextIfLineStart(FlowInlineRendererState state, String text) {
 		if (!text.startsWith(" ") || !isLineStart(state)) {
 			return text;
 		}
@@ -76,7 +76,7 @@ public final class FlowFluidTextRenderer {
 		return text.substring(1);
 	}
 
-	private static boolean isLineStart(FlowFluidRendererState state) {
+	private static boolean isLineStart(FlowInlineRendererState state) {
 		LineContext lineContext = state.lineContext();
 		if (lineContext.currentLine().isEmpty()) {
 			return true;
@@ -97,7 +97,7 @@ public final class FlowFluidTextRenderer {
 		return true;
 	}
 
-	private static void collectPreadjustTextBoxes(FlowFluidRendererState state, ChildrenBox box) {
+	private static void collectPreadjustTextBoxes(FlowInlineRendererState state, ChildrenBox box) {
 		for (Box childBox: box.getChildrenTracker().getChildren()) {
 			if (childBox instanceof TextBox textBox) {
 				state.getTextConsolidation().addText(textBox, textBox.text());
@@ -107,7 +107,7 @@ public final class FlowFluidTextRenderer {
 		}
 	}
 
-	private static float calculateRemainingLineWidth(FlowFluidRendererState state) {
+	private static float calculateRemainingLineWidth(FlowInlineRendererState state) {
 		float parentWidth = state.getLocalRenderContext().getPreferredSize().width();
 		float remainingWidth = parentWidth == RelativeDimension.UNBOUNDED ?
 			parentWidth :

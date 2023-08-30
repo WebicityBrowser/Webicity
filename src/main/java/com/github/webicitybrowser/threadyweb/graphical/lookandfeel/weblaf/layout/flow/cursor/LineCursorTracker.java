@@ -33,6 +33,11 @@ public class LineCursorTracker implements CursorTracker {
 	}
 	
 	@Override
+	public void nextLine() {
+		this.currentPointer = new LineDimension(0, currentSize.depth());
+	}
+
+	@Override
 	public AbsoluteSize getSizeCovered() {
 		return dimensionConverter.getAbsoluteSize(currentSize);
 	}

@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +17,10 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.FlowBlockRenderContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.contexts.LineContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitEnterMarker;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.block.context.inline.marker.UnitExitMarker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitExitMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
@@ -29,20 +29,20 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.W
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
-public final class FlowFluidRenderer {
+public final class FlowInlineRenderer {
 	
-	private FlowFluidRenderer() {}
+	private FlowInlineRenderer() {}
 
-	public static LayoutResult render(FlowBlockRenderContext context) {
+	public static LayoutResult render(FlowRenderContext context) {
 		LineDimensionConverter lineDimensionConverter = new HorizontalLineDimensionConverter();
 		Font2D font = WebFontUtil.getFont(
 			context.box().styleDirectives(),
 			context.localRenderContext(),
 			context.globalRenderContext());
-		FlowFluidRendererState state = new FlowFluidRendererState(lineDimensionConverter, context, font);
+		FlowInlineRendererState state = new FlowInlineRendererState(lineDimensionConverter, context, font);
 		ChildrenBox box = context.box();
 
-		FlowFluidTextRenderer.preadjustTextBoxes(state, box);
+		FlowInlineTextRenderer.preadjustTextBoxes(state, box);
 
 		for (Box childBox: box.getChildrenTracker().getChildren()) {
 			addBoxToLine(state, childBox);
@@ -51,9 +51,9 @@ public final class FlowFluidRenderer {
 		return createInnerDisplayUnit(box, state);
 	}
 
-	private static void addBoxToLine(FlowFluidRendererState state, Box childBox) {
+	private static void addBoxToLine(FlowInlineRendererState state, Box childBox) {
 		if (childBox instanceof TextBox textBox) {
-			FlowFluidTextRenderer.addTextBoxToLine(state, textBox);
+			FlowInlineTextRenderer.addTextBoxToLine(state, textBox);
 		} else if (childBox.managesSelf()) {
 			addSelfManagedBoxToLine(state, childBox);
 		} else {
@@ -61,17 +61,17 @@ public final class FlowFluidRenderer {
 		}
 	}
 
-	private static void addSelfManagedBoxToLine(FlowFluidRendererState state, Box childBox) {
-		LocalRenderContext localRenderContext = createChildLocalRenderContext(state, childBox);
+	private static void addSelfManagedBoxToLine(FlowInlineRendererState state, Box childBox) {
+		LocalRenderContext childLocalRenderContext = createChildLocalRenderContext(state, childBox);
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
 		// TODO: We need to use a custom localRenderContext.
-		RenderedUnit boxUnit = UIPipeline.render(childBox, globalRenderContext, localRenderContext);
-		AbsoluteSize adjustedSize = adjustSize(localRenderContext.getPreferredSize(), boxUnit.fitSize());
+		RenderedUnit childUnit = UIPipeline.render(childBox, globalRenderContext, childLocalRenderContext);
+		AbsoluteSize adjustedSize = adjustSize(childLocalRenderContext.getPreferredSize(), childUnit.fitSize());
 		startNewLineIfNotFits(state, adjustedSize);
-		state.lineContext().currentLine().add(boxUnit, adjustedSize);
+		state.lineContext().currentLine().add(childUnit, adjustedSize);
 	}
 
-	private static void addInlineBoxToLine(FlowFluidRendererState state, Box childBox) {
+	private static void addInlineBoxToLine(FlowInlineRendererState state, Box childBox) {
 		assert childBox instanceof ChildrenBox;
 		LineContext lineContext = state.lineContext();
 		UnitEnterMarker unitEnterMarker = new UnitEnterMarker(true, childBox.styleDirectives());
@@ -93,7 +93,7 @@ public final class FlowFluidRenderer {
 		return new AbsoluteSize(marker.rightEdgeSize() , marker.bottomEdgeSize());
 	}
 
-	private static void startNewLineIfNotFits(FlowFluidRendererState state, AbsoluteSize preferredSize) {
+	private static void startNewLineIfNotFits(FlowInlineRendererState state, AbsoluteSize preferredSize) {
 		LineContext lineContext = state.lineContext();
 		LineBox currentLine = lineContext.currentLine();
 		LocalRenderContext localRenderContext = state.getLocalRenderContext();
@@ -102,16 +102,20 @@ public final class FlowFluidRenderer {
 		}
 	}
 
-	private static LocalRenderContext createChildLocalRenderContext(FlowFluidRendererState state, Box childBox) {
+	private static LocalRenderContext createChildLocalRenderContext(FlowInlineRendererState state, Box childBox) {
+		AbsoluteSize preferredSize = computePreferredSize(state, childBox);
+		return LocalRenderContext.create(preferredSize, new ContextSwitch[0]);
+	}
+
+	private static AbsoluteSize computePreferredSize(FlowInlineRendererState state, Box childBox) {
 		SizeCalculation heightSizeCalculation = WebDirectiveUtil.getHeight(childBox.styleDirectives());
 		float calculatedHeight = computeSize(childBox, heightSizeCalculation, state);
 		SizeCalculation widthSizeCalculation = SizeCalculation.SIZE_AUTO;//WebDirectiveUtil.getWidth(childBox.styleDirectives());
 		float calculatedWidth = computeSize(childBox, widthSizeCalculation, state);
-		AbsoluteSize preferredSize = new AbsoluteSize(calculatedWidth, calculatedHeight);
-		return LocalRenderContext.create(preferredSize, new ContextSwitch[0]);
+		return new AbsoluteSize(calculatedWidth, calculatedHeight);
 	}
 
-	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowFluidRendererState state) {
+	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowInlineRendererState state) {
 		FontMetrics fontMetrics = state.getFont().getMetrics();
 		SizeCalculationContext sizeCalculationContext = new SizeCalculationContext(
 			state.getLocalRenderContext().getPreferredSize(),
@@ -133,7 +137,7 @@ public final class FlowFluidRenderer {
 		return new AbsoluteSize(widthComponent, heightComponent);
 	}
 
-	private static LayoutResult createInnerDisplayUnit(ChildrenBox box, FlowFluidRendererState state) {
+	private static LayoutResult createInnerDisplayUnit(ChildrenBox box, FlowInlineRendererState state) {
 		List<ChildLayoutResult> childLayoutResults = new ArrayList<>();
 
 		AbsolutePosition linePosition = new AbsolutePosition(0, 0);
