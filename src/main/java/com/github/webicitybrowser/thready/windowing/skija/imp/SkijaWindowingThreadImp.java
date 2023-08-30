@@ -16,13 +16,14 @@ import com.github.webicitybrowser.thready.windowing.skija.SkijaWindow;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaWindowingThread;
 
 public class SkijaWindowingThreadImp implements SkijaWindowingThread {
+
+	// NOTE: Because MacOS does not support rendering on a non-main thread,
+	//   we do not use a separate thread for windowing.
 	
 	private final Queue<Consumer<Window>> windowsToStart = new ConcurrentLinkedQueue<>();
 	private final List<SkijaWindow> windows = Collections.synchronizedList(new ArrayList<>());
 	private final SkijaInvalidationScheduler invalidationScheduler = new SkijaInvalidationScheduler();
 	private final SkijaGraphicsSystem graphicsSystem;
-	
-	private Thread runnerThread;
 	
 	public SkijaWindowingThreadImp(SkijaGraphicsSystem graphicsSystem) {
 		this.graphicsSystem = graphicsSystem;
@@ -31,7 +32,6 @@ public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 	@Override
 	public void createWindow(Consumer<Window> callback) {
 		windowsToStart.add(callback);
-		startRunnerThreadIfNotActive();
 	}
 	
 	@Override
@@ -39,21 +39,14 @@ public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 		return this.invalidationScheduler;
 	}
 
-	private void startRunnerThreadIfNotActive() {
-		if (runnerThread == null) {
-			startRunnerThread();
+	@Override
+	public void startRenderLoop() {
+		while (continueRunning()) {
+			GLFW.glfwPollEvents();
+			invalidationScheduler.tick();
+			startQueuedWindows();
+			continueRunningScreens();
 		}
-	}
-
-	private void startRunnerThread() {
-		new Thread(() -> {
-			while (continueRunning()) {
-				GLFW.glfwPollEvents();
-				invalidationScheduler.tick();
-				startQueuedWindows();
-				continueRunningScreens();
-			}
-		}).start();
 	}
 
 	private boolean continueRunning() {

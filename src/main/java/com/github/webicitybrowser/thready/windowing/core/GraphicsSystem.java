@@ -24,5 +24,11 @@ public interface GraphicsSystem {
 	 * @return This graphic system's resource loader.
 	 */
 	ResourceLoader getResourceLoader();
+
+	/**
+	 * Start this graphics system's render loop.
+	 * This method may block until all windows are closed.
+	 */
+	void startRenderLoop();
 	
 }

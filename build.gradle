@@ -17,7 +17,8 @@ switch (OperatingSystem.current()) {
 		project.ext.skijaVersion = "0.116.1"
 		break
 	case OperatingSystem.MAC_OS:
-		project.ext.lwjglNatives = "natives-macos"
+		applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
+		project.ext.lwjglNatives = "natives-macos-arm64"
 		project.ext.skijaNatives = "skija-macos-arm64"
 		project.ext.skijaVersion = "0.116.1"
 		break
