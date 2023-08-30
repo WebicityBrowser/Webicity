@@ -405,7 +405,10 @@ public class HTMLParserTest {
 	@DisplayName("Can parse multiple tr and td")
 	public void canParseMultipleTrAndTd() {
 		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><table><tr><td>Test<td>Test2<tr><td>Test3<td>Test4</td></tr></table>End</body></html>");
+		StringReader reader = new StringReader(
+			"<!doctype html><html><head></head>" +
+			"<body><table><tr><td>Test<td>Test2<tr>" +
+			"<td>Test3<td>Test4</td></tr></table>End</body></html>");
 		Document document = new DocumentImp();
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
 		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
@@ -471,6 +474,47 @@ public class HTMLParserTest {
 		NodeList trChildren3 = trElement3.getChildNodes();
 		testElement(trChildren3.get(0), "td", 1);
 		assertText("End", bodyChildren.get(1));
+	}
+
+	@Test
+	@DisplayName("Can handle comments in various places")
+	public void canHandleCommentsInVariousPlaces() {
+		HTMLParser parser = new SpiderHTMLParserImp();
+		StringReader reader = new StringReader(
+			"<!-- comment before doctype -->" +
+			"<!doctype html>" +
+			"<!-- comment after doctype -->" +
+			"<html>" +
+			"<!-- comment in html -->" +
+			"<head>" +
+			"<!-- comment in head -->" +
+			"</head>" +
+			"<!-- comment after head -->" +
+			"<body>" +
+			"<!-- comment in body -->" +
+			"</body>" +
+			"<!-- comment after body -->" +
+			"</html>" +
+			"<!-- comment after html -->");
+		Document document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		NodeList documentChildren = document.getChildNodes();
+		Assertions.assertEquals(5, documentChildren.getLength());
+		Assertions.assertInstanceOf(Comment.class, documentChildren.get(0));
+		Assertions.assertInstanceOf(DocumentType.class, documentChildren.get(1));
+		Assertions.assertInstanceOf(Comment.class, documentChildren.get(2));
+		HTMLElement htmlNode = testElement(documentChildren.get(3), "html", 4);
+		NodeList htmlChildren = htmlNode.getChildNodes();
+		Assertions.assertInstanceOf(Comment.class, htmlChildren.get(0));
+		HTMLElement headNode = testElement(htmlChildren.get(1), "head", 1);
+		NodeList headChildren = headNode.getChildNodes();
+		Assertions.assertInstanceOf(Comment.class, headChildren.get(0));
+		Assertions.assertInstanceOf(Comment.class, htmlChildren.get(2));
+		HTMLElement bodyNode = testElement(htmlChildren.get(3), "body", 2);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		Assertions.assertInstanceOf(Comment.class, bodyChildren.get(0));
+		Assertions.assertInstanceOf(Comment.class, bodyChildren.get(1));
 	}
 
 	private HTMLElement testToBody(Document document, int numBodyChildren) {

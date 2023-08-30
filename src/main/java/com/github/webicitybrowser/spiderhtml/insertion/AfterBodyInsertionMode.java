@@ -11,8 +11,10 @@ import com.github.webicitybrowser.spiderhtml.misc.InsertionLocation;
 import com.github.webicitybrowser.spiderhtml.misc.InsertionLogic;
 import com.github.webicitybrowser.spiderhtml.token.CharacterToken;
 import com.github.webicitybrowser.spiderhtml.token.CommentToken;
+import com.github.webicitybrowser.spiderhtml.token.DoctypeToken;
 import com.github.webicitybrowser.spiderhtml.token.EOFToken;
 import com.github.webicitybrowser.spiderhtml.token.EndTagToken;
+import com.github.webicitybrowser.spiderhtml.token.StartTagToken;
 import com.github.webicitybrowser.spiderhtml.token.Token;
 
 public class AfterBodyInsertionMode implements InsertionMode {
@@ -29,15 +31,22 @@ public class AfterBodyInsertionMode implements InsertionMode {
 	@Override
 	public void emit(SharedContext context, InsertionContext insertionContext, Token token) {
 		// TODO
-		if (token instanceof CommentToken commentToken) {
-			Node htmlNode = insertionContext.getOpenElementStack().peek();
-			InsertionLocation position = new InsertionLocation(htmlNode, null);
-			InsertionLogic.insertComment(insertionContext, commentToken, position);
-		} else if (
+		if (
 			token instanceof CharacterToken characterToken &&
 			ASCIIUtil.isASCIIWhiteSpace(characterToken.getCharacter())
 		) {
 			inBodyInsertionMode.emit(context, insertionContext, characterToken);
+		} else if (token instanceof CommentToken commentToken) {
+			Node htmlNode = insertionContext.getOpenElementStack().peek();
+			InsertionLocation position = new InsertionLocation(htmlNode, null);
+			InsertionLogic.insertComment(insertionContext, commentToken, position);
+		} else if (token instanceof DoctypeToken) {
+			context.recordError();
+		} else if (
+			token instanceof StartTagToken startToken &&
+			handleStartTagToken(context, insertionContext, startToken)
+		) {
+			return;
 		} else if (
 			token instanceof EndTagToken endToken &&
 			handleEndTagToken(context, insertionContext, endToken)
@@ -46,12 +55,27 @@ public class AfterBodyInsertionMode implements InsertionMode {
 		} else if (token instanceof EOFToken) {
 			return;
 		} else {
-			throw new UnsupportedOperationException();
+			context.recordError();
+			context.setInsertionMode(inBodyInsertionMode);
+			context.emit(token);
 		}
 	}
 
+	private boolean handleStartTagToken(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		switch (token.getName(insertionContext.getStringCache())) {
+		case "html":
+			handleHtmlStartTag(context, insertionContext, token);
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	private void handleHtmlStartTag(SharedContext context, InsertionContext insertionContext, StartTagToken token) {
+		context.setInsertionMode(inBodyInsertionMode);
+	}
+
 	private boolean handleEndTagToken(SharedContext context, InsertionContext insertionContext, EndTagToken token) {
-		// TODO
 		switch (token.getName(insertionContext.getStringCache())) {
 		case "html":
 			handleHtmlEndTag(context, insertionContext, token);

@@ -40,7 +40,7 @@ public class RGBColorValueParser implements PropertyValueParser<ColorValue> {
 
 		float alphaComponent = 255;
 		if (!(stream.peek() instanceof EOFToken)) {
-			if (stream.peek() instanceof DelimToken delimToken && delimToken.getValue() == '/') {
+			if ((stream.peek() instanceof DelimToken delimToken && delimToken.getValue() == '/') || stream.peek() instanceof CommaToken) {
 				stream.read();
 			}
 			alphaComponent = parseAlphaComponent(stream.read());
@@ -91,13 +91,13 @@ public class RGBColorValueParser implements PropertyValueParser<ColorValue> {
 		if (usePercentage) {
 			return parsePercentageComponent(component);
 		} else {
-			return parseNumberComponent(component);
+			return parseNumberComponent(component, 255);
 		}
 	}
 
 	private float parseAlphaComponent(TokenLike component) {
 		if (component instanceof NumberToken numberToken) {
-			return parseNumberComponent(component);
+			return parseNumberComponent(component, 1) * 255;
 		} else if (component instanceof PercentageToken percentageToken) {
 			return parsePercentageComponent(component);
 		} else {
@@ -105,10 +105,10 @@ public class RGBColorValueParser implements PropertyValueParser<ColorValue> {
 		}
 	}
 
-	private float parseNumberComponent(TokenLike component) {
+	private float parseNumberComponent(TokenLike component, float maxValue) {
 		if (component instanceof NumberToken numberToken) {
 			float value = numberToken.getValue().floatValue();
-			if (value < 0 || value > 255) {
+			if (value < 0 || value > maxValue) {
 				return -1;
 			}
 			return value;

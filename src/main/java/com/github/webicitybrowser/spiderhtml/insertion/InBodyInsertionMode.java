@@ -278,6 +278,10 @@ public class InBodyInsertionMode implements InsertionMode {
 	}
 
 	private void handleBodyEndTag(SharedContext context, InsertionContext insertionContext, EndTagToken token) {
+		if (!StackLogic.hasElementInScope(insertionContext.getOpenElementStack(), "body", Namespace.HTML_NAMESPACE)) {
+			context.recordError();
+			return;
+		}
 		// TODO: Parse errors
 		context.setInsertionMode(afterBodyInsertionMode);
 	}

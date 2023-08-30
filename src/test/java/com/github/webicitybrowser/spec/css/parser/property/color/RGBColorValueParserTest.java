@@ -159,7 +159,7 @@ public class RGBColorValueParserTest {
 		Assertions.assertEquals(0, colorValue.getRed());
 		Assertions.assertEquals(0, colorValue.getGreen());
 		Assertions.assertEquals(0, colorValue.getBlue());
-		Assertions.assertEquals(1, colorValue.getAlpha());
+		Assertions.assertEquals(255, colorValue.getAlpha());
 	}
 
 	@Test
@@ -187,14 +187,16 @@ public class RGBColorValueParserTest {
 	}
 
 	@Test
-	@DisplayName("Can parse rgba(255 255 255)")
-	public void canParseRGBA000() throws Exception {
+	@DisplayName("Can parse rgba(255 255 255, .5)")
+	public void canParseRGBA000_5() throws Exception {
 		TokenLike[] valueTokens = new TokenLike[] {
 			createNumberToken(255),
 			new WhitespaceToken() {},
 			createNumberToken(255),
 			new WhitespaceToken() {},
-			createNumberToken(255)
+			createNumberToken(255),
+			new CommaToken() {},
+			createNumberToken(.5f),
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
@@ -209,7 +211,7 @@ public class RGBColorValueParserTest {
 		Assertions.assertEquals(255, colorValue.getRed());
 		Assertions.assertEquals(255, colorValue.getGreen());
 		Assertions.assertEquals(255, colorValue.getBlue());
-		Assertions.assertEquals(255, colorValue.getAlpha());
+		Assertions.assertEquals(127, colorValue.getAlpha());
 	}
 
 	@Test
@@ -239,9 +241,6 @@ public class RGBColorValueParserTest {
 			new CommaToken() {},
 			createNumberToken(0),
 			new CommaToken() {},
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
@@ -303,7 +302,7 @@ public class RGBColorValueParserTest {
 		Assertions.assertFalse(result2.getResult().isPresent());
 	}
 
-	private NumberToken createNumberToken(int value) {
+	private NumberToken createNumberToken(float value) {
 		return new NumberToken() {
 			@Override
 			public Number getValue() {
@@ -312,7 +311,7 @@ public class RGBColorValueParserTest {
 
 			@Override
 			public NumberTypeFlag getTypeFlag() {
-				return NumberTypeFlag.INTEGER;
+				return NumberTypeFlag.NUMBER;
 			}
 		};
 	}

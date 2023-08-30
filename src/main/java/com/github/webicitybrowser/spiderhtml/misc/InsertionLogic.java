@@ -105,9 +105,8 @@ public final class InsertionLogic {
 	}
 
 	private static Node getCurrentNode(InsertionContext insertionContext) {
-		return insertionContext
-			.getOpenElementStack()
-			.peek();
+		ElementStack openElementStack = insertionContext.getOpenElementStack();
+		return openElementStack.peek();
 	}
 	
 	private static Node getLeafBefore(InsertionLocation location) {

@@ -23,6 +23,8 @@ public class InsertionContext {
 		this.sharedContext = sharedContext;
 		this.treeBuilder = treeBuilder;
 		this.stack = new ElementStack(settings);
+		
+		stack.push(treeBuilder.getDocument());
 	}
 
 	public HTMLTreeBuilder getTreeBuilder() {
