@@ -20,8 +20,8 @@ Want to talk about Webicity? Consider joining our [Discord server](https://disco
 
 ## Requirements
 
-Webicity is meant to be compatible with both Windows and Linux distributions with Java support.
-MacOS and other OSs are not supported. The recommended JDK/JRE version is Zulu JDK 17. Other versions of
+Webicity is meant to be compatible with Windows, Linux distributions with Java support, and MacOS.
+Other oparating systems are not supported. The recommended JDK/JRE version is Zulu JDK 17. Other versions of
 the JDK or JRE are not guaranteed to work.
 
 ## Checking out the code

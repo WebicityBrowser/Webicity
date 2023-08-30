@@ -99,13 +99,14 @@ public class Main {
 	}
 
 	private static void startGUIFor(BrowserInstance browserInstance, WindowSet windowSet) {
+		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
 		new WindowSetGUI(browserInstance, windowSet,
-			(component, callback) -> createWindowFor(component, callback)).start();
+			(component, callback) -> createWindowFor(graphicsSystem, component, callback)).start();
+		graphicsSystem.startRenderLoop();
 	}
 	
-	private static void createWindowFor(Component component, Consumer<GUIWindow> callback) {
+	private static void createWindowFor(GraphicsSystem graphicsSystem, Component component, Consumer<GUIWindow> callback) {
 		LookAndFeel lookAndFeel = createLookAndFeel();
-		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
 		GUIContent content = new GUIContentImp();
 		content.setRoot(component, lookAndFeel, new OneOneStyleGeneratorRoot());
 		

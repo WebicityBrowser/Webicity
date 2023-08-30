@@ -29,5 +29,10 @@ public class SkijaGraphicsSystemImp implements SkijaGraphicsSystem {
 	public InvalidationScheduler getInvalidationScheduler() {
 		return this.invalidationScheduler;
 	}
+
+	@Override
+	public void startRenderLoop() {
+		windowingThread.startRenderLoop();
+	}
 	
 }
