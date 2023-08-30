@@ -16,6 +16,11 @@ switch (OperatingSystem.current()) {
 		project.ext.skijaNatives = "skija-windows-x64"
 		project.ext.skijaVersion = "0.116.1"
 		break
+	case OperatingSystem.MAC_OS:
+		project.ext.lwjglNatives = "natives-macos"
+		project.ext.skijaNatives = "skija-macos-arm64"
+		project.ext.skijaVersion = "0.116.1"
+		break
 }
 
 repositories {
