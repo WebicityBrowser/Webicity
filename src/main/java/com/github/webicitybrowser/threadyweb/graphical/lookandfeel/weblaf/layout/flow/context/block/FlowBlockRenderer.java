@@ -3,6 +3,8 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
+import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
@@ -14,15 +16,23 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebFontUtil;
+import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
+import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public final class FlowBlockRenderer {
 	
 	private FlowBlockRenderer() {}
 
 	public static LayoutResult render(FlowRenderContext context) {
+		Font2D font = WebFontUtil.getFont(
+			context.box().styleDirectives(),
+			context.localRenderContext(),
+			context.globalRenderContext());
 		FlowBlockRendererState state = new FlowBlockRendererState(
 			new HorizontalLineDimensionConverter(),
-			context);
+			context, font);
 		renderChildren(state, context.box());
 
 		return LayoutResult.create(state.childLayoutResults(), state.cursorTracker().getSizeCovered());
@@ -47,7 +57,22 @@ public final class FlowBlockRenderer {
 	}
 
 	private static AbsoluteSize computePreferredSize(FlowBlockRendererState state, Box childBox) {
-		return new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
+		SizeCalculation widthSizeCalculation = WebDirectiveUtil.getWidth(childBox.styleDirectives());
+		float calculatedWidth = computeSize(childBox, widthSizeCalculation, state);
+		SizeCalculation heightSizeCalculation = WebDirectiveUtil.getHeight(childBox.styleDirectives());
+		float calculatedHeight = computeSize(childBox, heightSizeCalculation, state);
+		return new AbsoluteSize(calculatedWidth, calculatedHeight);
+	}
+
+	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowBlockRendererState state) {
+		FontMetrics fontMetrics = state.getFont().getMetrics();
+		SizeCalculationContext sizeCalculationContext = new SizeCalculationContext(
+			state.getLocalRenderContext().getPreferredSize(),
+			state.getGlobalRenderContext().getViewportSize(),
+			fontMetrics
+		);
+
+		return sizeCalculation.calculate(sizeCalculationContext);
 	}
 
 	private static AbsoluteSize adjustSize(FlowBlockRendererState state, AbsoluteSize preferredSize, AbsoluteSize fitSize) {

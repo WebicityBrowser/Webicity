@@ -110,7 +110,7 @@ public final class FlowInlineRenderer {
 	private static AbsoluteSize computePreferredSize(FlowInlineRendererState state, Box childBox) {
 		SizeCalculation heightSizeCalculation = WebDirectiveUtil.getHeight(childBox.styleDirectives());
 		float calculatedHeight = computeSize(childBox, heightSizeCalculation, state);
-		SizeCalculation widthSizeCalculation = SizeCalculation.SIZE_AUTO;//WebDirectiveUtil.getWidth(childBox.styleDirectives());
+		SizeCalculation widthSizeCalculation = WebDirectiveUtil.getWidth(childBox.styleDirectives());
 		float calculatedWidth = computeSize(childBox, widthSizeCalculation, state);
 		return new AbsoluteSize(calculatedWidth, calculatedHeight);
 	}

@@ -9,9 +9,14 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class TestStubBlockBox implements ChildrenBox {
 
-	private BoxChildrenTracker childrenTracker = new SolidBoxChildrenTracker(this, null);
+	private final BoxChildrenTracker childrenTracker = new SolidBoxChildrenTracker(this, null);
+	private final DirectivePool styleDirectives;
 
-	@Override
+	public TestStubBlockBox(DirectivePool styleDirectives) {
+		this.styleDirectives = styleDirectives;
+    }
+
+    @Override
 	public BoxChildrenTracker getChildrenTracker() {
 		return childrenTracker;
 	}
@@ -28,7 +33,7 @@ public class TestStubBlockBox implements ChildrenBox {
 
 	@Override
 	public DirectivePool styleDirectives() {
-		return null;
+		return this.styleDirectives;
 	}
 	
 }

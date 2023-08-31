@@ -20,6 +20,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMDisplayDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontWeightDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMHeightDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMWidthDeclarationParser;
 
 public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	
@@ -33,6 +34,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("background", new CSSOMBackgroundColorDeclarationParser()); // TODO
 		namedDeclarationParsers.put("display", new CSSOMDisplayDeclarationParser());
 		namedDeclarationParsers.put("height", new CSSOMHeightDeclarationParser());
+		namedDeclarationParsers.put("width", new CSSOMWidthDeclarationParser());
 		namedDeclarationParsers.put("font-weight", new CSSOMFontWeightDeclarationParser());
 	}
 	

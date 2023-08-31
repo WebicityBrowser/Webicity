@@ -12,6 +12,7 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.FontWeightDirec
 import com.github.webicitybrowser.threadyweb.graphical.directive.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
@@ -69,5 +70,12 @@ public final class WebDirectiveUtil {
 			.map(directive -> directive.getHeightCalculation())
 			.orElse(SizeCalculation.SIZE_AUTO);
 	}
+
+    public static SizeCalculation getWidth(DirectivePool styleDirectives) {
+        return styleDirectives
+			.getDirectiveOrEmpty(WidthDirective.class)
+			.map(directive -> directive.getWidthCalculation())
+			.orElse(SizeCalculation.SIZE_AUTO);
+    }
 	
 }
