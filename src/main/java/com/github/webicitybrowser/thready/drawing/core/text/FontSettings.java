@@ -13,7 +13,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
  * @param fontDecorations Decorations to be applied to the font
  *  (such as italic or underlined)
  */
-public record FontSettings(FontSource fontSource, int fontSize, int fontWeight, FontDecoration[] fontDecorations) {
+public record FontSettings(FontSource fontSource, float fontSize, int fontWeight, FontDecoration[] fontDecorations) {
 	
 	@Override
 	public int hashCode() {

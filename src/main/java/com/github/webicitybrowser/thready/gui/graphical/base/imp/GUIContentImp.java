@@ -9,8 +9,8 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
+import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
-import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -44,8 +44,7 @@ public class GUIContentImp implements GUIContent {
 	private InvalidationLevel invalidationLevel = InvalidationLevel.NONE;
 	
 	private ComponentUI rootUI;
-	private LookAndFeel lookAndFeel;
-	private StyleGeneratorRoot styleGeneratorRoot;
+	private GUIContentConfiguration configuration;
 	
 	private boolean redrawRequested = false;
 	private AbsoluteSize oldContentSize;
@@ -54,12 +53,11 @@ public class GUIContentImp implements GUIContent {
 	private RenderedUnit rootUnit;
 
 	@Override
-	public void setRoot(Component component, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot) {
+	public void setRoot(GUIContentConfiguration configuration) {
 		this.redrawRequested = true;
-		this.rootUI = createRootUI(component, lookAndFeel);
+		this.rootUI = createRootUI(configuration.component(), configuration.lookAndFeel());
 		this.rootContext = rootUI.getRootDisplay().createContext(rootUI);
-		this.lookAndFeel = lookAndFeel;
-		this.styleGeneratorRoot = styleGeneratorRoot;
+		this.configuration = configuration;
 		this.invalidationLevel = InvalidationLevel.BOX;
 	}
 
@@ -71,7 +69,7 @@ public class GUIContentImp implements GUIContent {
 	@Override
 	public void redraw(ScreenContentRedrawContext redrawContext) {
 		this.redrawRequested = false;
-		if (rootUI != null && lookAndFeel != null) {
+		if (rootUI != null && configuration.lookAndFeel() != null) {
 			detectPipelineInvalidations(redrawContext);
 			performRenderPipeline(redrawContext);
 		}
@@ -166,8 +164,8 @@ public class GUIContentImp implements GUIContent {
 
 	@SuppressWarnings("unchecked")
 	private <T extends Context> void performBoxCycle() {
-		BoxContext boxContext = new BoxContextImp(lookAndFeel);
-		StyleGenerator styleGenerator = styleGeneratorRoot.generateChildStyleGenerator(rootUI);
+		BoxContext boxContext = new BoxContextImp(configuration.lookAndFeel());
+		StyleGenerator styleGenerator = configuration.styleGeneratorRoot().generateChildStyleGenerator(rootUI);
 		UIDisplay<T, ?, ?> rootDisplay = (UIDisplay<T, ?, ?>) rootUI.getRootDisplay();
 		
 		List<? extends Box> generatedBoxes = rootDisplay.generateBoxes((T) rootContext, boxContext, styleGenerator);
@@ -183,8 +181,10 @@ public class GUIContentImp implements GUIContent {
 	@SuppressWarnings("unchecked")
 	private <U extends Box> void performRenderCycle(ScreenContentRedrawContext redrawContext) {
 		AbsoluteSize contentSize = redrawContext.contentSize();
+		Font2D baseFont = redrawContext.resourceLoader().loadFont(configuration.fontSettings());
 		GlobalRenderContext globalRenderContext = new RenderContextImp(contentSize, redrawContext.resourceLoader());
-		LocalRenderContext localRenderContext = LocalRenderContext.create(contentSize, new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = LocalRenderContext.create(
+			contentSize, baseFont.getMetrics(), new ContextSwitch[0]);
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();
 		this.rootUnit = rootDisplay.renderBox((U) rootBox, globalRenderContext, localRenderContext);
 	}

@@ -50,9 +50,9 @@ public final class SizeParser {
 		float initialValue = lengthValue.getValue();
 		switch (lengthValue.getUnit()) {
 		case EM:
-			return context -> context.relativeFont().getHeight() * initialValue;
+			return context -> context.relativeFont().getSize() * initialValue;
 		case EX:
-			return context -> context.relativeFont().getHeight() * initialValue / 2;
+			return context -> context.relativeFont().getSize() * initialValue / 2;
 		case CAP:
 			return context -> context.relativeFont().getCapHeight() * initialValue;
 		case CH:

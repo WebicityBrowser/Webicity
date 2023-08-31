@@ -45,7 +45,10 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 	) {
 		AbsoluteSize parentSize = localRenderContext.getPreferredSize();
 		AbsoluteSize precomputedSize = precomputeChildSize(childBox, parentSize);
-		LocalRenderContext childRenderContext = LocalRenderContext.create(precomputedSize, localRenderContext.getContextSwitches());
+		LocalRenderContext childRenderContext = LocalRenderContext.create(
+			precomputedSize,
+			localRenderContext.getParentFontMetrics(),
+			localRenderContext.getContextSwitches());
 		
 		RenderedUnit childUnit = UIPipeline.render(childBox, globalRenderContext, childRenderContext);
 

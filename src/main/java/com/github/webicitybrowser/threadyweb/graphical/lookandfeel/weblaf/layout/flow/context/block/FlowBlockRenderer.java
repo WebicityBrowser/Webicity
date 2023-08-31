@@ -15,10 +15,10 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebFontUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
@@ -27,10 +27,7 @@ public final class FlowBlockRenderer {
 	private FlowBlockRenderer() {}
 
 	public static LayoutResult render(FlowRenderContext context) {
-		Font2D font = WebFontUtil.getFont(
-			context.box().styleDirectives(),
-			context.localRenderContext(),
-			context.globalRenderContext());
+		Font2D font = FlowUtils.computeFont(context, context.localRenderContext().getParentFontMetrics());
 		FlowBlockRendererState state = new FlowBlockRendererState(
 			new HorizontalLineDimensionConverter(),
 			context, font);
@@ -94,7 +91,7 @@ public final class FlowBlockRenderer {
 	private static LocalRenderContext createChildLocalRenderContext(FlowBlockRendererState state, AbsoluteSize preferredSize) {
 		AbsoluteSize actualPreferredSize = computeActualPreferredSize(state, preferredSize);
 		
-		return LocalRenderContext.create(actualPreferredSize, new ContextSwitch[0]);
+		return LocalRenderContext.create(actualPreferredSize, state.getFont().getMetrics(), new ContextSwitch[0]);
 	}
 
 	private static AbsoluteSize computeActualPreferredSize(FlowBlockRendererState state, AbsoluteSize preferredSize) {
@@ -106,5 +103,5 @@ public final class FlowBlockRenderer {
 
 		return new AbsoluteSize(actualPreferredWidth, actualPreferredHeight);
 	}
-	
+
 }

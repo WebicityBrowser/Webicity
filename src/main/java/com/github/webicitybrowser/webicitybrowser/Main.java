@@ -7,8 +7,13 @@ import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.thready.drawing.core.image.BytesImageSource;
 import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
+import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
+import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
+import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
+import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.gui.directive.basics.style.OneOneStyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
+import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent.GUIContentConfiguration;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeelBuilder;
@@ -106,9 +111,7 @@ public class Main {
 	}
 	
 	private static void createWindowFor(GraphicsSystem graphicsSystem, Component component, Consumer<GUIWindow> callback) {
-		LookAndFeel lookAndFeel = createLookAndFeel();
-		GUIContent content = new GUIContentImp();
-		content.setRoot(component, lookAndFeel, new OneOneStyleGeneratorRoot());
+		GUIContent content = createContent(component);
 		
 		graphicsSystem.createWindow(window -> {
 			DesktopWindow desktopWindow = (DesktopWindow) window;
@@ -130,6 +133,20 @@ public class Main {
 			
 			callback.accept(new DesktopGUIWindow((DesktopWindow) window));
 		});
+	}
+
+	private static GUIContent createContent(Component component) {
+		LookAndFeel lookAndFeel = createLookAndFeel();
+		FontSettings fontSettings = new FontSettings(
+			new NamedFontSource("Open Sans"), 16,
+			CommonFontWeights.NORMAL, new FontDecoration[0]);
+
+		GUIContent content = new GUIContentImp();
+		content.setRoot(new GUIContentConfiguration(
+			component, lookAndFeel,
+			new OneOneStyleGeneratorRoot(), fontSettings));
+
+		return content;
 	}
 
 	private static LookAndFeel createLookAndFeel() {

@@ -51,7 +51,7 @@ public class SkijaFont2DImp implements SkijaFont2D {
 
 	public static Font2D createFor(FontSettings settings) {
 		Font font = loadNamedFont(settings);
-		FontMetrics metrics = new SkijaFontMetricsImp(font, font.getMetrics());
+		FontMetrics metrics = new SkijaFontMetricsImp(font, settings, font.getMetrics());
 		
 		return new SkijaFont2DImp(font, metrics);
 	}

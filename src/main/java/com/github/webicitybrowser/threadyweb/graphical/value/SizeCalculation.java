@@ -6,7 +6,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 
 public interface SizeCalculation {
 	
-	public static SizeCalculation SIZE_AUTO = context -> RelativeDimension.UNBOUNDED;
+	static SizeCalculation SIZE_AUTO = context -> RelativeDimension.UNBOUNDED;
 
     float calculate(SizeCalculationContext context);
 

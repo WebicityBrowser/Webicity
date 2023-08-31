@@ -17,15 +17,15 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitExitMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebFontUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
@@ -35,13 +35,11 @@ public final class FlowInlineRenderer {
 
 	public static LayoutResult render(FlowRenderContext context) {
 		LineDimensionConverter lineDimensionConverter = new HorizontalLineDimensionConverter();
-		Font2D font = WebFontUtil.getFont(
-			context.box().styleDirectives(),
-			context.localRenderContext(),
-			context.globalRenderContext());
-		FlowInlineRendererState state = new FlowInlineRendererState(lineDimensionConverter, context, font);
+		FlowInlineRendererState state = new FlowInlineRendererState(lineDimensionConverter, context);
 		ChildrenBox box = context.box();
 
+		state.getFontStack().push(FlowUtils.computeFont(
+			context, context.localRenderContext().getParentFontMetrics()));
 		FlowInlineTextRenderer.preadjustTextBoxes(state, box);
 
 		for (Box childBox: box.getChildrenTracker().getChildren()) {
@@ -75,6 +73,8 @@ public final class FlowInlineRenderer {
 		assert childBox instanceof ChildrenBox;
 		LineContext lineContext = state.lineContext();
 		UnitEnterMarker unitEnterMarker = new UnitEnterMarker(true, childBox.styleDirectives());
+		FontMetrics parentFontMetrics = state.getFontStack().peek().getMetrics();
+		state.getFontStack().push(FlowUtils.computeFont(state.flowContext(), parentFontMetrics));
 		startNewLineIfNotFits(state, createSizeFromUnitEnterMarker(unitEnterMarker));
 		lineContext.currentLine().addMarker(unitEnterMarker);
 		for (Box inlineChildBox: ((ChildrenBox) childBox).getChildrenTracker().getChildren()) {
@@ -83,6 +83,7 @@ public final class FlowInlineRenderer {
 		UnitExitMarker unitExitMarker = new UnitExitMarker(childBox.styleDirectives());
 		startNewLineIfNotFits(state, createSizeFromUnitExitMarker(unitExitMarker));
 		lineContext.currentLine().addMarker(unitExitMarker);
+		state.getFontStack().pop();
 	}
 
 	private static AbsoluteSize createSizeFromUnitEnterMarker(UnitEnterMarker marker) {
@@ -104,7 +105,8 @@ public final class FlowInlineRenderer {
 
 	private static LocalRenderContext createChildLocalRenderContext(FlowInlineRendererState state, Box childBox) {
 		AbsoluteSize preferredSize = computePreferredSize(state, childBox);
-		return LocalRenderContext.create(preferredSize, new ContextSwitch[0]);
+		Font2D lastFont = state.getFontStack().peek();
+		return LocalRenderContext.create(preferredSize, lastFont.getMetrics(), new ContextSwitch[0]);
 	}
 
 	private static AbsoluteSize computePreferredSize(FlowInlineRendererState state, Box childBox) {
@@ -116,7 +118,7 @@ public final class FlowInlineRenderer {
 	}
 
 	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowInlineRendererState state, boolean isHorizontal) {
-		FontMetrics fontMetrics = state.getFont().getMetrics();
+		FontMetrics fontMetrics = state.getFontStack().peek().getMetrics();
 		SizeCalculationContext sizeCalculationContext = new SizeCalculationContext(
 			state.getLocalRenderContext().getPreferredSize(),
 			state.getGlobalRenderContext().getViewportSize(),

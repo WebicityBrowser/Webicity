@@ -18,6 +18,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMBackgroundColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMDisplayDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontSizeDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontWeightDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMHeightDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMWidthDeclarationParser;
@@ -36,6 +37,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("height", new CSSOMHeightDeclarationParser());
 		namedDeclarationParsers.put("width", new CSSOMWidthDeclarationParser());
 		namedDeclarationParsers.put("font-weight", new CSSOMFontWeightDeclarationParser());
+		namedDeclarationParsers.put("font-size", new CSSOMFontSizeDeclarationParser());
 	}
 	
 	@Override

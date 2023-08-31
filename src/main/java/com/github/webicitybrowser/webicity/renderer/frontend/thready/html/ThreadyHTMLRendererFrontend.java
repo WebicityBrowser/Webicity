@@ -11,9 +11,14 @@ import com.github.webicitybrowser.spec.css.parser.tokens.Token;
 import com.github.webicitybrowser.spec.css.rule.CSSRule;
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
 import com.github.webicitybrowser.spec.html.node.HTMLDocument;
+import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
+import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
+import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
+import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
+import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent.GUIContentConfiguration;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.GUIContentImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeelBuilder;
@@ -55,9 +60,13 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 		SimpleLookAndFeel.installTo(lookAndFeelBuilder);
 		WebLookAndFeel.installTo(lookAndFeelBuilder);
 		LookAndFeel lookAndFeel = lookAndFeelBuilder.build();
+		FontSettings fontSettings = new FontSettings(
+			new NamedFontSource("Times New Roman"), 16,
+			CommonFontWeights.NORMAL, new FontDecoration[0]);
 		
 		GUIContent content = new GUIContentImp();
-		content.setRoot(documentComponent, lookAndFeel, createStyleGenerator());
+		content.setRoot(new GUIContentConfiguration(
+			documentComponent, lookAndFeel, createStyleGenerator(), fontSettings));
 		
 		return content;
 	}

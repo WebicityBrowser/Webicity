@@ -7,6 +7,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebFontUtil;
+import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 import com.github.webicitybrowser.threadyweb.tree.TextComponent;
 
 public record TextBox(
@@ -27,7 +28,17 @@ public record TextBox(
 			return fontOverride;
 		}
 
-		return WebFontUtil.getFont(styleDirectives, localRenderContext, renderContext);
+		SizeCalculationContext calculationContext = createSizeCalculationContext(renderContext, localRenderContext);
+
+		return WebFontUtil.getFont(styleDirectives, calculationContext, renderContext);
+	}
+
+	private SizeCalculationContext createSizeCalculationContext(GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
+		return new SizeCalculationContext(
+			localRenderContext.getPreferredSize(),
+			renderContext.getViewportSize(),
+			localRenderContext.getParentFontMetrics(),
+			true);
 	}
 	
 }

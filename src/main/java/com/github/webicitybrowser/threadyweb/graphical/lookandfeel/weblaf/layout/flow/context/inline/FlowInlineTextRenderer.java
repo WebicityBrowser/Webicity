@@ -7,6 +7,8 @@ import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineMarkerEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
@@ -31,7 +33,7 @@ public final class FlowInlineTextRenderer {
 	public static void addTextBoxToLine(FlowInlineRendererState state, TextBox textBox) {
 		TextConsolidation textConsolidation = state.getTextConsolidation();
 		String adjustedText = textConsolidation.readNextText(textBox);
-		Font2D font = textBox.getFont(state.getGlobalRenderContext(), state.getLocalRenderContext());	
+		Font2D font = textBox.getFont(state.getGlobalRenderContext(), createLocalRenderContext(state));	
 		TextSplitter splitter = new TextSplitter(adjustedText, font);
 		while (!splitter.completed()) {
 			String text = getNextSplit(state, splitter);
@@ -114,6 +116,12 @@ public final class FlowInlineTextRenderer {
 			parentWidth - state.lineContext().currentLine().getSize().width();
 
 		return remainingWidth;
+	}
+
+	private static LocalRenderContext createLocalRenderContext(FlowInlineRendererState state) {
+		AbsoluteSize preferredSize = state.getLocalRenderContext().getPreferredSize();
+		Font2D font = state.getFontStack().peek();
+		return LocalRenderContext.create(preferredSize, font.getMetrics(), new ContextSwitch[0]);
 	}
 
 }

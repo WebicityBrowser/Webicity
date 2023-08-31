@@ -51,4 +51,22 @@ public interface FontMetrics {
 	 */
 	float getCapHeight();
 
+	/**
+	 * Get the font's x height.
+	 * @return The font's x height.
+	 */
+	float getXHeight();
+
+	/**
+	 * Get the font's weight.
+	 * @return The font's weight.
+	 */
+    int getWeight();
+
+	/**
+	 * Get the font's size.
+	 * @return The font's size.
+	 */
+    float getSize();
+
 }

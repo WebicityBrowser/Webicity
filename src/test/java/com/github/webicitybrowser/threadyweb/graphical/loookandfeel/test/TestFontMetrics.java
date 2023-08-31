@@ -38,5 +38,20 @@ public class TestFontMetrics implements FontMetrics {
 	public float getAscent() {
 		return 6;
 	}
+
+	@Override
+	public float getXHeight() {
+		return 3;
+	}
+
+	@Override
+	public int getWeight() {
+		return 400;
+	}
+
+	@Override
+	public float getSize() {
+		return 12;
+	}
 	
 }

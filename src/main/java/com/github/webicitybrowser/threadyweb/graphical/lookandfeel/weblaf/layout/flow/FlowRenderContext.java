@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow;
 
 import java.util.function.Function;
 
@@ -9,10 +9,10 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 
 public record FlowRenderContext(
-		ChildrenBox box,
-		GlobalRenderContext globalRenderContext,
-		LocalRenderContext localRenderContext,
-		Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator
-	) {
+	ChildrenBox box,
+	GlobalRenderContext globalRenderContext,
+	LocalRenderContext localRenderContext,
+	Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator
+) {
 	
 }

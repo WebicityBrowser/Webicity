@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.thready.gui.graphical.base;
 
+import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
@@ -12,11 +13,17 @@ public interface GUIContent extends ScreenContent {
 
 	/**
 	 * Set the tree to be shown.
+	 * @param configuration the configuration of the GUI
+	 */
+	void setRoot(GUIContentConfiguration configuration);
+
+	/**
+	 * Holds various parameters for the GUI.
 	 * @param component The root of the tree to be shown.
 	 * @param lookAndFeel The appearence of how the tree is shown.
 	 * @param styleGeneratorRoot The styling system to automatically
 	 *  determine component styles.
 	 */
-	void setRoot(Component component, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot);
+	record GUIContentConfiguration(Component component, LookAndFeel lookAndFeel, StyleGeneratorRoot styleGeneratorRoot, FontSettings fontSettings) {};
 	
 }

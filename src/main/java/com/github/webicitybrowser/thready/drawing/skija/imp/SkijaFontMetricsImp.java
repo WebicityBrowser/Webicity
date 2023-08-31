@@ -1,17 +1,21 @@
 package com.github.webicitybrowser.thready.drawing.skija.imp;
 
+import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
+
 import io.github.humbleui.skija.Font;
 import io.github.humbleui.skija.FontMetrics;
 
 public class SkijaFontMetricsImp implements com.github.webicitybrowser.thready.drawing.core.text.FontMetrics {
 
 	private final Font font;
+	private final FontSettings settings;
 	private final FontMetrics metrics;
 	
 	private final int[] widthCache = new int[256];
 
-	public SkijaFontMetricsImp(Font font, FontMetrics metrics) {
+	public SkijaFontMetricsImp(Font font, FontSettings settings, FontMetrics metrics) {
 		this.font = font;
+		this.settings = settings;
 		this.metrics = metrics;
 	}
 
@@ -71,6 +75,21 @@ public class SkijaFontMetricsImp implements com.github.webicitybrowser.thready.d
 	@Override
 	public float getCapHeight() {
 		return metrics.getCapHeight();
+	}
+
+	@Override
+	public float getXHeight() {
+		return metrics.getXHeight();
+	}
+
+	@Override
+	public int getWeight() {
+		return settings.fontWeight();
+	}
+
+	@Override
+	public float getSize() {
+		return settings.fontSize();
 	}
 
 }

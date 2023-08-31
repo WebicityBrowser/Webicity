@@ -20,7 +20,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.directive.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.WidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.FlowInlineRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.imp.BuildableRenderedUnitImp;
@@ -34,13 +34,14 @@ import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStu
 public class FlowInlineRendererTest {
 
 	private final DirectivePool emptyDirectivePool = new BasicDirectivePool();
+	private final Font2D testFont = createTestFont();
 	
 	@Test
 	@DisplayName("Can render empty box")
 	public void canRenderEmptyBox() {
 		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(50, 50), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(50, 50));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(new AbsoluteSize(0, 0), result.fitSize());
 		Assertions.assertEquals(0, result.childLayoutResults().length);
@@ -53,7 +54,7 @@ public class FlowInlineRendererTest {
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(50, 50), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(50, 50));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(new AbsoluteSize(10, 10), result.fitSize());
 		Assertions.assertEquals(1, result.childLayoutResults().length);
@@ -71,7 +72,7 @@ public class FlowInlineRendererTest {
 		box.getChildrenTracker().addChild(childBox1);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(50, 50), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(50, 50));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(new AbsoluteSize(30, 20), result.fitSize());
 		Assertions.assertEquals(2, result.childLayoutResults().length);
@@ -92,7 +93,7 @@ public class FlowInlineRendererTest {
 		box.getChildrenTracker().addChild(childBox1);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(50, 50), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(50, 50));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(new AbsoluteSize(50, 30), result.fitSize());
 		Assertions.assertEquals(2, result.childLayoutResults().length);
@@ -111,7 +112,7 @@ public class FlowInlineRendererTest {
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(100, 100), emptyDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(50, 50), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(50, 50));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(new AbsoluteSize(100, 100), result.fitSize());
 		Assertions.assertEquals(1, result.childLayoutResults().length);
@@ -131,7 +132,7 @@ public class FlowInlineRendererTest {
 		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
 		containerBox.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(50, 50), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(50, 50));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(new AbsoluteSize(20, 10), result.fitSize());
 		Assertions.assertEquals(1, result.childLayoutResults().length);
@@ -159,7 +160,7 @@ public class FlowInlineRendererTest {
 		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(15, 10), emptyDirectivePool);
 		containerBox.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(10, 10), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(10, 10));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(new AbsoluteSize(15, 20), result.fitSize());
 		Assertions.assertEquals(2, result.childLayoutResults().length);
@@ -178,7 +179,7 @@ public class FlowInlineRendererTest {
 		TextBox textBox = createTextBox("Hello  World");
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(100, 100), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(100, 100));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(1, result.childLayoutResults().length);
 		ChildLayoutResult child = result.childLayoutResults()[0];
@@ -193,7 +194,7 @@ public class FlowInlineRendererTest {
 		TextBox textBox = createTextBox(" Hello World");
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(100, 100), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(100, 100));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(1, result.childLayoutResults().length);
 		ChildLayoutResult child = result.childLayoutResults()[0];
@@ -207,7 +208,7 @@ public class FlowInlineRendererTest {
 		TextBox textBox = createTextBox("Hello World");
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(50, 100), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(50, 100));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(2, result.childLayoutResults().length);
 		ChildLayoutResult child1 = result.childLayoutResults()[0];
@@ -226,7 +227,7 @@ public class FlowInlineRendererTest {
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), directives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = LocalRenderContext.create(new AbsoluteSize(50, 50), new ContextSwitch[0]);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(50, 50));
 		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
 		Assertions.assertEquals(new AbsoluteSize(40, 30), result.fitSize());
 		Assertions.assertEquals(1, result.childLayoutResults().length);
@@ -237,7 +238,6 @@ public class FlowInlineRendererTest {
 
 	private GlobalRenderContext mockGlobalRenderContext() {
 		ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
-		Font2D testFont = createTestFont();
 		Mockito.when(resourceLoader.loadFont(Mockito.any())).thenReturn(testFont);
 
 		GlobalRenderContext renderContext = Mockito.mock(GlobalRenderContext.class);
@@ -245,6 +245,13 @@ public class FlowInlineRendererTest {
 		Mockito.when(renderContext.getResourceLoader()).thenReturn(resourceLoader);
 
 		return renderContext;
+	}
+
+	private LocalRenderContext createLocalRenderContext(AbsoluteSize size) {
+		return LocalRenderContext.create(
+			size,
+			testFont.getMetrics(),
+			new ContextSwitch[0]);
 	}
 
 	private FlowRenderContext createRenderContext(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {

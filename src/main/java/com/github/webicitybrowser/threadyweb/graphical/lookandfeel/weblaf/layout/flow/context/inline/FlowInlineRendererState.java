@@ -1,10 +1,12 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline;
 
+import java.util.Stack;
+
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
@@ -13,20 +15,21 @@ public class FlowInlineRendererState {
 
 	private final FlowRenderContext context;
 	private final LineContext lineContext;
-	private final Font2D font;
 
 	private final TextConsolidation textConsolidation = TextConsolidation.create();
+	private final Stack<Font2D> fontStack = new Stack<>();
 
-	public FlowInlineRendererState(
-		LineDimensionConverter dimensionConverter, FlowRenderContext context, Font2D font
-	) {
+	public FlowInlineRendererState(LineDimensionConverter dimensionConverter, FlowRenderContext context) {
 		this.lineContext = new LineContext(dimensionConverter, context);
 		this.context = context;
-		this.font = font;
 	}
 
 	public LineContext lineContext() {
 		return lineContext;
+	}
+
+	public FlowRenderContext flowContext() {
+		return context;
 	}
 
 	public GlobalRenderContext getGlobalRenderContext() {
@@ -41,12 +44,12 @@ public class FlowInlineRendererState {
 		return context.box().styleDirectives();
 	}
 
-	public Font2D getFont() {
-		return this.font;
-	}
-
 	public TextConsolidation getTextConsolidation() {
 		return textConsolidation;
+	}
+
+	public Stack<Font2D> getFontStack() {
+		return fontStack;
 	}
 
 }
