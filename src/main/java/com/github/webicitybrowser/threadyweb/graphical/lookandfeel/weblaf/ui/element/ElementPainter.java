@@ -11,6 +11,4 @@ public final class ElementPainter {
 		ElementChildrenPainter.paintChildren(unit, globalPaintContext, localPaintContext);
 	}
 
-	
-
 }

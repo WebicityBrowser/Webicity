@@ -5,16 +5,19 @@ import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseRes
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParserUtil;
 import com.github.webicitybrowser.spec.css.parser.property.shared.length.LengthValueParser;
+import com.github.webicitybrowser.spec.css.parser.property.shared.percentage.PercentageValueParser;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 
 public class LengthPercentageValueParser implements PropertyValueParser<CSSValue> {
 
 	private final LengthValueParser lengthValueParser = new LengthValueParser();
+	private final PercentageValueParser percentageValueParser = new PercentageValueParser();
 
 	@Override
 	public PropertyValueParseResult<CSSValue> parse(TokenLike[] tokens, int offset, int length) {
 		return PropertyValueParserUtil.takeLongestResult(
-			lengthValueParser.parse(tokens, offset, length).as(CSSValue.class));
+			lengthValueParser.parse(tokens, offset, length).as(CSSValue.class),
+			percentageValueParser.parse(tokens, offset, length).as(CSSValue.class));
 	}
 	
 }

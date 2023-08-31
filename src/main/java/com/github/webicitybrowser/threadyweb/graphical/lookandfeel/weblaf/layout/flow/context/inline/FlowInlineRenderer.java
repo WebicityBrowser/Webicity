@@ -108,19 +108,20 @@ public final class FlowInlineRenderer {
 	}
 
 	private static AbsoluteSize computePreferredSize(FlowInlineRendererState state, Box childBox) {
-		SizeCalculation heightSizeCalculation = WebDirectiveUtil.getHeight(childBox.styleDirectives());
-		float calculatedHeight = computeSize(childBox, heightSizeCalculation, state);
 		SizeCalculation widthSizeCalculation = WebDirectiveUtil.getWidth(childBox.styleDirectives());
-		float calculatedWidth = computeSize(childBox, widthSizeCalculation, state);
+		float calculatedWidth = computeSize(childBox, widthSizeCalculation, state, true);
+		SizeCalculation heightSizeCalculation = WebDirectiveUtil.getHeight(childBox.styleDirectives());
+		float calculatedHeight = computeSize(childBox, heightSizeCalculation, state, false);
 		return new AbsoluteSize(calculatedWidth, calculatedHeight);
 	}
 
-	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowInlineRendererState state) {
+	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowInlineRendererState state, boolean isHorizontal) {
 		FontMetrics fontMetrics = state.getFont().getMetrics();
 		SizeCalculationContext sizeCalculationContext = new SizeCalculationContext(
 			state.getLocalRenderContext().getPreferredSize(),
 			state.getGlobalRenderContext().getViewportSize(),
-			fontMetrics
+			fontMetrics,
+			isHorizontal
 		);
 
 		return sizeCalculation.calculate(sizeCalculationContext);

@@ -7,6 +7,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicAnonymousFluidBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
@@ -57,19 +58,24 @@ public final class FlowBlockRenderer {
 	}
 
 	private static AbsoluteSize computePreferredSize(FlowBlockRendererState state, Box childBox) {
+		if (childBox instanceof BasicAnonymousFluidBox) {
+			return new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
+		}
+
 		SizeCalculation widthSizeCalculation = WebDirectiveUtil.getWidth(childBox.styleDirectives());
-		float calculatedWidth = computeSize(childBox, widthSizeCalculation, state);
+		float calculatedWidth = computeSize(childBox, widthSizeCalculation, state, true);
 		SizeCalculation heightSizeCalculation = WebDirectiveUtil.getHeight(childBox.styleDirectives());
-		float calculatedHeight = computeSize(childBox, heightSizeCalculation, state);
+		float calculatedHeight = computeSize(childBox, heightSizeCalculation, state, false);
 		return new AbsoluteSize(calculatedWidth, calculatedHeight);
 	}
 
-	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowBlockRendererState state) {
+	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowBlockRendererState state, boolean isHorizontal) {
 		FontMetrics fontMetrics = state.getFont().getMetrics();
 		SizeCalculationContext sizeCalculationContext = new SizeCalculationContext(
 			state.getLocalRenderContext().getPreferredSize(),
 			state.getGlobalRenderContext().getViewportSize(),
-			fontMetrics
+			fontMetrics,
+			isHorizontal
 		);
 
 		return sizeCalculation.calculate(sizeCalculationContext);
@@ -98,7 +104,7 @@ public final class FlowBlockRenderer {
 			parentSize.width();
 		float actualPreferredHeight = preferredSize.height();
 
-		return  new AbsoluteSize(actualPreferredWidth, actualPreferredHeight);
+		return new AbsoluteSize(actualPreferredWidth, actualPreferredHeight);
 	}
 	
 }

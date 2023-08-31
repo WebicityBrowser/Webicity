@@ -3,6 +3,8 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.AbsoluteLengthValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.RelativeLengthValue;
+import com.github.webicitybrowser.spec.css.property.shared.percentage.PercentageValue;
+import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
@@ -16,6 +18,8 @@ public final class SizeParser {
 			return _1 -> translatedValue;
 		} else if (value instanceof RelativeLengthValue lengthValue) {
 			return translateRelativeValue(lengthValue);
+		} else if (value instanceof PercentageValue percentageValue) {
+			return context -> translatePercentageValue(context, percentageValue);
 		}
 		throw new UnsupportedOperationException("Unrecognized CSSValue: " + value);
 	}
@@ -76,6 +80,14 @@ public final class SizeParser {
 		default:
 			throw new UnsupportedOperationException("Unrecognized RelativeLengthUnit: " + lengthValue.getUnit());
 		}
+	}
+
+	private static float translatePercentageValue(SizeCalculationContext context, PercentageValue percentageValue) {
+		float axisValue = context.isHorizontal() ?
+			context.parentSize().width() :
+			context.parentSize().height();
+		if (axisValue == RelativeDimension.UNBOUNDED) return RelativeDimension.UNBOUNDED;
+		return axisValue * percentageValue.getValue() / 100;
 	}
 
 	private static float getCharacterAdvance(SizeCalculationContext context, char c, float fallback) {
