@@ -20,7 +20,7 @@ public class CSSOMFontSizeDeclarationParser implements CSSOMNamedDeclarationPars
 	@Override
 	public Directive[] translatePropertyValue(CSSValue value) {
 		return new Directive[] {
-			FontSizeDirective.of(SizeParser.parse(value))
+			FontSizeDirective.of(SizeParser.parseWithFontPercents(value))
 		};
 	}
 	

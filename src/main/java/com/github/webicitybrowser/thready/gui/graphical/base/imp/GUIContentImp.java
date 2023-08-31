@@ -182,7 +182,8 @@ public class GUIContentImp implements GUIContent {
 	private <U extends Box> void performRenderCycle(ScreenContentRedrawContext redrawContext) {
 		AbsoluteSize contentSize = redrawContext.contentSize();
 		Font2D baseFont = redrawContext.resourceLoader().loadFont(configuration.fontSettings());
-		GlobalRenderContext globalRenderContext = new RenderContextImp(contentSize, redrawContext.resourceLoader());
+		GlobalRenderContext globalRenderContext = new RenderContextImp(
+			contentSize, redrawContext.resourceLoader(), baseFont.getMetrics());
 		LocalRenderContext localRenderContext = LocalRenderContext.create(
 			contentSize, baseFont.getMetrics(), new ContextSwitch[0]);
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();

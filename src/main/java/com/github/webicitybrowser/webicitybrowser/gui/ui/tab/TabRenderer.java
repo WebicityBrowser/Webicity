@@ -11,7 +11,7 @@ public final class TabRenderer {
 	
 	public static TabUnit render(TabBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		Font2D font = renderContext
-			.getResourceLoader()
+			.resourceLoader()
 			.loadFont(SimpleDirectiveUtil.getFontSettings(box.styleDirectives()));
 		// TODO: Make sure preferred size is not unbounded
 		return new TabUnit(box.display(), localRenderContext.getPreferredSize(), box, font);

@@ -10,7 +10,7 @@ public final class CircularButtonRenderer {
 	
 	public static CircularButtonUnit render(CircularButtonBox box, GlobalRenderContext renderContext) {
 		ImageSource imageSource = box.owningComponent().getImageSource();
-		Image image = renderContext.getResourceLoader().loadImage(imageSource);
+		Image image = renderContext.resourceLoader().loadImage(imageSource);
 		return new CircularButtonUnit(image, box);
 	}
 

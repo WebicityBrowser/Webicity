@@ -36,8 +36,9 @@ public record TextBox(
 	private SizeCalculationContext createSizeCalculationContext(GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		return new SizeCalculationContext(
 			localRenderContext.getPreferredSize(),
-			renderContext.getViewportSize(),
+			renderContext.viewportSize(),
 			localRenderContext.getParentFontMetrics(),
+			renderContext.rootFontMetrics(),
 			true);
 	}
 	

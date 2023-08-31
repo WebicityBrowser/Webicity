@@ -12,14 +12,26 @@ public final class SizeParser {
 	
 	private SizeParser() {}
 	
-	public static SizeCalculation parse(CSSValue value) {
+	public static SizeCalculation parseWithBoxPercents(CSSValue value) {
+		if (value instanceof PercentageValue percentageValue) {
+			return context -> translateBoxPercentageValue(context, percentageValue);
+		}
+		return parseNonPercent(value);
+	}
+
+	public static SizeCalculation parseWithFontPercents(CSSValue value) {
+		if (value instanceof PercentageValue percentageValue) {
+			return context -> context.relativeFont().getSize() * percentageValue.getValue() / 100;
+		}
+		return parseNonPercent(value);
+	}
+
+	public static SizeCalculation parseNonPercent(CSSValue value) {
 		if (value instanceof AbsoluteLengthValue lengthValue) {
 			float translatedValue = translateAbsoluteValue(lengthValue);
 			return _1 -> translatedValue;
 		} else if (value instanceof RelativeLengthValue lengthValue) {
 			return translateRelativeValue(lengthValue);
-		} else if (value instanceof PercentageValue percentageValue) {
-			return context -> translatePercentageValue(context, percentageValue);
 		}
 		throw new UnsupportedOperationException("Unrecognized CSSValue: " + value);
 	}
@@ -60,7 +72,7 @@ public final class SizeParser {
 		case IC:
 			return context -> getCharacterAdvance(context, '\u6C34', .5f) * initialValue;
 		case REM:
-			throw new UnsupportedOperationException("REM (Root-Relative Font Size) is not supported yet");
+			return context -> context.rootFont().getSize() * initialValue;
 		case LH:
 			throw new UnsupportedOperationException("LH (Line Height) is not supported yet");
 		case RLH:
@@ -82,7 +94,7 @@ public final class SizeParser {
 		}
 	}
 
-	private static float translatePercentageValue(SizeCalculationContext context, PercentageValue percentageValue) {
+	private static float translateBoxPercentageValue(SizeCalculationContext context, PercentageValue percentageValue) {
 		float axisValue = context.isHorizontal() ?
 			context.parentSize().width() :
 			context.parentSize().height();

@@ -120,8 +120,8 @@ public class FlowBlockRendererTest {
 		Mockito.when(resourceLoader.loadFont(Mockito.any())).thenReturn(testFont);
 
 		GlobalRenderContext renderContext = Mockito.mock(GlobalRenderContext.class);
-		Mockito.when(renderContext.getViewportSize()).thenReturn(new AbsoluteSize(1000, 1000));
-		Mockito.when(renderContext.getResourceLoader()).thenReturn(resourceLoader);
+		Mockito.when(renderContext.viewportSize()).thenReturn(new AbsoluteSize(1000, 1000));
+		Mockito.when(renderContext.resourceLoader()).thenReturn(resourceLoader);
 
 		return renderContext;
 	}

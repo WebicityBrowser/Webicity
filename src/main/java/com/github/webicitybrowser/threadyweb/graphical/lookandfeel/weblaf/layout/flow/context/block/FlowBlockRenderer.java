@@ -27,7 +27,10 @@ public final class FlowBlockRenderer {
 	private FlowBlockRenderer() {}
 
 	public static LayoutResult render(FlowRenderContext context) {
-		Font2D font = FlowUtils.computeFont(context, context.localRenderContext().getParentFontMetrics());
+		Font2D font = FlowUtils.computeFont(
+			context,
+			context.box().styleDirectives(),
+			context.localRenderContext().getParentFontMetrics());
 		FlowBlockRendererState state = new FlowBlockRendererState(
 			new HorizontalLineDimensionConverter(),
 			context, font);
@@ -38,8 +41,24 @@ public final class FlowBlockRenderer {
 
 	private static void renderChildren(FlowBlockRendererState state, ChildrenBox box) {
 		for (Box childBox: box.getChildrenTracker().getChildren()) {
-			renderChild(state, childBox);
+			if (childBox instanceof BasicAnonymousFluidBox) {
+				renderAnonBox(state, childBox);
+			} else {
+				renderChild(state, childBox);
+			}
 		}
+	}
+
+	private static void renderAnonBox(FlowBlockRendererState state, Box anonBox) {
+		AbsoluteSize preferredSize = new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
+		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
+		LocalRenderContext localRenderContext = state.getLocalRenderContext();
+		RenderedUnit childUnit = UIPipeline.render(anonBox, globalRenderContext, localRenderContext);
+		AbsoluteSize adjustedSize = adjustSize(state, preferredSize, childUnit.fitSize());
+		Rectangle childRect = new Rectangle(state.cursorTracker().getNextPosition(), adjustedSize);
+		state.addChildLayoutResult(new ChildLayoutResult(childUnit, childRect));
+		state.cursorTracker().add(adjustedSize);
+		state.cursorTracker().nextLine();
 	}
 
 	private static void renderChild(FlowBlockRendererState state, Box childBox) {
@@ -68,12 +87,8 @@ public final class FlowBlockRenderer {
 
 	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowBlockRendererState state, boolean isHorizontal) {
 		FontMetrics fontMetrics = state.getFont().getMetrics();
-		SizeCalculationContext sizeCalculationContext = new SizeCalculationContext(
-			state.getLocalRenderContext().getPreferredSize(),
-			state.getGlobalRenderContext().getViewportSize(),
-			fontMetrics,
-			isHorizontal
-		);
+		SizeCalculationContext sizeCalculationContext = FlowUtils.createSizeCalculationContext(
+			state.flowContext(), fontMetrics, isHorizontal);
 
 		return sizeCalculation.calculate(sizeCalculationContext);
 	}

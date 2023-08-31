@@ -8,7 +8,7 @@ public final class FrameRenderer {
 	private FrameRenderer() {}
 	
 	public static FrameUnit render(FrameBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		return new FrameUnit(localRenderContext.getPreferredSize(), box, renderContext.getResourceLoader(), box.displayContext().screenContent());
+		return new FrameUnit(localRenderContext.getPreferredSize(), box, renderContext.resourceLoader(), box.displayContext().screenContent());
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test;
 
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
@@ -10,6 +11,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.
 public class TestStubInlineBox implements CloneBox {
 
 	private BoxChildrenTracker childrenTracker = new InlineBoxChildrenTracker(this);
+	private DirectivePool styleDirectives = new BasicDirectivePool();
 
 	@Override
 	public BoxChildrenTracker getChildrenTracker() {
@@ -38,7 +40,7 @@ public class TestStubInlineBox implements CloneBox {
 
 	@Override
 	public DirectivePool styleDirectives() {
-		return null;
+		return styleDirectives;
 	}
 	
 }

@@ -12,7 +12,7 @@ public final class URLBarRenderer {
 
 	public static URLBarUnit render(URLBarBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext, UIDisplay<?, ?, ?> uiDisplay) {
 		Font2D font = renderContext
-			.getResourceLoader()
+			.resourceLoader()
 			.loadFont(SimpleDirectiveUtil.getFontSettings(box.styleDirectives()));
 		return new URLBarUnit(localRenderContext.getPreferredSize(), font, box);
 	}

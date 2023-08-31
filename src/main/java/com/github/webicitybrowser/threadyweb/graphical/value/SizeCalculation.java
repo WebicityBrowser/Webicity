@@ -11,7 +11,8 @@ public interface SizeCalculation {
     float calculate(SizeCalculationContext context);
 
 	static record SizeCalculationContext(
-		AbsoluteSize parentSize, AbsoluteSize viewportSize, FontMetrics relativeFont, boolean isHorizontal
+		AbsoluteSize parentSize, AbsoluteSize viewportSize, FontMetrics relativeFont,
+		FontMetrics rootFont, boolean isHorizontal
 	) {}
 
 }

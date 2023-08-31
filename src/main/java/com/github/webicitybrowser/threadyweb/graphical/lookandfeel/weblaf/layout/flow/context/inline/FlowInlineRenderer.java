@@ -39,7 +39,7 @@ public final class FlowInlineRenderer {
 		ChildrenBox box = context.box();
 
 		state.getFontStack().push(FlowUtils.computeFont(
-			context, context.localRenderContext().getParentFontMetrics()));
+			context, context.box().styleDirectives(), context.localRenderContext().getParentFontMetrics()));
 		FlowInlineTextRenderer.preadjustTextBoxes(state, box);
 
 		for (Box childBox: box.getChildrenTracker().getChildren()) {
@@ -74,7 +74,7 @@ public final class FlowInlineRenderer {
 		LineContext lineContext = state.lineContext();
 		UnitEnterMarker unitEnterMarker = new UnitEnterMarker(true, childBox.styleDirectives());
 		FontMetrics parentFontMetrics = state.getFontStack().peek().getMetrics();
-		state.getFontStack().push(FlowUtils.computeFont(state.flowContext(), parentFontMetrics));
+		state.getFontStack().push(FlowUtils.computeFont(state.flowContext(), childBox.styleDirectives(), parentFontMetrics));
 		startNewLineIfNotFits(state, createSizeFromUnitEnterMarker(unitEnterMarker));
 		lineContext.currentLine().addMarker(unitEnterMarker);
 		for (Box inlineChildBox: ((ChildrenBox) childBox).getChildrenTracker().getChildren()) {
@@ -119,12 +119,8 @@ public final class FlowInlineRenderer {
 
 	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowInlineRendererState state, boolean isHorizontal) {
 		FontMetrics fontMetrics = state.getFontStack().peek().getMetrics();
-		SizeCalculationContext sizeCalculationContext = new SizeCalculationContext(
-			state.getLocalRenderContext().getPreferredSize(),
-			state.getGlobalRenderContext().getViewportSize(),
-			fontMetrics,
-			isHorizontal
-		);
+		SizeCalculationContext sizeCalculationContext = FlowUtils.createSizeCalculationContext(
+			state.flowContext(), fontMetrics, isHorizontal);
 
 		return sizeCalculation.calculate(sizeCalculationContext);
 	}

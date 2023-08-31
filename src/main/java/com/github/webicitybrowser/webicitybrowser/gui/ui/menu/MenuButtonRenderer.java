@@ -18,7 +18,7 @@ public final class MenuButtonRenderer {
 	private static Font2D loadFont(MenuButtonBox box, GlobalRenderContext renderContext) {
 		FontSettings fontInfo = SimpleDirectiveUtil.getFontSettings(box.styleDirectives());
 		return renderContext
-			.getResourceLoader()
+			.resourceLoader()
 			.loadFont(fontInfo);
 	}
 

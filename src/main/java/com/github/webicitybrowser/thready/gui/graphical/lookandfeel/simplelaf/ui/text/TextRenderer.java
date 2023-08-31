@@ -11,7 +11,7 @@ public final class TextRenderer {
 
 	public static TextUnit createTextUnit(TextBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		FontSettings fontSettings = getFontSettings(box);
-		Font2D font = renderContext.getResourceLoader().loadFont(fontSettings);
+		Font2D font = renderContext.resourceLoader().loadFont(fontSettings);
 		String text = box.owningComponent().getText();
 
 		float width = font.getMetrics().getStringWidth(text);

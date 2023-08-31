@@ -13,15 +13,13 @@ public final class WebFontUtil {
 	private WebFontUtil() {}
 
 	public static Font2D getFont(DirectivePool styleDirectives, SizeCalculationContext sizeContext, GlobalRenderContext globalRenderContext) {
-		// TODO: localRenderContext.getParentFont()
 		FontSettings fontSettings = new FontSettings(
 			WebTextDirectiveUtil.getFontSource(styleDirectives),
 			WebTextDirectiveUtil.getFontSize(styleDirectives, sizeContext),
 			WebTextDirectiveUtil.getFontWeight(styleDirectives, sizeContext.relativeFont()),
 			new FontDecoration[0]);
-		System.out.println("fontSettings: " + fontSettings);
 
-		return globalRenderContext.getResourceLoader().loadFont(fontSettings);
+		return globalRenderContext.resourceLoader().loadFont(fontSettings);
 	}
 
 }

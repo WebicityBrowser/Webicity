@@ -20,7 +20,7 @@ public class CSSOMWidthDeclarationParser implements CSSOMNamedDeclarationParser<
 	@Override
 	public Directive[] translatePropertyValue(CSSValue value) {
 		return new Directive[] {
-			WidthDirective.of(SizeParser.parse(value))
+			WidthDirective.of(SizeParser.parseWithBoxPercents(value))
 		};
 	}
 	

@@ -20,7 +20,7 @@ public class CSSOMHeightDeclarationParser implements CSSOMNamedDeclarationParser
 	@Override
 	public Directive[] translatePropertyValue(CSSValue value) {
 		return new Directive[] {
-			HeightDirective.of(SizeParser.parse(value))
+			HeightDirective.of(SizeParser.parseWithBoxPercents(value))
 		};
 	}
 	

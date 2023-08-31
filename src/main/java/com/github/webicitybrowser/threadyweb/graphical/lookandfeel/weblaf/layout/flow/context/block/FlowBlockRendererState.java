@@ -25,6 +25,10 @@ public class FlowBlockRendererState {
 		this.font = font;
 	}
 
+	public FlowRenderContext flowContext() {
+		return context;
+	}
+
 	public GlobalRenderContext getGlobalRenderContext() {
 		return context.globalRenderContext();
 	}
