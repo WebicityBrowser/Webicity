@@ -19,6 +19,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.directive.HeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockRenderer;
@@ -26,6 +27,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestFontMetrics;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubBlockBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubContentBox;
+import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 
 public class FlowBlockRendererTest {
 
@@ -113,6 +115,87 @@ public class FlowBlockRendererTest {
 		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(40, 30), childLayoutResult.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can set a left margin")
+	public void canSetALeftMargin() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives = new BasicDirectivePool();
+		styleDirectives.directive(MarginDirective.ofLeft(_1 -> 10));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = FlowBlockRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(50, 10), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(10, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(40, 10), childLayoutResult.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can set a right margin")
+	public void canSetARightMargin() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives = new BasicDirectivePool();
+		styleDirectives.directive(MarginDirective.ofRight(_1 -> 10));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = FlowBlockRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(50, 10), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(40, 10), childLayoutResult.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can center a box")
+	public void canCenterABox() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives = new BasicDirectivePool();
+		styleDirectives.directive(WidthDirective.of(_1 -> 10));
+		styleDirectives.directive(MarginDirective.ofLeft(SizeCalculation.SIZE_AUTO));
+		styleDirectives.directive(MarginDirective.ofRight(SizeCalculation.SIZE_AUTO));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = FlowBlockRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(50, 10), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(20, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(10, 10), childLayoutResult.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Top and bottom margins are collapsed")
+	public void topAndBottomMarginsAreCollapsed() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives1 = new BasicDirectivePool();
+		styleDirectives1.directive(MarginDirective.ofBottom(_1 -> 10));
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives1);
+		box.getChildrenTracker().addChild(childBox1);
+		DirectivePool styleDirectives2 = new BasicDirectivePool();
+		styleDirectives2.directive(MarginDirective.ofTop(_1 -> 15));
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives2);
+		box.getChildrenTracker().addChild(childBox2);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = FlowBlockRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(50, 35), result.fitSize());
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult1 = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult1.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(50, 10), childLayoutResult1.relativeRect().size());
+		ChildLayoutResult childLayoutResult2 = result.childLayoutResults()[1];
+		Assertions.assertEquals(new AbsolutePosition(0, 25), childLayoutResult2.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(50, 10), childLayoutResult2.relativeRect().size());
 	}
 
 	private GlobalRenderContext mockGlobalRenderContext() {

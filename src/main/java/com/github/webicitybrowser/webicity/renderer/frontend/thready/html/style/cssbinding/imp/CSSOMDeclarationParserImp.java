@@ -14,6 +14,7 @@ import com.github.webicitybrowser.spec.css.parser.util.TokenUtils;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
+import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMBackgroundColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMColorDeclarationParser;
@@ -21,6 +22,8 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontSizeDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontWeightDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMHeightDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMLonghandMarginParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandMarginParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMWidthDeclarationParser;
 
 public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
@@ -38,6 +41,11 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("width", new CSSOMWidthDeclarationParser());
 		namedDeclarationParsers.put("font-weight", new CSSOMFontWeightDeclarationParser());
 		namedDeclarationParsers.put("font-size", new CSSOMFontSizeDeclarationParser());
+		namedDeclarationParsers.put("margin-left", new CSSOMLonghandMarginParser(MarginDirective::ofLeft));
+		namedDeclarationParsers.put("margin-right", new CSSOMLonghandMarginParser(MarginDirective::ofRight));
+		namedDeclarationParsers.put("margin-top", new CSSOMLonghandMarginParser(MarginDirective::ofTop));
+		namedDeclarationParsers.put("margin-bottom", new CSSOMLonghandMarginParser(MarginDirective::ofBottom));
+		namedDeclarationParsers.put("margin", new CSSOMShorthandMarginParser());
 	}
 	
 	@Override
