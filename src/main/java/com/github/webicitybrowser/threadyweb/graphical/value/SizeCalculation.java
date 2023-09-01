@@ -8,7 +8,7 @@ public interface SizeCalculation {
 	
 	static SizeCalculation SIZE_AUTO = context -> RelativeDimension.UNBOUNDED;
 
-    float calculate(SizeCalculationContext context);
+	 float calculate(SizeCalculationContext context);
 
 	static record SizeCalculationContext(
 		AbsoluteSize parentSize, AbsoluteSize viewportSize, FontMetrics relativeFont,

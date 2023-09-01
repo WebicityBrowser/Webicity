@@ -61,12 +61,12 @@ public interface FontMetrics {
 	 * Get the font's weight.
 	 * @return The font's weight.
 	 */
-    int getWeight();
+	 int getWeight();
 
 	/**
 	 * Get the font's size.
 	 * @return The font's size.
 	 */
-    float getSize();
+	 float getSize();
 
 }

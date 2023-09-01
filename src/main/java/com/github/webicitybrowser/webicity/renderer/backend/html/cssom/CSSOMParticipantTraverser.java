@@ -8,7 +8,7 @@ public interface CSSOMParticipantTraverser<T, U> {
 
 	T getParent(T participant);
 
-    Collection<CSSOMNode<T, U>> getMatchingNodes(T participant);
+	 Collection<CSSOMNode<T, U>> getMatchingNodes(T participant);
 
 	void addMatchingNode(T participant, CSSOMNode<T, U> baseNode);
 

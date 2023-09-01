@@ -14,9 +14,9 @@ public class TestStubBlockBox implements ChildrenBox {
 
 	public TestStubBlockBox(DirectivePool styleDirectives) {
 		this.styleDirectives = styleDirectives;
-    }
+	 }
 
-    @Override
+	 @Override
 	public BoxChildrenTracker getChildrenTracker() {
 		return childrenTracker;
 	}

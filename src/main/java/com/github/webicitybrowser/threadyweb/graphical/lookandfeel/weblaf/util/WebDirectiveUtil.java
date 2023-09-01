@@ -42,11 +42,11 @@ public final class WebDirectiveUtil {
 			.orElse(SizeCalculation.SIZE_AUTO);
 	}
 
-    public static SizeCalculation getWidth(DirectivePool styleDirectives) {
-        return styleDirectives
+	 public static SizeCalculation getWidth(DirectivePool styleDirectives) {
+		  return styleDirectives
 			.getDirectiveOrEmpty(WidthDirective.class)
 			.map(directive -> directive.getWidthCalculation())
 			.orElse(SizeCalculation.SIZE_AUTO);
-    }
+	 }
 	
 }

@@ -18,7 +18,7 @@ import com.github.webicitybrowser.thready.windowing.skija.SkijaWindowingThread;
 public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 
 	// NOTE: Because MacOS does not support rendering on a non-main thread,
-	//   we do not use a separate thread for windowing.
+	//	we do not use a separate thread for windowing.
 	
 	private final Queue<Consumer<Window>> windowsToStart = new ConcurrentLinkedQueue<>();
 	private final List<SkijaWindow> windows = Collections.synchronizedList(new ArrayList<>());

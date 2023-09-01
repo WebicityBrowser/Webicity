@@ -3,6 +3,7 @@ import org.gradle.internal.os.OperatingSystem
 plugins {
 	id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'application'
+	id 'jacoco'
 }
 
 switch (OperatingSystem.current()) {
@@ -38,7 +39,6 @@ dependencies {
 	runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
-	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 	
 	implementation 'com.github.marianobarrios:tls-channel:0.8.0'
 	

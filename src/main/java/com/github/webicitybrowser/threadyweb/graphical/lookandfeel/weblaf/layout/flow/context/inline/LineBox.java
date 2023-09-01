@@ -58,7 +58,7 @@ public class LineBox {
 			activeMarkers.remove(activeMarkers.size() - 1);
 			cursorTracker.add(new AbsoluteSize(unitExitMarker.rightEdgeSize(), unitExitMarker.bottomEdgeSize()));
 		}
-    }
+	 }
 	
 	public boolean canFit(AbsoluteSize unitSize, AbsoluteSize maxLineSize) {
 		return

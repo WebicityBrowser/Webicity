@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -29,8 +28,8 @@ public class AttributeOneOfFilterComposition<T, U> implements CSSOMFilterComposi
 		CSSOMFilter<T, U> filter = filterEntry.filter();
 		if (filter instanceof AttributeOneOfFilter<T, U> oneOfFilter) {
 			return filters
-				.computeIfAbsent(oneOfFilter.getAttributeName(), _1 -> new HashMap<>(1))
-				.computeIfAbsent(oneOfFilter.getComparisonValue(), _1 -> new HashSet<>(1))
+				.computeIfAbsent(oneOfFilter.getAttributeName(), _1 -> new HashMap<>())
+				.computeIfAbsent(oneOfFilter.getComparisonValue(), _1 -> new HashSet<>())
 				.add(filterEntry);
 		} else {
 			throw new IllegalArgumentException();
@@ -41,15 +40,15 @@ public class AttributeOneOfFilterComposition<T, U> implements CSSOMFilterComposi
 	public List<CSSOMFilterEntry<T, U>> getPossibleFilters(T node) {
 		if (nodeGetter.apply(node) instanceof Element element) {
 			ArrayList<CSSOMFilterEntry<T, U>> possibleFilters = new ArrayList<>();
-			for (Entry<String, Map<String, Set<CSSOMFilterEntry<T, U>>>> attrEntry: filters.entrySet()) {
-				String attributeName = attrEntry.getKey();
-				String attributeValue = element.getAttribute(attributeName);
-				if (attributeValue == null) return List.of();
+			for (String attributeName: element.getAttributeNames()) {
+				Map<String, Set<CSSOMFilterEntry<T, U>>> attrEntry = filters.get(attributeName);
+				if (attrEntry == null) continue;
 
-				for (Entry<String, Set<CSSOMFilterEntry<T, U>>> valueEntry: attrEntry.getValue().entrySet()) {
-					if (attributeValue.indexOf(valueEntry.getKey()) != -1) {
-						possibleFilters.addAll(valueEntry.getValue());
-					}
+				String attributeValue = element.getAttribute(attributeName);
+				for (String value: attributeValue.split(" ")) {
+					Set<CSSOMFilterEntry<T, U> >filterEntry = attrEntry.get(value);
+					if (filterEntry == null) continue;
+					possibleFilters.addAll(filterEntry);
 				}
 			}
 			

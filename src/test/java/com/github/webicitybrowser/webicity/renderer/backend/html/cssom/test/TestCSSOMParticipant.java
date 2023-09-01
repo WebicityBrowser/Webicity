@@ -30,8 +30,8 @@ public class TestCSSOMParticipant {
 		children.add(child);
 	}
 
-    public Collection<CSSOMNode<TestCSSOMParticipant, Object>> getMatchingNodes() {
-        return this.matchingNodes;
-    }
+	 public Collection<CSSOMNode<TestCSSOMParticipant, Object>> getMatchingNodes() {
+		  return this.matchingNodes;
+	 }
 
 }

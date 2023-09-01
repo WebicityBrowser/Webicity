@@ -10,7 +10,7 @@ public interface BoxChildrenTracker {
 	
 	List<Box> getAdjustedBoxTree();
 
-    default void addAllChildren(List<Box> children) {
+	 default void addAllChildren(List<Box> children) {
 		for (Box child: children) {
 			addChild(child);
 		}
