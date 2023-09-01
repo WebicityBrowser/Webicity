@@ -9,13 +9,13 @@ import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerato
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.gui.tree.core.UINode;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebBoxGeneratorUtil;
 
 public final class ContainerChildrenBoxGenerator {
 	
@@ -28,7 +28,7 @@ public final class ContainerChildrenBoxGenerator {
 		ContainerChildEntry[] children = computeCurrentChildUIs(displayContext, boxContext.getLookAndFeel(), directives);
 		StyleGenerator[] childStyleGenerators = createChildStyleGenerators(styleGenerator, children);
 		for (int i = 0; i < children.length; i++) {
-			List<Box> boxesToAdd = UIPipeline.generateBoxes(children[i].context(), boxContext, childStyleGenerators[i]);
+			List<Box> boxesToAdd = WebBoxGeneratorUtil.generateWebBoxes(children[i].context(), boxContext, childStyleGenerators[i]);
 			rootBox.getChildrenTracker().addAllChildren(boxesToAdd);
 		}
 	}

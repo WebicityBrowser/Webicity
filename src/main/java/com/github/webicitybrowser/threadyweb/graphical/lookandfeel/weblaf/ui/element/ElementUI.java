@@ -4,12 +4,11 @@ import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.wrapper.WebWrapperDisplay;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 
 public class ElementUI implements ComponentUI {
 	
-	private static final UIDisplay<?, ?, ?> ELEMENT_DISPLAY = new WebWrapperDisplay<>(new ElementDisplay());
+	private static final UIDisplay<?, ?, ?> ELEMENT_DISPLAY = new ElementDisplay();
 	
 	private final ElementComponent component;
 	private final ComponentUI parent;
