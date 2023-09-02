@@ -9,15 +9,19 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
 
 public class FlowInnerDisplayLayout implements SolidLayoutManager {
 
 	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator;
+	private final StyledUnitGenerator styledUnitGenerator;
 
 	public FlowInnerDisplayLayout(
-		Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator
+		Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator,
+		StyledUnitGenerator styledUnitGenerator
 	) {
 		this.innerUnitGenerator = innerUnitGenerator;
+		this.styledUnitGenerator = styledUnitGenerator;
 	}
 
 	@Override
@@ -26,7 +30,7 @@ public class FlowInnerDisplayLayout implements SolidLayoutManager {
 			throw new UnsupportedOperationException("Fluid box self-render no longer supported");
 		} else {
 			return FlowRenderer.render(new FlowRenderContext(
-				box, renderContext, localRenderContext, innerUnitGenerator
+				box, renderContext, localRenderContext, innerUnitGenerator, styledUnitGenerator
 			));
 		}
 	}

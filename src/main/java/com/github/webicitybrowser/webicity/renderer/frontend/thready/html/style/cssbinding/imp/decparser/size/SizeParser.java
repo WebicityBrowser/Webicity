@@ -95,6 +95,7 @@ public final class SizeParser {
 	}
 
 	private static float translateBoxPercentageValue(SizeCalculationContext context, PercentageValue percentageValue) {
+		// TODO: Actually, this isn't what the isHorizontal() method is for
 		float axisValue = context.isHorizontal() ?
 			context.parentSize().width() :
 			context.parentSize().height();

@@ -19,16 +19,23 @@ import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.inline.ElementInlineDisplay;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnitDisplay;
 
 public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, ElementUnit> {
 
 	private static final UIDisplay<?, ?, ?> ELEMENT_INLINE_DISPLAY = new ElementInlineDisplay();
+	private static final UIDisplay<?, ?, ?> ELEMENT_STYLED_DISPLAY = new StyledUnitDisplay();
+
 	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator =
 		directives -> BuildableRenderedUnit.create(ELEMENT_INLINE_DISPLAY, directives);
+	private final StyledUnitGenerator styledUnitGenerator =
+		context -> new StyledUnit(ELEMENT_STYLED_DISPLAY, context);
 
-	private final ElementBoxGenerator elementBoxGenerator = new ElementBoxGenerator(innerUnitGenerator);
-	private final FlowInnerDisplayLayout defaultLayout = new FlowInnerDisplayLayout(innerUnitGenerator);
+	private final ElementBoxGenerator elementBoxGenerator = new ElementBoxGenerator(innerUnitGenerator, styledUnitGenerator);
+	private final FlowInnerDisplayLayout defaultLayout = new FlowInnerDisplayLayout(innerUnitGenerator, styledUnitGenerator);
 	
 	@Override
 	public ElementContext createContext(ComponentUI componentUI) {

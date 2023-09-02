@@ -16,8 +16,11 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective.BoxSizing;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
@@ -52,26 +55,41 @@ public final class FlowBlockRenderer {
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
 		LocalRenderContext localRenderContext = state.getLocalRenderContext();
 		RenderedUnit childUnit = UIPipeline.render(anonBox, globalRenderContext, localRenderContext);
-		AbsoluteSize adjustedSize = adjustSize(state, preferredSize, childUnit.fitSize(), new float[4]);
+		AbsoluteSize adjustedSize = adjustAnonSize(state, preferredSize, childUnit.fitSize());
 		AbsolutePosition childPosition = state.positionTracker().addBox(adjustedSize, new float[4]);
 		Rectangle childRect = new Rectangle(childPosition, adjustedSize);
 		state.addChildLayoutResult(new ChildLayoutResult(childUnit, childRect));
 	}
 
 	private static void renderChild(FlowBlockRendererState state, Box childBox) {
-		AbsoluteSize preferredSize = computePreferredSize(state, childBox);
+		AbsoluteSize parentSize = state.getLocalRenderContext().getPreferredSize();
 		float[] margins = FlowBlockMarginCalculations.computeMargins(state, childBox);
-		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
-		LocalRenderContext childLocalRenderContext = createChildLocalRenderContext(state, preferredSize);
-		RenderedUnit childUnit = UIPipeline.render(childBox, globalRenderContext, childLocalRenderContext);
-		AbsoluteSize adjustedSize = adjustSize(state, preferredSize, childUnit.fitSize(), margins);
+		float[] paddings = FlowBlockPaddingCalculations.computePaddings(state, childBox);
+		AbsoluteSize preferredSize = computePreferredSize(state, childBox, paddings);
+		AbsoluteSize effectivePreferredSize = computeFallbackPreferredSize(state, preferredSize, margins);
+		AbsoluteSize contentSize = subtractPadding(effectivePreferredSize, paddings);
+		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
+		AbsoluteSize rawChildSize = childUnit.fitSize();
+		AbsoluteSize adjustedChildSize = enforcePreferredSize(rawChildSize, contentSize, preferredSize);
+		AbsoluteSize adjustedSize = addPadding(adjustedChildSize, paddings);
+		adjustedSize = stretchToParentSize(adjustedSize, parentSize, preferredSize, margins);
 		float[] adjustedMargins = FlowBlockMarginCalculations.adjustMargins(state, margins, adjustedSize);
+		adjustedMargins = FlowBlockMarginCalculations.collapseOverflowMargins(parentSize, adjustedSize, adjustedMargins);
+		
 		AbsolutePosition childPosition = state.positionTracker().addBox(adjustedSize, adjustedMargins);
 		Rectangle childRect = new Rectangle(childPosition, adjustedSize);
-		state.addChildLayoutResult(new ChildLayoutResult(childUnit, childRect));
+		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedSize, paddings);
+		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
+		state.addChildLayoutResult(new ChildLayoutResult(styledUnit, childRect));
 	}
 
-	private static AbsoluteSize computePreferredSize(FlowBlockRendererState state, Box childBox) {
+	private static RenderedUnit renderChildUnit(FlowBlockRendererState state, Box childBox, AbsoluteSize contentSize) {
+		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
+		LocalRenderContext childLocalRenderContext = createChildLocalRenderContext(state, contentSize);
+		return UIPipeline.render(childBox, globalRenderContext, childLocalRenderContext);
+	}
+
+	private static AbsoluteSize computePreferredSize(FlowBlockRendererState state, Box childBox, float[] padding) {
 		if (childBox instanceof BasicAnonymousFluidBox) {
 			return new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
 		}
@@ -80,7 +98,79 @@ public final class FlowBlockRenderer {
 		float calculatedWidth = computeSize(childBox, widthSizeCalculation, state, true);
 		SizeCalculation heightSizeCalculation = WebDirectiveUtil.getHeight(childBox.styleDirectives());
 		float calculatedHeight = computeSize(childBox, heightSizeCalculation, state, false);
+
+		if (getBoxSizing(childBox) == BoxSizing.CONTENT_BOX) {
+			if (calculatedWidth != RelativeDimension.UNBOUNDED) {
+				calculatedWidth += padding[0] + padding[1];
+			}
+			if (calculatedHeight != RelativeDimension.UNBOUNDED) {
+				calculatedHeight += padding[2] + padding[3];
+			}
+		}
+
 		return new AbsoluteSize(calculatedWidth, calculatedHeight);
+	}
+
+	private static AbsoluteSize computeFallbackPreferredSize(FlowBlockRendererState state, AbsoluteSize preferredSize, float[] margins) {
+		AbsoluteSize parentSize = state.getLocalRenderContext().getPreferredSize();
+		float marginOffset = Math.max(0, margins[0]) + Math.max(0, margins[1]);
+		float actualPreferredWidth = preferredSize.width() != RelativeDimension.UNBOUNDED ?
+			preferredSize.width() :
+			Math.max(0, parentSize.width() - marginOffset);
+		float actualPreferredHeight = preferredSize.height();
+
+		return new AbsoluteSize(actualPreferredWidth, actualPreferredHeight);
+	}
+
+	private static AbsoluteSize subtractPadding(AbsoluteSize initialSize, float[] paddings) {
+		float widthComponent = initialSize.width() == RelativeDimension.UNBOUNDED ?
+			RelativeDimension.UNBOUNDED :
+			Math.max(0, initialSize.width() - paddings[0] - paddings[1]);
+		float heightComponent = initialSize.height() == RelativeDimension.UNBOUNDED ?
+			RelativeDimension.UNBOUNDED :
+			Math.max(0, initialSize.height() - paddings[2] - paddings[3]);
+
+		return new AbsoluteSize(widthComponent, heightComponent);
+	}
+
+	private static AbsoluteSize enforcePreferredSize(
+		AbsoluteSize rawChildSize, AbsoluteSize contentSize, AbsoluteSize preferredSize
+	) {
+		float widthComponent = preferredSize.width() != RelativeDimension.UNBOUNDED ?
+			contentSize.width() :
+			rawChildSize.width();
+
+		float heightComponent = preferredSize.height() != RelativeDimension.UNBOUNDED ?
+			contentSize.height() :
+			rawChildSize.height();
+
+		return new AbsoluteSize(widthComponent, heightComponent);
+	}
+
+	private static AbsoluteSize addPadding(AbsoluteSize initialSize, float[] paddings) {
+		float widthComponent = initialSize.width() == RelativeDimension.UNBOUNDED ?
+			RelativeDimension.UNBOUNDED :
+			initialSize.width() + paddings[0] + paddings[1];
+		float heightComponent = initialSize.height() == RelativeDimension.UNBOUNDED ?
+			RelativeDimension.UNBOUNDED :
+			initialSize.height() + paddings[2] + paddings[3];
+
+		return new AbsoluteSize(widthComponent, heightComponent);
+	}
+
+	private static AbsoluteSize stretchToParentSize(
+		AbsoluteSize adjustedSize, AbsoluteSize parentSize, AbsoluteSize preferredSize, float[] margins
+	) {
+		if (margins[0] == RelativeDimension.UNBOUNDED || margins[1] == RelativeDimension.UNBOUNDED) {
+			return adjustedSize;
+		}
+		float marginOffset = Math.max(0, margins[0]) + Math.max(0, margins[1]);
+		float stretchedPreferredWidth = preferredSize.width() != RelativeDimension.UNBOUNDED ?
+			adjustedSize.width() :
+			Math.max(parentSize.width() - marginOffset, adjustedSize.width());
+		float stretchedPreferredHeight = adjustedSize.height();
+
+		return new AbsoluteSize(stretchedPreferredWidth, stretchedPreferredHeight);
 	}
 
 	private static float computeSize(Box childBox, SizeCalculation sizeCalculation, FlowBlockRendererState state, boolean isHorizontal) {
@@ -91,34 +181,32 @@ public final class FlowBlockRenderer {
 		return sizeCalculation.calculate(sizeCalculationContext);
 	}
 
-	private static AbsoluteSize adjustSize(FlowBlockRendererState state, AbsoluteSize preferredSize, AbsoluteSize fitSize, float[] margins) {
+	private static AbsoluteSize adjustAnonSize(
+		FlowBlockRendererState state, AbsoluteSize preferredSize, AbsoluteSize fitSize
+	) {
 		AbsoluteSize parentSize = state.getLocalRenderContext().getPreferredSize();
-		float recommendedSize =	parentSize.width() - margins[0] - margins[1];
-		if (recommendedSize < 0) {
-			recommendedSize = Math.max(0, parentSize.width() - margins[0]);
-		}
+		
 		float widthComponent = preferredSize.width() != RelativeDimension.UNBOUNDED ?
 			preferredSize.width() :
-			Math.max(recommendedSize, fitSize.width());
-		float heightComponent = Math.max(preferredSize.height(), fitSize.height());
+			Math.max(parentSize.width(), fitSize.width());
+
+		float heightComponent = preferredSize.height() != RelativeDimension.UNBOUNDED ?
+			preferredSize.height() :
+			fitSize.height();
 
 		return new AbsoluteSize(widthComponent, heightComponent);
 	}
 
 	private static LocalRenderContext createChildLocalRenderContext(FlowBlockRendererState state, AbsoluteSize preferredSize) {
-		AbsoluteSize actualPreferredSize = computeActualPreferredSize(state, preferredSize);
-		
-		return LocalRenderContext.create(actualPreferredSize, state.getFont().getMetrics(), new ContextSwitch[0]);
+		return LocalRenderContext.create(preferredSize, state.getFont().getMetrics(), new ContextSwitch[0]);
 	}
 
-	private static AbsoluteSize computeActualPreferredSize(FlowBlockRendererState state, AbsoluteSize preferredSize) {
-		AbsoluteSize parentSize = state.getLocalRenderContext().getPreferredSize();
-		float actualPreferredWidth = preferredSize.width() != RelativeDimension.UNBOUNDED ?
-			preferredSize.width() :
-			parentSize.width();
-		float actualPreferredHeight = preferredSize.height();
-
-		return new AbsoluteSize(actualPreferredWidth, actualPreferredHeight);
+	private static BoxSizing getBoxSizing(Box childBox) {
+		return childBox
+			.styleDirectives()
+			.inheritDirectiveOrEmpty(BoxSizingDirective.class)
+			.map(BoxSizingDirective::getValue)
+			.orElse(BoxSizing.CONTENT_BOX);
 	}
 
 }

@@ -15,6 +15,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.c
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebBoxGeneratorUtil;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
@@ -22,9 +23,14 @@ import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
 public class ElementBoxGenerator {
 
 	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator;
+	private final StyledUnitGenerator styledUnitGenerator;
 
-	public ElementBoxGenerator(Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator) {
+	public ElementBoxGenerator(
+		Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator,
+		StyledUnitGenerator styledUnitGenerator
+	) {
 		this.innerUnitGenerator = innerUnitGenerator;
+		this.styledUnitGenerator = styledUnitGenerator;
 	}
 	
 	public List<ChildrenBox> generateBoxes(ElementContext elementContext, BoxContext boxContext, StyleGenerator styleGenerator) {
@@ -53,7 +59,7 @@ public class ElementBoxGenerator {
 	}
 
 	private SolidLayoutManager getLayout(ElementContext elementContext, DirectivePool directives) {
-		return new FlowInnerDisplayLayout(innerUnitGenerator);
+		return new FlowInnerDisplayLayout(innerUnitGenerator, styledUnitGenerator);
 	}
 	
 	// Children

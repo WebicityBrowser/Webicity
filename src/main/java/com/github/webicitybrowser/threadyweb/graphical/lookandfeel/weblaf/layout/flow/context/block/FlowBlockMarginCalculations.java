@@ -81,6 +81,20 @@ public final class FlowBlockMarginCalculations {
 		return new float[] { leftMargin, rightMargin, margins[2], margins[3] };
 	}
 
+	public static float[] collapseOverflowMargins(AbsoluteSize parentSize, AbsoluteSize childSize, float[] originalMargins) {
+		if (parentSize.width() == RelativeDimension.UNBOUNDED) {
+			return originalMargins;
+		}
+		float[] adjustedMargins = new float[] {
+			originalMargins[0], originalMargins[1], originalMargins[2], originalMargins[3]
+		};
+		if (childSize.width() + originalMargins[0] + originalMargins[1] != parentSize.width()) {
+			adjustedMargins[1] = Math.max(0, parentSize.width() - childSize.width() - originalMargins[0]);
+		}
+
+		return adjustedMargins;
+	 }
+
 	private static SizeCalculationContext createSizeCalculationContext(FlowBlockRendererState state) {
 		LocalRenderContext localRenderContext = state.getLocalRenderContext();
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();

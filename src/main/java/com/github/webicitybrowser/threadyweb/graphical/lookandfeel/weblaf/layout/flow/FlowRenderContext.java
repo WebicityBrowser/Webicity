@@ -7,12 +7,14 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
 
 public record FlowRenderContext(
 	ChildrenBox box,
 	GlobalRenderContext globalRenderContext,
 	LocalRenderContext localRenderContext,
-	Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator
+	Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator,
+	StyledUnitGenerator styledUnitGenerator
 ) {
 	
 }

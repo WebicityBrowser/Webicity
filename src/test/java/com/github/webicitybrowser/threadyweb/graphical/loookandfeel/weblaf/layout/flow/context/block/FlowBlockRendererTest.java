@@ -20,10 +20,12 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.directive.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.imp.BuildableRenderedUnitImp;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestFontMetrics;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubBlockBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubContentBox;
@@ -110,7 +112,7 @@ public class FlowBlockRendererTest {
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = createLocalRenderContext();
 		LayoutResult result = FlowBlockRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
-		Assertions.assertEquals(new AbsoluteSize(40, 30), result.fitSize());
+		Assertions.assertEquals(new AbsoluteSize(50, 30), result.fitSize());
 		Assertions.assertEquals(1, result.childLayoutResults().length);
 		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
@@ -198,6 +200,57 @@ public class FlowBlockRendererTest {
 		Assertions.assertEquals(new AbsoluteSize(50, 10), childLayoutResult2.relativeRect().size());
 	}
 
+	@Test
+	@DisplayName("Padding creates styled unit around content")
+	public void paddingCreatesStyledUnitAroundContent() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives = new BasicDirectivePool();
+		styleDirectives.directive(PaddingDirective.ofTop(_1 -> 10));
+		styleDirectives.directive(PaddingDirective.ofLeft(_1 -> 5));
+		styleDirectives.directive(PaddingDirective.ofBottom(_1 -> 15));
+		styleDirectives.directive(PaddingDirective.ofRight(_1 -> 20));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = FlowBlockRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(50, 35), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertInstanceOf(StyledUnit.class, childLayoutResult.unit());
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(50, 35), childLayoutResult.relativeRect().size());
+		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
+		Assertions.assertEquals(new AbsoluteSize(25, 10), styledUnit.context().innerUnitSize());
+		Assertions.assertEquals(new AbsolutePosition(5, 10), styledUnit.context().innerUnitPosition());
+	}
+	
+	@Test
+	@DisplayName("Box with padding and margin is properly positioned")
+	public void boxWithPaddingAndMarginIsProperlyPositioned() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives = new BasicDirectivePool();
+		styleDirectives.directive(WidthDirective.of(_1 -> 10));
+		styleDirectives.directive(PaddingDirective.ofLeft(_1 -> 5));
+		styleDirectives.directive(PaddingDirective.ofRight(_1 -> 5));
+		styleDirectives.directive(MarginDirective.ofLeft(SizeCalculation.SIZE_AUTO));
+		styleDirectives.directive(MarginDirective.ofRight(SizeCalculation.SIZE_AUTO));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = FlowBlockRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(50, 10), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertInstanceOf(StyledUnit.class, childLayoutResult.unit());
+		Assertions.assertEquals(new AbsolutePosition(15, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(20, 10), childLayoutResult.relativeRect().size());
+		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
+		Assertions.assertEquals(new AbsoluteSize(10, 10), styledUnit.context().innerUnitSize());
+		Assertions.assertEquals(new AbsolutePosition(5, 0), styledUnit.context().innerUnitPosition());
+	}
+
 	private GlobalRenderContext mockGlobalRenderContext() {
 		ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
 		Mockito.when(resourceLoader.loadFont(Mockito.any())).thenReturn(testFont);
@@ -219,7 +272,8 @@ public class FlowBlockRendererTest {
 	private FlowRenderContext createRenderContext(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		return new FlowRenderContext(
 			box, globalRenderContext, localRenderContext,
-			(directives) -> new BuildableRenderedUnitImp(null, directives));
+			directives -> new BuildableRenderedUnitImp(null, directives),
+			context -> new StyledUnit(null, context));
 	}
 
 	private Font2D createTestFont() {

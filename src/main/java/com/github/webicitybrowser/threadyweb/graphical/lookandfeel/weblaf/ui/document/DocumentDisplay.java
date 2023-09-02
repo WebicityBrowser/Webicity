@@ -21,13 +21,17 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementPainter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.inline.ElementInlineDisplay;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnitDisplay;
 
 public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, ElementUnit> {
 
 	private final UIDisplay<?, ?, ?> ELEMENT_INLINE_DISPLAY = new ElementInlineDisplay();
+	private static final UIDisplay<?, ?, ?> ELEMENT_STYLED_DISPLAY = new StyledUnitDisplay();
 
 	private final SolidLayoutManager INNER_DISPLAY_LAYOUT = new FlowInnerDisplayLayout(
-		directives -> BuildableRenderedUnit.create(ELEMENT_INLINE_DISPLAY, directives));
+		directives -> BuildableRenderedUnit.create(ELEMENT_INLINE_DISPLAY, directives),
+		context -> new StyledUnit(ELEMENT_STYLED_DISPLAY, context));
 	
 	@Override
 	public DocumentContext createContext(ComponentUI componentUI) {
