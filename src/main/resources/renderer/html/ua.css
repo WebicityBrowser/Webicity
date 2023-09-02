@@ -2,12 +2,16 @@ a {
     color: #0000FF;
 }
 
-div, body, html {
+body, html {
     display: block;
 }
 
 head, style, script {
     display: none;
+}
+
+button {
+    display: inline-block;
 }
 
 /* For content after this line, see licenses/WHATWG.txt for license information. */
@@ -25,5 +29,5 @@ h6 { font-size: 0.67em; font-weight: bold; }
 
 address, blockquote, center, dialog, div, figure, figcaption, footer, form,
 header, hr, legend, listing, main, p, plaintext, pre, search, xmp {
-  display: block;
+    display: block;
 }

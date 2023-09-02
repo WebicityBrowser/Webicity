@@ -6,6 +6,7 @@ import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.imp.PropertyValueParseResultImp;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
 import com.github.webicitybrowser.spec.css.property.display.DisplayValue;
+import com.github.webicitybrowser.spec.css.property.display.InnerDisplayType;
 import com.github.webicitybrowser.spec.css.property.display.OuterDisplayType;
 
 public class BoxDisplayValueParser implements PropertyValueParser<DisplayValue> {
@@ -21,7 +22,7 @@ public class BoxDisplayValueParser implements PropertyValueParser<DisplayValue> 
 			return PropertyValueParseResultImp.empty();
 		}
 		
-		return PropertyValueParseResultImp.of(new DisplayValue(outerDisplayType), length);
+		return PropertyValueParseResultImp.of(new DisplayValue(outerDisplayType, InnerDisplayType.FLOW), length);
 	}
 
 	private OuterDisplayType parseOuterDisplayType(IdentToken identifier) {

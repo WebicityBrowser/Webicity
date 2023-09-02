@@ -19,6 +19,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.directive.HeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.FlowInlineRenderer;
@@ -235,6 +236,29 @@ public class FlowInlineRendererTest {
 		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(40, 30), childLayoutResult.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can add horizontal padding")
+	public void canAddHorizontalPadding() {
+		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		DirectivePool directives = new BasicDirectivePool();
+		directives.directive(PaddingDirective.ofLeft(_1 -> 15));
+		directives.directive(PaddingDirective.ofRight(_1 -> 15));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), directives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(50, 50));
+		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(40, 10), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(40, 10), childLayoutResult.relativeRect().size());
+		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
+		Assertions.assertEquals(new AbsolutePosition(15, 0), styledUnit.context().innerUnitPosition());
+		Assertions.assertEquals(new AbsoluteSize(10, 10), styledUnit.context().innerUnitSize());
+
 	}
 
 	private GlobalRenderContext mockGlobalRenderContext() {

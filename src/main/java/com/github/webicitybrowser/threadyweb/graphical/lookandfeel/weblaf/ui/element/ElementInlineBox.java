@@ -7,6 +7,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.CloneBox;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.box.InlineBoxChildrenTracker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.value.InnerDisplay;
 
 public class ElementInlineBox implements ElementBox, CloneBox {
 
@@ -16,12 +18,14 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 	private final Component owningComponent;
 	private final DirectivePool styleDirectives;
 	private final SolidLayoutManager layout;
+	private final boolean managesSelf;
 
 	public ElementInlineBox(UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, SolidLayoutManager layout) {
 		this.display = display;
 		this.owningComponent = owningComponent;
 		this.styleDirectives = styleDirectives;
 		this.layout = layout;
+		this.managesSelf = computeSelfManages();
 	}
 
 	@Override
@@ -56,12 +60,17 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 
 	@Override
 	public boolean managesSelf() {
-		return false;
+		return this.managesSelf;
 	}
 
 	@Override
 	public CloneBox cloneEmpty() {
 		return new ElementInlineBox(display, owningComponent, styleDirectives, layout);
+	}
+
+	private boolean computeSelfManages() {
+		InnerDisplay innerDisplay = WebDirectiveUtil.getInnerDisplay(styleDirectives);
+		return innerDisplay == InnerDisplay.FLOW_ROOT;
 	}
 
 }

@@ -11,12 +11,12 @@ public final class StyledUnitPainter {
 
 	private StyledUnitPainter() {}
 
-    public static void paint(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
+	public static void paint(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		BackgroundPainter.paintBackground(
 			unit.context().styleDirectives(),
 			globalPaintContext, localPaintContext);
 		paintInnerUnit(unit, globalPaintContext, localPaintContext);
-    }
+	}
 
 	private static void paintInnerUnit(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		AbsolutePosition position = localPaintContext.documentRect().position();
