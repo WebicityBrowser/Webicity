@@ -13,11 +13,11 @@ import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
  * @param fontDecorations Decorations to be applied to the font
  *  (such as italic or underlined)
  */
-public record FontSettings(FontSource fontSource, float fontSize, int fontWeight, FontDecoration[] fontDecorations) {
+public record FontSettings(FontSource[] fontSources, float fontSize, int fontWeight, FontDecoration[] fontDecorations) {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(fontSource, fontSize, fontWeight);
+		return Objects.hash(fontSources, fontSize, fontWeight);
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public record FontSettings(FontSource fontSource, float fontSize, int fontWeight
 		
 		FontSettings other = (FontSettings) o;
 		return
-			other.fontSource().equals(fontSource) &&
+			other.fontSources().equals(fontSources) &&
 			other.fontSize() == fontSize &&
 			other.fontWeight() == fontWeight &&
 			Arrays.compare(other.fontDecorations(), fontDecorations) == 0;

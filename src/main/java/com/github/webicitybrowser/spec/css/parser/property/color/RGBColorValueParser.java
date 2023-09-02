@@ -29,7 +29,7 @@ public class RGBColorValueParser implements PropertyValueParser<ColorValue> {
 		}
 
 		TokenLike[] valueTokens = TokenUtils.stripWhitespace(functionValue.getValue());
-		TokenStream stream = new TokenStreamImp(valueTokens);
+		TokenStream stream = new TokenStreamImp(valueTokens, offset);
 		
 		float[] rgbComponents = parseRGBComponents(stream);
 		for (float component : rgbComponents) {

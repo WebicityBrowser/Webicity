@@ -15,6 +15,11 @@ public class TokenStreamImp implements TokenStream {
 		this.position = 0;
 	}
 
+	public TokenStreamImp(TokenLike[] tokens, int position) {
+		this.tokens = tokens;
+		this.position = position;
+	}
+
 	@Override
 	public TokenLike read() {
 		if (position >= tokens.length) {

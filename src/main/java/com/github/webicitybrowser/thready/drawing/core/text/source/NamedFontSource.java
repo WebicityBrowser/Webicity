@@ -13,6 +13,11 @@ public class NamedFontSource implements FontSource {
 	public String getName() {
 		return this.name;
 	}
+
+	@Override
+	public String toString() {
+		return "NamedFontSource [name=" + name + "]";
+	}
 	
 	@Override
 	public int hashCode() {

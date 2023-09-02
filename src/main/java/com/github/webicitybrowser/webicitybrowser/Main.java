@@ -10,6 +10,7 @@ import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
 import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
 import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
+import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.gui.directive.basics.style.OneOneStyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
@@ -138,8 +139,8 @@ public class Main {
 	private static GUIContent createContent(Component component) {
 		LookAndFeel lookAndFeel = createLookAndFeel();
 		FontSettings fontSettings = new FontSettings(
-			new NamedFontSource("Open Sans"), 16,
-			CommonFontWeights.NORMAL, new FontDecoration[0]);
+			new FontSource[] { new NamedFontSource("Open Sans") },
+			16, CommonFontWeights.NORMAL, new FontDecoration[0]);
 
 		GUIContent content = new GUIContentImp();
 		content.setRoot(new GUIContentConfiguration(

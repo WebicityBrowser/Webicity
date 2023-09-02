@@ -3,6 +3,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.threadyweb.graphical.directive.FontFamilyDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.FontSizeDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.FontWeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective;
@@ -14,8 +15,12 @@ public final class WebTextDirectiveUtil {
 	
 	private WebTextDirectiveUtil() {}
 
-	public static FontSource getFontSource(DirectivePool directives) {
-		return WebDefaults.FONT.fontSource();
+	public static FontSource[] getFontSource(DirectivePool directives) {
+		return directives
+			.inheritDirectiveOrEmpty(FontFamilyDirective.class)
+			.map(directive -> directive.getFontFamilies())
+			.map(fontFamilies -> fontFamilies)
+			.orElse(WebDefaults.FONT.fontSources());
 	}
 
 	public static float getFontSize(DirectivePool directives, SizeCalculationContext context) {

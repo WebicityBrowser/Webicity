@@ -58,11 +58,14 @@ public class SkijaFont2DImp implements SkijaFont2D {
 
 	private static Font loadNamedFont(FontSettings settings) {
 		FontStyle style = new FontStyle(settings.fontWeight(), FontWidth.NORMAL, FontSlant.UPRIGHT);
-		String fontName = ((NamedFontSource) settings.fontSource()).getName();
-		Typeface typeface = manager.matchFamilyStyle(fontName, style);
-		Font font = new Font(typeface, settings.fontSize());
+		for (int i = 0; i < settings.fontSources().length; i++) {
+			String fontName = ((NamedFontSource) settings.fontSources()[i]).getName();
+			Typeface typeface = manager.matchFamilyStyle(fontName, style);
+			if (typeface == null) continue;
+			return new Font(typeface, settings.fontSize());
+		}
 		
-		return font;
+		return new Font(null, settings.fontSize());
 	}
 
 }

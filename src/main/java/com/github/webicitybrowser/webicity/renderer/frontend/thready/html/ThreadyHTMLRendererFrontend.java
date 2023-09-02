@@ -14,6 +14,7 @@ import com.github.webicitybrowser.spec.html.node.HTMLDocument;
 import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
 import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
+import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
@@ -61,7 +62,7 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 		WebLookAndFeel.installTo(lookAndFeelBuilder);
 		LookAndFeel lookAndFeel = lookAndFeelBuilder.build();
 		FontSettings fontSettings = new FontSettings(
-			new NamedFontSource("Times New Roman"), 16,
+			new FontSource[] { new NamedFontSource("Times New Roman") }, 16,
 			CommonFontWeights.NORMAL, new FontDecoration[0]);
 		
 		GUIContent content = new GUIContentImp();
