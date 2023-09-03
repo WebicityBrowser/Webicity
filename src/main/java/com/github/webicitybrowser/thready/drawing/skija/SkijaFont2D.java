@@ -6,7 +6,7 @@ import io.github.humbleui.skija.Font;
 
 public interface SkijaFont2D extends Font2D {
 
-	Font getRaw();
+	Font getEffectiveFont(int codePoint);
 
 	short getCharacterGlyph(int codePoint);
 

@@ -1,8 +1,12 @@
 package com.github.webicitybrowser.thready.drawing.skija.imp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
+import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.drawing.skija.SkijaFont2D;
 
@@ -17,13 +21,14 @@ public class SkijaFont2DImp implements SkijaFont2D {
 
 	private static final FontMgr manager = FontMgr.getDefault();
 	
-	private final Font font;
+	private final Font[] fallbackFonts;
 	private final FontMetrics metrics;
 	
 	private final short[] glyphCache = new short[256];
+	private final Font[] effectiveFontCache = new Font[256];
 
-	public SkijaFont2DImp(Font font, FontMetrics metrics) {
-		this.font = font;
+	public SkijaFont2DImp(Font[] fallbackFonts, FontMetrics metrics) {
+		this.fallbackFonts = fallbackFonts;
 		this.metrics = metrics;
 	}
 
@@ -31,41 +36,68 @@ public class SkijaFont2DImp implements SkijaFont2D {
 	public FontMetrics getMetrics() {
 		return this.metrics;
 	}
+
+	public Font getEffectiveFont(int codePoint) {
+		if (codePoint < 256 && effectiveFontCache[codePoint] != null) {
+			return effectiveFontCache[codePoint];
+		}
+
+		Font font = fallbackFonts[0];
+		for (Font fallbackFont : fallbackFonts) {
+			short glyph = fallbackFont.getUTF32Glyph(codePoint);
+			if (glyph != 0) {
+				font = fallbackFont;
+				break;
+			}
+		}
+
+		if (codePoint < 256) {
+			effectiveFontCache[codePoint] = font;
+		}
+
+		return font;
+	}
 	
 	public short getCharacterGlyph(int codePoint) {
 		if (codePoint < 256 && glyphCache[codePoint] != 0) {
 			return glyphCache[codePoint];
 		}
 		
-		short glyph = font.getUTF32Glyph(codePoint);
+		short glyph = getEffectiveFont(codePoint).getUTF32Glyph(codePoint);
 		if (codePoint < 256) {
 			glyphCache[codePoint] = glyph;
 		}
-		
+
 		return glyph;
-	}
-	
-	public Font getRaw() {
-		return this.font;
 	}
 
 	public static Font2D createFor(FontSettings settings) {
-		Font font = loadNamedFont(settings);
-		FontMetrics metrics = new SkijaFontMetricsImp(font, settings, font.getMetrics());
+		Font[] fonts = loadFonts(settings);
+		FontMetrics metrics = new SkijaFontMetricsImp(fonts, settings);
 		
-		return new SkijaFont2DImp(font, metrics);
+		return new SkijaFont2DImp(fonts, metrics);
 	}
 
-	private static Font loadNamedFont(FontSettings settings) {
+	private static Font[] loadFonts(FontSettings settings) {
+		List<Font> fonts = new ArrayList<>();
+		FontSource[] sources = settings.fontSources();
 		FontStyle style = new FontStyle(settings.fontWeight(), FontWidth.NORMAL, FontSlant.UPRIGHT);
-		for (int i = 0; i < settings.fontSources().length; i++) {
-			String fontName = ((NamedFontSource) settings.fontSources()[i]).getName();
-			Typeface typeface = manager.matchFamilyStyle(fontName, style);
-			if (typeface == null) continue;
-			return new Font(typeface, settings.fontSize());
+		for (int i = 0; i < sources.length; i++) {
+			Font font = loadNamedFont(
+				((NamedFontSource) sources[i]),
+				style, settings.fontSize());
+			if (font != null) fonts.add(font);
 		}
-		
-		return new Font(null, settings.fontSize());
+		fonts.add(new Font(manager.matchFamilyStyle("Times New Roman", style), settings.fontSize()));
+
+		return fonts.toArray(Font[]::new);
+	}
+
+	private static Font loadNamedFont(NamedFontSource fontSource, FontStyle style, float fontSize) {
+		String fontName = fontSource.getName();
+		Typeface typeface = manager.matchFamilyStyle(fontName, style);
+		if (typeface == null) return null;
+		return new Font(typeface, fontSize);
 	}
 
 }

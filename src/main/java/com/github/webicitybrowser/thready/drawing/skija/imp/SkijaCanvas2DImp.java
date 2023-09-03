@@ -49,14 +49,39 @@ public class SkijaCanvas2DImp implements Canvas2D {
 	@Override
 	public void drawText(float x, float y, String text) {
 		beforePaint();
-		SkijaFont2D loadedFont = (SkijaFont2D) paint.getFont();
-		Font font = loadedFont.getRaw();
-		FontMetrics metrics = loadedFont.getMetrics();
-		float adjustedY = y + metrics.getCapHeight();
 
-		canvas.drawString(text, x, adjustedY, font, rawPaint);
+		SkijaFont2D skijaFont = (SkijaFont2D) paint.getFont();
+		FontMetrics metrics = skijaFont.getMetrics();
+		
+		int windowStart = 0;
+		float currentX = x;
+		float adjustedY = y + metrics.getCapHeight();
+		while (windowStart < text.length()) {
+			Font currentFont = skijaFont.getEffectiveFont(text.codePointAt(windowStart));
+			int windowEnd = endOfConsecutiveFontChars(text, windowStart);
+			String windowText = text.substring(windowStart, windowEnd + 1);
+			canvas.drawString(windowText, currentX, adjustedY, currentFont, rawPaint);
+
+			currentX += metrics.getStringWidth(windowText);
+			windowStart = windowEnd + 1;
+		}
 	}
 	
+	private int endOfConsecutiveFontChars(String text, int windowStart) {
+		SkijaFont2D skijaFont = (SkijaFont2D) paint.getFont();
+		Font initialFont = skijaFont.getEffectiveFont(text.codePointAt(windowStart));
+		int windowEnd = windowStart + 1;
+		while (windowEnd < text.length()) {
+			Font font = skijaFont.getEffectiveFont(text.codePointAt(windowEnd));
+			if (font != initialFont) {
+				return windowEnd - 1;
+			}
+			windowEnd++;
+		}
+
+		return windowEnd - 1;
+	}
+
 	@Override
 	public void drawLine(float x, float y, int run, float fall) {
 		beforePaint();

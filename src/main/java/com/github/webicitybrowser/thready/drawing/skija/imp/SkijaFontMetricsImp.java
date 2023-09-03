@@ -7,16 +7,16 @@ import io.github.humbleui.skija.FontMetrics;
 
 public class SkijaFontMetricsImp implements com.github.webicitybrowser.thready.drawing.core.text.FontMetrics {
 
-	private final Font font;
 	private final FontSettings settings;
-	private final FontMetrics metrics;
+	private final FontMetrics primaryMetrics;
+	private final Font[] fonts;
 	
-	private final int[] widthCache = new int[256];
+	private final float[] widthCache = new float[256];
 
-	public SkijaFontMetricsImp(Font font, FontSettings settings, FontMetrics metrics) {
-		this.font = font;
+	public SkijaFontMetricsImp(Font[] fonts, FontSettings settings) {
+		this.primaryMetrics = fonts[0].getMetrics();
 		this.settings = settings;
-		this.metrics = metrics;
+		this.fonts = fonts;
 	}
 
 	@Override
@@ -25,12 +25,14 @@ public class SkijaFontMetricsImp implements com.github.webicitybrowser.thready.d
 			return widthCache[codePoint];
 		}
 		
-		short glyph = font.getUTF32Glyph(codePoint);
-		if (glyph == 0) {
-			return 0;
+		float width = 0;
+		for (int i = 0; i < fonts.length; i++) {
+			short glyph = fonts[i].getUTF32Glyph(codePoint);
+			if (glyph == 0 && i != 0) continue;
+			width = fonts[i].getWidths(new short[] { glyph })[0];
+			if (glyph != 0) break;
 		}
-		
-		int width = (int) font.getWidths(new short[] { glyph })[0];
+
 		if (codePoint < 256) {
 			widthCache[codePoint] = width;
 		}
@@ -43,9 +45,6 @@ public class SkijaFontMetricsImp implements com.github.webicitybrowser.thready.d
 		float textWidth = 0;
 		for (int i = 0; i < text.length(); i++) {
 			int codePoint = text.codePointAt(i);
-			if (codePoint >= 256) {
-				return font.measureTextWidth(text);
-			}
 			textWidth += getCharacterWidth(codePoint);
 		}
 		
@@ -54,32 +53,32 @@ public class SkijaFontMetricsImp implements com.github.webicitybrowser.thready.d
 
 	@Override
 	public float getHeight() {
-		return metrics.getHeight();
+		return primaryMetrics.getHeight();
 	}
 
 	@Override
 	public float getLeading() {
-		return metrics.getLeading();
+		return primaryMetrics.getLeading();
 	}
 	
 	@Override
 	public float getDescent() {
-		return metrics.getDescent();
+		return primaryMetrics.getDescent();
 	}
 	
 	@Override
 	public float getAscent() {
-		return metrics.getAscent();
+		return primaryMetrics.getAscent();
 	}
 	
 	@Override
 	public float getCapHeight() {
-		return metrics.getCapHeight();
+		return primaryMetrics.getCapHeight();
 	}
 
 	@Override
 	public float getXHeight() {
-		return metrics.getXHeight();
+		return primaryMetrics.getXHeight();
 	}
 
 	@Override
