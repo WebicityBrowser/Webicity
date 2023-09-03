@@ -20,7 +20,7 @@ public final class ContainerPainter {
 	private static void paintChildren(ContainerRenderedUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		for (ChildLayoutResult childResult: unit.childLayoutResults()) {
 			Rectangle childDocumentRect = computeResultDocumentRect(localPaintContext.documentRect(), childResult.relativeRect());
-			if (childInViewport(localPaintContext.viewport(), childDocumentRect)) {
+			if (childInViewport(globalPaintContext.viewport(), childDocumentRect)) {
 				paintChild(childResult, globalPaintContext, localPaintContext);
 			}
 		}
@@ -34,7 +34,7 @@ public final class ContainerPainter {
 	private static LocalPaintContext createChildPaintContext(ChildLayoutResult resultToPaint, LocalPaintContext localPaintContext) {
 		Rectangle resultDocumentRect = computeResultDocumentRect(localPaintContext.documentRect(), resultToPaint.relativeRect());
 		// TODO: Pass properly clipped canvas
-		return new LocalPaintContext(localPaintContext.canvas(), resultDocumentRect, localPaintContext.viewport());
+		return new LocalPaintContext(localPaintContext.canvas(), resultDocumentRect);
 	}
 
 	private static Rectangle computeResultDocumentRect(Rectangle documentRect, Rectangle renderedRect) {

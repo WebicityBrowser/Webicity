@@ -199,8 +199,8 @@ public class GUIContentImp implements GUIContent {
 		clearPaint(canvas, contentSize);
 		
 		UIDisplay<?, ?, V> display = (UIDisplay<?, ?, V>) rootUI.getRootDisplay();
-		GlobalPaintContext globalPaintContext = new PaintContextImp(redrawContext.invalidationScheduler());
-		LocalPaintContext localPaintContext = new LocalPaintContext(canvas, createDocumentRect(contentSize), viewport);
+		GlobalPaintContext globalPaintContext = new PaintContextImp(viewport, redrawContext.invalidationScheduler());
+		LocalPaintContext localPaintContext = new LocalPaintContext(canvas, createDocumentRect(contentSize));
 		display.paint((V) rootUnit, globalPaintContext, localPaintContext);
 	}
 

@@ -27,8 +27,7 @@ public final class StyledUnitPainter {
 
 		LocalPaintContext innerLocalPaintContext = new LocalPaintContext(
 			localPaintContext.canvas(),
-			innerDocumentRect,
-			localPaintContext.documentRect());
+			innerDocumentRect);
 
 		UIPipeline.paint(unit.context().innerUnit(), globalPaintContext, innerLocalPaintContext);
 	}

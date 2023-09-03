@@ -17,7 +17,7 @@ public final class FramePainter {
 		AbsoluteSize contentSize = localPaintContext.documentRect().size();
 		ScreenContentRedrawContext redrawContext = new ScreenContentRedrawContext(
 			childCanvas, contentSize, frameUnit.resourceLoader(),
-			context.getInvalidationScheduler());
+			context.invalidationScheduler());
 		frameUnit.screenContent().redraw(redrawContext);
 	}
 

@@ -16,17 +16,14 @@ public final class ElementChildrenPainter {
 	public static void paintChildren(ElementUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		for (ChildLayoutResult childResult: unit.layoutResults().childLayoutResults()) {
 			Rectangle childRect = computeResultDocumentRect(localPaintContext.documentRect(), childResult.relativeRect());
-			if (childInViewport(childRect, localPaintContext.viewport())) {
+			if (childInViewport(childRect, globalPaintContext.viewport())) {
 				paintChild(globalPaintContext, localPaintContext, childResult, childRect);
 			}
 		}
 	}
 
 	private static void paintChild(GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext, ChildLayoutResult childLayoutResult, Rectangle childRect) {
-		LocalPaintContext childPaintContext = new LocalPaintContext(
-			localPaintContext.canvas(),
-			childRect,
-			localPaintContext.viewport());
+		LocalPaintContext childPaintContext = new LocalPaintContext(localPaintContext.canvas(), childRect);
 		
 		// TODO: Pass properly clipped canvas
 		UIPipeline.paint(childLayoutResult.unit(), globalPaintContext, childPaintContext);

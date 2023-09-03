@@ -63,7 +63,7 @@ public final class URLBarPainter {
 		Canvas2D ctx = canvas.withPaint(paint);
 		
 		TextFieldContext textFieldContext = unit.context().textFieldContext();
-		LocalPaintContext textFieldLocalContext = new LocalPaintContext(ctx, contentRect, localContext.viewport());
+		LocalPaintContext textFieldLocalContext = new LocalPaintContext(ctx, contentRect);
 		TextFieldPainter.paint(textFieldContext, globalContext, textFieldLocalContext);
 	}
 	

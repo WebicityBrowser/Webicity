@@ -40,7 +40,7 @@ public class TextFieldPainter {
 	private static void scheduleNextRedraw(GlobalPaintContext globalContext, TextFieldContext textFieldContext) {
 		TextFieldCursorState currentTextFieldCursorState = getCurrentTextFieldCursorState();
 		if (textFieldContext.getLastCursorState() != currentTextFieldCursorState) {
-			scheduleNextInvalidation(globalContext.getInvalidationScheduler(), textFieldContext.getOwningComponentUI());
+			scheduleNextInvalidation(globalContext.invalidationScheduler(), textFieldContext.getOwningComponentUI());
 			textFieldContext.setLastCursorState(currentTextFieldCursorState);
 		}
 	}
