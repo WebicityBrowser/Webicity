@@ -106,7 +106,9 @@ public final class FlowBlockRenderer {
 		float marginOffset = Math.max(0, margins[0]) + Math.max(0, margins[1]);
 		float actualPreferredWidth = preferredSize.width() != RelativeDimension.UNBOUNDED ?
 			preferredSize.width() :
-			Math.max(0, parentSize.width() - marginOffset);
+			parentSize.width() == RelativeDimension.UNBOUNDED ?
+				RelativeDimension.UNBOUNDED :
+				Math.max(0, parentSize.width() - marginOffset);
 		float actualPreferredHeight = preferredSize.height();
 
 		return new AbsoluteSize(actualPreferredWidth, actualPreferredHeight);

@@ -13,11 +13,13 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebBoxGeneratorUtil;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.value.InnerDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
 
 public class ElementBoxGenerator {
@@ -35,9 +37,8 @@ public class ElementBoxGenerator {
 	
 	public List<ChildrenBox> generateBoxes(ElementContext elementContext, BoxContext boxContext, StyleGenerator styleGenerator) {
 		DirectivePool directives = styleGenerator.getStyleDirectives();
-		OuterDisplay boxDisplay = WebDirectiveUtil.getOuterDisplay(directives);
 		
-		ChildrenBox rootBox = createBox(elementContext, directives, boxDisplay);
+		ChildrenBox rootBox = createBox(elementContext, directives);
 		addChildrenToBox(rootBox, elementContext, boxContext, styleGenerator);
 		
 		return List.of(rootBox);
@@ -45,11 +46,12 @@ public class ElementBoxGenerator {
 	
 	//
 	
-	private ChildrenBox createBox(ElementContext elementContext, DirectivePool directives, OuterDisplay boxDisplay) {
+	private ChildrenBox createBox(ElementContext elementContext, DirectivePool directives) {
 		Component component = elementContext.component();
 		SolidLayoutManager layout = getLayout(elementContext, directives);
 		
-		switch (boxDisplay) {
+		OuterDisplay outerDisplay = WebDirectiveUtil.getOuterDisplay(directives);
+		switch (outerDisplay) {
 		case BLOCK:
 			return new ElementBlockBox(elementContext.display(), component, directives, layout);
 		case INLINE:
@@ -59,7 +61,11 @@ public class ElementBoxGenerator {
 	}
 
 	private SolidLayoutManager getLayout(ElementContext elementContext, DirectivePool directives) {
-		return new FlowInnerDisplayLayout(innerUnitGenerator, styledUnitGenerator);
+		InnerDisplay innerDisplay = WebDirectiveUtil.getInnerDisplay(directives);
+		return switch (innerDisplay) {
+			case FLEX -> new FlexInnerDisplayLayout(styledUnitGenerator);
+			default -> new FlowInnerDisplayLayout(innerUnitGenerator, styledUnitGenerator);
+		};
 	}
 	
 	// Children

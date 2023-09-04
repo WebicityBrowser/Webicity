@@ -26,13 +26,9 @@ public class FlowInnerDisplayLayout implements SolidLayoutManager {
 
 	@Override
 	public LayoutResult render(ChildrenBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		if (box.isFluid() && !box.managesSelf()) {
-			throw new UnsupportedOperationException("Fluid box self-render no longer supported");
-		} else {
-			return FlowRenderer.render(new FlowRenderContext(
-				box, renderContext, localRenderContext, innerUnitGenerator, styledUnitGenerator
-			));
-		}
+		return FlowRenderer.render(new FlowRenderContext(
+			box, renderContext, localRenderContext, innerUnitGenerator, styledUnitGenerator
+		));
 	}
 
 }

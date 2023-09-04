@@ -70,7 +70,7 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 
 	private boolean computeSelfManages() {
 		InnerDisplay innerDisplay = WebDirectiveUtil.getInnerDisplay(styleDirectives);
-		return innerDisplay == InnerDisplay.FLOW_ROOT;
+		return innerDisplay == InnerDisplay.FLOW_ROOT || innerDisplay == InnerDisplay.FLEX;
 	}
 
 }

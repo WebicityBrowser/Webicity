@@ -32,6 +32,7 @@ public class InnerOuterDisplayValueParser implements PropertyValueParser<Display
 		case "inline-block":
 			return OuterDisplayType.INLINE;
 		case "block":
+		case "flex":
 			return OuterDisplayType.BLOCK;
 		default:
 			return null;
@@ -45,6 +46,8 @@ public class InnerOuterDisplayValueParser implements PropertyValueParser<Display
 			return InnerDisplayType.FLOW;
 		case "inline-block":
 			return InnerDisplayType.FLOW_ROOT;
+		case "flex":
+			return InnerDisplayType.FLEX;
 		default:
 			return null;
 		}
