@@ -18,9 +18,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
-import com.github.webicitybrowser.threadyweb.graphical.directive.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.WidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.FlowInlineRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;

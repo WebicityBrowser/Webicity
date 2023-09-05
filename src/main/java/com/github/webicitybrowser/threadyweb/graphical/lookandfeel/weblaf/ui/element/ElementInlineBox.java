@@ -7,7 +7,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.CloneBox;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.box.InlineBoxChildrenTracker;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.InnerDisplay;
 
 public class ElementInlineBox implements ElementBox, CloneBox {

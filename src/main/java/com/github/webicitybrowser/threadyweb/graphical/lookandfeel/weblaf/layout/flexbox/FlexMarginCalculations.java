@@ -4,11 +4,11 @@ import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective.BottomMarginDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective.LeftMarginDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective.RightMarginDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective.TopMarginDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective.BottomMarginDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective.LeftMarginDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective.RightMarginDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective.TopMarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
@@ -50,19 +50,10 @@ public final class FlexMarginCalculations {
 			return defaultValue;
 		}
 
-		SizeCalculationContext sizeCalculationContext = createSizeCalculationContext(globalRenderContext, localRenderContext);
+		SizeCalculationContext sizeCalculationContext = FlexUtils.createSizeCalculationContext(globalRenderContext, localRenderContext, true);
 		return sizeCalculation.calculate(sizeCalculationContext);
 	}
 
-	private static SizeCalculationContext createSizeCalculationContext(
-		GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
-	) {
-		return new SizeCalculationContext(
-			localRenderContext.getPreferredSize(),
-			globalRenderContext.viewportSize(),
-			localRenderContext.getParentFontMetrics(),
-			globalRenderContext.rootFontMetrics(),
-			true);
-	}
+	
 	
 }

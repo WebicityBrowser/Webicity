@@ -7,7 +7,7 @@ import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective.BoxSizing;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebSizeDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
@@ -25,12 +25,39 @@ public final class LayoutSizeUtils {
 	public static AbsoluteSize computePreferredSize(
 		DirectivePool styleDirectives, LayoutSizingContext layoutSizingContext
 	) {
-		SizeCalculation widthSizeCalculation = WebDirectiveUtil.getWidth(styleDirectives);
-		float calculatedWidth = computeSize(widthSizeCalculation, layoutSizingContext, true);
-		SizeCalculation heightSizeCalculation = WebDirectiveUtil.getHeight(styleDirectives);
-		float calculatedHeight = computeSize(heightSizeCalculation, layoutSizingContext, false);
+		float width = computePreferredWidth(styleDirectives, layoutSizingContext);
+		float height = computePreferredHeight(styleDirectives, layoutSizingContext);
+		return new AbsoluteSize(width, height);
+	}
 
-		return new AbsoluteSize(calculatedWidth, calculatedHeight);
+	public static float computePreferredWidth(DirectivePool styleDirectives, LayoutSizingContext layoutSizingContext) {
+		SizeCalculation widthSizeCalculation = WebSizeDirectiveUtil.getWidth(styleDirectives);
+		return computeSize(widthSizeCalculation, layoutSizingContext, true);
+	}
+
+	public static float computeMaxWidth(DirectivePool styleDirectives, LayoutSizingContext layoutSizingContext) {
+		SizeCalculation maxWidthSizeCalculation = WebSizeDirectiveUtil.getMaxWidth(styleDirectives);
+		return computeSize(maxWidthSizeCalculation, layoutSizingContext, true);
+	}
+
+	public static float computeMinWidth(DirectivePool styleDirectives, LayoutSizingContext layoutSizingContext) {
+		SizeCalculation minWidthSizeCalculation = WebSizeDirectiveUtil.getMinWidth(styleDirectives);
+		return computeSize(minWidthSizeCalculation, layoutSizingContext, true);
+	}
+
+	public static float computePreferredHeight(DirectivePool styleDirectives, LayoutSizingContext layoutSizingContext) {
+		SizeCalculation heightSizeCalculation = WebSizeDirectiveUtil.getHeight(styleDirectives);
+		return computeSize(heightSizeCalculation, layoutSizingContext, false);
+	}
+
+	public static float computeMaxHeight(DirectivePool styleDirectives, LayoutSizingContext layoutSizingContext) {
+		SizeCalculation maxHeightSizeCalculation = WebSizeDirectiveUtil.getMaxHeight(styleDirectives);
+		return computeSize(maxHeightSizeCalculation, layoutSizingContext, false);
+	}
+
+	public static float computeMinHeight(DirectivePool styleDirectives, LayoutSizingContext layoutSizingContext) {
+		SizeCalculation minHeightSizeCalculation = WebSizeDirectiveUtil.getMinHeight(styleDirectives);
+		return computeSize(minHeightSizeCalculation, layoutSizingContext, false);
 	}
 
 	public static AbsoluteSize subtractPadding(AbsoluteSize initialSize, float[] paddings) {

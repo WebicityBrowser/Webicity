@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItem;
 
 public final class Flexer {
 	
@@ -26,11 +28,12 @@ public final class Flexer {
 
 		freezeInflexibleItems(flexItems, hypotheticalMainSize, isFlexShrink);
 		while (!flexItems.stream().allMatch(FlexItem::isFrozen)) {
-			peformFlex(flexItems, lineMainSize, isFlexShrink);
+			peformFlex(flexLine, lineMainSize, isFlexShrink);
 		}
 	}
 
-	private static void peformFlex(List<FlexItem> flexItems, float lineMainSize, boolean isFlexShrink) {
+	private static void peformFlex(FlexLine flexLine, float lineMainSize, boolean isFlexShrink) {
+		List<FlexItem> flexItems = flexLine.getFlexItems();
 		float remainingFreeSpace = lineMainSize - sumHypotheticalMainSizes(flexItems);
 		if (remainingFreeSpace != 0 && !isFlexShrink) {
 			float dividedFreeSpace = remainingFreeSpace / sumFlexGrowFactors(flexItems);
@@ -40,8 +43,14 @@ public final class Flexer {
 			undistributeFreeSpace(flexItems, remainingFreeSpace, scaledShrinkFactor);
 		}
 
-		// We don't yet support min/max main size constraints, so we just freeze all items
-		freezeAllItems(flexItems);
+		float minMaxViolations = sumMinMaxViolations(flexItems, flexLine.getFlexDirection());
+		if (minMaxViolations == 0) {
+			freezeAllItems(flexItems);
+		} else if (minMaxViolations > 0) {
+			freezeMinViolations(flexItems, flexLine.getFlexDirection());
+		} else {
+			freezeMaxViolations(flexItems, flexLine.getFlexDirection());
+		}
 	}
 
 	private static float sumFlexGrowFactors(List<FlexItem> flexItems) {
@@ -85,6 +94,38 @@ public final class Flexer {
 		}
 	}
 
+	private static void freezeMinViolations(List<FlexItem> flexItems, FlexDirection flexDirection) {
+		for (FlexItem flexItem : flexItems) {
+			if (flexItem.isFrozen()) continue;
+
+			float minSize = flexItem.getSizePreferences().getMinMainSize(flexDirection);
+			float maxSize = flexItem.getSizePreferences().getMaxMainSize(flexDirection);
+			float hypotheticalMainSize = flexItem.getHypotheticalMainSize();
+			if (minSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize < minSize) {
+				flexItem.setHypotheticalMainSize(minSize);
+				flexItem.setFrozen(true);
+			} else if (maxSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize > maxSize) {
+				flexItem.setHypotheticalMainSize(maxSize);
+			}
+		}
+	}
+
+	private static void freezeMaxViolations(List<FlexItem> flexItems, FlexDirection flexDirection) {
+		for (FlexItem flexItem : flexItems) {
+			if (flexItem.isFrozen()) continue;
+
+			float maxSize = flexItem.getSizePreferences().getMaxMainSize(flexDirection);
+			float minSize = flexItem.getSizePreferences().getMinMainSize(flexDirection);
+			float hypotheticalMainSize = flexItem.getHypotheticalMainSize();
+			if (maxSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize > maxSize) {
+				flexItem.setHypotheticalMainSize(maxSize);
+				flexItem.setFrozen(true);
+			} else if (minSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize < minSize) {
+				flexItem.setHypotheticalMainSize(minSize);
+			}
+		}
+	}
+
 	private static void distributeFreeSpace(List<FlexItem> flexItems, float dividedFreeSpace) {
 		for (FlexItem flexItem : flexItems) {
 			if (flexItem.isFrozen()) continue;
@@ -118,6 +159,24 @@ public final class Flexer {
 
 	private static float getScaledShrinkFactor(FlexItem flexItem) {
 		return flexItem.getBaseSize() * flexItem.getFlexShrink();
+	}
+
+	private static float sumMinMaxViolations(List<FlexItem> flexItems, FlexDirection flexDirection) {
+		float minMaxViolations = 0;
+		for (FlexItem item: flexItems) {
+			if (item.isFrozen()) continue;
+
+			float minSize = item.getSizePreferences().getMinMainSize(flexDirection);
+			float maxSize = item.getSizePreferences().getMaxMainSize(flexDirection);
+			float hypotheticalMainSize = item.getHypotheticalMainSize();
+			if (minSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize < minSize) {
+				minMaxViolations += minSize - hypotheticalMainSize;
+			} else if (maxSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize > maxSize) {
+				minMaxViolations += maxSize - hypotheticalMainSize;
+			}
+		}
+
+		return minMaxViolations;
 	}
 
 }

@@ -1,14 +1,16 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item;
 
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexGrowDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexShrinkDirective;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexDimension;
 
 public class FlexItem {
 	
 	private final Box box;
+	private final FlexItemSizePreferences sizePreferences;
 	private final float flexGrow;
 	private final float flexShrink;
 
@@ -18,15 +20,14 @@ public class FlexItem {
 	private float mainSize = RelativeDimension.UNBOUNDED;
 	private float crossSize = RelativeDimension.UNBOUNDED;
 	
-	private float[] margin;
-	private float[] padding;
 	private RenderedUnit renderedUnit;
 
 	private boolean isFrozen;
 	private FlexDimension itemOffset;
 
-	public FlexItem(Box box) {
+	public FlexItem(Box box, FlexItemSizePreferences sizePreferences) {
 		this.box = box;
+		this.sizePreferences = sizePreferences;
 		this.flexGrow = box
 			.styleDirectives()
 			.getDirectiveOrEmpty(FlexGrowDirective.class)
@@ -41,6 +42,10 @@ public class FlexItem {
 
 	public Box getBox() {
 		return box;
+	}
+
+	public FlexItemSizePreferences getSizePreferences() {
+		return sizePreferences;
 	}
 
 	public float getBaseSize() {
@@ -77,22 +82,6 @@ public class FlexItem {
 
 	public boolean isFrozen() {
 		return isFrozen;
-	}
-
-	public float[] getMargins() {
-		return margin;
-	}
-
-	public void setMargins(float[] margins) {
-		this.margin = margins;
-	}
-
-	public float[] getPadding() {
-		return padding;
-	}
-
-	public void setPadding(float[] padding) {
-		this.padding = padding;
 	}
 
 	public RenderedUnit getRenderedUnit() {

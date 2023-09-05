@@ -11,7 +11,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.util.SimpleDirectiveUtil;
 import com.github.webicitybrowser.thready.gui.graphical.view.textfield.TextFieldContext;
 import com.github.webicitybrowser.thready.gui.graphical.view.textfield.TextFieldPainter;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebDirectiveUtil;
 import com.github.webicitybrowser.webicitybrowser.gui.Styling;
 
 public final class URLBarPainter {

@@ -15,7 +15,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutPaddingCalculations;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItem;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItemSizePreferences;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
@@ -75,18 +76,14 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 		List<FlexItem> flexItems, List<Box> children, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
 	) {
 		for (Box child : children) {
-			// TODO: Support anon boxes
 			if (child instanceof TextBox textBox && textBox.text().isBlank()) continue;
 			if (child instanceof BasicAnonymousFluidBox anonBox) {
 				addFlexItems(flexItems, anonBox.getChildrenTracker().getChildren(), globalRenderContext, localRenderContext);
 				continue;
 			};
 
-			float[] margins = FlexMarginCalculations.computeMargins(globalRenderContext, localRenderContext, child);
-			float[] padding = LayoutPaddingCalculations.computePaddings(globalRenderContext, localRenderContext, child);
-			FlexItem childFlexItem = new FlexItem(child);
-			childFlexItem.setMargins(margins);
-			childFlexItem.setPadding(padding);
+			FlexItemSizePreferences sizePreferences = new FlexItemSizePreferences(child, globalRenderContext, localRenderContext);
+			FlexItem childFlexItem = new FlexItem(child, sizePreferences);
 			flexItems.add(childFlexItem);
 		}
 	}
@@ -106,7 +103,8 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 		List<FlexItem> flexItems = flexLine.getFlexItems();
 		FlexDirection flexDirection = flexLine.getFlexDirection();
 		for (FlexItem flexItem : flexItems) {
-			float[] margins = flexItem.getMargins();
+			float[] margins = flexItem.getSizePreferences().getMargins();
+			float[] padding = flexItem.getSizePreferences().getPadding();
 			FlexDimension marginsOffset = FlexDimension.createFrom(new AbsoluteSize(margins[0], margins[2]), flexDirection);
 			FlexDimension itemOffset = flexItem.getItemOffset();
 			FlexDimension childPosition = new FlexDimension(
@@ -115,11 +113,11 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 				flexDirection);
 			FlexDimension flexChildSize = new FlexDimension(flexItem.getMainSize(), flexItem.getCrossSize(), flexDirection);
 			AbsoluteSize childSize = flexChildSize.toAbsoluteSize();
-			AbsoluteSize childInnerSize = LayoutSizeUtils.subtractPadding(childSize, flexItem.getMargins());
+			AbsoluteSize childInnerSize = LayoutSizeUtils.subtractPadding(childSize, margins);
 			Rectangle childBounds = new Rectangle(childPosition.toAbsolutePosition(), childInnerSize);
 			RenderedUnit renderedUnit = flexItem.getRenderedUnit();
 			RenderedUnit styledUnit = styledUnitGenerator.generateStyledUnit(
-				new StyledUnitContext(flexItem.getBox(), renderedUnit, childInnerSize, flexItem.getPadding()));
+				new StyledUnitContext(flexItem.getBox(), renderedUnit, childInnerSize, padding));
 			layoutResults.add(new ChildLayoutResult(styledUnit, childBounds));
 		}
 	}

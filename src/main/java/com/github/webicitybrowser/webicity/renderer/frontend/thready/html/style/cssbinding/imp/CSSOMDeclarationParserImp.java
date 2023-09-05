@@ -14,22 +14,27 @@ import com.github.webicitybrowser.spec.css.parser.util.TokenUtils;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxHeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MinHeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MinWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexGrowDirective;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMBackgroundColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMBoxSizingDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMColorDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMDimensionDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMDisplayDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontFamilyParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontSizeDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontWeightDeclarationParser;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMHeightDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMLonghandMarginParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandMarginParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandPaddingParser;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMWidthDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexDirectionDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexFactorDeclarationParser;
@@ -43,26 +48,36 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	private final Map<String, CSSOMNamedDeclarationParser<?>> namedDeclarationParsers = new HashMap<>();
 	
 	public CSSOMDeclarationParserImp() {
+		namedDeclarationParsers.put("display", new CSSOMDisplayDeclarationParser());
+		
 		namedDeclarationParsers.put("color", new CSSOMColorDeclarationParser());
 		namedDeclarationParsers.put("background-color", new CSSOMBackgroundColorDeclarationParser());
 		namedDeclarationParsers.put("background", new CSSOMBackgroundColorDeclarationParser()); // TODO
-		namedDeclarationParsers.put("display", new CSSOMDisplayDeclarationParser());
-		namedDeclarationParsers.put("height", new CSSOMHeightDeclarationParser());
-		namedDeclarationParsers.put("width", new CSSOMWidthDeclarationParser());
+
+		namedDeclarationParsers.put("box-sizing", new CSSOMBoxSizingDeclarationParser());
+		namedDeclarationParsers.put("width", new CSSOMDimensionDeclarationParser(WidthDirective::of));
+		namedDeclarationParsers.put("min-width", new CSSOMDimensionDeclarationParser(MinWidthDirective::of));
+		namedDeclarationParsers.put("max-width", new CSSOMDimensionDeclarationParser(MaxWidthDirective::of));
+		namedDeclarationParsers.put("height", new CSSOMDimensionDeclarationParser(HeightDirective::of));
+		namedDeclarationParsers.put("min-height", new CSSOMDimensionDeclarationParser(MinHeightDirective::of));
+		namedDeclarationParsers.put("max-height", new CSSOMDimensionDeclarationParser(MaxHeightDirective::of));
+
 		namedDeclarationParsers.put("font-family", new CSSOMFontFamilyParser());
 		namedDeclarationParsers.put("font-weight", new CSSOMFontWeightDeclarationParser());
 		namedDeclarationParsers.put("font-size", new CSSOMFontSizeDeclarationParser());
+
 		namedDeclarationParsers.put("margin-left", new CSSOMLonghandMarginParser(MarginDirective::ofLeft));
 		namedDeclarationParsers.put("margin-right", new CSSOMLonghandMarginParser(MarginDirective::ofRight));
 		namedDeclarationParsers.put("margin-top", new CSSOMLonghandMarginParser(MarginDirective::ofTop));
 		namedDeclarationParsers.put("margin-bottom", new CSSOMLonghandMarginParser(MarginDirective::ofBottom));
 		namedDeclarationParsers.put("margin", new CSSOMShorthandMarginParser());
+
 		namedDeclarationParsers.put("padding-left", new CSSOMLonghandMarginParser(PaddingDirective::ofLeft));
 		namedDeclarationParsers.put("padding-right", new CSSOMLonghandMarginParser(PaddingDirective::ofRight));
 		namedDeclarationParsers.put("padding-top", new CSSOMLonghandMarginParser(PaddingDirective::ofTop));
 		namedDeclarationParsers.put("padding-bottom", new CSSOMLonghandMarginParser(PaddingDirective::ofBottom));
 		namedDeclarationParsers.put("padding", new CSSOMShorthandPaddingParser());
-		namedDeclarationParsers.put("box-sizing", new CSSOMBoxSizingDeclarationParser());
+
 		namedDeclarationParsers.put("flex", new CSSOMFlexDeclarationParser());
 		namedDeclarationParsers.put("flex-direction", new CSSOMFlexDirectionDeclarationParser());
 		namedDeclarationParsers.put("flex-wrap", new CSSOMFlexWrapDeclarationParser());

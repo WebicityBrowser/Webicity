@@ -18,7 +18,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebBoxGeneratorUtil;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.InnerDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
 

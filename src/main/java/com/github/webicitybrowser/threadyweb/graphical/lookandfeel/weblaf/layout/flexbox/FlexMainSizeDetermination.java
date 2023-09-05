@@ -10,6 +10,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexWrapDirective.FlexWrap;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItem;
 
 public final class FlexMainSizeDetermination {
 
@@ -34,9 +35,11 @@ public final class FlexMainSizeDetermination {
 		Box parentBox, List<FlexItem> flexItems, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
 	) {
 		FlexDirection flexDirection = FlexUtils.getFlexDirection(parentBox);
+		float crossSize = FlexDimension.createFrom(localRenderContext.getPreferredSize(), flexDirection).cross();
 		FlexLine flexLine = new FlexLine(flexDirection);
 		setLineInitialMainSize(flexLine, flexDirection, localRenderContext);
 		for (FlexItem flexItem: flexItems) {
+			flexItem.setCrossSize(crossSize);
 			determineMainSize(flexItem, flexDirection, globalRenderContext, localRenderContext);
 			flexLine.addFlexItem(flexItem);
 		}
@@ -47,12 +50,14 @@ public final class FlexMainSizeDetermination {
 	private static List<FlexLine> determineLinesWithMainSizesWrap(
 		Box parentBox, List<FlexItem> flexItems, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
 	) {
+		FlexDirection flexDirection = FlexUtils.getFlexDirection(parentBox);
+		float crossSize = FlexDimension.createFrom(localRenderContext.getPreferredSize(), flexDirection).cross();
 		for (FlexItem flexItem: flexItems) {
+			flexItem.setCrossSize(crossSize);
 			determineMainSize(flexItem, FlexUtils.getFlexDirection(parentBox), globalRenderContext, localRenderContext);
 		}
 
 		List<FlexLine> flexLines = new ArrayList<>();
-		FlexDirection flexDirection = FlexUtils.getFlexDirection(parentBox);
 		float availableMainSpace = FlexDimension.createFrom(localRenderContext.getPreferredSize(), flexDirection).main();
 		for (int i = 0; i < flexItems.size();) {
 			FlexLine flexLine = new FlexLine(flexDirection);
@@ -87,14 +92,34 @@ public final class FlexMainSizeDetermination {
 		FlexItem flexItem, FlexDirection flexDirection, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
 	) {
 		// TODO: Check flex basis
-		// TODO: Properly determine preferred size
+		float preferredWidth = flexItem.getSizePreferences().getMainSize(flexDirection);
+		if (preferredWidth != RelativeDimension.UNBOUNDED) {
+			flexItem.setBaseSize(preferredWidth);
+			flexItem.setHypotheticalMainSize(clampMinMax(preferredWidth, flexItem, flexDirection));
+			return;
+		}
+		
 		FlexItemRenderer.FlexItemRenderContext flexItemRenderContext = new FlexItemRenderer.FlexItemRenderContext(
 			globalRenderContext, flexDirection, localRenderContext.getParentFontMetrics()
 		);
 		AbsoluteSize fitSize = FlexItemRenderer.render(flexItem, flexItemRenderContext);
 		FlexDimension flexDimension = FlexDimension.createFrom(fitSize, flexDirection);
 		flexItem.setBaseSize(flexDimension.main());
-		flexItem.setHypotheticalMainSize(flexDimension.main());
+		flexItem.setHypotheticalMainSize(clampMinMax(flexDimension.main(), flexItem, flexDirection));
+	}
+
+	private static float clampMinMax(float main, FlexItem flexItem, FlexDirection flexDirection) {
+		float maxMainSize = flexItem.getSizePreferences().getMaxMainSize(flexDirection);
+		if (maxMainSize != RelativeDimension.UNBOUNDED) {
+			main = Math.min(main, maxMainSize);
+		}
+
+		float minMainSize = flexItem.getSizePreferences().getMinMainSize(flexDirection);
+		if (minMainSize != RelativeDimension.UNBOUNDED) {
+			main = Math.max(main, minMainSize);
+		}
+
+		return Math.max(0, main);
 	}
 
 }

@@ -8,6 +8,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItem;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 
 public final class FlexItemRenderer {
@@ -31,16 +32,16 @@ public final class FlexItemRenderer {
 		AbsoluteSize adjustedPreferredSize = new FlexDimension(
 			flexItem.getMainSize(), flexItem.getCrossSize(), flexItemRenderContext.flexDirection()
 		).toAbsoluteSize();
-		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(flexItem.getMargins());
+		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(flexItem.getSizePreferences().getMargins());
 		adjustedPreferredSize = LayoutSizeUtils.subtractPadding(adjustedPreferredSize, zeroAutoMargins);
-		adjustedPreferredSize = LayoutSizeUtils.subtractPadding(adjustedPreferredSize, flexItem.getPadding());
+		adjustedPreferredSize = LayoutSizeUtils.subtractPadding(adjustedPreferredSize, flexItem.getSizePreferences().getPadding());
 		return adjustedPreferredSize;
 	}
 
 	private static AbsoluteSize adjustFitSize(FlexItem flexItem, AbsoluteSize fitSize) {
-		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(flexItem.getMargins());
+		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(flexItem.getSizePreferences().getMargins());
 		fitSize = LayoutSizeUtils.addPadding(fitSize, zeroAutoMargins);
-		fitSize = LayoutSizeUtils.addPadding(fitSize, flexItem.getPadding());
+		fitSize = LayoutSizeUtils.addPadding(fitSize, flexItem.getSizePreferences().getPadding());
 		return fitSize;
 	}
 
