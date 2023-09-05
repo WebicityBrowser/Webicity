@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.loookandfeel.weblaf.layout.flexbox;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,12 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexGrowDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexJustifyContentDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexJustifyContentDirective.FlexJustifyContent;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexShrinkDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexWrapDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexWrapDirective.FlexWrap;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestFontMetrics;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubBlockBox;
@@ -29,10 +36,17 @@ import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStu
 
 public class FlexInnerDisplayLayoutTest {
 	
-	private final DirectivePool emptyDirectivePool = new BasicDirectivePool();
+	private static final DirectivePool emptyDirectivePool = new BasicDirectivePool();
+	private static final DirectivePool defaultChildDirectivePool = new BasicDirectivePool();
 	private final Font2D testFont = createTestFont();
 
 	private FlexInnerDisplayLayout flexInnerDisplayLayout;
+
+	@BeforeAll
+	public static void setupAll() {
+		defaultChildDirectivePool.directive(FlexGrowDirective.of(1));
+		defaultChildDirectivePool.directive(FlexShrinkDirective.of(1));
+	}
 
 	@BeforeEach
 	public void setup() {
@@ -54,7 +68,7 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with one child in sized flex container")
 	public void canRenderBoxWithOneChildInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), null);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = createLocalRenderContext();
@@ -70,9 +84,9 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with two children in sized flex container")
 	public void canRenderBoxWithTwoChildrenInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), null);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), null);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = createLocalRenderContext();
@@ -93,9 +107,9 @@ public class FlexInnerDisplayLayoutTest {
 		DirectivePool directivePool = new BasicDirectivePool();
 		directivePool.directive(FlexDirectionDirective.of(FlexDirection.COLUMN));
 		ChildrenBox box = new TestStubBlockBox(directivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), null);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), null);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = createLocalRenderContext();
@@ -114,9 +128,9 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with two children in sized flex container with different fit main sizes")
 	public void canRenderBoxWithTwoChildrenInSizedFlexContainerWithDifferentFitMainSizes() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(20, 50), null);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(20, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(30, 50), null);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(30, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = createLocalRenderContext();
@@ -135,9 +149,9 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with two children in sized flex container with small fit main sizes")
 	public void canRenderBoxWithTwoChildrenInSizedFlexContainerWithSmallFitMainSizes() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(2, 50), null);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(2, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(8, 50), null);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(8, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = createLocalRenderContext();
@@ -156,9 +170,9 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with two children in sized flex container with large fit main sizes")
 	public void canRenderBoxWithTwoChildrenInSizedFlexContainerWithLargeFitMainSizes() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(200, 50), null);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(200, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(300, 50), null);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(300, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = createLocalRenderContext();
@@ -177,7 +191,7 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with one child in unsized main axis flex container")
 	public void canRenderBoxWithOneChildInUnsizedMainAxisFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), null);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(RelativeDimension.UNBOUNDED, 50));
@@ -193,9 +207,9 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with two children in unsized main axis flex container")
 	public void canRenderBoxWithTwoChildrenInUnsizedMainAxisFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), null);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), null);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(RelativeDimension.UNBOUNDED, 50));
@@ -208,6 +222,120 @@ public class FlexInnerDisplayLayoutTest {
 		ChildLayoutResult childLayoutResult2 = result.childLayoutResults()[1];
 		Assertions.assertEquals(new AbsolutePosition(10, 0), childLayoutResult2.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(10, 50), childLayoutResult2.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can render box with two children in wrapped sized flex container")
+	public void canRenderBoxWithTwoChildrenInWrappedSizedFlexContainer() {
+		DirectivePool directivePool = new BasicDirectivePool();
+		directivePool.directive(FlexWrapDirective.of(FlexWrap.WRAP));
+		ChildrenBox box = new TestStubBlockBox(directivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
+		box.getChildrenTracker().addChild(childBox1);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
+		box.getChildrenTracker().addChild(childBox2);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(15, 50));
+		LayoutResult result = flexInnerDisplayLayout.render(box, globalRenderContext, localRenderContext);
+		Assertions.assertEquals(new AbsoluteSize(15, 100), result.fitSize());
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult1 = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult1.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(15, 50), childLayoutResult1.relativeRect().size());
+		ChildLayoutResult childLayoutResult2 = result.childLayoutResults()[1];
+		Assertions.assertEquals(new AbsolutePosition(0, 50), childLayoutResult2.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(15, 50), childLayoutResult2.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Extra cross size is distributed to wrapped sized flex container")
+	public void extraCrossSizeIsDistributedToWrappedSizedFlexContainer() {
+		DirectivePool directivePool = new BasicDirectivePool();
+		directivePool.directive(FlexWrapDirective.of(FlexWrap.WRAP));
+		ChildrenBox box = new TestStubBlockBox(directivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), defaultChildDirectivePool);
+		box.getChildrenTracker().addChild(childBox1);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 10), defaultChildDirectivePool);
+		box.getChildrenTracker().addChild(childBox2);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(15, 100));
+		LayoutResult result = flexInnerDisplayLayout.render(box, globalRenderContext, localRenderContext);
+		Assertions.assertEquals(new AbsoluteSize(15, 100), result.fitSize());
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult1 = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult1.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(15, 50), childLayoutResult1.relativeRect().size());
+		ChildLayoutResult childLayoutResult2 = result.childLayoutResults()[1];
+		Assertions.assertEquals(new AbsolutePosition(0, 50), childLayoutResult2.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(15, 50), childLayoutResult2.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can render box with two children with different flex grow in sized flex container")
+	public void canRenderBoxWithTwoChildrenWithDifferentFlexGrowInSizedFlexContainer() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool directivePool1 = new BasicDirectivePool();
+		directivePool1.directive(FlexGrowDirective.of(1));
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool1);
+		box.getChildrenTracker().addChild(childBox1);
+		DirectivePool directivePool2 = new BasicDirectivePool();
+		directivePool2.directive(FlexGrowDirective.of(2));
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool2);
+		box.getChildrenTracker().addChild(childBox2);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = flexInnerDisplayLayout.render(box, globalRenderContext, localRenderContext);
+		Assertions.assertEquals(new AbsoluteSize(50, 50), result.fitSize());
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult1 = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult1.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(20, 50), childLayoutResult1.relativeRect().size());
+		ChildLayoutResult childLayoutResult2 = result.childLayoutResults()[1];
+		Assertions.assertEquals(new AbsolutePosition(20, 0), childLayoutResult2.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(30, 50), childLayoutResult2.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can render box with two children with different flex shrink in sized flex container")
+	public void canRenderBoxWithTwoChildrenWithDifferentFlexShrinkInSizedFlexContainer() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool directivePool1 = new BasicDirectivePool();
+		directivePool1.directive(FlexShrinkDirective.of(2));
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool1);
+		box.getChildrenTracker().addChild(childBox1);
+		DirectivePool directivePool2 = new BasicDirectivePool();
+		directivePool2.directive(FlexShrinkDirective.of(3));
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(20, 50), directivePool2);
+		box.getChildrenTracker().addChild(childBox2);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(5, 50));
+		LayoutResult result = flexInnerDisplayLayout.render(box, globalRenderContext, localRenderContext);
+		Assertions.assertEquals(new AbsoluteSize(5, 50), result.fitSize());
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult1 = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult1.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(3.75f, 50), childLayoutResult1.relativeRect().size());
+		ChildLayoutResult childLayoutResult2 = result.childLayoutResults()[1];
+		Assertions.assertEquals(new AbsolutePosition(3.75f, 0), childLayoutResult2.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(1.25f, 50), childLayoutResult2.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can render box with one child in sized flex container with centered justify content")
+	public void canRenderBoxWithOneChildInSizedFlexContainerWithCenteredJustifyContent() {
+		DirectivePool directivePool = new BasicDirectivePool();
+		directivePool.directive(FlexJustifyContentDirective.of(FlexJustifyContent.CENTER));
+		ChildrenBox box = new TestStubBlockBox(directivePool);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), emptyDirectivePool);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = flexInnerDisplayLayout.render(box, globalRenderContext, localRenderContext);
+		Assertions.assertEquals(new AbsoluteSize(50, 50), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(20, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(10, 50), childLayoutResult.relativeRect().size());
 	}
 
 	private GlobalRenderContext mockGlobalRenderContext() {

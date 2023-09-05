@@ -1,16 +1,16 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
-import com.github.webicitybrowser.spec.css.parser.property.flex.FlexDirectionPropertyValueParser;
+import com.github.webicitybrowser.spec.css.parser.property.flex.FlexDirectionValueParser;
 import com.github.webicitybrowser.spec.css.property.flexbox.FlexDirectionValue;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 
-public class CSSOMFlexDirectionParser implements CSSOMNamedDeclarationParser<FlexDirectionValue> {
+public class CSSOMFlexDirectionDeclarationParser implements CSSOMNamedDeclarationParser<FlexDirectionValue> {
 
-	private final FlexDirectionPropertyValueParser parser = new FlexDirectionPropertyValueParser();
+	private final FlexDirectionValueParser parser = new FlexDirectionValueParser();
 
 	@Override
 	public PropertyValueParser<FlexDirectionValue> getPropertyValueParser() {

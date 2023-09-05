@@ -40,7 +40,7 @@ public final class FlowBlockMarginCalculations {
 		adjustSingleMarginIfAuto(state, adjustedMargins, adjustedSize, 1);
 
 		float parentWidth = state.getLocalRenderContext().getPreferredSize().width();
-		if (adjustedMargins[0] + adjustedMargins[1] + adjustedSize.width() > parentWidth) {
+		if (parentWidth != RelativeDimension.UNBOUNDED && adjustedMargins[0] + adjustedMargins[1] + adjustedSize.width() > parentWidth) {
 			adjustedMargins[1] = 0;
 		}
 

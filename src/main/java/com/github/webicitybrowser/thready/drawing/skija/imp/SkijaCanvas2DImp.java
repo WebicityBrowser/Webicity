@@ -83,7 +83,7 @@ public class SkijaCanvas2DImp implements Canvas2D {
 	}
 
 	@Override
-	public void drawLine(float x, float y, int run, float fall) {
+	public void drawLine(float x, float y, float run, float fall) {
 		beforePaint();
 		if (run < 0 || fall < 0) {
 			return;
@@ -92,7 +92,7 @@ public class SkijaCanvas2DImp implements Canvas2D {
 	}
 
 	@Override
-	public void drawTexture(float x, float y, int l, int h, Image texture) {
+	public void drawTexture(float x, float y, float l, float h, Image texture) {
 		beforePaint();
 		io.github.humbleui.skija.Image rawImage = ((SkijaImage) texture).getRawImage();
 		Rect rect = Rect.makeXYWH(x, y, l, h);

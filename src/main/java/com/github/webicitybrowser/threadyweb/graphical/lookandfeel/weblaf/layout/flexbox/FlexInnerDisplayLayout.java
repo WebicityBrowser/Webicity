@@ -9,13 +9,11 @@ import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutR
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicAnonymousFluidBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
@@ -37,22 +35,31 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 			return LayoutResult.create(new ChildLayoutResult[0], new AbsoluteSize(0, 0));
 		}
 
-		FlexDirection flexDirection = getFlexDirection(box);
-
+		FlexDirection flexDirection = FlexUtils.getFlexDirection(box);
 		List<FlexItem> flexItems = createFlexItems(children);
-		FlexLine flexLine = new FlexLine(flexDirection);
-		for (FlexItem flexItem : flexItems) {
-			flexLine.addFlexItem(flexItem);
+		List<FlexLine> flexLines = FlexMainSizeDetermination.determineLinesWithMainSizes(
+			box, flexItems, globalRenderContext, localRenderContext);
+
+		for (FlexLine flexLine : flexLines) {
+			Flexer.resolveFlexibleLengths(flexLine, localRenderContext);
 		}
+		
+		FlexCrossSizeDetermination.determineLineCrossSizes(box, flexLines, globalRenderContext, localRenderContext);
+		
+		FlexContentJustification.justifyContent(flexLines, FlexUtils.getFlexJustifyContent(box), flexDirection);
 
-		FlexMainSizeDetermination.determineMainSizes(flexLine, globalRenderContext, localRenderContext);
-		Flexer.resolveFlexibleLengths(flexLine, localRenderContext);
-		FlexCrossSizeDetermination.determineCrossSizes(flexLine, globalRenderContext, localRenderContext);
+		List<ChildLayoutResult> childLayoutResults = new ArrayList<>();
+		float crossPosition = 0;
+		for (FlexLine flexLine : flexLines) {
+			addLineChildLayoutResults(crossPosition, childLayoutResults, flexLine);
+			crossPosition += flexLine.getCrossSize();
+		}
+		
+		FlexDimension lineDimensions = determineLineDimensions(flexLines, flexDirection);
 
-		ChildLayoutResult[] childLayoutResults = createChildLayoutResults(flexLine, globalRenderContext, localRenderContext);
-		FlexDimension lineDimensions = new FlexDimension(flexLine.getMainSize(), flexLine.getCrossSize(), flexDirection);
-
-		return LayoutResult.create(childLayoutResults, lineDimensions.toAbsoluteSize());
+		return LayoutResult.create(
+			childLayoutResults.toArray(ChildLayoutResult[]::new),
+			lineDimensions.toAbsoluteSize());
 	}
 
 	private List<FlexItem> createFlexItems(List<Box> children) {
@@ -74,36 +81,30 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 		}
 	}
 
-	private ChildLayoutResult[] createChildLayoutResults(
-		FlexLine flexLine, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
-	) {
-		List<FlexItem> flexItems = flexLine.getFlexItems();
-		ChildLayoutResult[] childLayoutResults = new ChildLayoutResult[flexItems.size()];
-		FlexDirection flexDirection = flexLine.getFlexDirection();
-		float mainPosition = 0;
-		for (int i = 0; i < flexItems.size(); i++) {
-			FlexItem flexItem = flexItems.get(i);
-			FlexDimension childPosition = new FlexDimension(mainPosition, 0, flexDirection);
-			FlexDimension childSize = new FlexDimension(flexItem.getMainSize(), flexItem.getCrossSize(), flexDirection);
-			Rectangle childBounds = new Rectangle(childPosition.toAbsolutePosition(), childSize.toAbsoluteSize());
-			LocalRenderContext childLocalRenderContext = FlexUtils.createChildRenderContext(flexItem, childSize.toAbsoluteSize(), localRenderContext);
-			RenderedUnit renderedUnit = UIPipeline.render(flexItem.getBox(), globalRenderContext, childLocalRenderContext);
-			RenderedUnit styledUnit = styledUnitGenerator.generateStyledUnit(
-				new StyledUnitContext(flexItem.getBox(), renderedUnit, childSize.toAbsoluteSize(), new float[4]));
-			ChildLayoutResult childLayoutResult = new ChildLayoutResult(styledUnit, childBounds);
-			childLayoutResults[i] = childLayoutResult;
-			mainPosition += childSize.main();
+	private FlexDimension determineLineDimensions(List<FlexLine> flexLines, FlexDirection flexDirection) {
+		float mainSize = 0;
+		float crossSize = 0;
+		for (FlexLine flexLine : flexLines) {
+			mainSize = Math.max(mainSize, flexLine.getMainSize());
+			crossSize += flexLine.getCrossSize();
 		}
 
-		return childLayoutResults;
+		return new FlexDimension(mainSize, crossSize, flexDirection);
 	}
 
-	private FlexDirection getFlexDirection(ChildrenBox box) {
-		return box
-			.styleDirectives()
-			.getDirectiveOrEmpty(FlexDirectionDirective.class)
-			.map(FlexDirectionDirective::getFlexDirection)
-			.orElse(FlexDirection.ROW);
+	private void addLineChildLayoutResults(float crossPosition, List<ChildLayoutResult> layoutResults, FlexLine flexLine) {
+		List<FlexItem> flexItems = flexLine.getFlexItems();
+		FlexDirection flexDirection = flexLine.getFlexDirection();
+		for (FlexItem flexItem : flexItems) {
+			FlexDimension itemOffset = flexItem.getItemOffset();
+			FlexDimension childPosition = new FlexDimension(itemOffset.main(), crossPosition + itemOffset.cross(), flexDirection);
+			FlexDimension childSize = new FlexDimension(flexItem.getMainSize(), flexItem.getCrossSize(), flexDirection);
+			Rectangle childBounds = new Rectangle(childPosition.toAbsolutePosition(), childSize.toAbsoluteSize());
+			RenderedUnit renderedUnit = flexItem.getRenderedUnit();
+			RenderedUnit styledUnit = styledUnitGenerator.generateStyledUnit(
+				new StyledUnitContext(flexItem.getBox(), renderedUnit, childSize.toAbsoluteSize(), new float[4]));
+			layoutResults.add(new ChildLayoutResult(styledUnit, childBounds));
+		}
 	}
 	
 }

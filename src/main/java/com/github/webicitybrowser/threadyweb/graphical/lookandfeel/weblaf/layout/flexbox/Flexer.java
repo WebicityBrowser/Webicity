@@ -33,7 +33,7 @@ public final class Flexer {
 	private static void peformFlex(List<FlexItem> flexItems, float lineMainSize, boolean isFlexShrink) {
 		float remainingFreeSpace = lineMainSize - sumHypotheticalMainSizes(flexItems);
 		if (remainingFreeSpace != 0 && !isFlexShrink) {
-			float dividedFreeSpace = remainingFreeSpace / flexItems.size();
+			float dividedFreeSpace = remainingFreeSpace / sumFlexGrowFactors(flexItems);
 			distributeFreeSpace(flexItems, dividedFreeSpace);
 		} else if (remainingFreeSpace != 0 && isFlexShrink) {
 			float scaledShrinkFactor = sumScaledShrinkFactors(flexItems);
@@ -42,6 +42,13 @@ public final class Flexer {
 
 		// We don't yet support min/max main size constraints, so we just freeze all items
 		freezeAllItems(flexItems);
+	}
+
+	private static float sumFlexGrowFactors(List<FlexItem> flexItems) {
+		return flexItems.stream()
+			.filter(flexItem -> !flexItem.isFrozen())
+			.map(FlexItem::getFlexGrow)
+			.reduce(0f, Float::sum);
 	}
 
 	private static float sumHypotheticalMainSizes(List<FlexItem> flexItems) {
@@ -60,6 +67,8 @@ public final class Flexer {
 			float baseSize = flexItem.getBaseSize();
 			float hypotheticalMainSizeOfItem = flexItem.getHypotheticalMainSize();
 			if (
+				(isFlexShrink && flexItem.getFlexShrink() == 0) ||
+				(!isFlexShrink && flexItem.getFlexGrow() == 0) ||
 				(!isFlexShrink && baseSize > hypotheticalMainSizeOfItem) ||
 				(isFlexShrink && baseSize < hypotheticalMainSizeOfItem)
 			) {
@@ -80,7 +89,8 @@ public final class Flexer {
 		for (FlexItem flexItem : flexItems) {
 			if (flexItem.isFrozen()) continue;
 
-			flexItem.setHypotheticalMainSize(flexItem.getHypotheticalMainSize() + dividedFreeSpace);
+			float usedFreeSpace = flexItem.getFlexGrow() * dividedFreeSpace;
+			flexItem.setHypotheticalMainSize(flexItem.getHypotheticalMainSize() + usedFreeSpace);
 		}
 	}
 
@@ -107,7 +117,7 @@ public final class Flexer {
 	}
 
 	private static float getScaledShrinkFactor(FlexItem flexItem) {
-		return flexItem.getBaseSize();
+		return flexItem.getBaseSize() * flexItem.getFlexShrink();
 	}
 
 }

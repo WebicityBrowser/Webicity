@@ -10,7 +10,8 @@ public class FlexLine {
 	private final FlexDirection flexDirection;
 	private final List<FlexItem> flexItems;
 
-	private float crossSize;
+	private float mainSize = -1;
+	private float crossSize = -1;
 
 	public FlexLine(FlexDirection flexDirection) {
 		this.flexDirection = flexDirection;
@@ -32,7 +33,7 @@ public class FlexLine {
 		};
 	}
 
-	public float getMainSize() {
+	public float getUsedMainSize() {
 		float mainSize = 0;
 		for (FlexItem flexItem : flexItems) {
 			mainSize += flexItem.getMainSize();
@@ -42,7 +43,7 @@ public class FlexLine {
 	}
 
 	public float getCrossSize() {
-		if (crossSize != 0) return crossSize;
+		if (crossSize != -1) return crossSize;
 
 		float crossSize = 0;
 		for (FlexItem flexItem : flexItems) {
@@ -55,6 +56,18 @@ public class FlexLine {
 	public void setCrossSize(float crossSize) {
 		this.crossSize = crossSize;
     }
+
+	public float getMainSize() {
+		if (mainSize == -1) {
+			mainSize = getUsedMainSize();
+		}
+
+		return mainSize;
+	}
+
+	public void setMainSize(float mainSize) {
+		this.mainSize = mainSize;
+	}
 
 	private List<FlexItem> getReversedItems() {
 		List<FlexItem> reversedItems = new ArrayList<>();

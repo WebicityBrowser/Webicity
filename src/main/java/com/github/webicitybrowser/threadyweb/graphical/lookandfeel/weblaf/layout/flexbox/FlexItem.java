@@ -2,6 +2,8 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexGrowDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexShrinkDirective;
 
 public class FlexItem {
 	
@@ -15,6 +17,11 @@ public class FlexItem {
 	
 	private boolean isFrozen;
 	private RenderedUnit renderedUnit;
+
+	private FlexDimension itemOffset;
+
+	private float flexGrow;
+	private float flexShrink;
 
 	public FlexItem(Box box) {
 		this.box = box;
@@ -70,6 +77,36 @@ public class FlexItem {
 
 	public void setRenderedUnit(RenderedUnit renderedUnit) {
 		this.renderedUnit = renderedUnit;
+	}
+
+	public FlexDimension getItemOffset() {
+		return itemOffset;
+	}
+
+	public void setItemOffset(FlexDimension itemOffset) {
+		this.itemOffset = itemOffset;
+	}
+
+	public float getFlexGrow() {
+		if (flexGrow == 0) {
+			flexGrow = box
+				.styleDirectives()
+				.getDirectiveOrEmpty(FlexGrowDirective.class)
+				.map(FlexGrowDirective::getFlexGrow)
+				.orElse(0f);
+		}
+		return flexGrow;
+	}
+
+	public float getFlexShrink() {
+		if (flexShrink == 0) {
+			flexShrink = box
+				.styleDirectives()
+				.getDirectiveOrEmpty(FlexShrinkDirective.class)
+				.map(FlexShrinkDirective::getFlexShrink)
+				.orElse(1f);
+		}
+		return flexShrink;
 	}
 
 }

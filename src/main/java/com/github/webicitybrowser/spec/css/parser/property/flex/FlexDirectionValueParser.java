@@ -7,7 +7,7 @@ import com.github.webicitybrowser.spec.css.parser.property.imp.PropertyValuePars
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
 import com.github.webicitybrowser.spec.css.property.flexbox.FlexDirectionValue;
 
-public class FlexDirectionPropertyValueParser implements PropertyValueParser<FlexDirectionValue> {
+public class FlexDirectionValueParser implements PropertyValueParser<FlexDirectionValue> {
 
 	@Override
 	public PropertyValueParseResult<FlexDirectionValue> parse(TokenLike[] tokens, int offset, int length) {

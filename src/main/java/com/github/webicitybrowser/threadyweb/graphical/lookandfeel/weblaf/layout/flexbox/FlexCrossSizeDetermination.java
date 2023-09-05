@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox;
 
+import java.util.List;
+
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
@@ -8,30 +10,96 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexWrapDirective.FlexWrap;
 
 public final class FlexCrossSizeDetermination {
 	
 	private FlexCrossSizeDetermination() {}
 
-	public static void determineCrossSizes(FlexLine flexLine, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		FlexDirection flexDirection = flexLine.getFlexDirection();
-		for (FlexItem flexItem: flexLine.getFlexItems()) {
-			determineStretchCrossSize(flexItem, flexDirection, globalRenderContext, localRenderContext);
+	public static void determineLineCrossSizes(
+		Box box, List<FlexLine> flexLines, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
+	) {
+		for (FlexLine flexLine: flexLines) {
+			determineItemCrossSizes(flexLine, globalRenderContext, localRenderContext);
+		}
+		if (!(FlexUtils.getFlexWrap(box) == FlexWrap.NOWRAP && determineNoWrapLineCrossSize(flexLines.get(0), localRenderContext))) {
+			for (FlexLine flexLine: flexLines) {
+				determineFlexLineCrossSize(flexLine, globalRenderContext, localRenderContext);
+			}
 		}
 
-		AbsoluteSize containerSize = localRenderContext.getPreferredSize();
-		FlexDimension containerDimensions = FlexDimension.createFrom(containerSize, flexDirection);
-		float lineCrossSize = containerDimensions.cross();
-		if (lineCrossSize != RelativeDimension.UNBOUNDED) {
-			flexLine.setCrossSize(lineCrossSize);
-		}
+		distributeExtraSpace(box, flexLines, localRenderContext);
 
-		for (FlexItem flexItem: flexLine.getFlexItems()) {
-			flexItem.setCrossSize(flexLine.getCrossSize());
+		for (FlexLine flexLine: flexLines) {
+			determineUsedItemCrossSizes(flexLine, globalRenderContext, localRenderContext);
+		}
+    }
+
+	private static void distributeExtraSpace(Box box, List<FlexLine> flexLines, LocalRenderContext localRenderContext) {
+		float preferredCrossSize = FlexDimension
+			.createFrom(localRenderContext.getPreferredSize(), FlexUtils.getFlexDirection(box))
+			.cross();
+		if (preferredCrossSize == RelativeDimension.UNBOUNDED) return;
+		float totalCrossSize = flexLines.stream()
+			.map(FlexLine::getCrossSize)
+			.reduce(0f, Float::sum);
+		float extraSpace = preferredCrossSize - totalCrossSize;
+		if (extraSpace <= 0) return;
+		float extraSpacePerLine = extraSpace / flexLines.size();
+		for (FlexLine flexLine: flexLines) {
+			flexLine.setCrossSize(flexLine.getCrossSize() + extraSpacePerLine);
 		}
 	}
 
-	private static void determineStretchCrossSize(
+	private static boolean determineNoWrapLineCrossSize(FlexLine flexLine, LocalRenderContext localRenderContext) {
+		float parentSize = FlexDimension
+			.createFrom(localRenderContext.getPreferredSize(), flexLine.getFlexDirection())
+			.cross();
+		if (parentSize != RelativeDimension.UNBOUNDED) {
+			flexLine.setCrossSize(parentSize);
+			return true;
+		}
+
+		return false;
+	}
+
+	private static void determineFlexLineCrossSize(
+		FlexLine flexLine, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
+	) {
+		float crossSize = flexLine.getFlexItems().stream()
+			.map(FlexItem::getCrossSize)
+			.max(Float::compare)
+			.orElse(0f);
+		flexLine.setCrossSize(crossSize);
+	}
+
+	public static void determineItemCrossSizes(FlexLine flexLine, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+		FlexDirection flexDirection = flexLine.getFlexDirection();
+		for (FlexItem flexItem: flexLine.getFlexItems()) {
+			determineInitialItemCrossSize(flexItem, flexDirection, globalRenderContext, localRenderContext);
+		}
+	}
+
+	private static void determineUsedItemCrossSizes(
+		FlexLine flexLine, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
+	) {
+		for (FlexItem flexItem: flexLine.getFlexItems()) {
+			determineUsedItemCrossSize(flexLine, flexItem, globalRenderContext, localRenderContext);
+		}
+	}
+
+	private static void determineUsedItemCrossSize(
+		FlexLine flexLine, FlexItem flexItem, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
+	) {
+		FlexDirection flexDirection = flexLine.getFlexDirection();
+		flexItem.setCrossSize(flexLine.getCrossSize());
+		FlexDimension childSize = new FlexDimension(flexItem.getMainSize(), flexItem.getCrossSize(), flexDirection);
+		LocalRenderContext childLocalRenderContext = FlexUtils.createChildRenderContext(flexItem, childSize.toAbsoluteSize(), localRenderContext);
+		RenderedUnit renderedUnit = UIPipeline.render(flexItem.getBox(), globalRenderContext, childLocalRenderContext);
+		flexItem.setRenderedUnit(renderedUnit);
+	}
+
+	private static void determineInitialItemCrossSize(
 		FlexItem flexItem, FlexDirection flexDirection, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
 	) {
 		determineBaselineCrossSize(flexItem, flexDirection, globalRenderContext, localRenderContext);
