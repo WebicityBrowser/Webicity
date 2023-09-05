@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util;
 
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
@@ -8,24 +8,23 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirectiv
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective.LeftPaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective.RightPaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective.TopPaddingDirective;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
-public final class FlowPaddingCalculations {
+public final class LayoutPaddingCalculations {
 
-	public static float[] computePaddings(FlowRenderContext context, Box box) {
+	public static float[] computePaddings(GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext, Box box) {
 		float[] padding = new float[4];
-		padding[0] = computePadding(context, box, LeftPaddingDirective.class);
-		padding[1] = computePadding(context, box, RightPaddingDirective.class);
-		padding[2] = computePadding(context, box, TopPaddingDirective.class);
-		padding[3] = computePadding(context, box, BottomPaddingDirective.class);
+		padding[0] = computePadding(globalRenderContext, localRenderContext, box, LeftPaddingDirective.class);
+		padding[1] = computePadding(globalRenderContext, localRenderContext, box, RightPaddingDirective.class);
+		padding[2] = computePadding(globalRenderContext, localRenderContext, box, TopPaddingDirective.class);
+		padding[3] = computePadding(globalRenderContext, localRenderContext, box, BottomPaddingDirective.class);
 
 		return padding;
 	}
 
 	private static float computePadding(
-		FlowRenderContext context, Box box, Class<?  extends PaddingDirective> directiveClass
+		GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext, Box box, Class<?  extends PaddingDirective> directiveClass
 	) {
 		SizeCalculation sizeCalculation = box
 			.styleDirectives()
@@ -33,13 +32,11 @@ public final class FlowPaddingCalculations {
 			.map(directive -> directive.getSizeCalculation())
 			.orElse(_1 -> 0);
 
-		SizeCalculationContext sizeCalculationContext = createSizeCalculationContext(context);
+		SizeCalculationContext sizeCalculationContext = createSizeCalculationContext(globalRenderContext, localRenderContext);
 		return sizeCalculation.calculate(sizeCalculationContext);
 	}
 
-	private static SizeCalculationContext createSizeCalculationContext(FlowRenderContext context) {
-		LocalRenderContext localRenderContext = context.localRenderContext();
-		GlobalRenderContext globalRenderContext = context.globalRenderContext();
+	private static SizeCalculationContext createSizeCalculationContext(GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		return new SizeCalculationContext(
 			localRenderContext.getPreferredSize(),
 			globalRenderContext.viewportSize(),

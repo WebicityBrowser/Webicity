@@ -4,11 +4,9 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexWrapDirective.FlexWrap;
 
@@ -93,10 +91,11 @@ public final class FlexCrossSizeDetermination {
 	) {
 		FlexDirection flexDirection = flexLine.getFlexDirection();
 		flexItem.setCrossSize(flexLine.getCrossSize());
-		FlexDimension childSize = new FlexDimension(flexItem.getMainSize(), flexItem.getCrossSize(), flexDirection);
-		LocalRenderContext childLocalRenderContext = FlexUtils.createChildRenderContext(flexItem, childSize.toAbsoluteSize(), localRenderContext);
-		RenderedUnit renderedUnit = UIPipeline.render(flexItem.getBox(), globalRenderContext, childLocalRenderContext);
-		flexItem.setRenderedUnit(renderedUnit);
+		FlexItemRenderer.FlexItemRenderContext flexItemRenderContext = new FlexItemRenderer.FlexItemRenderContext(
+			globalRenderContext, flexDirection, localRenderContext.getParentFontMetrics()
+		);
+		// Make sure children of the item are rendered with the correct cross size
+		FlexItemRenderer.render(flexItem, flexItemRenderContext);
 	}
 
 	private static void determineInitialItemCrossSize(
@@ -108,14 +107,12 @@ public final class FlexCrossSizeDetermination {
 	private static void determineBaselineCrossSize(
 		FlexItem flexItem, FlexDirection flexDirection, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
 	) {
-		Box box = flexItem.getBox();
-		FlexDimension preferredSize = new FlexDimension(flexItem.getMainSize(), RelativeDimension.UNBOUNDED, flexDirection);
-		LocalRenderContext childLocalRenderContext = FlexUtils.createChildRenderContext(flexItem, preferredSize.toAbsoluteSize(), localRenderContext);
-		RenderedUnit renderedUnit = UIPipeline.render(box, globalRenderContext, childLocalRenderContext);
-		AbsoluteSize fitSize = renderedUnit.fitSize();
+		FlexItemRenderer.FlexItemRenderContext flexItemRenderContext = new FlexItemRenderer.FlexItemRenderContext(
+			globalRenderContext, flexDirection, localRenderContext.getParentFontMetrics()
+		);
+		AbsoluteSize fitSize = FlexItemRenderer.render(flexItem, flexItemRenderContext);
 		FlexDimension flexDimension = FlexDimension.createFrom(fitSize, flexDirection);
 		flexItem.setCrossSize(flexDimension.cross());
-		flexItem.setRenderedUnit(renderedUnit);
 	}
 
 }

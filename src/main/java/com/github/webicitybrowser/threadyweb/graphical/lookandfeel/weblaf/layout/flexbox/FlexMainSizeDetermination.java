@@ -5,11 +5,9 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexWrapDirective.FlexWrap;
 
@@ -88,13 +86,12 @@ public final class FlexMainSizeDetermination {
 	private static void determineMainSize(
 		FlexItem flexItem, FlexDirection flexDirection, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
 	) {
-		Box box = flexItem.getBox();
 		// TODO: Check flex basis
-		AbsoluteSize parentSize = new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
 		// TODO: Properly determine preferred size
-		LocalRenderContext childLocalRenderContext = FlexUtils.createChildRenderContext(flexItem, parentSize, localRenderContext);
-		RenderedUnit renderedUnit = UIPipeline.render(box, globalRenderContext, childLocalRenderContext);
-		AbsoluteSize fitSize = renderedUnit.fitSize();
+		FlexItemRenderer.FlexItemRenderContext flexItemRenderContext = new FlexItemRenderer.FlexItemRenderContext(
+			globalRenderContext, flexDirection, localRenderContext.getParentFontMetrics()
+		);
+		AbsoluteSize fitSize = FlexItemRenderer.render(flexItem, flexItemRenderContext);
 		FlexDimension flexDimension = FlexDimension.createFrom(fitSize, flexDirection);
 		flexItem.setBaseSize(flexDimension.main());
 		flexItem.setHypotheticalMainSize(flexDimension.main());

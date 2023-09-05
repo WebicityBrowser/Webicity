@@ -11,9 +11,11 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowPaddingCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutPaddingCalculations;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils.LayoutSizingContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
@@ -22,13 +24,16 @@ public final class FlowInlineSelfManagedRenderer {
 	private FlowInlineSelfManagedRenderer() {}
 
 	public static void addSelfManagedBoxToLine(FlowInlineRendererState state, Box childBox) {
-		float[] padding = FlowPaddingCalculations.computePaddings(state.flowContext(), childBox);
+		float[] padding = LayoutPaddingCalculations.computePaddings(
+			state.flowContext().globalRenderContext(),
+			state.flowContext().localRenderContext(),
+			childBox);
 		AbsoluteSize preferredSize = computePreferredSize(state, childBox, padding);
-		AbsoluteSize contentSize = FlowSizeUtils.subtractPadding(preferredSize, padding);
+		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(preferredSize, padding);
 		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
 		AbsoluteSize rawChildSize = childUnit.fitSize();
 		AbsoluteSize adjustedChildSize = FlowSizeUtils.enforcePreferredSize(rawChildSize, contentSize, preferredSize);
-		AbsoluteSize adjustedSize = FlowSizeUtils.addPadding(adjustedChildSize, padding);
+		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(adjustedChildSize, padding);
 
 		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedSize, padding);
 		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
@@ -41,7 +46,11 @@ public final class FlowInlineSelfManagedRenderer {
 		FontMetrics fontMetrics = state.getFontStack().peek().getMetrics();
 		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator = 
 			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), fontMetrics, isHorizontal);
-		return FlowSizeUtils.computePreferredSize(childBox.styleDirectives(), sizeCalculationContextGenerator, padding);
+		
+		LayoutSizingContext layoutSizingContext = LayoutSizeUtils.createLayoutSizingContext(
+			childBox.styleDirectives(), sizeCalculationContextGenerator, padding
+		);
+		return LayoutSizeUtils.computePreferredSize(childBox.styleDirectives(), layoutSizingContext);
 	}
 
 	private static RenderedUnit renderChildUnit(FlowInlineRendererState state, Box childBox, AbsoluteSize contentSize) {

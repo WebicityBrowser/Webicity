@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox;
 
+import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexGrowDirective;
@@ -8,23 +9,34 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.
 public class FlexItem {
 	
 	private final Box box;
+	private final float flexGrow;
+	private final float flexShrink;
 
 	private float baseSize;
 	private float hypotheticalMainSize;
 
-	private float mainSize;
-	private float crossSize;
+	private float mainSize = RelativeDimension.UNBOUNDED;
+	private float crossSize = RelativeDimension.UNBOUNDED;
 	
-	private boolean isFrozen;
+	private float[] margin;
+	private float[] padding;
 	private RenderedUnit renderedUnit;
 
+	private boolean isFrozen;
 	private FlexDimension itemOffset;
-
-	private float flexGrow;
-	private float flexShrink;
 
 	public FlexItem(Box box) {
 		this.box = box;
+		this.flexGrow = box
+			.styleDirectives()
+			.getDirectiveOrEmpty(FlexGrowDirective.class)
+			.map(FlexGrowDirective::getFlexGrow)
+			.orElse(0f);
+		this.flexShrink = box
+			.styleDirectives()
+			.getDirectiveOrEmpty(FlexShrinkDirective.class)
+			.map(FlexShrinkDirective::getFlexShrink)
+			.orElse(1f);
 	}
 
 	public Box getBox() {
@@ -67,8 +79,20 @@ public class FlexItem {
 		return isFrozen;
 	}
 
-	public void setFrozen(boolean isFrozen) {
-		this.isFrozen = isFrozen;
+	public float[] getMargins() {
+		return margin;
+	}
+
+	public void setMargins(float[] margins) {
+		this.margin = margins;
+	}
+
+	public float[] getPadding() {
+		return padding;
+	}
+
+	public void setPadding(float[] padding) {
+		this.padding = padding;
 	}
 
 	public RenderedUnit getRenderedUnit() {
@@ -77,6 +101,10 @@ public class FlexItem {
 
 	public void setRenderedUnit(RenderedUnit renderedUnit) {
 		this.renderedUnit = renderedUnit;
+	}
+
+	public void setFrozen(boolean isFrozen) {
+		this.isFrozen = isFrozen;
 	}
 
 	public FlexDimension getItemOffset() {
@@ -88,24 +116,10 @@ public class FlexItem {
 	}
 
 	public float getFlexGrow() {
-		if (flexGrow == 0) {
-			flexGrow = box
-				.styleDirectives()
-				.getDirectiveOrEmpty(FlexGrowDirective.class)
-				.map(FlexGrowDirective::getFlexGrow)
-				.orElse(0f);
-		}
 		return flexGrow;
 	}
 
 	public float getFlexShrink() {
-		if (flexShrink == 0) {
-			flexShrink = box
-				.styleDirectives()
-				.getDirectiveOrEmpty(FlexShrinkDirective.class)
-				.map(FlexShrinkDirective::getFlexShrink)
-				.orElse(1f);
-		}
 		return flexShrink;
 	}
 

@@ -19,9 +19,11 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowPaddingCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutPaddingCalculations;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils.LayoutSizingContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
@@ -64,14 +66,17 @@ public final class FlowBlockRenderer {
 	private static void renderChild(FlowBlockRendererState state, Box childBox) {
 		AbsoluteSize parentSize = state.getLocalRenderContext().getPreferredSize();
 		float[] margins = FlowBlockMarginCalculations.computeMargins(state, childBox);
-		float[] paddings = FlowPaddingCalculations.computePaddings(state.flowContext(), childBox);
+		float[] paddings = LayoutPaddingCalculations.computePaddings(
+			state.flowContext().globalRenderContext(),
+			state.flowContext().localRenderContext(),
+			childBox);
 		AbsoluteSize preferredSize = computePreferredSize(state, childBox, paddings);
 		AbsoluteSize effectivePreferredSize = computeFallbackPreferredSize(state, preferredSize, margins);
-		AbsoluteSize contentSize = FlowSizeUtils.subtractPadding(effectivePreferredSize, paddings);
+		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(effectivePreferredSize, paddings);
 		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
 		AbsoluteSize rawChildSize = childUnit.fitSize();
 		AbsoluteSize adjustedChildSize = FlowSizeUtils.enforcePreferredSize(rawChildSize, contentSize, preferredSize);
-		AbsoluteSize adjustedSize = FlowSizeUtils.addPadding(adjustedChildSize, paddings);
+		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(adjustedChildSize, paddings);
 		adjustedSize = stretchToParentSize(adjustedSize, parentSize, preferredSize, margins);
 		float[] adjustedMargins = FlowBlockMarginCalculations.adjustMargins(state, margins, adjustedSize);
 		adjustedMargins = FlowBlockMarginCalculations.collapseOverflowMargins(parentSize, adjustedSize, adjustedMargins);
@@ -92,7 +97,10 @@ public final class FlowBlockRenderer {
 		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator =
 			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), fontMetrics, isHorizontal);
 
-		return FlowSizeUtils.computePreferredSize(childBox.styleDirectives(), sizeCalculationContextGenerator, paddings);
+		LayoutSizingContext layoutSizingContext = LayoutSizeUtils.createLayoutSizingContext(
+			childBox.styleDirectives(), sizeCalculationContextGenerator, paddings
+		);
+		return LayoutSizeUtils.computePreferredSize(childBox.styleDirectives(), layoutSizingContext);
 	}
 
 	private static RenderedUnit renderChildUnit(FlowBlockRendererState state, Box childBox, AbsoluteSize contentSize) {

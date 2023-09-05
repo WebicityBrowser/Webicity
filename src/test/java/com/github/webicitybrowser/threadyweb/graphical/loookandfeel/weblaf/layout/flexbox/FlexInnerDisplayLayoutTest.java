@@ -21,6 +21,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.threadyweb.graphical.directive.MarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexGrowDirective;
@@ -336,6 +337,25 @@ public class FlexInnerDisplayLayoutTest {
 		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(20, 0), childLayoutResult.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(10, 50), childLayoutResult.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can render box with one child with margin in sized flex container")
+	public void canRenderBoxWithOneChildWithMarginInSizedFlexContainer() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool directivePool = new BasicDirectivePool();
+		directivePool.directive(MarginDirective.ofLeft(_1 -> 5));
+		directivePool.directive(FlexGrowDirective.of(1));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = flexInnerDisplayLayout.render(box, globalRenderContext, localRenderContext);
+		Assertions.assertEquals(new AbsoluteSize(50, 50), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(5, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(45, 50), childLayoutResult.relativeRect().size());
 	}
 
 	private GlobalRenderContext mockGlobalRenderContext() {
