@@ -12,4 +12,6 @@ public interface GlobalRenderContext {
 	
 	FontMetrics rootFontMetrics();
 
+	RenderCache renderCache();
+
 }

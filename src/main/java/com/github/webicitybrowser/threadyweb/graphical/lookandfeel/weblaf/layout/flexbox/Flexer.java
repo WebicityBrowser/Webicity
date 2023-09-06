@@ -23,33 +23,39 @@ public final class Flexer {
 			return;
 		}
 
-		float hypotheticalMainSize = sumHypotheticalMainSizes(flexItems);
-		boolean isFlexShrink = hypotheticalMainSize > lineMainSize;
+		boolean isFlexShrink = sumHypotheticalMainSizes(flexItems) > lineMainSize;
 
-		freezeInflexibleItems(flexItems, hypotheticalMainSize, isFlexShrink);
+		freezeInflexibleItems(flexItems, isFlexShrink);
 		while (!flexItems.stream().allMatch(FlexItem::isFrozen)) {
 			peformFlex(flexLine, lineMainSize, isFlexShrink);
 		}
 	}
 
 	private static void peformFlex(FlexLine flexLine, float lineMainSize, boolean isFlexShrink) {
-		List<FlexItem> flexItems = flexLine.getFlexItems();
-		float remainingFreeSpace = lineMainSize - sumHypotheticalMainSizes(flexItems);
-		if (remainingFreeSpace != 0 && !isFlexShrink) {
-			float dividedFreeSpace = remainingFreeSpace / sumFlexGrowFactors(flexItems);
-			distributeFreeSpace(flexItems, dividedFreeSpace);
-		} else if (remainingFreeSpace != 0 && isFlexShrink) {
-			float scaledShrinkFactor = sumScaledShrinkFactors(flexItems);
-			undistributeFreeSpace(flexItems, remainingFreeSpace, scaledShrinkFactor);
-		}
+		distributeSpaceToFlexibleItems(flexLine.getFlexItems(), lineMainSize, isFlexShrink);
+		resolveMinMaxViolations(flexLine, flexLine.getFlexDirection());
+	}
 
+	private static void resolveMinMaxViolations(FlexLine flexLine, FlexDirection flexDirection) {
+		List<FlexItem> flexItems = flexLine.getFlexItems();
 		float minMaxViolations = sumMinMaxViolations(flexItems, flexLine.getFlexDirection());
 		if (minMaxViolations == 0) {
 			freezeAllItems(flexItems);
 		} else if (minMaxViolations > 0) {
-			freezeMinViolations(flexItems, flexLine.getFlexDirection());
+			freezeViolations(flexItems, flexLine.getFlexDirection(), false);
 		} else {
-			freezeMaxViolations(flexItems, flexLine.getFlexDirection());
+			freezeViolations(flexItems, flexLine.getFlexDirection(), true);
+		}
+	}
+
+	private static void distributeSpaceToFlexibleItems(List<FlexItem> flexItems, float lineMainSize, boolean isFlexShrink) {
+		float remainingFreeSpace = lineMainSize - sumHypotheticalMainSizes(flexItems);
+		if (remainingFreeSpace != 0 && !isFlexShrink) {
+			float dividedFreeSpace = remainingFreeSpace / sumFlexGrowFactors(flexItems);
+			distributeFreeSpace(flexItems, dividedFreeSpace);
+		} else if (remainingFreeSpace != 0) {
+			float scaledShrinkFactor = sumScaledShrinkFactors(flexItems);
+			undistributeFreeSpace(flexItems, remainingFreeSpace, scaledShrinkFactor);
 		}
 	}
 
@@ -69,22 +75,23 @@ public final class Flexer {
 		return totalSize;
 	}
 
-	private static void freezeInflexibleItems(List<FlexItem> flexItems, float hypotheticalMainSize, boolean isFlexShrink) {
+	private static void freezeInflexibleItems(List<FlexItem> flexItems, boolean isFlexShrink) {
 		for (FlexItem flexItem : flexItems) {
 			if (flexItem.isFrozen()) continue;
 
-			float baseSize = flexItem.getBaseSize();
-			float hypotheticalMainSizeOfItem = flexItem.getHypotheticalMainSize();
-			if (
-				(isFlexShrink && flexItem.getFlexShrink() == 0) ||
-				(!isFlexShrink && flexItem.getFlexGrow() == 0) ||
-				(!isFlexShrink && baseSize > hypotheticalMainSizeOfItem) ||
-				(isFlexShrink && baseSize < hypotheticalMainSizeOfItem)
-			) {
+			if (isInflexible(flexItem, isFlexShrink)) {
 				flexItem.setMainSize(flexItem.getHypotheticalMainSize());
 				flexItem.setFrozen(true);
 			}
 		}
+	}
+
+	private static boolean isInflexible(FlexItem flexItem, boolean isFlexShrink) {
+		boolean canShrink = isFlexShrink && flexItem.getFlexShrink() != 0;
+		boolean canGrow = !isFlexShrink && flexItem.getFlexGrow() != 0;
+		boolean shrinkedTooMuch = isFlexShrink && flexItem.getHypotheticalMainSize() < flexItem.getBaseSize();
+		boolean grownTooMuch = !isFlexShrink && flexItem.getHypotheticalMainSize() > flexItem.getBaseSize();
+		return !canShrink && !canGrow || shrinkedTooMuch || grownTooMuch;
 	}
 
 	private static void freezeAllItems(List<FlexItem> flexItems) {
@@ -94,7 +101,7 @@ public final class Flexer {
 		}
 	}
 
-	private static void freezeMinViolations(List<FlexItem> flexItems, FlexDirection flexDirection) {
+	private static void freezeViolations(List<FlexItem> flexItems, FlexDirection flexDirection, boolean isMax) {
 		for (FlexItem flexItem : flexItems) {
 			if (flexItem.isFrozen()) continue;
 
@@ -103,25 +110,10 @@ public final class Flexer {
 			float hypotheticalMainSize = flexItem.getHypotheticalMainSize();
 			if (minSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize < minSize) {
 				flexItem.setHypotheticalMainSize(minSize);
-				flexItem.setFrozen(true);
+				flexItem.setFrozen(!isMax);
 			} else if (maxSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize > maxSize) {
 				flexItem.setHypotheticalMainSize(maxSize);
-			}
-		}
-	}
-
-	private static void freezeMaxViolations(List<FlexItem> flexItems, FlexDirection flexDirection) {
-		for (FlexItem flexItem : flexItems) {
-			if (flexItem.isFrozen()) continue;
-
-			float maxSize = flexItem.getSizePreferences().getMaxMainSize(flexDirection);
-			float minSize = flexItem.getSizePreferences().getMinMainSize(flexDirection);
-			float hypotheticalMainSize = flexItem.getHypotheticalMainSize();
-			if (maxSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize > maxSize) {
-				flexItem.setHypotheticalMainSize(maxSize);
-				flexItem.setFrozen(true);
-			} else if (minSize != RelativeDimension.UNBOUNDED && hypotheticalMainSize < minSize) {
-				flexItem.setHypotheticalMainSize(minSize);
+				flexItem.setFrozen(isMax);
 			}
 		}
 	}

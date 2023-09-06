@@ -183,7 +183,7 @@ public class GUIContentImp implements GUIContent {
 		AbsoluteSize contentSize = redrawContext.contentSize();
 		Font2D baseFont = redrawContext.resourceLoader().loadFont(configuration.fontSettings());
 		GlobalRenderContext globalRenderContext = new RenderContextImp(
-			contentSize, redrawContext.resourceLoader(), baseFont.getMetrics());
+			contentSize, redrawContext.resourceLoader(), baseFont.getMetrics(), new RenderCacheImp());
 		LocalRenderContext localRenderContext = LocalRenderContext.create(
 			contentSize, baseFont.getMetrics(), new ContextSwitch[0]);
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();

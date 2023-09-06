@@ -11,12 +11,14 @@ import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.base.imp.RenderCacheImp;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
@@ -254,10 +256,12 @@ public class FlowBlockRendererTest {
 	private GlobalRenderContext mockGlobalRenderContext() {
 		ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
 		Mockito.when(resourceLoader.loadFont(Mockito.any())).thenReturn(testFont);
+		RenderCache renderCache = new RenderCacheImp();
 
 		GlobalRenderContext renderContext = Mockito.mock(GlobalRenderContext.class);
 		Mockito.when(renderContext.viewportSize()).thenReturn(new AbsoluteSize(1000, 1000));
 		Mockito.when(renderContext.resourceLoader()).thenReturn(resourceLoader);
+		Mockito.when(renderContext.renderCache()).thenReturn(renderCache);
 
 		return renderContext;
 	}
