@@ -4,11 +4,12 @@ import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.ScrollDisplay;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 
 public class DocumentUI implements ComponentUI {
 	
-	private static final UIDisplay<?, ?, ?> DOCUMENT_DISPLAY = new DocumentDisplay();
+	private static final UIDisplay<?, ?, ?> DOCUMENT_DISPLAY = new ScrollDisplay(new DocumentDisplay());
 	
 	private final DocumentComponent component;
 	private final ComponentUI parent;

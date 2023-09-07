@@ -10,7 +10,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 
 public final class DocumentBoxGenerator {
@@ -28,12 +27,12 @@ public final class DocumentBoxGenerator {
 				StyleGenerator childStyleGenerator = createChildStyleGenerator(ui, styleGenerator);
 				return ((UIDisplay<T, ?, ?>) ui.getRootDisplay()).generateBoxes((T) context, boxContext, childStyleGenerator);
 			})
-			.map(childBoxes -> List.of(generateBlockRootBox(documentContext.component(), (List<Box>) childBoxes)))
+			.map(childBoxes -> List.of(generateBlockRootBox(documentContext, (List<Box>) childBoxes)))
 			.orElse(List.of());
 	}
 
-	private static ChildrenBox generateBlockRootBox(Component owningComponent, List<Box> childBoxes) {
-		ChildrenBox rootBox = new DocumentBox(null, owningComponent, new BasicDirectivePool());
+	private static ChildrenBox generateBlockRootBox(DocumentContext context, List<Box> childBoxes) {
+		ChildrenBox rootBox = new DocumentBox(context.display(), context.component(), new BasicDirectivePool());
 		
 		for (Box childBox: childBoxes) {
 			rootBox.getChildrenTracker().addChild(childBox);
