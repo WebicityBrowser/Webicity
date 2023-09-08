@@ -8,5 +8,19 @@ public interface MouseMessage extends Message {
 	MouseScreenEvent getScreenEvent();
 	
 	boolean isExternal();
+
+	static MouseMessage create(MouseScreenEvent screenEvent, boolean isExternal) {
+		return new MouseMessage() {
+			@Override
+			public MouseScreenEvent getScreenEvent() {
+				return screenEvent;
+			}
+
+			@Override
+			public boolean isExternal() {
+				return isExternal;
+			}
+		};
+	}
 	
 }

@@ -8,6 +8,8 @@ public interface MouseScreenEvent extends ScreenEvent {
 	int getAction();
 	
 	int getButton();
+
+	boolean isExternal();
 	
 	AbsolutePosition getViewportPosition();
 	

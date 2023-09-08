@@ -19,7 +19,6 @@ public interface Canvas2D {
 	 */
 	void drawRect(float x, float y, float l, float h);
 	
-	
 	/**
 	 * Draw an ellipse at the given points.
 	 * @param x The leftmost x-coordinate of the bounding box of the ellipse.
@@ -42,6 +41,8 @@ public interface Canvas2D {
 	void drawLine(float x, float y, float run, float fall);
 	
 	void drawTexture(float x, float y, float l, float h, Image texture);
+
+	Canvas2D createTranslatedCanvas(float x, float y);
 	
 	/**
 	 * Get the paint used to draw figures.

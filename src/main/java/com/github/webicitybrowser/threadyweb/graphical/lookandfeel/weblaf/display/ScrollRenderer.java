@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display;
 
+import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
@@ -13,9 +14,10 @@ public final class ScrollRenderer {
 
 	private ScrollRenderer() {}
 
-    public static ScrollUnit renderBox(ScrollBox box, GlobalRenderContext globalRenderContext,  LocalRenderContext localRenderContext) {
-        AbsoluteSize outerSize = localRenderContext.getPreferredSize();
+	public static ScrollUnit renderBox(ScrollBox box, GlobalRenderContext globalRenderContext,  LocalRenderContext localRenderContext) {
+		AbsoluteSize outerSize = localRenderContext.getPreferredSize();
 		RenderedUnit innerUnitRenderAttempt = renderInnerBox(box, globalRenderContext, localRenderContext, outerSize);
+		AbsoluteSize initialInnerUnitSize = innerUnitRenderAttempt.fitSize();
 
 		AbsoluteSize allowedSize = adjustForScrollbars(outerSize, outerSize, innerUnitRenderAttempt);
 		innerUnitRenderAttempt = renderInnerBox(box, globalRenderContext, localRenderContext, allowedSize);
@@ -24,16 +26,17 @@ public final class ScrollRenderer {
 		innerUnitRenderAttempt = renderInnerBox(box, globalRenderContext, localRenderContext, allowedSize);
 
 		outerSize = removeUnboundedDimensions(outerSize, innerUnitRenderAttempt);
+		setUnpresentScrollPosition(box, initialInnerUnitSize, outerSize);
 		
-		return new ScrollUnit(box, outerSize, innerUnitRenderAttempt);
-    }
+		return new ScrollUnit(box, outerSize, innerUnitRenderAttempt, allowedSize);
+	}
 
 	private static AbsoluteSize adjustForScrollbars(AbsoluteSize outerSize, AbsoluteSize allowedSize, RenderedUnit innerUnitRenderAttempt) {
 		if (requiresVerticalScroll(outerSize, innerUnitRenderAttempt)) {
-			allowedSize = new AbsoluteSize(outerSize.width() - ScrollBarStyles.TRACKBAR_INLINE_SIZE, allowedSize.height());
+			allowedSize = new AbsoluteSize(outerSize.width() - ScrollbarStyles.TRACKBAR_INLINE_SIZE, allowedSize.height());
 		}
 		if (requiresHorizontalScroll(outerSize, innerUnitRenderAttempt)) {
-			allowedSize = new AbsoluteSize(allowedSize.width(), outerSize.height() - ScrollBarStyles.TRACKBAR_INLINE_SIZE);
+			allowedSize = new AbsoluteSize(allowedSize.width(), outerSize.height() - ScrollbarStyles.TRACKBAR_INLINE_SIZE);
 		}
 
 		return allowedSize;
@@ -48,6 +51,23 @@ public final class ScrollRenderer {
 		}
 
 		return outerSize;
+	}
+
+	private static void setUnpresentScrollPosition(ScrollBox box, AbsoluteSize contentSize, AbsoluteSize outerSize) {
+		AbsolutePosition scrollPosition = box.scrollContext().scrollPosition();
+		if (contentSize.width() <= outerSize.width()) {
+			scrollPosition = new AbsolutePosition(ScrollbarStyles.NOT_PRESENT, scrollPosition.y());
+		} else if (scrollPosition.x() == ScrollbarStyles.NOT_PRESENT) {
+			scrollPosition = new AbsolutePosition(0, scrollPosition.y());
+		}
+
+		if (contentSize.height() <= outerSize.height()) {
+			scrollPosition = new AbsolutePosition(scrollPosition.x(), ScrollbarStyles.NOT_PRESENT);
+		} else if (scrollPosition.y() == ScrollbarStyles.NOT_PRESENT) {
+			scrollPosition = new AbsolutePosition(scrollPosition.x(), 0);
+		}
+
+		box.scrollContext().setScrollPosition(scrollPosition);
 	}
 
 	private static RenderedUnit renderInnerBox(

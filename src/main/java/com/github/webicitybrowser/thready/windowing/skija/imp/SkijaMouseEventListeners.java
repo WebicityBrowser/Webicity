@@ -69,6 +69,11 @@ public final class SkijaMouseEventListeners {
 				}
 
 				@Override
+				public boolean isExternal() {
+					return false;
+				}
+
+				@Override
 				public AbsolutePosition getViewportPosition() {
 					return viewportPosition;
 				}

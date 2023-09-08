@@ -14,7 +14,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
-import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 
 public class ScrollDisplay implements UIDisplay<ScrollContext, ScrollBox, ScrollUnit> {
 
@@ -52,7 +51,9 @@ public class ScrollDisplay implements UIDisplay<ScrollContext, ScrollBox, Scroll
 
 	@Override
 	public MessageHandler createMessageHandler(ScrollUnit unit, Rectangle documentRect) {
-		return new NoopMessageHandler();
+		Rectangle childDocumentRect = new Rectangle(documentRect.position(), unit.innerUnitSize());
+		MessageHandler innerMessageHandler = UIPipeline.createMessageHandler(unit.innerUnit(), childDocumentRect);
+		return new ScrollbarMessageHandler(unit, documentRect, innerMessageHandler);
 	}
 	
 }

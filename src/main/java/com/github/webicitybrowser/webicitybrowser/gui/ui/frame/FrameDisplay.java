@@ -12,7 +12,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.message.basics.DefaultGraphicalMessageHandler;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.webicity.core.component.FrameComponent;
 
@@ -47,7 +46,7 @@ public class FrameDisplay implements UIDisplay<FrameContext, FrameBox, FrameUnit
 
 	@Override
 	public MessageHandler createMessageHandler(FrameUnit unit, Rectangle documentRect) {
-		return new DefaultGraphicalMessageHandler(documentRect, unit.box());
+		return new FrameMessageHandler(unit, documentRect);
 	}
 
 }

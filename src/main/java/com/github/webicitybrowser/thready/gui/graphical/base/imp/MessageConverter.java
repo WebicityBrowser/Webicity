@@ -29,7 +29,7 @@ public final class MessageConverter {
 		return new MouseMessage() {	
 			@Override
 			public boolean isExternal() {
-				return false;
+				return e.isExternal();
 			}
 
 			@Override

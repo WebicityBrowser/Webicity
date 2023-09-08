@@ -115,9 +115,16 @@ public class SkijaCanvas2DImp implements Canvas2D {
 			new AbsolutePosition(x, y),
 			new AbsoluteSize(width, height));
 		
-		SkijaCanvasSettings childSettings = createChildSettings(childCanvasSettings, childRectangle);
+		SkijaCanvasSettings childSettings = createMovedChildSettings(childCanvasSettings, childRectangle);
 		
 		return new SkijaCanvas2DImp(canvas, paint, childSettings);
+	}
+
+	@Override
+	public Canvas2D createTranslatedCanvas(float x, float y) {
+		SkijaCanvasSettings translatedCanvasSettings = createTranslatedCanvasSettings(x, y);
+
+		return new SkijaCanvas2DImp(canvas, paint, translatedCanvasSettings);
 	}
 
 	private void setPaint(Paint2D paint) {
@@ -145,18 +152,36 @@ public class SkijaCanvas2DImp implements Canvas2D {
 	private void beforePaint() {
 		canvas.restore();
 		canvas.save();
+		if (canvasSettings.clipBounds() != null) {
+			applyClip();
+		}
 		canvas.translate(
-			canvasSettings.offset().x(),
-			canvasSettings.offset().y());
+			canvasSettings.offset().x() - canvasSettings.translation().x(),
+			canvasSettings.offset().y() - canvasSettings.translation().y());
 	}
 
-	private SkijaCanvasSettings createChildSettings(ChildCanvasSettings childCanvasSettings, Rectangle childRectangle) {
-		
+	private void applyClip() {
+		Rectangle clipBounds = canvasSettings.clipBounds();
+		AbsolutePosition clipPosition = clipBounds.position();
+		AbsoluteSize clipSize = clipBounds.size();
+		canvas.clipRect(new Rect(
+			clipPosition.x(),
+			clipPosition.y(),
+			clipPosition.x() + clipSize.width(),
+			clipPosition.y() + clipSize.height()));
+	}
+
+	private SkijaCanvasSettings createMovedChildSettings(ChildCanvasSettings childCanvasSettings, Rectangle childRectangle) {
 		AbsolutePosition childOffset = childCanvasSettings.preservePosition() ?
 			canvasSettings.offset() :
 			AbsolutePositionMath.sum(canvasSettings.offset(), childRectangle.position());
 		
-		return new SkijaCanvasSettings(childOffset, childRectangle);
+		return new SkijaCanvasSettings(childOffset, childRectangle, canvasSettings.translation());
+	}
+
+	private SkijaCanvasSettings createTranslatedCanvasSettings(float x, float y) {
+		AbsolutePosition newTranslation = AbsolutePositionMath.sum(canvasSettings.translation(), new AbsolutePosition(x, y));
+		return new SkijaCanvasSettings(canvasSettings.offset(), canvasSettings.clipBounds(), newTranslation);
 	}
 	
 }

@@ -3,9 +3,9 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.displ
 import com.github.webicitybrowser.thready.color.colors.RGBA8Color;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 
-public final class ScrollBarStyles {
+public final class ScrollbarStyles {
 	
-	public static final float PADDING_BLOCK_SIZE = 4;
+	public static final float PADDING_BLOCK_SIZE = 8;
 	public static final float PADDING_INLINE_SIZE = 2;
 	public static final float SCROLLBAR_INLINE_SIZE = 8;
 	public static final float TRACKBAR_INLINE_SIZE = SCROLLBAR_INLINE_SIZE + PADDING_INLINE_SIZE * 2;
@@ -15,7 +15,9 @@ public final class ScrollBarStyles {
 	public static final ColorFormat SCROLLBAR_COLOR = new RGBA8Color(0, 178, 152);
 
 	public static final float NOT_PRESENT = -1;
+	public static final ScrollbarDimensionTranslator VERTICAL_SCROLLBAR = new VerticalScrollbarDimensionTranslator();
+	public static final ScrollbarDimensionTranslator HORIZONTAL_SCROLLBAR = new HorizontalScrollbarDimensionTranslator();
 
-	private ScrollBarStyles() {}
+	private ScrollbarStyles() {}
 
 }
