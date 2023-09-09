@@ -58,7 +58,7 @@ java -XstartOnFirstThread -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 --XX:+
 
 ## Screenshot
 
-![image](https://user-images.githubusercontent.com/15697938/128383315-43ae7aaf-8d5b-44a7-9a0e-ad5a4d4b5ae7.png)
+![image](https://i.imgur.com/2f7iygD.png)
 
 ## Disclaimer
 Webicity is not suitable for use in medical applications, banking applications, or other applications in which security, accuracy, and/or performance is critical.

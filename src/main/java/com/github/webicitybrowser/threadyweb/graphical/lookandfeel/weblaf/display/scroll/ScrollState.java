@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.scroll;
 
 public class ScrollState {
 	

@@ -4,7 +4,7 @@ import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.ScrollDisplay;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.scroll.ScrollDisplay;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 
 public class DocumentUI implements ComponentUI {

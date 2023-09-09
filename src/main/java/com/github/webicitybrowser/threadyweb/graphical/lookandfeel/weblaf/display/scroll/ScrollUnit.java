@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.scroll;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
