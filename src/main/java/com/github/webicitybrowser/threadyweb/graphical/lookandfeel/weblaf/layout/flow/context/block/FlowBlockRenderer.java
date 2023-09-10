@@ -70,10 +70,13 @@ public final class FlowBlockRenderer {
 			state.flowContext().globalRenderContext(),
 			state.flowContext().localRenderContext(),
 			childBox);
-		AbsoluteSize preferredSize = computePreferredSize(state, childBox, paddings);
+		LayoutSizingContext layoutSizingContext = createLayoutSizingContext(state, childBox, paddings);
+		AbsoluteSize preferredSize = computePreferredSize(childBox, layoutSizingContext);
 		AbsoluteSize effectivePreferredSize = computeFallbackPreferredSize(state, preferredSize, margins);
 		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(effectivePreferredSize, paddings);
 		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
+		contentSize = FlowBlockSizeCalculations.clipContentSize(childBox, contentSize, layoutSizingContext, paddings);
+		childUnit = renderChildUnit(state, childBox, contentSize);
 		AbsoluteSize rawChildSize = childUnit.fitSize();
 		AbsoluteSize adjustedChildSize = FlowSizeUtils.enforcePreferredSize(rawChildSize, contentSize, preferredSize);
 		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(adjustedChildSize, paddings);
@@ -88,18 +91,21 @@ public final class FlowBlockRenderer {
 		state.addChildLayoutResult(new ChildLayoutResult(styledUnit, childRect));
 	}
 
-	private static AbsoluteSize computePreferredSize(FlowBlockRendererState state, Box childBox, float[] paddings) {
-		if (childBox instanceof BasicAnonymousFluidBox) {
-			return new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
-		}
-
+	private static LayoutSizingContext createLayoutSizingContext(FlowBlockRendererState state, Box childBox, float[] paddings) {
 		FontMetrics fontMetrics = state.getFont().getMetrics();
 		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator =
 			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), fontMetrics, isHorizontal);
 
-		LayoutSizingContext layoutSizingContext = LayoutSizeUtils.createLayoutSizingContext(
+		return LayoutSizeUtils.createLayoutSizingContext(
 			childBox.styleDirectives(), sizeCalculationContextGenerator, paddings
 		);
+	}
+
+	private static AbsoluteSize computePreferredSize(Box childBox, LayoutSizingContext layoutSizingContext) {
+		if (childBox instanceof BasicAnonymousFluidBox) {
+			return new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
+		}
+		
 		return LayoutSizeUtils.computePreferredSize(childBox.styleDirectives(), layoutSizingContext);
 	}
 

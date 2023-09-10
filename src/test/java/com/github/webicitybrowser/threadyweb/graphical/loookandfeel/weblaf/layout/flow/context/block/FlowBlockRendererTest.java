@@ -23,6 +23,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MinWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockRenderer;
@@ -252,6 +254,53 @@ public class FlowBlockRendererTest {
 		Assertions.assertEquals(new AbsoluteSize(10, 10), styledUnit.context().innerUnitSize());
 		Assertions.assertEquals(new AbsolutePosition(5, 0), styledUnit.context().innerUnitPosition());
 	}
+
+	@Test
+	@DisplayName("Box with max-width does not exceed max-width")
+	public void boxWithMaxWidthDoesNotExceedMaxWidth() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives = new BasicDirectivePool();
+		styleDirectives.directive(WidthDirective.of(_1 -> 10));
+		styleDirectives.directive(MaxWidthDirective.of(_1 -> 5));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = FlowBlockRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(50, 10), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertInstanceOf(StyledUnit.class, childLayoutResult.unit());
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(5, 10), childLayoutResult.relativeRect().size());
+		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
+		Assertions.assertEquals(new AbsoluteSize(5, 10), styledUnit.context().innerUnitSize());
+		Assertions.assertEquals(new AbsolutePosition(0, 0), styledUnit.context().innerUnitPosition());
+	}
+
+	@Test
+	@DisplayName("Box with min-width does not underflow min-width")
+	public void boxWithMinWidthDoesNotUnderflowMinWidth() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives = new BasicDirectivePool();
+		styleDirectives.directive(WidthDirective.of(_1 -> 10));
+		styleDirectives.directive(MinWidthDirective.of(_1 -> 15));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = FlowBlockRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(50, 10), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertInstanceOf(StyledUnit.class, childLayoutResult.unit());
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(15, 10), childLayoutResult.relativeRect().size());
+		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
+		Assertions.assertEquals(new AbsoluteSize(15, 10), styledUnit.context().innerUnitSize());
+		Assertions.assertEquals(new AbsolutePosition(0, 0), styledUnit.context().innerUnitPosition());
+	}
+
 
 	private GlobalRenderContext mockGlobalRenderContext() {
 		ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);

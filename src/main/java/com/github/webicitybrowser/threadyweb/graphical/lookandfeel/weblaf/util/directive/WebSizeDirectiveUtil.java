@@ -5,6 +5,7 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.H
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxHeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MinHeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MinWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 
@@ -27,9 +28,9 @@ public final class WebSizeDirectiveUtil {
 	 }
 
 	 public static SizeCalculation getMinWidth(DirectivePool directives) {
-		  return directives
-			.getDirectiveOrEmpty(MinHeightDirective.class)
-			.map(directive -> directive.getMinHeightCalculation())
+		return directives
+			.getDirectiveOrEmpty(MinWidthDirective.class)
+			.map(directive -> directive.getMinWidthCalculation())
 			.orElse(SizeCalculation.SIZE_AUTO);
 	 }
 
