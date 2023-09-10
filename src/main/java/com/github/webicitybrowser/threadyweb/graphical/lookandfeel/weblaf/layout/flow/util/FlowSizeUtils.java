@@ -7,15 +7,13 @@ public final class FlowSizeUtils {
 	
 	private FlowSizeUtils() {}
 
-	public static AbsoluteSize enforcePreferredSize(
-		AbsoluteSize rawChildSize, AbsoluteSize contentSize, AbsoluteSize preferredSize
-	) {
-		float widthComponent = preferredSize.width() != RelativeDimension.UNBOUNDED ?
-			contentSize.width() :
+	public static AbsoluteSize enforcePreferredSize(AbsoluteSize rawChildSize, AbsoluteSize enforcedSize) {
+		float widthComponent = enforcedSize.width() != RelativeDimension.UNBOUNDED ?
+			enforcedSize.width() :
 			rawChildSize.width();
 
-		float heightComponent = preferredSize.height() != RelativeDimension.UNBOUNDED ?
-			contentSize.height() :
+		float heightComponent = enforcedSize.height() != RelativeDimension.UNBOUNDED ?
+			enforcedSize.height() :
 			rawChildSize.height();
 
 		return new AbsoluteSize(widthComponent, heightComponent);

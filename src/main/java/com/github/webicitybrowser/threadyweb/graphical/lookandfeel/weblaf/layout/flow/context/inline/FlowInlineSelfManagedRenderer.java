@@ -32,7 +32,7 @@ public final class FlowInlineSelfManagedRenderer {
 		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(preferredSize, padding);
 		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
 		AbsoluteSize rawChildSize = childUnit.fitSize();
-		AbsoluteSize adjustedChildSize = FlowSizeUtils.enforcePreferredSize(rawChildSize, contentSize, preferredSize);
+		AbsoluteSize adjustedChildSize = FlowSizeUtils.enforcePreferredSize(rawChildSize, contentSize);
 		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(adjustedChildSize, padding);
 
 		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedSize, padding);
