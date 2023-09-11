@@ -21,17 +21,10 @@ public final class WhitespaceTokenizer {
 	}
 
 	public static boolean isWhitespace(int ch) {
-		switch (ch) {
-		case ' ':
-		case '\t':
-		case '\u000b':
-		case '\f':
-		case '\ufeff':
-		case '\u00A0':
-			return true;
-		default:
-			return false;
-		}
+        return switch (ch) {
+            case ' ', '\t', '\u000b', '\f', '\ufeff', '\u00A0' -> true;
+            default -> false;
+        };
 	}
 
 }
