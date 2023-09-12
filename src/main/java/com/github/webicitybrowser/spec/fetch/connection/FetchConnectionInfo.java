@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spec.fetch;
+package com.github.webicitybrowser.spec.fetch.connection;
 
 import com.github.webicitybrowser.spec.htmlbrowsers.Origin;
 

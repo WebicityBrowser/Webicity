@@ -1,9 +1,10 @@
-package com.github.webicitybrowser.spec.fetch.imp;
+package com.github.webicitybrowser.spec.fetch.builder.imp;
 
 import com.github.webicitybrowser.spec.fetch.FetchConsumeBodyAction;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
-import com.github.webicitybrowser.spec.fetch.FetchParametersBuilder;
 import com.github.webicitybrowser.spec.fetch.FetchRequest;
+import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
+import com.github.webicitybrowser.spec.fetch.imp.FetchParametersImp;
 
 public class FetchParametersBuilderImp implements FetchParametersBuilder {
 

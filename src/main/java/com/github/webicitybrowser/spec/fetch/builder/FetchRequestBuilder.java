@@ -1,6 +1,7 @@
-package com.github.webicitybrowser.spec.fetch;
+package com.github.webicitybrowser.spec.fetch.builder;
 
-import com.github.webicitybrowser.spec.fetch.imp.FetchRequestBuilderImp;
+import com.github.webicitybrowser.spec.fetch.FetchRequest;
+import com.github.webicitybrowser.spec.fetch.builder.imp.FetchRequestBuilderImp;
 import com.github.webicitybrowser.spec.url.URL;
 
 public interface FetchRequestBuilder {
