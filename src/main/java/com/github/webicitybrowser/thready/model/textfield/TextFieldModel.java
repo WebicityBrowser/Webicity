@@ -17,13 +17,13 @@ public interface TextFieldModel {
 	void insert(String text);
 	
 	void replace(String text);
-	
-	public static TextFieldModel create() {
-		return new DefaultTextFieldModel();
-	}
 
 	void addListener(TextFieldModelListener listener);
 	
 	void removeListener(TextFieldModelListener listener);
+	
+	public static TextFieldModel create() {
+		return new DefaultTextFieldModel();
+	}
 	
 }

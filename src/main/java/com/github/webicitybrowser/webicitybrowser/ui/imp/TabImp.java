@@ -1,5 +1,8 @@
 package com.github.webicitybrowser.webicitybrowser.ui.imp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.ui.Frame;
 import com.github.webicitybrowser.webicitybrowser.BrowserInstance;
@@ -9,6 +12,8 @@ import com.github.webicitybrowser.webicitybrowser.ui.event.TabMutationEventListe
 public class TabImp implements Tab {
 	
 	private final Frame frame;
+
+	private final List<TabMutationEventListener> mutationListeners = new ArrayList<>();
 
 	public TabImp(BrowserInstance browserInstance) {
 		this.frame = browserInstance.getRenderingEngine().createFrame();
@@ -48,6 +53,9 @@ public class TabImp implements Tab {
 	@Override
 	public void navigate(URL url) {
 		frame.navigate(url);
+		for (TabMutationEventListener mutationListener : mutationListeners) {
+			mutationListener.onNavigate(this, url);
+		}
 	}
 
 	@Override
@@ -67,14 +75,15 @@ public class TabImp implements Tab {
 
 	@Override
 	public void addTabMutationEventListener(TabMutationEventListener mutationListener, boolean sync) {
-		// TODO Auto-generated method stub
-
+		mutationListeners.add(mutationListener);
+		if (sync) {
+			mutationListener.onNavigate(this, getURL());
+		}
 	}
 
 	@Override
 	public void removeTabMutationEventListener(TabMutationEventListener mutationListener) {
-		// TODO Auto-generated method stub
-
+		mutationListeners.remove(mutationListener);
 	}
 
 }

@@ -243,7 +243,7 @@ public class WindowGUI {
 			
 			@Override
 			public TabDisplayComponent createTabDisplay(Tab tab) {
-				TabGUI gui = new TabGUI(browserInstance, tab, colors);
+				TabGUI gui = new TabGUI(tab, colors);
 				gui.start();
 				return gui.getComponent();
 			}

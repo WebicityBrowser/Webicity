@@ -69,5 +69,9 @@ public class TextFieldViewModel {
 	public boolean isFocused() {
 		return isFocused;
 	}
+
+	public void setWholeText(String text) {
+		model.setText(text);
+	}
 	
 }

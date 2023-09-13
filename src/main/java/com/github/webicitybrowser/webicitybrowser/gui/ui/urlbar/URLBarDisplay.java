@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -19,7 +20,17 @@ public class URLBarDisplay implements UIDisplay<URLBarContext, URLBarBox, URLBar
 
 	@Override
 	public URLBarContext createContext(ComponentUI componentUI) {
-		return URLBarContextGenerator.generateContext(this, componentUI);
+		URLBarContext context = URLBarContextGenerator.generateContext(this, componentUI);
+		URLBarComponent owningComponent = (URLBarComponent) componentUI.getComponent();
+		owningComponent.addURLChangeListener(() -> {
+			componentUI.invalidate(InvalidationLevel.PAINT);
+			context
+				.textFieldContext()
+				.getViewModel()
+				.setWholeText(owningComponent.getValue());
+		});
+
+		return context;
 	}
 
 	@Override

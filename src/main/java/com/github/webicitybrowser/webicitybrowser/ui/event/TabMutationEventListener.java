@@ -10,6 +10,6 @@ public interface TabMutationEventListener extends EventListener {
 	
 	default void onTitleChange(Tab tab, String name) {}
 	
-	void onClose(Tab tab);
+	default void onClose(Tab tab) {};
 	
 }
