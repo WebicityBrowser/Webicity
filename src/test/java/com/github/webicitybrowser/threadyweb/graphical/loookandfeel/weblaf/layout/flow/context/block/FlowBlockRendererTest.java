@@ -20,6 +20,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.threadyweb.graphical.directive.BorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
@@ -299,6 +300,31 @@ public class FlowBlockRendererTest {
 		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
 		Assertions.assertEquals(new AbsoluteSize(15, 10), styledUnit.context().innerUnitSize());
 		Assertions.assertEquals(new AbsolutePosition(0, 0), styledUnit.context().innerUnitPosition());
+	}
+
+	@Test
+	@DisplayName("Border widths create styled unit around content")
+	public void borderWidthsCreateStyledUnitAroundContent() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives = new BasicDirectivePool();
+		styleDirectives.directive(BorderWidthDirective.ofTop(_1 -> 10));
+		styleDirectives.directive(BorderWidthDirective.ofLeft(_1 -> 5));
+		styleDirectives.directive(BorderWidthDirective.ofBottom(_1 -> 15));
+		styleDirectives.directive(BorderWidthDirective.ofRight(_1 -> 20));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		FlowRenderContext renderContext = createRenderContext(box, globalRenderContext, createLocalRenderContext());
+		LayoutResult result = FlowBlockRenderer.render(renderContext);
+		Assertions.assertEquals(new AbsoluteSize(50, 35), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertInstanceOf(StyledUnit.class, childLayoutResult.unit());
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(50, 35), childLayoutResult.relativeRect().size());
+		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
+		Assertions.assertEquals(new AbsoluteSize(25, 10), styledUnit.context().innerUnitSize());
+		Assertions.assertEquals(new AbsolutePosition(5, 10), styledUnit.context().innerUnitPosition());
 	}
 
 

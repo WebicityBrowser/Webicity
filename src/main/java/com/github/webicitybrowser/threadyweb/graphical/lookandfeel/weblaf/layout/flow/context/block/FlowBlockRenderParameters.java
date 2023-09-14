@@ -2,6 +2,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutPaddingCalculations;
 
 public record FlowBlockRenderParameters(AbsoluteSize parentSize, float[] margins, float[] padding, float[] borders) {
@@ -21,8 +22,12 @@ public record FlowBlockRenderParameters(AbsoluteSize parentSize, float[] margins
 			state.flowContext().globalRenderContext(),
 			state.flowContext().localRenderContext(),
 			childBox);
+		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(
+			state.getGlobalRenderContext(),
+			state.getLocalRenderContext(),
+			childBox);
 
-		return new FlowBlockRenderParameters(parentSize, margins, paddings, new float[4]);
+		return new FlowBlockRenderParameters(parentSize, margins, paddings, borders);
 	}
 	
 }
