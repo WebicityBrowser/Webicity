@@ -12,9 +12,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.message.basics.DefaultGraphicalMessageHandler;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
-import com.github.webicitybrowser.webicitybrowser.gui.binding.component.tab.TabComponent;
 
 public class TabDisplay implements UIDisplay<TabContext, TabBox, TabUnit> {
 
@@ -25,9 +23,8 @@ public class TabDisplay implements UIDisplay<TabContext, TabBox, TabUnit> {
 
 	@Override
 	public List<TabBox> generateBoxes(TabContext displayContext, BoxContext boxContext, StyleGenerator styleGenerator) {
-		TabComponent owningComponent = (TabComponent) displayContext.componentUI().getComponent();
 		DirectivePool styleDirectives = styleGenerator.getStyleDirectives();
-		return List.of(new TabBox(owningComponent, styleDirectives, this));
+		return List.of(new TabBox(displayContext, styleDirectives));
 	}
 
 	@Override
@@ -42,7 +39,7 @@ public class TabDisplay implements UIDisplay<TabContext, TabBox, TabUnit> {
 
 	@Override
 	public MessageHandler createMessageHandler(TabUnit unit, Rectangle documentRect) {
-		return new DefaultGraphicalMessageHandler(documentRect, unit.box());
+		return new TabMessageHandler(documentRect, unit);
 	}
 
 }

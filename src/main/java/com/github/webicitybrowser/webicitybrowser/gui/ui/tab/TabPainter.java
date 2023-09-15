@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.webicitybrowser.gui.ui.tab;
 
+import com.github.webicitybrowser.thready.color.Colors;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
@@ -28,6 +29,10 @@ public final class TabPainter {
 			paintLowerLevelBackground(canvas, documentRect, styleDirectives);
 		}
 		paintText(canvas, documentRect, styleDirectives, unit);
+		if (unit.buttonState().isXHovered()) {
+			paintXButtonBackground(canvas, documentRect, styleDirectives, unit);
+		}
+		paintXButtonText(canvas, documentRect, styleDirectives, unit);
 	}
 
 	private static void paintTopLevelBackground(Canvas2D canvas, Rectangle documentRect, DirectivePool styleDirectives) {
@@ -96,10 +101,48 @@ public final class TabPainter {
 		float expectedWidth = docW /* - Styling.BUTTON_WIDTH*/ - 2 * Styling.ELEMENT_PADDING;
 		String trimmedText = WebStringUtils.trim(metrics, text, expectedWidth);
 
-		float textOffsetX = docW / 2 - metrics.getStringWidth(trimmedText) / 2;
+		float textOffsetX = (docW - Styling.BUTTON_WIDTH) / 2 - metrics.getStringWidth(trimmedText) / 2 + Styling.BUTTON_WIDTH * 3/4;
 		float textOffsetY = docH / 2 - metrics.getCapHeight() / 2;
 		
 		ctx.drawText(docX + textOffsetX, docY + textOffsetY, trimmedText);
+	}
+
+	private static void paintXButtonText(Canvas2D canvas, Rectangle documentRect, DirectivePool styleDirectives, TabUnit unit) {
+		ColorFormat color = SimpleDirectiveUtil.getForegroundColor(styleDirectives);
+		Paint2D paint = Paint2DBuilder
+			.clone(canvas.getPaint())
+			.setColor(color)
+			.setFont(unit.font())
+			.build();
+		Canvas2D ctx = canvas.withPaint(paint);
+		FontMetrics metrics = unit.font().getMetrics();
+
+		float docX = documentRect.position().x();
+		float docY = documentRect.position().y();
+		float docH = documentRect.size().height();
+
+		float halfButtonWidth = Styling.BUTTON_WIDTH / 2;
+		float textOffsetX = docX + Styling.ELEMENT_PADDING + halfButtonWidth / 2 - metrics.getStringWidth("x") / 2;
+		float textOffsetY = docY + docH / 2 - metrics.getCapHeight() / 2;
+	
+		ctx.drawText(textOffsetX, textOffsetY, "x");		
+	}
+
+	private static void paintXButtonBackground(Canvas2D canvas, Rectangle documentRect, DirectivePool styleDirectives, TabUnit unit) {
+		Paint2D paint = Paint2DBuilder
+			.clone(canvas.getPaint())
+			.setColor(Colors.RED)
+			.build();
+		Canvas2D ctx = canvas.withPaint(paint);
+
+		float docX = documentRect.position().x();
+		float docY = documentRect.position().y();
+		float docH = documentRect.size().height();
+
+		float halfButtonWidth = Styling.BUTTON_WIDTH / 2;
+		float circleX = docX + Styling.ELEMENT_PADDING;
+		float circleY = docY + docH / 2 - halfButtonWidth / 2;
+		ctx.drawEllipse(circleX, circleY, halfButtonWidth, halfButtonWidth);
 	}
 	
 }
