@@ -29,7 +29,7 @@ public final class TabPainter {
 			paintLowerLevelBackground(canvas, documentRect, styleDirectives);
 		}
 		paintText(canvas, documentRect, styleDirectives, unit);
-		if (unit.buttonState().isXHovered()) {
+		if (unit.buttonState().isXHovered() || unit.buttonState().isXHeld()) {
 			paintXButtonBackground(canvas, documentRect, styleDirectives, unit);
 		}
 		paintXButtonText(canvas, documentRect, styleDirectives, unit);
@@ -129,9 +129,10 @@ public final class TabPainter {
 	}
 
 	private static void paintXButtonBackground(Canvas2D canvas, Rectangle documentRect, DirectivePool styleDirectives, TabUnit unit) {
+		ColorFormat color = unit.buttonState().isXHeld() ? Colors.DARK_GRAY : Colors.RED;
 		Paint2D paint = Paint2DBuilder
 			.clone(canvas.getPaint())
-			.setColor(Colors.RED)
+			.setColor(color)
 			.build();
 		Canvas2D ctx = canvas.withPaint(paint);
 

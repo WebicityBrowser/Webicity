@@ -44,10 +44,18 @@ public class TabMessageHandler implements MessageHandler {
 		boolean mouseInXButtonBounds = mouseInXButtonBounds(event);
 		boolean oldHovered = unit.buttonState().isXHovered();
 		unit.buttonState().setXHovered(mouseInXButtonBounds);
+		unit.buttonState().setXHeld(false);
 		if (oldHovered != mouseInXButtonBounds) {
 			unit.box().context().componentUI().invalidate(InvalidationLevel.PAINT);
 		}
 		if (!mouseInXButtonBounds) return false;
+
+		if (event.getAction() == MouseConstants.RELEASE) {
+			unit.box().owningComponent().close();
+		} else if (event.getAction() == MouseConstants.PRESS || event.getAction() == MouseConstants.DRAG) {
+			unit.buttonState().setXHeld(true);
+			unit.box().context().componentUI().invalidate(InvalidationLevel.PAINT);
+		}
 
 		return true;
 	}

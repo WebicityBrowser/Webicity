@@ -54,7 +54,17 @@ public class TabPickerComponent extends TabDisplayComponent {
 	}
 	
 	public TabComponent addTab(Tab tab) {
-		TabComponent tabComponent = new ContentTabComponent(configs, tab);
+		TabComponent tabComponent = new ContentTabComponent(configs, tab, component -> {
+			tabs.remove(component);
+			regenerateContents();
+			if (tabs.isEmpty()) {
+				addTab(configs.createTab());
+			}
+			if (selectedTab == component) {
+				selectTab(tabs.get(0));
+			}
+		});
+		
 		setupTabComponent(tabComponent);
 		tabs.add(tabComponent);
 		if (tabs.size() == 1) {
