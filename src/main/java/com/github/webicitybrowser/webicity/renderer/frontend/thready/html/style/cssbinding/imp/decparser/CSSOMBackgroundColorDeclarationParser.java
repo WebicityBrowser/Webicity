@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
-import com.github.webicitybrowser.spec.css.parser.property.color.ColorPropertyValueParser;
+import com.github.webicitybrowser.spec.css.parser.property.color.ColorValueParser;
 import com.github.webicitybrowser.spec.css.property.color.ColorValue;
 import com.github.webicitybrowser.thready.color.colors.RGBA8Color;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
@@ -11,7 +11,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 
 public class CSSOMBackgroundColorDeclarationParser implements CSSOMNamedDeclarationParser<ColorValue> {
 
-	private final PropertyValueParser<ColorValue> colorParser = new ColorPropertyValueParser();
+	private final PropertyValueParser<ColorValue> colorParser = new ColorValueParser();
 	
 	@Override
 	public PropertyValueParser<ColorValue> getPropertyValueParser() {

@@ -6,7 +6,7 @@ import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParserUtil;
 import com.github.webicitybrowser.spec.css.property.color.ColorValue;
 
-public class ColorPropertyValueParser implements PropertyValueParser<ColorValue> {
+public class ColorValueParser implements PropertyValueParser<ColorValue> {
 
 	private final PropertyValueParser<ColorValue> absoluteColorBaseValueParser = new AbsoluteColorBaseValueParser();
 

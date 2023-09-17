@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spec.css.property.borderwidth;
+package com.github.webicitybrowser.spec.css.property.border.width;
 
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 

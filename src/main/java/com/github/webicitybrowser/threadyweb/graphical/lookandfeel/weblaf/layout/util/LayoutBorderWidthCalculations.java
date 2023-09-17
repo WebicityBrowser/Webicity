@@ -3,11 +3,11 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
-import com.github.webicitybrowser.threadyweb.graphical.directive.BorderWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.BorderWidthDirective.BottomBorderWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.BorderWidthDirective.LeftBorderWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.BorderWidthDirective.RightBorderWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.BorderWidthDirective.TopBorderWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.BottomBorderWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.LeftBorderWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.RightBorderWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.TopBorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 

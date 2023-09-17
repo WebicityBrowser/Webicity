@@ -5,7 +5,7 @@ import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseRes
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.imp.PropertyValueParseResultImp;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
-import com.github.webicitybrowser.spec.css.property.borderwidth.BorderWidthValue;
+import com.github.webicitybrowser.spec.css.property.border.width.BorderWidthValue;
 
 public class BorderWidthShorthandValueParser implements PropertyValueParser<BorderWidthValue> {
 	

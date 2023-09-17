@@ -35,14 +35,14 @@ public final class FlowBlockBlockRenderer {
 		AbsolutePosition childPosition = state.positionTracker().addBox(finalChildSize, finalMargins);
 		Rectangle childRect = new Rectangle(childPosition, finalChildSize);
 		
-		addChildToLayout(state, childBox, childRenderResult.unit(), childRect, prerenderSizingInfo.totalPadding());
+		addChildToLayout(state, childBox, childRenderResult.unit(), childRect, prerenderSizingInfo.padding(), prerenderSizingInfo.borders());
 	}
 
 	private static void addChildToLayout(
-		FlowBlockRendererState state, Box childBox, RenderedUnit childUnit, Rectangle childRect, float[] paddings
+		FlowBlockRendererState state, Box childBox, RenderedUnit childUnit, Rectangle childRect, float[] padding, float[] border
 	) {
 		
-		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, childRect.size(), paddings);
+		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, childRect.size(), padding, border);
 		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 		state.addChildLayoutResult(new ChildLayoutResult(styledUnit, childRect));
 	}
@@ -90,7 +90,7 @@ public final class FlowBlockBlockRenderer {
 			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), fontMetrics, isHorizontal);
 
 		return LayoutSizeUtils.createLayoutSizingContext(
-			childBox.styleDirectives(), sizeCalculationContextGenerator, renderParameters.totalPadding()
+			childBox.styleDirectives(), sizeCalculationContextGenerator, renderParameters.padding(), renderParameters.borders()
 		);
 	}
 

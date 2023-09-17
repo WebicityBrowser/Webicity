@@ -7,6 +7,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutPaddingCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils.LayoutSizingContext;
@@ -17,15 +18,17 @@ public class FlexItemSizePreferences {
 	private final LayoutSizingContext sizingContext;
 	private final float[] margins;
 	private final float[] padding;
+	private final float[] borders;
 
 	public FlexItemSizePreferences(Box box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		this.styleDirectives = box.styleDirectives();
 		this.margins = FlexMarginCalculations.computeMargins(globalRenderContext, localRenderContext, box);
 		this.padding = LayoutPaddingCalculations.computePaddings(globalRenderContext, localRenderContext, box);
+		this.borders = LayoutBorderWidthCalculations.computeBorderWidths(globalRenderContext, localRenderContext, box);
 		this.sizingContext = LayoutSizeUtils.createLayoutSizingContext(
 			styleDirectives,
 			isHorizontal -> FlexUtils.createSizeCalculationContext(globalRenderContext, localRenderContext, isHorizontal),
-			padding);
+			padding, borders);
 	}
 	
 	public float[] getMargins() {
@@ -34,6 +37,10 @@ public class FlexItemSizePreferences {
 
 	public float[] getPadding() {
 		return padding;
+	}
+
+	public float[] getBorders() {
+		return borders;
 	}
 
 	public float getMainSize(FlexDirection flexDirection) {

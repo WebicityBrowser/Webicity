@@ -105,6 +105,7 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 		for (FlexItem flexItem : flexItems) {
 			float[] margins = flexItem.getSizePreferences().getMargins();
 			float[] padding = flexItem.getSizePreferences().getPadding();
+			float[] borders = flexItem.getSizePreferences().getBorders();
 			FlexDimension marginsOffset = FlexDimension.createFrom(new AbsoluteSize(margins[0], margins[2]), flexDirection);
 			FlexDimension itemOffset = flexItem.getItemOffset();
 			FlexDimension childPosition = new FlexDimension(
@@ -117,7 +118,7 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 			Rectangle childBounds = new Rectangle(childPosition.toAbsolutePosition(), childInnerSize);
 			RenderedUnit renderedUnit = flexItem.getRenderedUnit();
 			RenderedUnit styledUnit = styledUnitGenerator.generateStyledUnit(
-				new StyledUnitContext(flexItem.getBox(), renderedUnit, childInnerSize, padding));
+				new StyledUnitContext(flexItem.getBox(), renderedUnit, childInnerSize, padding, borders));
 			layoutResults.add(new ChildLayoutResult(styledUnit, childBounds));
 		}
 	}

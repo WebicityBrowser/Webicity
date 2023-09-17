@@ -16,10 +16,10 @@ public final class LayoutSizeUtils {
 	private LayoutSizeUtils() {}
 
 	public static LayoutSizingContext createLayoutSizingContext(
-		DirectivePool styleDirectives, Function<Boolean, SizeCalculationContext> contextGenerator, float[] padding
+		DirectivePool styleDirectives, Function<Boolean, SizeCalculationContext> contextGenerator, float[] padding, float[] borders
 	) {
 		BoxSizing boxSizing = getBoxSizing(styleDirectives);
-		return new LayoutSizingContext(boxSizing, contextGenerator, padding);
+		return new LayoutSizingContext(boxSizing, contextGenerator, padding, borders);
 	}
 
 	public static AbsoluteSize computePreferredSize(
@@ -86,7 +86,7 @@ public final class LayoutSizeUtils {
 		SizeCalculation sizeCalculation, LayoutSizingContext layoutSizingContext, boolean isWidth
 	) {
 		SizeCalculationContext sizeCalculationContext = layoutSizingContext.contextGenerator().apply(isWidth);
-		float[] padding = layoutSizingContext.padding();
+		float[] padding = layoutSizingContext.totalPadding();
 		float directionalPadding = isWidth ? padding[0] + padding[1] : padding[2] + padding[3];
 		
 		float calculatedSize = sizeCalculation.calculate(sizeCalculationContext);
@@ -108,7 +108,15 @@ public final class LayoutSizeUtils {
 	}
 
 	public static record LayoutSizingContext(
-		BoxSizing boxSizing, Function<Boolean, SizeCalculationContext> contextGenerator, float[] padding
-	) {};
+		BoxSizing boxSizing, Function<Boolean, SizeCalculationContext> contextGenerator, float[] padding, float[] borders
+	) {
+		public float[] totalPadding() {
+			float[] totalPadding = new float[4];
+			for (int i = 0; i < 4; i++) {
+				totalPadding[i] = padding[i] + borders[i];
+			}
+			return totalPadding;
+		}
+	};
 
 }

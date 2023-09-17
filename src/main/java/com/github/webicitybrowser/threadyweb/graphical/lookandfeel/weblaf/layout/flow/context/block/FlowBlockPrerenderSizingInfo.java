@@ -8,7 +8,22 @@ public record FlowBlockPrerenderSizingInfo(
 ) {
 
 	public float[] totalPadding() {
+		float[] totalPadding = new float[4];
+		float[] padding = padding();
+		float[] borders = borders();
+		for (int i = 0; i < 4; i++) {
+			totalPadding[i] = padding[i] + borders[i];
+		}
+
+		return totalPadding;
+	}
+
+	public float[] padding() {
 		return sizingContext.padding();
+	}
+
+	public float[] borders() {
+		return sizingContext.borders();
 	}
 
 }

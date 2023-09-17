@@ -10,6 +10,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipel
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.paint.BackgroundPainter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.paint.BorderPainter;
 
 public final class StyledUnitPainter {
 
@@ -22,17 +23,26 @@ public final class StyledUnitPainter {
 			paintDebugRectangle(localPaintContext);
 		}
 
-		BackgroundPainter.paintBackground(
-			unit.context().styleDirectives(),
-			globalPaintContext, localPaintContext);
+		BackgroundPainter.paintBackground(unit.context().styleDirectives(), globalPaintContext, localPaintContext);
+		paintOutlines(unit, globalPaintContext, localPaintContext);
 		paintInnerUnit(unit, globalPaintContext, localPaintContext);
+	}
+
+	private static void paintOutlines(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
+		float[] borders = unit.context().borders();
+		BorderPainter.paintLeftOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[0]);
+		BorderPainter.paintRightOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[1]);
+		BorderPainter.paintTopOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[2]);
+		BorderPainter.paintBottomOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[3]);
 	}
 
 	private static void paintInnerUnit(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		AbsolutePosition position = localPaintContext.documentRect().position();
+		float[] padding = unit.context().padding();
+		float[] borders = unit.context().borders();
 		AbsolutePosition innerPosition = new AbsolutePosition(
-			position.x() + unit.context().padding()[0],
-			position.y() + unit.context().padding()[2]);
+			position.x() + borders[0] + padding[0],
+			position.y() + borders[2] + padding[2]);
 		Rectangle innerDocumentRect = new Rectangle(innerPosition, unit.context().innerUnitSize());
 
 		LocalPaintContext innerLocalPaintContext = new LocalPaintContext(

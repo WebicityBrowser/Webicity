@@ -14,8 +14,9 @@ import com.github.webicitybrowser.spec.css.parser.util.TokenUtils;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.threadyweb.graphical.directive.BorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderColorDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxHeightDirective;
@@ -33,11 +34,13 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontFamilyParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontSizeDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontWeightDeclarationParser;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMLonghandBorderWidthParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMLonghandMarginParser;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandBorderWidthParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandMarginParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandPaddingParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.border.CSSOMLonghandBorderColorParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.border.CSSOMLonghandBorderWidthParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.border.CSSOMShorthandBorderColorParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.border.CSSOMShorthandBorderWidthParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexDirectionDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexFactorDeclarationParser;
@@ -86,6 +89,12 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("border-top-width", new CSSOMLonghandBorderWidthParser(BorderWidthDirective::ofTop));
 		namedDeclarationParsers.put("border-bottom-width", new CSSOMLonghandBorderWidthParser(BorderWidthDirective::ofBottom));
 		namedDeclarationParsers.put("border-width", new CSSOMShorthandBorderWidthParser());
+
+		namedDeclarationParsers.put("border-left-color", new CSSOMLonghandBorderColorParser(BorderColorDirective::ofLeft));
+		namedDeclarationParsers.put("border-right-color", new CSSOMLonghandBorderColorParser(BorderColorDirective::ofRight));
+		namedDeclarationParsers.put("border-top-color", new CSSOMLonghandBorderColorParser(BorderColorDirective::ofTop));
+		namedDeclarationParsers.put("border-bottom-color", new CSSOMLonghandBorderColorParser(BorderColorDirective::ofBottom));
+		namedDeclarationParsers.put("border-color", new CSSOMShorthandBorderColorParser());
 
 		namedDeclarationParsers.put("flex", new CSSOMFlexDeclarationParser());
 		namedDeclarationParsers.put("flex-direction", new CSSOMFlexDirectionDeclarationParser());

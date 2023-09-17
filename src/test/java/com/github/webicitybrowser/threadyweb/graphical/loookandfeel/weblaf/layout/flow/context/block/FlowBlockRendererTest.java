@@ -20,8 +20,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
-import com.github.webicitybrowser.threadyweb.graphical.directive.BorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxWidthDirective;
