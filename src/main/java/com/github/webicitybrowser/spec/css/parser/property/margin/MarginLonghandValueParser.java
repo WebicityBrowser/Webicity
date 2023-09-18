@@ -20,14 +20,14 @@ public class MarginLonghandValueParser implements PropertyValueParser<CSSValue> 
 		}
 
 		if (tokens[offset] instanceof IdentToken identToken && identToken.getValue().equals("auto")) {
-			return PropertyValueParseResultImp.of(new AutoValue() {}, length);
+			return PropertyValueParseResultImp.of(new AutoValue() {}, 1);
 		}
 
-		return lengthPercentageValueParser.parse(tokens, offset, length);
+		return lengthPercentageValueParser.parse(tokens, offset, 1);
 	}
 
 	private boolean checkSelectorFormat(TokenLike[] tokens, int offset, int length) {
-		return length == 1;
+		return length > 0;
 	}
 	
 }

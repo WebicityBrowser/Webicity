@@ -99,7 +99,7 @@ public class HexColorValueParser implements PropertyValueParser<ColorValue> {
 
 	private boolean checkSelectorFormat(TokenLike[] tokens, int offset, int length) {
 		return
-			length == 1 &&
+			length > 0 &&
 			tokens[offset] instanceof HashToken;
 	}
 

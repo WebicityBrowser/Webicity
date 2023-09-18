@@ -16,7 +16,7 @@ public class NamedColorValueParser implements PropertyValueParser<ColorValue> {
 
 	@Override
 	public PropertyValueParseResult<ColorValue> parse(TokenLike[] tokens, int offset, int length) {
-		if (length != 1 || !(tokens[offset] instanceof IdentToken)) {
+		if (length < 1 || !(tokens[offset] instanceof IdentToken)) {
 			return PropertyValueParseResultImp.empty();
 		}
 
@@ -24,7 +24,7 @@ public class NamedColorValueParser implements PropertyValueParser<ColorValue> {
 		ColorValue color = colors.get(name);
 
 		if (color != null) {
-			return PropertyValueParseResultImp.of(color, length);
+			return PropertyValueParseResultImp.of(color, 1);
 		}
 
 		return PropertyValueParseResultImp.empty();

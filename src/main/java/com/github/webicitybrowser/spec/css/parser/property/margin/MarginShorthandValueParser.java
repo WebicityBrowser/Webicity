@@ -18,20 +18,24 @@ public class MarginShorthandValueParser implements PropertyValueParser<MarginVal
 		}
 
 		CSSValue[] values = new CSSValue[length];
+		int usedLength = 0;
 		for (int i = 0; i < length; i++) {
 			PropertyValueParseResult<CSSValue> parseResult = longhandParser.parse(tokens, offset + i, 1);
-			if (parseResult.getResult().isEmpty()) {
-				return PropertyValueParseResultImp.empty();
-			}
+			if (parseResult.getResult().isEmpty()) break;
 
 			values[i] = parseResult.getResult().get();
+			usedLength++;
 		}
 
-		return convertValuesToMarginValue(values);
+		if (usedLength == 0) {
+			return PropertyValueParseResultImp.empty();
+		}
+
+		return convertValuesToMarginValue(values, usedLength);
 	}
 
-	private PropertyValueParseResult<MarginValue> convertValuesToMarginValue(CSSValue[] values) {
-		switch (values.length) {
+	private PropertyValueParseResult<MarginValue> convertValuesToMarginValue(CSSValue[] values, int length) {
+		switch (length) {
 			case 1 -> {
 				CSSValue value = values[0];
 				return PropertyValueParseResultImp.of(new MarginValue(value, value, value, value), 1);
@@ -57,12 +61,12 @@ public class MarginShorthandValueParser implements PropertyValueParser<MarginVal
 				CSSValue left = values[3];
 				return PropertyValueParseResultImp.of(new MarginValue(left, right, top, bottom), 4);
 			}
-			default -> throw new IllegalStateException("Unexpected value: " + values.length);
+			default -> throw new IllegalStateException("Unexpected value: " + length);
 		}
 	}
 
 	private boolean checkSelectorValid(TokenLike[] tokens, int offset, int length) {
-		return length >= 1 && length <= 4;
+		return length >= 1;
 	}
 	
 }

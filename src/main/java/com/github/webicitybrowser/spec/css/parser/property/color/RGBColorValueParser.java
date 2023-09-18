@@ -19,7 +19,7 @@ public class RGBColorValueParser implements PropertyValueParser<ColorValue> {
 
 	@Override
 	public PropertyValueParseResult<ColorValue> parse(TokenLike[] tokens, int offset, int length) {
-		if (length != 1 || !(tokens[offset] instanceof FunctionValue)) {
+		if (length < 1 || !(tokens[offset] instanceof FunctionValue)) {
 			return PropertyValueParseResultImp.empty();
 		}
 

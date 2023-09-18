@@ -10,7 +10,10 @@ public class TransparentColorValueParser implements PropertyValueParser<ColorVal
 
 	@Override
 	public PropertyValueParseResult<ColorValue> parse(TokenLike[] tokens, int offset, int length) {
-		// TODO Auto-generated method stub
+		if (length > 0 && tokens[offset].toString().equals("transparent")) {
+			return PropertyValueParseResultImp.of(new RGBColorValueImp(0, 0, 0, 0), 1);
+		}
+		
 		return PropertyValueParseResultImp.empty();
 	}
 

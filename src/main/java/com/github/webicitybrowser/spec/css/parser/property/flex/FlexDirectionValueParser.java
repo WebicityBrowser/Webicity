@@ -25,7 +25,7 @@ public class FlexDirectionValueParser implements PropertyValueParser<FlexDirecti
 	}
 
 	private boolean checkValueFormat(TokenLike[] tokens, int offset, int length) {
-		return length == 1 && tokens[offset] instanceof IdentToken;
+		return length > 0 && tokens[offset] instanceof IdentToken;
 	}
 	
 }

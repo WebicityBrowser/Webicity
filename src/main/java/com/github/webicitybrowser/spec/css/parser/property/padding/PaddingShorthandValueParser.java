@@ -17,21 +17,25 @@ public class PaddingShorthandValueParser implements PropertyValueParser<PaddingV
 			return PropertyValueParseResultImp.empty();
 		}
 
-		CSSValue[] values = new CSSValue[length];
-		for (int i = 0; i < length; i++) {
+		CSSValue[] values = new CSSValue[4];
+		int usedLength = 0;
+		for (int i = 0; i < length && i < 4; i++) {
 			PropertyValueParseResult<CSSValue> parseResult = longhandParser.parse(tokens, offset + i, 1);
-			if (parseResult.getResult().isEmpty()) {
-				return PropertyValueParseResultImp.empty();
-			}
+			if (parseResult.getResult().isEmpty()) break;
 
 			values[i] = parseResult.getResult().get();
+			usedLength++;
 		}
 
-		return convertValuesToPaddingValue(values);
+		if (usedLength == 0) {
+			return PropertyValueParseResultImp.empty();
+		}
+
+		return convertValuesToPaddingValue(values, usedLength);
 	}
 
-	private PropertyValueParseResult<PaddingValue> convertValuesToPaddingValue(CSSValue[] values) {
-		switch (values.length) {
+	private PropertyValueParseResult<PaddingValue> convertValuesToPaddingValue(CSSValue[] values, int length) {
+		switch (length) {
 			case 1 -> {
 				CSSValue value = values[0];
 				return PropertyValueParseResultImp.of(new PaddingValue(value, value, value, value), 1);
@@ -57,12 +61,12 @@ public class PaddingShorthandValueParser implements PropertyValueParser<PaddingV
 				CSSValue left = values[3];
 				return PropertyValueParseResultImp.of(new PaddingValue(left, right, top, bottom), 4);
 			}
-			default -> throw new IllegalStateException("Unexpected value: " + values.length);
+			default -> throw new IllegalStateException("Unexpected value: " + length);
 		}
 	}
 
 	private boolean checkSelectorValid(TokenLike[] tokens, int offset, int length) {
-		return length >= 1 && length <= 4;
+		return length >= 1;
 	}
 	
 }

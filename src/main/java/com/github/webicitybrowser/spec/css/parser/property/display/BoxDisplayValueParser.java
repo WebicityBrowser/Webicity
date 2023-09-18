@@ -22,7 +22,7 @@ public class BoxDisplayValueParser implements PropertyValueParser<DisplayValue> 
 			return PropertyValueParseResultImp.empty();
 		}
 		
-		return PropertyValueParseResultImp.of(new DisplayValue(outerDisplayType, InnerDisplayType.FLOW), length);
+		return PropertyValueParseResultImp.of(new DisplayValue(outerDisplayType, InnerDisplayType.FLOW), 1);
 	}
 
 	private OuterDisplayType parseOuterDisplayType(IdentToken identifier) {
@@ -37,9 +37,7 @@ public class BoxDisplayValueParser implements PropertyValueParser<DisplayValue> 
 	}
 
 	private boolean checkSelectorFormat(TokenLike[] tokens, int offset, int length) {
-		if (length != 1) {
-			return false;
-		}
+		if (length < 1) return false;
 		return tokens[0] instanceof IdentToken;
 	}
 

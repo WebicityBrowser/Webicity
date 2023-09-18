@@ -2,7 +2,7 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.border.color.BorderColorShorthandValueParser;
-import com.github.webicitybrowser.spec.css.property.border.color.BorderColorValue;
+import com.github.webicitybrowser.spec.css.property.border.MultiBorderColorValue;
 import com.github.webicitybrowser.spec.css.property.color.ColorValue;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
@@ -10,17 +10,17 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderCo
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.componentparser.ColorParser;
 
-public class CSSOMShorthandBorderColorParser implements CSSOMNamedDeclarationParser<BorderColorValue> {
+public class CSSOMShorthandBorderColorParser implements CSSOMNamedDeclarationParser<MultiBorderColorValue> {
 
 	private final BorderColorShorthandValueParser shorthandParser = new BorderColorShorthandValueParser();
 
 	@Override
-	public PropertyValueParser<BorderColorValue> getPropertyValueParser() {
+	public PropertyValueParser<MultiBorderColorValue> getPropertyValueParser() {
 		return shorthandParser;
 	}
 
 	@Override
-	public Directive[] translatePropertyValue(BorderColorValue value) {
+	public Directive[] translatePropertyValue(MultiBorderColorValue value) {
 		return new Directive[] {
 			BorderColorDirective.ofLeft(getColor(value.left())),
 			BorderColorDirective.ofRight(getColor(value.right())),

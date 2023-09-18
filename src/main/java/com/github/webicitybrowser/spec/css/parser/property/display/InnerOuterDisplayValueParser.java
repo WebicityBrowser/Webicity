@@ -23,7 +23,7 @@ public class InnerOuterDisplayValueParser implements PropertyValueParser<Display
 			return PropertyValueParseResultImp.empty();
 		}
 		
-		return PropertyValueParseResultImp.of(new DisplayValue(outerDisplayType, innerDisplayType), length);
+		return PropertyValueParseResultImp.of(new DisplayValue(outerDisplayType, innerDisplayType), 1);
 	}
 
 	private OuterDisplayType parseOuterDisplayTypeSingle(IdentToken identifier) {
@@ -54,9 +54,7 @@ public class InnerOuterDisplayValueParser implements PropertyValueParser<Display
 	}
 
 	private boolean checkSelectorFormat(TokenLike[] tokens, int offset, int length) {
-		if (length != 1) {
-			return false;
-		}
+		if (length < 1) return false;
 		return tokens[0] instanceof IdentToken;
 	}
 

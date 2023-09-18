@@ -10,6 +10,6 @@ public interface PropertyValueParseResult<T extends CSSValue> {
 	
 	int getLength();
 
-	 <U extends CSSValue> PropertyValueParseResult<U> as(Class<U> cls);
+	<U extends CSSValue> PropertyValueParseResult<U> as(Class<U> cls);
 	
 }

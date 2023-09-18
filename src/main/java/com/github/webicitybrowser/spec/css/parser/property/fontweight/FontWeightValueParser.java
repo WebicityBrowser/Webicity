@@ -24,7 +24,7 @@ public class FontWeightValueParser implements PropertyValueParser<FontWeightValu
 			return PropertyValueParseResultImp.empty();
 		}
 		
-		return PropertyValueParseResultImp.of(fontWeightValue, length);
+		return PropertyValueParseResultImp.of(fontWeightValue, 1);
 	}
 
 	private FontWeightValue parseFontWeightValue(TokenLike token) {
@@ -46,9 +46,7 @@ public class FontWeightValueParser implements PropertyValueParser<FontWeightValu
 	}
 
 	private boolean checkSelectorFormat(TokenLike[] tokens, int offset, int length) {
-		if (length != 1) {
-			return false;
-		}
+		if (length < 1) return false;
 		return tokens[0] instanceof TokenLike;
 	}
 

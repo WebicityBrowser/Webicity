@@ -14,8 +14,8 @@ public class LengthValueParser implements PropertyValueParser<LengthValue> {
 
 	@Override
 	public PropertyValueParseResult<LengthValue> parse(TokenLike[] tokens, int offset, int length) {
-		if (length == 1 && tokens[offset] instanceof NumberToken numberToken && numberToken.getValue().floatValue() == 0) {
-			return PropertyValueParseResultImp.of(createAbsoluteLengthValue(0, "px"), length);
+		if (length > 0 && tokens[offset] instanceof NumberToken numberToken && numberToken.getValue().floatValue() == 0) {
+			return PropertyValueParseResultImp.of(createAbsoluteLengthValue(0, "px"), 1);
 		}
 
 		if (!checkSelectorFormat(tokens, offset, length)) {
@@ -27,7 +27,7 @@ public class LengthValueParser implements PropertyValueParser<LengthValue> {
 	}
 
 	private boolean checkSelectorFormat(TokenLike[] tokens, int offset, int length) {
-		return length == 1 && tokens[offset] instanceof DimensionToken;
+		return length > 0 && tokens[offset] instanceof DimensionToken;
 	}
 
 	private PropertyValueParseResult<LengthValue> creteParseResultFromDimensionToken(DimensionToken token) {

@@ -35,11 +35,12 @@ public class FlexShorthandValueParser implements PropertyValueParser<FlexValue> 
 			basisValue = parseBasisValue(stream);
 		}
 
-		if ((basisValue == null && growFactor == null && shrinkFactor == null) || !(stream.peek() instanceof EOFToken)) {
+		if (basisValue == null && growFactor == null && shrinkFactor == null) {
 			return PropertyValueParseResultImp.empty();
 		}
 
-		return PropertyValueParseResultImp.of(new FlexValue(growFactor, shrinkFactor, basisValue), length);
+		int usedLength = stream.position() - offset;
+		return PropertyValueParseResultImp.of(new FlexValue(growFactor, shrinkFactor, basisValue), usedLength);
 	}
 
 	private FlexBasisValue parseBasisValue(TokenStream stream) {

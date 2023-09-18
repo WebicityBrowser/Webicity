@@ -20,7 +20,7 @@ public class FlexFactorValueParser implements PropertyValueParser<FlexFactorValu
 	}
 
 	private boolean checkValueFormat(TokenLike[] tokens, int offset, int length) {
-		return length == 1 && tokens[offset] instanceof NumberToken;
+		return length > 0 && tokens[offset] instanceof NumberToken;
 	}
 	
 }
