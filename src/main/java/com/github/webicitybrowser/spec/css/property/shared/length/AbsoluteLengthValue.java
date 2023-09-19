@@ -10,4 +10,22 @@ public interface AbsoluteLengthValue extends LengthValue {
 		CM, MM, Q, IN, PC, PT, PX
 	}
 
+	static AbsoluteLengthValue of(Number value, AbsoluteLengthUnit unit) {
+		return new AbsoluteLengthValue() {
+			@Override
+			public AbsoluteLengthUnit getUnit() {
+				return unit;
+			}
+
+			@Override
+			public float getValue() {
+				return value.floatValue();
+			}
+		};
+	}
+
+	static AbsoluteLengthValue of(Number value, String unit) {
+		return of(value, AbsoluteLengthUnit.valueOf(unit.toUpperCase()));
+	}
+
 }

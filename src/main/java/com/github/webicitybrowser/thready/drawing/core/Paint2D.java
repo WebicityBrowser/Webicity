@@ -20,5 +20,11 @@ public interface Paint2D {
 	 * @return The paint's font.
 	 */
 	Font2D getFont();
+
+	/**
+	 * Get the letter spacing that text will use.
+	 * @return The paint's letter spacing.
+	 */
+	float getLetterSpacing();
 	
 }

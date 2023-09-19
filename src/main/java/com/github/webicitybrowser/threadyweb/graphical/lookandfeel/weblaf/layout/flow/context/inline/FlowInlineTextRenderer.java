@@ -13,11 +13,14 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineMarkerEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedCollapsibleTextView;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedTextCollapser;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebTextDirectiveUtil;
+import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
 
 public final class FlowInlineTextRenderer {
@@ -34,10 +37,13 @@ public final class FlowInlineTextRenderer {
 		TextConsolidation textConsolidation = state.getTextConsolidation();
 		String adjustedText = textConsolidation.readNextText(textBox);
 		Font2D font = textBox.getFont(state.getGlobalRenderContext(), createLocalRenderContext(state));	
-		TextSplitter splitter = new TextSplitter(adjustedText, font);
+		SizeCalculationContext context = FlowUtils.createSizeCalculationContext(
+			state.flowContext(), font.getMetrics(), true);
+		float letterSpacing = WebTextDirectiveUtil.getLetterSpacing(textBox.styleDirectives(), context);
+		TextSplitter splitter = new TextSplitter(adjustedText, font, letterSpacing);
 		while (!splitter.completed()) {
 			String text = getNextSplit(state, splitter);
-			addTextToCurrentLine(state, text, textBox, font);
+			addTextToCurrentLine(state, text, textBox, font, letterSpacing);
 		}
 	}
 
@@ -55,19 +61,20 @@ public final class FlowInlineTextRenderer {
 	}
 
 	private static void addTextToCurrentLine(
-		FlowInlineRendererState state, String text, TextBox textBox, Font2D font
+		FlowInlineRendererState state, String text, TextBox textBox, Font2D font, float letterSpacing
 	) {
 		if (text.isEmpty()) return;
 
+		float textWidth = font.getMetrics().getStringWidth(text) + letterSpacing * (text.length() - 1);
 		AbsoluteSize fitSize = new AbsoluteSize(
-			font.getMetrics().getStringWidth(text),
-			font.getMetrics().getCapHeight()
+			textWidth,
+			font.getMetrics().getCapHeight() + font.getMetrics().getDescent()
 		);
 		
 		state
 			.lineContext()
 			.currentLine()
-			.add(new TextUnit(fitSize, textBox, text, font));
+			.add(new TextUnit(fitSize, textBox, text, font, letterSpacing));
 	}
 
 	private static String trimTextIfLineStart(FlowInlineRendererState state, String text) {

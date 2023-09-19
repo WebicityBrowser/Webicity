@@ -9,13 +9,15 @@ public class TextSplitter {
 	
 	private final String text;
 	private final Font2D font;
+	private final float letterSpacing;
 	private final float[] charWidths;
 
 	private int windowEnd = 0;
 
-	public TextSplitter(String text, Font2D font) {
+	public TextSplitter(String text, Font2D font, float letterSpacing) {
 		this.text = text;
 		this.font = font;
+		this.letterSpacing = letterSpacing;
 		this.charWidths = generateCharWidths();
 	}
 
@@ -27,6 +29,9 @@ public class TextSplitter {
 		float currentWidth = 0;
 		int windowStart = windowEnd;
 		while (!completed() && ((forceFit && currentWidth == 0) || !nextCharWillOverflow(currentWidth, maxWidth))) {
+			if (currentWidth != 0) {
+				currentWidth += letterSpacing;
+			}
 			currentWidth += charWidths[windowEnd];
 			windowEnd++;
 		}

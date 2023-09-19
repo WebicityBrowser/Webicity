@@ -3,10 +3,11 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.threadyweb.graphical.directive.FontFamilyDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.FontSizeDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.FontWeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.FontFamilyDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.FontSizeDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.FontWeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpacingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDefaults;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
@@ -46,5 +47,12 @@ public final class WebTextDirectiveUtil {
 			.orElse(WhiteSpaceCollapse.COLLAPSE);
 	}
 
+	public static float getLetterSpacing(DirectivePool directives, SizeCalculationContext context) {
+		return directives
+			.inheritDirectiveOrEmpty(LetterSpacingDirective.class)
+			.map(directive -> directive.getLetterSpacing())
+			.map(letterSpacing -> letterSpacing.calculate(context))
+			.orElse(0f);
+	}
 
 }

@@ -23,6 +23,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpacingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.FlowInlineRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
@@ -262,6 +263,22 @@ public class FlowInlineRendererTest {
 		Assertions.assertEquals(new AbsoluteSize(10, 10), styledUnit.context().innerUnitSize());
 	}
 
+	@Test
+	@DisplayName("Letter spacing is respected")
+	public void letterSpacingIsRespected() {
+		DirectivePool directives = new BasicDirectivePool();
+		directives.directive(LetterSpacingDirective.of(_1 -> 1));
+		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		TextBox textBox = createTextBox("Hello World", directives);
+		box.getChildrenTracker().addChild(textBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(100, 100));
+		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult child = result.childLayoutResults()[0];
+		Assertions.assertEquals(8 * 11 + 1 * 10, child.unit().fitSize().width());
+	}
+
 	private GlobalRenderContext mockGlobalRenderContext() {
 		ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
 		Mockito.when(resourceLoader.loadFont(Mockito.any())).thenReturn(testFont);
@@ -289,10 +306,15 @@ public class FlowInlineRendererTest {
 			context -> new StyledUnit(null, context));
 	}
 
-	private TextBox createTextBox(String text) {
+	private TextBox createTextBox(String text, DirectivePool directives) {
 		Font2D font = createTestFont();
 
-		return new TextBox(new TextDisplay(), null, emptyDirectivePool, text, font);
+		if (directives == null) directives = emptyDirectivePool;
+		return new TextBox(new TextDisplay(), null, directives, text, font);
+	}
+
+	private TextBox createTextBox(String text) {
+		return createTextBox(text, null);
 	}
 
 	private Font2D createTestFont() {

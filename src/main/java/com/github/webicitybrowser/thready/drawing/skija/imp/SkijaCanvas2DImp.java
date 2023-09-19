@@ -17,6 +17,7 @@ import com.github.webicitybrowser.thready.windowing.skija.imp.SkijaCanvasSetting
 import io.github.humbleui.skija.Canvas;
 import io.github.humbleui.skija.Font;
 import io.github.humbleui.skija.Paint;
+import io.github.humbleui.skija.TextBlob;
 import io.github.humbleui.types.RRect;
 import io.github.humbleui.types.Rect;
 
@@ -60,26 +61,10 @@ public class SkijaCanvas2DImp implements Canvas2D {
 			Font currentFont = skijaFont.getEffectiveFont(text.codePointAt(windowStart));
 			int windowEnd = endOfConsecutiveFontChars(text, windowStart);
 			String windowText = text.substring(windowStart, windowEnd + 1);
-			canvas.drawString(windowText, currentX, adjustedY, currentFont, rawPaint);
 
-			currentX += metrics.getStringWidth(windowText);
+			currentX += drawPartialText(windowText, currentX, adjustedY, currentFont);
 			windowStart = windowEnd + 1;
 		}
-	}
-	
-	private int endOfConsecutiveFontChars(String text, int windowStart) {
-		SkijaFont2D skijaFont = (SkijaFont2D) paint.getFont();
-		Font initialFont = skijaFont.getEffectiveFont(text.codePointAt(windowStart));
-		int windowEnd = windowStart + 1;
-		while (windowEnd < text.length()) {
-			Font font = skijaFont.getEffectiveFont(text.codePointAt(windowEnd));
-			if (font != initialFont) {
-				return windowEnd - 1;
-			}
-			windowEnd++;
-		}
-
-		return windowEnd - 1;
 	}
 
 	@Override
@@ -127,9 +112,43 @@ public class SkijaCanvas2DImp implements Canvas2D {
 		return new SkijaCanvas2DImp(canvas, paint, translatedCanvasSettings);
 	}
 
+	private float drawPartialText(String text, float x, float y, Font font) {
+		short[] glyphs = font.getStringGlyphs(text);
+		float[] glyphWidths = font.getWidths(glyphs);
+		float[] glyphPositions = new float[glyphWidths.length];
+		float distance = 0;
+		for (int i = 0; i < glyphWidths.length; i++) {
+			if (i > 0) {
+				distance += paint.getLetterSpacing();
+			}
+			glyphPositions[i] = distance;
+			distance += glyphWidths[i];
+		}
+
+
+		TextBlob textBlob = TextBlob.makeFromPosH(glyphs, glyphPositions, 0, font);
+		canvas.drawTextBlob(textBlob, x, y, rawPaint);
+		return distance;
+	}
+
+	private int endOfConsecutiveFontChars(String text, int windowStart) {
+		SkijaFont2D skijaFont = (SkijaFont2D) paint.getFont();
+		Font initialFont = skijaFont.getEffectiveFont(text.codePointAt(windowStart));
+		int windowEnd = windowStart + 1;
+		while (windowEnd < text.length()) {
+			Font font = skijaFont.getEffectiveFont(text.codePointAt(windowEnd));
+			if (font != initialFont) {
+				return windowEnd - 1;
+			}
+			windowEnd++;
+		}
+
+		return windowEnd - 1;
+	}
+
 	private void setPaint(Paint2D paint) {
 		this.paint = paint;
-		this.rawPaint = createPaint(paint);// TODO Auto-generated method stub
+		this.rawPaint = createPaint(paint);
 	}
 	
 	private Paint createPaint(Paint2D paint) {

@@ -8,6 +8,8 @@ public interface SkijaFont2D extends Font2D {
 
 	Font getEffectiveFont(int codePoint);
 
+	Font[] getRawFonts();
+
 	short getCharacterGlyph(int codePoint);
 
 }

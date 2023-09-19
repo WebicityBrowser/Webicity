@@ -15,7 +15,7 @@ public class LengthValueParser implements PropertyValueParser<LengthValue> {
 	@Override
 	public PropertyValueParseResult<LengthValue> parse(TokenLike[] tokens, int offset, int length) {
 		if (length > 0 && tokens[offset] instanceof NumberToken numberToken && numberToken.getValue().floatValue() == 0) {
-			return PropertyValueParseResultImp.of(createAbsoluteLengthValue(0, "px"), 1);
+			return PropertyValueParseResultImp.of(AbsoluteLengthValue.of(0, "px"), 1);
 		}
 
 		if (!checkSelectorFormat(tokens, offset, length)) {
@@ -39,7 +39,7 @@ public class LengthValueParser implements PropertyValueParser<LengthValue> {
 		case "pc":
 		case "pt":
 		case "px":
-			return PropertyValueParseResultImp.of(createAbsoluteLengthValue(token.getValue(), token.getUnit()), 1);
+			return PropertyValueParseResultImp.of(AbsoluteLengthValue.of(token.getValue(), token.getUnit()), 1);
 
 		case "em":
 		case "ex":
@@ -60,21 +60,6 @@ public class LengthValueParser implements PropertyValueParser<LengthValue> {
 		default:
 			return PropertyValueParseResultImp.empty();
 		}		
-	}
-
-	private AbsoluteLengthValue createAbsoluteLengthValue(Number value, String unit) {
-		return new AbsoluteLengthValue() {
-
-			@Override
-			public AbsoluteLengthUnit getUnit() {
-				return AbsoluteLengthUnit.valueOf(unit.toUpperCase());
-			}
-
-			@Override
-			public float getValue() {
-				return value.floatValue();
-			}
-		};
 	}
 
 	private RelativeLengthValue createRelativeLengthValue(Number value, String unit) {

@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spec.css.parser.property.fontfamily;
+package com.github.webicitybrowser.spec.css.parser.property.text;
 
 import java.util.ArrayList;
 import java.util.List;

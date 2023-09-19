@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spec.css.parser.property.fontfamily;
+package com.github.webicitybrowser.spec.css.parser.property.text;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

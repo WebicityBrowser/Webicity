@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spec.css.parser.property.fontweight;
+package com.github.webicitybrowser.spec.css.parser.property.text;
 
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;

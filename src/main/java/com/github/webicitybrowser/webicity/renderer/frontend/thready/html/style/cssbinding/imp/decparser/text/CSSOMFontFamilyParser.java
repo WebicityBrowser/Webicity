@@ -1,14 +1,14 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.text;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
-import com.github.webicitybrowser.spec.css.parser.property.fontfamily.FontFamilyValueParser;
+import com.github.webicitybrowser.spec.css.parser.property.text.FontFamilyValueParser;
 import com.github.webicitybrowser.spec.css.property.fontfamily.FontFamilyValue;
 import com.github.webicitybrowser.spec.css.property.fontfamily.FontFamilyValue.FontFamilyEntry;
 import com.github.webicitybrowser.spec.css.property.fontfamily.NamedFontFamilyEntry;
 import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.threadyweb.graphical.directive.FontFamilyDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.FontFamilyDirective;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 
 public class CSSOMFontFamilyParser implements CSSOMNamedDeclarationParser<FontFamilyValue> {

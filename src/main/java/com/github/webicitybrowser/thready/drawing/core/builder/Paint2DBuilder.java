@@ -12,6 +12,7 @@ public class Paint2DBuilder {
 	
 	private ColorFormat color;
 	private Font2D font;
+	private float letterSpacing;
 	
 	/**
 	 * Set the color of the paint to be created.
@@ -50,7 +51,26 @@ public class Paint2DBuilder {
 	public Font2D getFont() {
 		return this.font;
 	}
+
+	/**
+	 * Set the letter spacing of the paint to be created.
+	 * @param letterSpacing The letter spacing of the paint to be created.
+	 * @return This builder.
+	 */
+	public Paint2DBuilder setLetterSpacing(float letterSpacing) {
+		this.letterSpacing = letterSpacing;
+
+		return this;
+	}
 	
+	/**
+	 * Get the letter spacing of the paint to be created.
+	 * @return The letter spacing of the paint to be created.
+	 */
+	public float getLetterSpacing() {
+		return this.letterSpacing;
+	}
+
 	/**
 	 * Create a Paint2D object using this builder's configurations.
 	 * @return The built Paint2D object.

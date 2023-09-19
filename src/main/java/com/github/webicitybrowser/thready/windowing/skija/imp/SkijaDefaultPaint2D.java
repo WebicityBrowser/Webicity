@@ -17,6 +17,9 @@ public class SkijaDefaultPaint2D implements Paint2D {
 		return null;
 	}
 
-	
+	@Override
+	public float getLetterSpacing() {
+		return 0;
+	}
 
 }

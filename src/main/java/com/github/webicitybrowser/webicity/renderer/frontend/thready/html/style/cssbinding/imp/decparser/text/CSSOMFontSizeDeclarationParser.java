@@ -1,10 +1,10 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.text;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
-import com.github.webicitybrowser.spec.css.parser.property.fontsize.FontSizeValueParser;
+import com.github.webicitybrowser.spec.css.parser.property.text.FontSizeValueParser;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.threadyweb.graphical.directive.FontSizeDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.FontSizeDirective;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.componentparser.SizeParser;
 

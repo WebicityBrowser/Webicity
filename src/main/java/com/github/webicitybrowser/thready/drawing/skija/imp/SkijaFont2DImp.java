@@ -100,4 +100,9 @@ public class SkijaFont2DImp implements SkijaFont2D {
 		return new Font(typeface, fontSize);
 	}
 
+	@Override
+	public Font[] getRawFonts() {
+		return fallbackFonts;
+	}
+
 }

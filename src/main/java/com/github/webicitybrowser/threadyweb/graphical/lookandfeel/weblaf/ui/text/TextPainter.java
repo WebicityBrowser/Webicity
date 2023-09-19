@@ -30,6 +30,7 @@ public final class TextPainter {
 		return Paint2DBuilder.clone(canvas.getPaint())
 			.setColor(getForegroundColor(unit))
 			.setFont(unit.font())
+			.setLetterSpacing(unit.letterSpacing())
 			.build();
 	}
 

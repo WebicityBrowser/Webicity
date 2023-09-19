@@ -15,7 +15,7 @@ public final class TextRenderer {
 		float height = font.getMetrics().getCapHeight();
 		AbsoluteSize fitSize = new AbsoluteSize(width, height);
 
-		return new TextUnit(fitSize, box, text, font);
+		return new TextUnit(fitSize, box, text, font, 0);
 	}
 
 }

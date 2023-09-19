@@ -29,9 +29,6 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMDimensionDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMDisplayDeclarationParser;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontFamilyParser;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontSizeDeclarationParser;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFontWeightDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMLonghandMarginParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandMarginParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandPaddingParser;
@@ -41,6 +38,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexFactorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexJustifyContentDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexWrapDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.text.CSSOMTextBindings;
 
 public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	
@@ -63,10 +61,6 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("min-height", new CSSOMDimensionDeclarationParser(MinHeightDirective::of));
 		namedDeclarationParsers.put("max-height", new CSSOMDimensionDeclarationParser(MaxHeightDirective::of));
 
-		namedDeclarationParsers.put("font-family", new CSSOMFontFamilyParser());
-		namedDeclarationParsers.put("font-weight", new CSSOMFontWeightDeclarationParser());
-		namedDeclarationParsers.put("font-size", new CSSOMFontSizeDeclarationParser());
-
 		namedDeclarationParsers.put("margin-left", new CSSOMLonghandMarginParser(MarginDirective::ofLeft));
 		namedDeclarationParsers.put("margin-right", new CSSOMLonghandMarginParser(MarginDirective::ofRight));
 		namedDeclarationParsers.put("margin-top", new CSSOMLonghandMarginParser(MarginDirective::ofTop));
@@ -87,6 +81,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("justify-content", new CSSOMFlexJustifyContentDeclarationParser());
 
 		CSSOMBorderBindings.installTo(namedDeclarationParsers);
+		CSSOMTextBindings.installTo(namedDeclarationParsers);
 	}
 	
 	@Override
