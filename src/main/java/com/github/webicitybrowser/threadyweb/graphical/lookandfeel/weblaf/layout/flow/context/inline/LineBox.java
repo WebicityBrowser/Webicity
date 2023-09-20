@@ -28,6 +28,8 @@ public class LineBox {
 	private final List<LineEntry> lineItems = new ArrayList<>();
 	private final List<LineMarker> activeMarkers = new ArrayList<>();
 
+	private AbsolutePosition estimatedPosition;
+
 	public LineBox(LineDimensionConverter dimensionConverter, Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator) {
 		this.cursorTracker = new LineCursorTracker(dimensionConverter);
 		this.dimensionConverter = dimensionConverter;
@@ -88,6 +90,14 @@ public class LineBox {
 
 	public List<LineEntry> getLineItems() {
 		return lineItems;
+	}
+
+	public AbsolutePosition getEstimatedPosition() {
+		return estimatedPosition;
+	}
+
+	public void setEstimatedPosition(AbsolutePosition estimatedPosition) {
+		this.estimatedPosition = estimatedPosition;
 	}
 
 	//

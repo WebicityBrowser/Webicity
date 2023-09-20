@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
@@ -25,7 +26,10 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.H
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpacingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.FlowInlineRenderer;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.imp.BuildableRenderedUnitImp;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
@@ -279,6 +283,25 @@ public class FlowInlineRendererTest {
 		Assertions.assertEquals(8 * 11 + 1 * 10, child.unit().fitSize().width());
 	}
 
+	@Test
+	@DisplayName("Preceding left padding is respected")
+	public void precedingLeftPaddingIsRespected() {
+		FloatTracker floatTracker = FloatTracker.create();
+		floatTracker.addLeftFloat(new Rectangle(new AbsolutePosition(0, 0), new AbsoluteSize(10, 10)));
+		AbsolutePosition childPosition = new AbsolutePosition(0, 0);
+		FloatContext floatContext = FloatContext.create(floatTracker);
+		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(childPosition, floatContext);
+		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		TextBox textBox = createTextBox("Hello World");
+		box.getChildrenTracker().addChild(textBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(100, 100), new ContextSwitch[] { contextSwitch });
+		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult child = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(10, 0), child.relativeRect().position());
+	}
+
 	private GlobalRenderContext mockGlobalRenderContext() {
 		ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
 		Mockito.when(resourceLoader.loadFont(Mockito.any())).thenReturn(testFont);
@@ -293,10 +316,11 @@ public class FlowInlineRendererTest {
 	}
 
 	private LocalRenderContext createLocalRenderContext(AbsoluteSize size) {
-		return LocalRenderContext.create(
-			size,
-			testFont.getMetrics(),
-			new ContextSwitch[0]);
+		return LocalRenderContext.create(size, testFont.getMetrics(), new ContextSwitch[0]);
+	}
+
+	private LocalRenderContext createLocalRenderContext(AbsoluteSize size, ContextSwitch[] switches) {
+		return LocalRenderContext.create(size, testFont.getMetrics(), switches);
 	}
 
 	private FlowRenderContext createRenderContext(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {

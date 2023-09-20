@@ -24,11 +24,15 @@ public class BorderWidthShorthandValueParser implements PropertyValueParser<Mult
 			if (parseResult.getResult().isEmpty()) break;
 
 			values[i] = parseResult.getResult().get();
+			used++;
 		}
 
 		int usedLength = 4;
+		if (used == 0) {
+			return PropertyValueParseResultImp.empty();
+		}
 		if (used < 4) {
-			values = new CSSValue[] {values[0], values[0], values[0], values[0]};
+			values = new CSSValue[] { values[0], values[0], values[0], values[0] };
 			usedLength = 1;
 		}
 

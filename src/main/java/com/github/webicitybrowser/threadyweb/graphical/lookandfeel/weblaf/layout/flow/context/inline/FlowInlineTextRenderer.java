@@ -2,17 +2,21 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 
 import java.util.List;
 
+import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineMarkerEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedCollapsibleTextView;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedTextCollapser;
@@ -42,6 +46,7 @@ public final class FlowInlineTextRenderer {
 		float letterSpacing = WebTextDirectiveUtil.getLetterSpacing(textBox.styleDirectives(), context);
 		TextSplitter splitter = new TextSplitter(adjustedText, font, letterSpacing);
 		while (!splitter.completed()) {
+			// TODO: If no text fits between floats, then jump to after the floats.
 			String text = getNextSplit(state, splitter);
 			addTextToCurrentLine(state, text, textBox, font, letterSpacing);
 		}
@@ -70,11 +75,10 @@ public final class FlowInlineTextRenderer {
 			textWidth,
 			font.getMetrics().getCapHeight() + font.getMetrics().getDescent()
 		);
+
+		LineBox currentLine = state.lineContext().currentLine();
 		
-		state
-			.lineContext()
-			.currentLine()
-			.add(new TextUnit(fitSize, textBox, text, font, letterSpacing));
+		currentLine.add(new TextUnit(fitSize, textBox, text, font, letterSpacing));
 	}
 
 	private static String trimTextIfLineStart(FlowInlineRendererState state, String text) {
@@ -117,12 +121,26 @@ public final class FlowInlineTextRenderer {
 	}
 
 	private static float calculateRemainingLineWidth(FlowInlineRendererState state) {
+		FlowRootContextSwitch contextSwitch = state.flowContext().flowRootContextSwitch();
 		float parentWidth = state.getLocalRenderContext().getPreferredSize().width();
-		float remainingWidth = parentWidth == RelativeDimension.UNBOUNDED ?
-			parentWidth :
-			parentWidth - state.lineContext().currentLine().getSize().width();
+		if (parentWidth == RelativeDimension.UNBOUNDED) {
+			return parentWidth;
+		}
 
-		return remainingWidth;
+		float availableWidth = parentWidth;
+		if (contextSwitch != null) {
+			FloatTracker floatTracker = contextSwitch.floatContext().getFloatTracker();
+			AbsolutePosition currentPosition = getCurrentLinePosition(state);
+			availableWidth -= floatTracker.getLeftInlineOffset(currentPosition.y());
+			availableWidth -= floatTracker.getRightInlineOffset(currentPosition.y(), parentWidth);
+		}
+		return availableWidth - state.lineContext().currentLine().getSize().width();
+	}
+
+	private static AbsolutePosition getCurrentLinePosition(FlowInlineRendererState state) {
+		FlowRootContextSwitch contextSwitch = state.flowContext().flowRootContextSwitch();
+		AbsolutePosition currentPositionOffset = state.lineContext().currentLine().getEstimatedPosition();
+		return AbsolutePositionMath.sum(contextSwitch.predictedPosition(), currentPositionOffset);
 	}
 
 	private static LocalRenderContext createLocalRenderContext(FlowInlineRendererState state) {
