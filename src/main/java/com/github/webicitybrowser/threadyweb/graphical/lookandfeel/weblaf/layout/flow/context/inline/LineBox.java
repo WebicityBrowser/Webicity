@@ -100,6 +100,12 @@ public class LineBox {
 		this.estimatedPosition = estimatedPosition;
 	}
 
+	public float getEstimatedBlockSize() {
+		return dimensionConverter
+			.getLineDimension(cursorTracker.getSizeCovered())
+			.depth();
+	}
+
 	//
 
 	private void addLineItemsToSectionBuilders(Stack<LineSectionBuilder> sectionBuilderStack, CursorTracker cursorTracker) {

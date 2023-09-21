@@ -302,6 +302,26 @@ public class FlowInlineRendererTest {
 		Assertions.assertEquals(new AbsolutePosition(10, 0), child.relativeRect().position());
 	}
 
+	@Test
+	@DisplayName("Preceding right padding is respected")
+	public void precedingRightPaddingIsRespected() {
+		FloatTracker floatTracker = FloatTracker.create();
+		floatTracker.addRightFloat(new Rectangle(new AbsolutePosition(48, 0), new AbsoluteSize(10, 1)));
+		AbsolutePosition childPosition = new AbsolutePosition(0, 0);
+		FloatContext floatContext = FloatContext.create(floatTracker);
+		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(childPosition, floatContext);
+		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		TextBox textBox = createTextBox("Hello World");
+		box.getChildrenTracker().addChild(textBox);
+		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(58, 100), new ContextSwitch[] { contextSwitch });
+		LayoutResult result = FlowInlineRenderer.render(createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult child = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), child.relativeRect().position());
+		Assertions.assertEquals(48, child.unit().fitSize().width());
+	}
+
 	private GlobalRenderContext mockGlobalRenderContext() {
 		ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
 		Mockito.when(resourceLoader.loadFont(Mockito.any())).thenReturn(testFont);
