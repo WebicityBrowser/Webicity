@@ -7,6 +7,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
 import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseConstants;
 import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseScreenEvent;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.ScrollScreenEvent;
 
 public final class SkijaMouseEventListeners {
 	
@@ -19,6 +20,7 @@ public final class SkijaMouseEventListeners {
 	private static void setupMouseListener(long windowId, ScreenContent screenContent) {
 		setupClickCallback(windowId, screenContent);
 		setupMouseMoveCallback(windowId, screenContent);
+		setupScrollCallback(windowId, screenContent);
 	}
 
 	private static void setupClickCallback(long windowId, ScreenContent screenContent) {
@@ -46,6 +48,22 @@ public final class SkijaMouseEventListeners {
 			} else {
 				sendMouseMessage(windowId, screenContent, x, y, 0, MouseConstants.MOVE);
 			}
+		});
+	}
+
+	private static void setupScrollCallback(long windowId, ScreenContent screenContent) {
+		GLFW.glfwSetScrollCallback(windowId, ($, dx, dy) -> {
+			screenContent.handleEvent(new ScrollScreenEvent() {
+				@Override
+				public float getScrollX() {
+					return (float) dx;
+				}
+
+				@Override
+				public float getScrollY() {
+					return (float) dy;
+				}
+			}, getWindowSize(windowId));
 		});
 	}
 	

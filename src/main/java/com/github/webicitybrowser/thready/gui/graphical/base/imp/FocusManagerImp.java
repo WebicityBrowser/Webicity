@@ -23,6 +23,11 @@ public class FocusManagerImp implements FocusManager {
 	public void messageFocused(MessageContext context, Message message) {
 		focused.ifPresent(handler -> handler.onMessage(context, message));
 	}
+
+	@Override
+	public void clearFocus() {
+		focused = Optional.empty();
+	}
 	
 	private FocusChangeMessage createFocusMessage(boolean isFocused) {
 		return () -> isFocused;

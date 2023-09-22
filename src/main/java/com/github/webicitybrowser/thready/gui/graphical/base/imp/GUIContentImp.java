@@ -11,6 +11,7 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.animation.AnimationContext;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -28,6 +29,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.CharMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.mouse.ScrollMessage;
 import com.github.webicitybrowser.thready.gui.message.FocusManager;
 import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.gui.message.MessageContext;
@@ -40,6 +42,9 @@ public class GUIContentImp implements GUIContent {
 	private static final Logger logger = LoggerFactory.getLogger(GUIContentImp.class);
 	
 	private final FocusManager focusManager = new FocusManagerImp();
+	private final FocusManager sloppyFocusManager = new FocusManagerImp();
+
+	private final AnimationContextImp animationContext = new AnimationContextImp();
 	
 	private InvalidationLevel invalidationLevel = InvalidationLevel.NONE;
 	
@@ -86,6 +91,11 @@ public class GUIContentImp implements GUIContent {
 			MessageContext messageContext = createMessageContext();
 			if (message instanceof KeyMessage || message instanceof CharMessage) {
 				focusManager.messageFocused(messageContext, message);
+			} else if (message instanceof ScrollMessage) {
+				sloppyFocusManager.messageFocused(messageContext, message);
+			} else if (message instanceof MouseMessage) {
+				sloppyFocusManager.clearFocus();
+				messageRoot(messageContext, message, contentSize);
 			} else {
 				messageRoot(messageContext, message, contentSize);
 			}
@@ -111,7 +121,23 @@ public class GUIContentImp implements GUIContent {
 	}
 
 	private MessageContext createMessageContext() {
-		return () -> focusManager;
+		animationContext.tick();
+		return new MessageContext() {
+			@Override
+			public FocusManager getFocusManager() {
+				return focusManager;
+			}
+
+			@Override
+			public FocusManager getSloppyFocusManager() {
+				return sloppyFocusManager;
+			}
+
+			@Override
+			public AnimationContext getAnimationContext() {
+				return animationContext;
+			}
+		};
 	}
 
 	private ComponentUI createRootUI(Component component, LookAndFeel lookAndFeel) {

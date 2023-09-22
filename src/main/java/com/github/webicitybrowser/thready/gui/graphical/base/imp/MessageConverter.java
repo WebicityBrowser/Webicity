@@ -3,11 +3,13 @@ package com.github.webicitybrowser.thready.gui.graphical.base.imp;
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.CharMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessage;
+import com.github.webicitybrowser.thready.gui.graphical.message.mouse.ScrollMessage;
 import com.github.webicitybrowser.thready.gui.message.Message;
 import com.github.webicitybrowser.thready.windowing.core.event.ScreenEvent;
 import com.github.webicitybrowser.thready.windowing.core.event.keyboard.CharScreenEvent;
 import com.github.webicitybrowser.thready.windowing.core.event.keyboard.KeyScreenEvent;
 import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseScreenEvent;
+import com.github.webicitybrowser.thready.windowing.core.event.mouse.ScrollScreenEvent;
 
 public final class MessageConverter {
 
@@ -20,6 +22,8 @@ public final class MessageConverter {
 			return createKeyboardMessage(keyboardEvent);
 		} else if (e instanceof CharScreenEvent charEvent) {
 			return createCharMessage(charEvent);
+		} else if (e instanceof ScrollScreenEvent scrollEvent) {
+			return createScrollMessage(scrollEvent);
 		} else {
 			return null;
 		}
@@ -40,21 +44,15 @@ public final class MessageConverter {
 	}
 	
 	private static Message createKeyboardMessage(KeyScreenEvent e) {
-		return new KeyMessage() {
-			@Override
-			public KeyScreenEvent getScreenEvent() {
-				return e;
-			}
-		};
+		return (KeyMessage) () -> e;
 	}
 	
 	private static Message createCharMessage(CharScreenEvent charEvent) {
-		return new CharMessage() {
-			@Override
-			public CharScreenEvent getScreenEvent() {
-				return charEvent;
-			}
-		};
+		return (CharMessage) () -> charEvent;
+	}
+
+	private static Message createScrollMessage(ScrollScreenEvent scrollEvent) {
+	return (ScrollMessage) () -> scrollEvent;
 	}
 	
 }
