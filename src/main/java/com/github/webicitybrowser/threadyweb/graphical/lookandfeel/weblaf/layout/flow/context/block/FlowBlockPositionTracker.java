@@ -28,4 +28,8 @@ public class FlowBlockPositionTracker {
 		return new AbsoluteSize(fitWidth, position.y() + yMargin);
 	}
 
+	public AbsolutePosition getPosition() {
+		return position;
+	}
+
 }

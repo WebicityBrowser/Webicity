@@ -132,7 +132,9 @@ public final class FlowBlockBlockRenderer {
 	}
 
 	private static LocalRenderContext createChildLocalRenderContext(FlowBlockRendererState state, AbsoluteSize preferredSize) {
-		return LocalRenderContext.create(preferredSize, state.getFont().getMetrics(), new ContextSwitch[0]);
+		return LocalRenderContext.create(preferredSize, state.getFont().getMetrics(), new ContextSwitch[] {
+			state.flowContext().flowRootContextSwitch()
+		});
 	}
 
 }

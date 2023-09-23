@@ -11,9 +11,16 @@ public class TestStubChildrenBox implements ChildrenBox {
 
 	private final BoxChildrenTracker childrenTracker = new SolidBoxChildrenTracker(this, null);
 	private final DirectivePool styleDirectives;
+	private final UIDisplay<?, ?, ?> display;
 
 	public TestStubChildrenBox(DirectivePool styleDirectives) {
 		this.styleDirectives = styleDirectives;
+		this.display = null;
+	}
+
+	public TestStubChildrenBox(DirectivePool styleDirectives, UIDisplay<?, ?, ?> display) {
+		this.styleDirectives = styleDirectives;
+		this.display = display;
 	}
 
 	@Override
@@ -28,7 +35,7 @@ public class TestStubChildrenBox implements ChildrenBox {
 
 	@Override
 	public UIDisplay<?, ?, ?> display() {
-		return null;
+		return display;
 	}
 
 	@Override

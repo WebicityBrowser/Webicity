@@ -9,6 +9,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipel
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
 public final class FlowBlockAnonRenderer {
@@ -19,7 +20,12 @@ public final class FlowBlockAnonRenderer {
 		AbsoluteSize preferredSize = new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
 		LocalRenderContext localRenderContext = state.getLocalRenderContext();
-		RenderedUnit childUnit = UIPipeline.render(anonBox, globalRenderContext, localRenderContext);
+		ContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
+		LocalRenderContext childLocalRenderContext = LocalRenderContext.create(
+			localRenderContext.getPreferredSize(),
+			localRenderContext.getParentFontMetrics(),
+			new ContextSwitch[] { flowRootContextSwitch });
+		RenderedUnit childUnit = UIPipeline.render(anonBox, globalRenderContext, childLocalRenderContext);
 		AbsoluteSize adjustedSize = adjustAnonSize(state, preferredSize, childUnit.fitSize());
 		AbsolutePosition childPosition = state.positionTracker().addBox(adjustedSize, new float[4]);
 		Rectangle childRect = new Rectangle(childPosition, adjustedSize);
