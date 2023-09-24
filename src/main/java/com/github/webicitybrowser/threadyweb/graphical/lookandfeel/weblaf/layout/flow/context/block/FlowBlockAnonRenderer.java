@@ -4,6 +4,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -11,6 +12,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 
 public final class FlowBlockAnonRenderer {
 	
@@ -20,16 +22,23 @@ public final class FlowBlockAnonRenderer {
 		AbsoluteSize preferredSize = new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
 		LocalRenderContext localRenderContext = state.getLocalRenderContext();
-		ContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
 		LocalRenderContext childLocalRenderContext = LocalRenderContext.create(
 			localRenderContext.getPreferredSize(),
 			localRenderContext.getParentFontMetrics(),
-			new ContextSwitch[] { flowRootContextSwitch });
+			new ContextSwitch[] { createChildFlowRootContextSwitch(state, anonBox) });
 		RenderedUnit childUnit = UIPipeline.render(anonBox, globalRenderContext, childLocalRenderContext);
 		AbsoluteSize adjustedSize = adjustAnonSize(state, preferredSize, childUnit.fitSize());
 		AbsolutePosition childPosition = state.positionTracker().addBox(adjustedSize, new float[4]);
 		Rectangle childRect = new Rectangle(childPosition, adjustedSize);
 		state.addChildLayoutResult(new ChildLayoutResult(childUnit, childRect));
+	}
+
+	private static ContextSwitch createChildFlowRootContextSwitch(FlowBlockRendererState state, Box anonBox) {
+		FlowRootContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
+		AbsolutePosition predictedChildPosition = AbsolutePositionMath.sum(
+			state.positionTracker().getPosition(),
+			flowRootContextSwitch.predictedPosition());
+		return new FlowRootContextSwitch(predictedChildPosition, flowRootContextSwitch.floatContext());
 	}
 
 	private static AbsoluteSize adjustAnonSize(

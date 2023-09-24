@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
@@ -101,8 +102,10 @@ public final class FlowInlineRenderer {
 	) {
 		float lineX = 0;
 		if (flowRootContextSwitch != null) {
+			AbsolutePosition offsetPosition = AbsolutePositionMath.sum(
+				linePosition, flowRootContextSwitch.predictedPosition());
 			FloatTracker floatTracker = flowRootContextSwitch.floatContext().getFloatTracker();
-			lineX += floatTracker.getLeftInlineOffset(linePosition.y());
+			lineX += floatTracker.getLeftInlineOffset(offsetPosition.y());
 		}
 		AbsolutePosition actualLinePosition = new AbsolutePosition(lineX, linePosition.y());
 		

@@ -29,6 +29,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMDimensionDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMDisplayDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFloatDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMLonghandMarginParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandMarginParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMShorthandPaddingParser;
@@ -79,6 +80,8 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("flex-grow", new CSSOMFlexFactorDeclarationParser(FlexGrowDirective::of));
 		namedDeclarationParsers.put("flex-shrink", new CSSOMFlexFactorDeclarationParser(FlexGrowDirective::of));
 		namedDeclarationParsers.put("justify-content", new CSSOMFlexJustifyContentDeclarationParser());
+
+		namedDeclarationParsers.put("float", new CSSOMFloatDeclarationParser());
 
 		CSSOMBorderBindings.installTo(namedDeclarationParsers);
 		CSSOMTextBindings.installTo(namedDeclarationParsers);

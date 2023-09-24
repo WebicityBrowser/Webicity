@@ -1,25 +1,18 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block;
 
-import java.util.function.Function;
-
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
+import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowSizeUtils;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils.LayoutSizingContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
-import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public final class FlowBlockBlockRenderer {
 
@@ -27,8 +20,14 @@ public final class FlowBlockBlockRenderer {
 
 	public static void renderChild(FlowBlockRendererState state, Box childBox) {
 		FlowBlockRenderParameters renderParameters = FlowBlockRenderParameters.create(state, childBox);
-		FlowBlockPrerenderSizingInfo prerenderSizingInfo = prerenderChild(state, childBox, renderParameters);
-		FlowBlockChildRenderResult childRenderResult = generateChildUnit(state, childBox, prerenderSizingInfo);
+		AbsoluteSize parentSize = renderParameters.parentSize();
+		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
+			state, childBox, renderParameters,
+			childSize -> createChildLocalRenderContext(state, childSize),
+			(childState, childSize) -> computeFallbackPreferredSize(parentSize, childSize, renderParameters.margins())
+		);
+		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(context);
+		FlowBlockChildRenderResult childRenderResult = FlowBlockUnitRenderer.generateChildUnit(context, prerenderSizingInfo);
 		AbsoluteSize finalChildSize = computeFinalChildSize(renderParameters, prerenderSizingInfo, childRenderResult);
 		float[] finalMargins = computeFinalMargins(state, renderParameters, finalChildSize);
 
@@ -47,29 +46,6 @@ public final class FlowBlockBlockRenderer {
 		state.addChildLayoutResult(new ChildLayoutResult(styledUnit, childRect));
 	}
 
-	private static FlowBlockPrerenderSizingInfo prerenderChild(FlowBlockRendererState state, Box childBox, FlowBlockRenderParameters renderParameters) {
-		AbsoluteSize parentSize = state.getLocalRenderContext().getPreferredSize();
-		LayoutSizingContext layoutSizingContext = createLayoutSizingContext(state, childBox, renderParameters);
-		AbsoluteSize enforcedSize = computePreferredSize(childBox, layoutSizingContext);
-		AbsoluteSize precomputedSize = computeFallbackPreferredSize(parentSize, enforcedSize, renderParameters.margins());
-
-		AbsoluteSize enforcedChildSize = LayoutSizeUtils.subtractPadding(enforcedSize, renderParameters.totalPadding());
-		AbsoluteSize precomputedChildSize = LayoutSizeUtils.subtractPadding(precomputedSize, renderParameters.totalPadding());
-
-		return new FlowBlockPrerenderSizingInfo(enforcedChildSize, precomputedChildSize, layoutSizingContext);
-	}
-
-	private static FlowBlockChildRenderResult generateChildUnit(FlowBlockRendererState state, Box childBox, FlowBlockPrerenderSizingInfo prerenderSizingInfo) {
-		AbsoluteSize precomputedSize = prerenderSizingInfo.precomputedChildSize();
-		RenderedUnit childUnit = renderChildUnit(state, childBox, precomputedSize);
-		AbsoluteSize adjustedSize = FlowSizeUtils.enforcePreferredSize(childUnit.fitSize(), prerenderSizingInfo.enforcedChildSize());
-		precomputedSize = FlowBlockSizeCalculations.clipContentSize(childBox.styleDirectives(), adjustedSize, prerenderSizingInfo);
-		RenderedUnit unit = renderChildUnit(state, childBox, precomputedSize);
-		adjustedSize = FlowSizeUtils.enforcePreferredSize(unit.fitSize(), precomputedSize);
-
-		return new FlowBlockChildRenderResult(unit, adjustedSize);
-	}
-
 	private static AbsoluteSize computeFinalChildSize(
 		FlowBlockRenderParameters renderParameters, FlowBlockPrerenderSizingInfo prerenderSizingInfo, FlowBlockChildRenderResult childResult
 	) {
@@ -82,26 +58,6 @@ public final class FlowBlockBlockRenderer {
 	private static float[] computeFinalMargins(FlowBlockRendererState state, FlowBlockRenderParameters renderParameters, AbsoluteSize adjustedSize) {
 		float[] adjustedMargins = FlowBlockMarginCalculations.adjustMargins(state, renderParameters.margins(), adjustedSize);
 		return FlowBlockMarginCalculations.collapseOverflowMargins(renderParameters.parentSize(), adjustedSize, adjustedMargins);
-	}
-
-	private static LayoutSizingContext createLayoutSizingContext(FlowBlockRendererState state, Box childBox, FlowBlockRenderParameters renderParameters) {
-		FontMetrics fontMetrics = state.getFont().getMetrics();
-		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator =
-			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), fontMetrics, isHorizontal);
-
-		return LayoutSizeUtils.createLayoutSizingContext(
-			childBox.styleDirectives(), sizeCalculationContextGenerator, renderParameters.padding(), renderParameters.borders()
-		);
-	}
-
-	private static AbsoluteSize computePreferredSize(Box childBox, LayoutSizingContext layoutSizingContext) {
-		return LayoutSizeUtils.computePreferredSize(childBox.styleDirectives(), layoutSizingContext);
-	}
-
-	private static RenderedUnit renderChildUnit(FlowBlockRendererState state, Box childBox, AbsoluteSize contentSize) {
-		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
-		LocalRenderContext childLocalRenderContext = createChildLocalRenderContext(state, contentSize);
-		return UIPipeline.render(childBox, globalRenderContext, childLocalRenderContext);
 	}
 
 	private static AbsoluteSize computeFallbackPreferredSize(AbsoluteSize parentSize, AbsoluteSize preferredSize, float[] margins) {
@@ -131,9 +87,16 @@ public final class FlowBlockBlockRenderer {
 		return new AbsoluteSize(stretchedPreferredWidth, stretchedPreferredHeight);
 	}
 
-	private static LocalRenderContext createChildLocalRenderContext(FlowBlockRendererState state, AbsoluteSize preferredSize) {
-		return LocalRenderContext.create(preferredSize, state.getFont().getMetrics(), new ContextSwitch[] {
-			state.flowContext().flowRootContextSwitch()
+	private static LocalRenderContext createChildLocalRenderContext(FlowBlockRendererState state, AbsoluteSize childSize) {
+		FlowRootContextSwitch parentSwitch = state.flowContext().flowRootContextSwitch();
+		AbsolutePosition predictedChildPosition = state.positionTracker().getPosition();
+		AbsolutePosition offsetPredictedChildPosition = AbsolutePositionMath.sum(
+			predictedChildPosition, parentSwitch.predictedPosition());
+		FlowRootContextSwitch childSwitch = new FlowRootContextSwitch(
+			offsetPredictedChildPosition, parentSwitch.floatContext());
+
+		return LocalRenderContext.create(childSize, state.getFont().getMetrics(), new ContextSwitch[] {
+			childSwitch
 		});
 	}
 
