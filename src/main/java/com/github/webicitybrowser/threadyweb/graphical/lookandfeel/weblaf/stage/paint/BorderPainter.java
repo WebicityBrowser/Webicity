@@ -61,7 +61,7 @@ public class BorderPainter {
 			.or(() -> directives
 				.getDirectiveOrEmpty(ForegroundColorDirective.class)
 				.map(directive -> directive.getColor()))
-			.orElse(Colors.GREEN);
+			.orElse(Colors.TRANSPARENT);
 		Paint2D paint = Paint2DBuilder.clone(canvas.getPaint())
 			.setColor(color)
 			.build();

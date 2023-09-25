@@ -13,11 +13,12 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.FloatDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockChildRenderResult;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockPrerenderSizingInfo;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockRenderParameters;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockRendererState;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockUnitRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockUnitRenderingContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatTracker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.FloatDirection;
 
@@ -48,7 +49,7 @@ public final class FlowBlockFloatRenderer {
 	}
 
 	public static RenderedUnit renderFloatBoxUnit(FlowBlockRendererState state, Box childBox) {
-		FlowBlockRenderParameters renderParameters = FlowBlockRenderParameters.create(state, childBox);
+		BoxOffsetDimensions renderParameters = BoxOffsetDimensions.create(state, childBox);
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
 			state, childBox, renderParameters,
 			FlowBlockFloatRenderer::createLocalRenderContext,
@@ -57,10 +58,11 @@ public final class FlowBlockFloatRenderer {
 
 		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(context);
 		FlowBlockChildRenderResult childRenderResult = FlowBlockUnitRenderer.generateChildUnit(context, prerenderSizingInfo);
+		AbsoluteSize styledUnitSize = LayoutSizeUtils.addPadding(childRenderResult.adjustedSize(), renderParameters.totalPadding());
 
 		StyledUnitContext styledUnitContext = new StyledUnitContext(
-			childBox, childRenderResult.unit(), childRenderResult.adjustedSize(),
-			prerenderSizingInfo.padding(), prerenderSizingInfo.borders()
+			childBox, childRenderResult.unit(), styledUnitSize,
+			prerenderSizingInfo.sizingContext().boxOffsetDimensions()
 		);
 		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 		

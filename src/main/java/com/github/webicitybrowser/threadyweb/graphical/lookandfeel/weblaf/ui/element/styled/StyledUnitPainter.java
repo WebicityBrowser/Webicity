@@ -9,6 +9,7 @@ import com.github.webicitybrowser.thready.drawing.core.builder.Paint2DBuilder;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.paint.BackgroundPainter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.paint.BorderPainter;
 
@@ -29,7 +30,7 @@ public final class StyledUnitPainter {
 	}
 
 	private static void paintOutlines(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
-		float[] borders = unit.context().borders();
+		float[] borders = unit.context().boxOffsetDimensions().borders();
 		BorderPainter.paintLeftOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[0]);
 		BorderPainter.paintRightOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[1]);
 		BorderPainter.paintTopOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[2]);
@@ -38,8 +39,9 @@ public final class StyledUnitPainter {
 
 	private static void paintInnerUnit(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		AbsolutePosition position = localPaintContext.documentRect().position();
-		float[] padding = unit.context().padding();
-		float[] borders = unit.context().borders();
+		BoxOffsetDimensions boxOffsetDimensions = unit.context().boxOffsetDimensions();
+		float[] padding = boxOffsetDimensions.padding();
+		float[] borders = boxOffsetDimensions.borders();
 		AbsolutePosition innerPosition = new AbsolutePosition(
 			position.x() + borders[0] + padding[0],
 			position.y() + borders[2] + padding[2]);

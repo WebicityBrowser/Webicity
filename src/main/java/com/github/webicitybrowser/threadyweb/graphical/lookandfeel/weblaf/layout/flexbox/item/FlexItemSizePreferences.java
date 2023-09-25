@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item;
 
+import java.util.function.Function;
+
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
@@ -7,40 +9,32 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutPaddingCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils.LayoutSizingContext;
+import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public class FlexItemSizePreferences {
 	
 	private final DirectivePool styleDirectives;
 	private final LayoutSizingContext sizingContext;
-	private final float[] margins;
-	private final float[] padding;
-	private final float[] borders;
 
 	public FlexItemSizePreferences(Box box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator = 
+			isHorizontal -> FlexUtils.createSizeCalculationContext(globalRenderContext, localRenderContext, isHorizontal);
 		this.styleDirectives = box.styleDirectives();
-		this.margins = FlexMarginCalculations.computeMargins(globalRenderContext, localRenderContext, box);
-		this.padding = LayoutPaddingCalculations.computePaddings(globalRenderContext, localRenderContext, box);
-		this.borders = LayoutBorderWidthCalculations.computeBorderWidths(globalRenderContext, localRenderContext, box);
-		this.sizingContext = LayoutSizeUtils.createLayoutSizingContext(
-			styleDirectives,
-			isHorizontal -> FlexUtils.createSizeCalculationContext(globalRenderContext, localRenderContext, isHorizontal),
-			padding, borders);
+		SizeCalculationContext sizeCalculationContext = sizeCalculationContextGenerator.apply(true);
+		float[] margins = FlexMarginCalculations.computeMargins(globalRenderContext, localRenderContext, box);
+		float[] padding = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, box);
+		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, box);
+		BoxOffsetDimensions boxOffsetDimensions = new BoxOffsetDimensions(margins, padding, borders);
+		this.sizingContext = LayoutSizeUtils.createLayoutSizingContext(styleDirectives, sizeCalculationContextGenerator, boxOffsetDimensions);
 	}
 	
-	public float[] getMargins() {
-		return margins;
-	}
-
-	public float[] getPadding() {
-		return padding;
-	}
-
-	public float[] getBorders() {
-		return borders;
+	public BoxOffsetDimensions getBoxOffsetDimensions() {
+		return sizingContext.boxOffsetDimensions();
 	}
 
 	public float getMainSize(FlexDirection flexDirection) {

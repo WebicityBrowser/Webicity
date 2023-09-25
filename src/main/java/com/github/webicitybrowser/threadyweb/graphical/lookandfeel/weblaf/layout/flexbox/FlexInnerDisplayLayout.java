@@ -17,6 +17,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItem;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItemSizePreferences;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
@@ -103,9 +104,8 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 		List<FlexItem> flexItems = flexLine.getFlexItems();
 		FlexDirection flexDirection = flexLine.getFlexDirection();
 		for (FlexItem flexItem : flexItems) {
-			float[] margins = flexItem.getSizePreferences().getMargins();
-			float[] padding = flexItem.getSizePreferences().getPadding();
-			float[] borders = flexItem.getSizePreferences().getBorders();
+			BoxOffsetDimensions boxOffsetDimensions = flexItem.getSizePreferences().getBoxOffsetDimensions();
+			float[] margins = boxOffsetDimensions.margins();
 			FlexDimension marginsOffset = FlexDimension.createFrom(new AbsoluteSize(margins[0], margins[2]), flexDirection);
 			FlexDimension itemOffset = flexItem.getItemOffset();
 			FlexDimension childPosition = new FlexDimension(
@@ -118,7 +118,7 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 			Rectangle childBounds = new Rectangle(childPosition.toAbsolutePosition(), childInnerSize);
 			RenderedUnit renderedUnit = flexItem.getRenderedUnit();
 			RenderedUnit styledUnit = styledUnitGenerator.generateStyledUnit(
-				new StyledUnitContext(flexItem.getBox(), renderedUnit, childInnerSize, padding, borders));
+				new StyledUnitContext(flexItem.getBox(), renderedUnit, childInnerSize, boxOffsetDimensions));
 			layoutResults.add(new ChildLayoutResult(styledUnit, childBounds));
 		}
 	}

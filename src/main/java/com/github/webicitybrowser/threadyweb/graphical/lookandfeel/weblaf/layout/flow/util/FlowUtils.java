@@ -20,6 +20,10 @@ public final class FlowUtils {
 			isHorizontal);
 	}
 
+	public static SizeCalculationContext createSizeCalculationContext(FlowRenderContext context, boolean isHorizontal) {
+		return createSizeCalculationContext(context, context.localRenderContext().getParentFontMetrics(), isHorizontal);
+	}
+
 	public static Font2D computeFont(FlowRenderContext context, DirectivePool directives, FontMetrics parentFontMetrics) {
 		return WebFontUtil.getFont(
 			directives,

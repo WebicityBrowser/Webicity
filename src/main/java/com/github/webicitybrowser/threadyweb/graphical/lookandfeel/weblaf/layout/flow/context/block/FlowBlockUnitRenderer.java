@@ -9,6 +9,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
@@ -21,8 +22,9 @@ public final class FlowBlockUnitRenderer {
 
 	public static FlowBlockPrerenderSizingInfo prerenderChild(FlowBlockUnitRenderingContext context) {
 		FlowBlockRendererState state = context.state();
+		AbsoluteSize parentSize = state.getLocalRenderContext().getPreferredSize();
 		Box childBox = context.childBox();
-		FlowBlockRenderParameters renderParameters = context.renderParameters();
+		BoxOffsetDimensions renderParameters = context.renderParameters();
 
 		LayoutSizingContext layoutSizingContext = createLayoutSizingContext(state, childBox, renderParameters);
 		AbsoluteSize enforcedSize = computePreferredSize(childBox, layoutSizingContext);
@@ -31,7 +33,7 @@ public final class FlowBlockUnitRenderer {
 		AbsoluteSize enforcedChildSize = LayoutSizeUtils.subtractPadding(enforcedSize, renderParameters.totalPadding());
 		AbsoluteSize precomputedChildSize = LayoutSizeUtils.subtractPadding(precomputedSize, renderParameters.totalPadding());
 
-		return new FlowBlockPrerenderSizingInfo(enforcedChildSize, precomputedChildSize, layoutSizingContext);
+		return new FlowBlockPrerenderSizingInfo(enforcedChildSize, precomputedChildSize, parentSize, layoutSizingContext);
 	}
 
 	public static FlowBlockChildRenderResult generateChildUnit(FlowBlockUnitRenderingContext context, FlowBlockPrerenderSizingInfo prerenderSizingInfo) {
@@ -46,13 +48,13 @@ public final class FlowBlockUnitRenderer {
 		return new FlowBlockChildRenderResult(unit, adjustedSize);
 	}
 
-	private static LayoutSizingContext createLayoutSizingContext(FlowBlockRendererState state, Box childBox, FlowBlockRenderParameters renderParameters) {
+	private static LayoutSizingContext createLayoutSizingContext(FlowBlockRendererState state, Box childBox, BoxOffsetDimensions boxOffsetDimensions) {
 		FontMetrics fontMetrics = state.getFont().getMetrics();
 		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator =
 			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), fontMetrics, isHorizontal);
 
 		return LayoutSizeUtils.createLayoutSizingContext(
-			childBox.styleDirectives(), sizeCalculationContextGenerator, renderParameters.padding(), renderParameters.borders()
+			childBox.styleDirectives(), sizeCalculationContextGenerator, boxOffsetDimensions
 		);
 	}
 

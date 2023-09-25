@@ -11,6 +11,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
 
@@ -19,45 +20,48 @@ public final class FlowBlockBlockRenderer {
 	private FlowBlockBlockRenderer() {}
 
 	public static void renderChild(FlowBlockRendererState state, Box childBox) {
-		FlowBlockRenderParameters renderParameters = FlowBlockRenderParameters.create(state, childBox);
-		AbsoluteSize parentSize = renderParameters.parentSize();
+		BoxOffsetDimensions boxDimensions = BoxOffsetDimensions.create(state, childBox);
+		AbsoluteSize parentSize = state.getLocalRenderContext().getPreferredSize();
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
-			state, childBox, renderParameters,
+			state, childBox, boxDimensions,
 			FlowBlockBlockRenderer::createChildLocalRenderContext,
-			(childState, childSize) -> computeFallbackPreferredSize(parentSize, childSize, renderParameters.margins())
+			(childState, childSize) -> computeFallbackPreferredSize(parentSize, childSize, boxDimensions.margins())
 		);
+		
 		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(context);
 		FlowBlockChildRenderResult childRenderResult = FlowBlockUnitRenderer.generateChildUnit(context, prerenderSizingInfo);
-		AbsoluteSize finalChildSize = computeFinalChildSize(renderParameters, prerenderSizingInfo, childRenderResult);
-		float[] finalMargins = computeFinalMargins(state, renderParameters, finalChildSize);
+		AbsoluteSize finalChildSize = computeFinalChildSize(prerenderSizingInfo, childRenderResult);
+		float[] finalMargins = computeFinalMargins(prerenderSizingInfo, finalChildSize);
 
 		AbsolutePosition childPosition = state.positionTracker().addBox(finalChildSize, finalMargins);
 		Rectangle childRect = new Rectangle(childPosition, finalChildSize);
 		
-		addChildToLayout(state, childBox, childRenderResult.unit(), childRect, prerenderSizingInfo.padding(), prerenderSizingInfo.borders());
+		addChildToLayout(state, childBox, childRenderResult.unit(), childRect, boxDimensions);
 	}
 
 	private static void addChildToLayout(
-		FlowBlockRendererState state, Box childBox, RenderedUnit childUnit, Rectangle childRect, float[] padding, float[] border
+		FlowBlockRendererState state, Box childBox, RenderedUnit childUnit, Rectangle childRect, BoxOffsetDimensions boxDimensions
 	) {
 		
-		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, childRect.size(), padding, border);
+		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, childRect.size(), boxDimensions);
 		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 		state.addChildLayoutResult(new ChildLayoutResult(styledUnit, childRect));
 	}
 
 	private static AbsoluteSize computeFinalChildSize(
-		FlowBlockRenderParameters renderParameters, FlowBlockPrerenderSizingInfo prerenderSizingInfo, FlowBlockChildRenderResult childResult
+		FlowBlockPrerenderSizingInfo prerenderSizingInfo, FlowBlockChildRenderResult childResult
 	) {
-		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(childResult.adjustedSize(), prerenderSizingInfo.totalPadding());
+		BoxOffsetDimensions boxDimensions = prerenderSizingInfo.sizingContext().boxOffsetDimensions();
+		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(childResult.adjustedSize(), boxDimensions.totalPadding());
 		return stretchToParentSize(
-			adjustedSize, renderParameters.parentSize(),
-			prerenderSizingInfo.enforcedChildSize(), renderParameters.margins());
+			adjustedSize, prerenderSizingInfo.parentSize(),
+			prerenderSizingInfo.enforcedChildSize(), boxDimensions.margins());
 	}
 
-	private static float[] computeFinalMargins(FlowBlockRendererState state, FlowBlockRenderParameters renderParameters, AbsoluteSize adjustedSize) {
-		float[] adjustedMargins = FlowBlockMarginCalculations.adjustMargins(state, renderParameters.margins(), adjustedSize);
-		return FlowBlockMarginCalculations.collapseOverflowMargins(renderParameters.parentSize(), adjustedSize, adjustedMargins);
+	private static float[] computeFinalMargins(FlowBlockPrerenderSizingInfo prerenderSizingInfo, AbsoluteSize adjustedSize) {
+		float[] originalMargins =  prerenderSizingInfo.sizingContext().boxOffsetDimensions().margins();
+		float[] adjustedMargins = FlowBlockMarginCalculations.expandAutoMargins(originalMargins, adjustedSize, prerenderSizingInfo.parentSize());
+		return FlowBlockMarginCalculations.collapseOverflowMargins(prerenderSizingInfo.parentSize(), adjustedSize, adjustedMargins);
 	}
 
 	private static AbsoluteSize computeFallbackPreferredSize(AbsoluteSize parentSize, AbsoluteSize preferredSize, float[] margins) {

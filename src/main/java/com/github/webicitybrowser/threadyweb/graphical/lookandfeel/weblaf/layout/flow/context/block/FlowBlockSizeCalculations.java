@@ -11,7 +11,7 @@ public final class FlowBlockSizeCalculations {
 	private FlowBlockSizeCalculations() {}
 
 	public static AbsoluteSize clipContentSize(DirectivePool childStyles, AbsoluteSize contentSize, FlowBlockPrerenderSizingInfo sizingInfo) {
-		float[] paddings = sizingInfo.totalPadding();
+		float[] paddings = sizingInfo.sizingContext().boxOffsetDimensions().totalPadding();
 		LayoutSizingContext layoutSizingContext = sizingInfo.sizingContext();
 
 		AbsoluteSize outerSize = LayoutSizeUtils.addPadding(contentSize, paddings);

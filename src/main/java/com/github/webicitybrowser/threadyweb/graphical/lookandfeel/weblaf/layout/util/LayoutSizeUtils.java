@@ -7,6 +7,7 @@ import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective.BoxSizing;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebSizeDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
@@ -16,10 +17,10 @@ public final class LayoutSizeUtils {
 	private LayoutSizeUtils() {}
 
 	public static LayoutSizingContext createLayoutSizingContext(
-		DirectivePool styleDirectives, Function<Boolean, SizeCalculationContext> contextGenerator, float[] padding, float[] borders
+		DirectivePool styleDirectives, Function<Boolean, SizeCalculationContext> contextGenerator, BoxOffsetDimensions boxDimensions
 	) {
 		BoxSizing boxSizing = getBoxSizing(styleDirectives);
-		return new LayoutSizingContext(boxSizing, contextGenerator, padding, borders);
+		return new LayoutSizingContext(boxDimensions, boxSizing, contextGenerator);
 	}
 
 	public static AbsoluteSize computePreferredSize(
@@ -86,7 +87,7 @@ public final class LayoutSizeUtils {
 		SizeCalculation sizeCalculation, LayoutSizingContext layoutSizingContext, boolean isWidth
 	) {
 		SizeCalculationContext sizeCalculationContext = layoutSizingContext.contextGenerator().apply(isWidth);
-		float[] padding = layoutSizingContext.totalPadding();
+		float[] padding = layoutSizingContext.boxOffsetDimensions().totalPadding();
 		float directionalPadding = isWidth ? padding[0] + padding[1] : padding[2] + padding[3];
 		
 		float calculatedSize = sizeCalculation.calculate(sizeCalculationContext);
@@ -108,15 +109,7 @@ public final class LayoutSizeUtils {
 	}
 
 	public static record LayoutSizingContext(
-		BoxSizing boxSizing, Function<Boolean, SizeCalculationContext> contextGenerator, float[] padding, float[] borders
-	) {
-		public float[] totalPadding() {
-			float[] totalPadding = new float[4];
-			for (int i = 0; i < 4; i++) {
-				totalPadding[i] = padding[i] + borders[i];
-			}
-			return totalPadding;
-		}
-	};
+		BoxOffsetDimensions boxOffsetDimensions, BoxSizing boxSizing, Function<Boolean, SizeCalculationContext> contextGenerator
+	) {};
 
 }

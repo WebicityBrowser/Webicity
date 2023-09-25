@@ -1,8 +1,6 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util;
 
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective.BottomPaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective.LeftPaddingDirective;
@@ -13,18 +11,18 @@ import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.Siz
 
 public final class LayoutPaddingCalculations {
 
-	public static float[] computePaddings(GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext, Box box) {
+	public static float[] computePaddings(SizeCalculationContext sizeCalculationContext, Box box) {
 		float[] padding = new float[4];
-		padding[0] = computePadding(globalRenderContext, localRenderContext, box, LeftPaddingDirective.class);
-		padding[1] = computePadding(globalRenderContext, localRenderContext, box, RightPaddingDirective.class);
-		padding[2] = computePadding(globalRenderContext, localRenderContext, box, TopPaddingDirective.class);
-		padding[3] = computePadding(globalRenderContext, localRenderContext, box, BottomPaddingDirective.class);
+		padding[0] = computePadding(sizeCalculationContext, box, LeftPaddingDirective.class);
+		padding[1] = computePadding(sizeCalculationContext, box, RightPaddingDirective.class);
+		padding[2] = computePadding(sizeCalculationContext, box, TopPaddingDirective.class);
+		padding[3] = computePadding(sizeCalculationContext, box, BottomPaddingDirective.class);
 
 		return padding;
 	}
 
 	private static float computePadding(
-		GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext, Box box, Class<?  extends PaddingDirective> directiveClass
+		SizeCalculationContext sizeCalculationContext, Box box, Class<?  extends PaddingDirective> directiveClass
 	) {
 		SizeCalculation sizeCalculation = box
 			.styleDirectives()
@@ -32,17 +30,7 @@ public final class LayoutPaddingCalculations {
 			.map(directive -> directive.getSizeCalculation())
 			.orElse(_1 -> 0);
 
-		SizeCalculationContext sizeCalculationContext = createSizeCalculationContext(globalRenderContext, localRenderContext);
 		return sizeCalculation.calculate(sizeCalculationContext);
-	}
-
-	private static SizeCalculationContext createSizeCalculationContext(GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		return new SizeCalculationContext(
-			localRenderContext.getPreferredSize(),
-			globalRenderContext.viewportSize(),
-			localRenderContext.getParentFontMetrics(),
-			globalRenderContext.rootFontMetrics(),
-			true);
 	}
 	
 }

@@ -9,6 +9,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItem;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 
 public final class FlexItemRenderer {
@@ -32,16 +33,18 @@ public final class FlexItemRenderer {
 		AbsoluteSize adjustedPreferredSize = new FlexDimension(
 			flexItem.getMainSize(), flexItem.getCrossSize(), flexItemRenderContext.flexDirection()
 		).toAbsoluteSize();
-		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(flexItem.getSizePreferences().getMargins());
+		BoxOffsetDimensions boxOffsetDimensions = flexItem.getSizePreferences().getBoxOffsetDimensions();
+		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(boxOffsetDimensions.margins());
 		adjustedPreferredSize = LayoutSizeUtils.subtractPadding(adjustedPreferredSize, zeroAutoMargins);
-		adjustedPreferredSize = LayoutSizeUtils.subtractPadding(adjustedPreferredSize, flexItem.getSizePreferences().getPadding());
+		adjustedPreferredSize = LayoutSizeUtils.subtractPadding(adjustedPreferredSize, boxOffsetDimensions.padding());
 		return adjustedPreferredSize;
 	}
 
 	private static AbsoluteSize adjustFitSize(FlexItem flexItem, AbsoluteSize fitSize) {
-		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(flexItem.getSizePreferences().getMargins());
+		BoxOffsetDimensions boxOffsetDimensions = flexItem.getSizePreferences().getBoxOffsetDimensions();
+		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(boxOffsetDimensions.margins());
 		fitSize = LayoutSizeUtils.addPadding(fitSize, zeroAutoMargins);
-		fitSize = LayoutSizeUtils.addPadding(fitSize, flexItem.getSizePreferences().getPadding());
+		fitSize = LayoutSizeUtils.addPadding(fitSize, boxOffsetDimensions.padding());
 		return fitSize;
 	}
 

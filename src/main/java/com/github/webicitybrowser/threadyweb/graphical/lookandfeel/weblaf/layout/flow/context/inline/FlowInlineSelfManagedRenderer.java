@@ -11,6 +11,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutBorderWidthCalculations;
@@ -25,35 +26,36 @@ public final class FlowInlineSelfManagedRenderer {
 	private FlowInlineSelfManagedRenderer() {}
 
 	public static void addSelfManagedBoxToLine(FlowInlineRendererState state, Box childBox) {
-		float[] padding = LayoutPaddingCalculations.computePaddings(
-			state.flowContext().globalRenderContext(),
-			state.flowContext().localRenderContext(),
-			childBox);
-		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(
-			state.flowContext().globalRenderContext(),
-			state.flowContext().localRenderContext(),
-			childBox);
-		AbsoluteSize preferredSize = computePreferredSize(state, childBox, padding, borders);
-		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(preferredSize, padding);
+		FontMetrics fontMetrics = state.getFontStack().peek().getMetrics();
+		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator = 
+			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), fontMetrics, isHorizontal);
+		SizeCalculationContext sizeCalculationContext = sizeCalculationContextGenerator.apply(true);
+		BoxOffsetDimensions boxOffsetDimensions = getBoxOffsetDimensions(childBox, sizeCalculationContext);
+		AbsoluteSize preferredSize = computePreferredSize(sizeCalculationContextGenerator, childBox, boxOffsetDimensions);
+		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(preferredSize, boxOffsetDimensions.padding());
 		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
 		AbsoluteSize rawChildSize = childUnit.fitSize();
 		AbsoluteSize adjustedChildSize = FlowSizeUtils.enforcePreferredSize(rawChildSize, contentSize);
-		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(adjustedChildSize, padding);
+		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(adjustedChildSize, boxOffsetDimensions.padding());
 
-		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedSize, padding, new float[4]);
+		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedSize, boxOffsetDimensions);
 		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 
 		FlowInlineRendererUtil.startNewLineIfNotFits(state, adjustedSize);
 		state.lineContext().currentLine().add(styledUnit, adjustedSize);
 	}
 
-	private static AbsoluteSize computePreferredSize(FlowInlineRendererState state, Box childBox, float[] padding, float[] borders) {
-		FontMetrics fontMetrics = state.getFontStack().peek().getMetrics();
-		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator = 
-			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), fontMetrics, isHorizontal);
-		
+	private static BoxOffsetDimensions getBoxOffsetDimensions(Box childBox, SizeCalculationContext sizeCalculationContext) {
+		float[] padding = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, childBox);
+		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, childBox);
+		return new BoxOffsetDimensions(new float[4], padding, borders);
+	}
+
+	private static AbsoluteSize computePreferredSize(
+		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator, Box childBox, BoxOffsetDimensions boxDimensions
+	) {
 		LayoutSizingContext layoutSizingContext = LayoutSizeUtils.createLayoutSizingContext(
-			childBox.styleDirectives(), sizeCalculationContextGenerator, padding, borders
+			childBox.styleDirectives(), sizeCalculationContextGenerator, boxDimensions
 		);
 		return LayoutSizeUtils.computePreferredSize(childBox.styleDirectives(), layoutSizingContext);
 	}

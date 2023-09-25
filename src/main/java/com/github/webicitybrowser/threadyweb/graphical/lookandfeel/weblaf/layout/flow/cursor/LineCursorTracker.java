@@ -2,6 +2,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 
 public class LineCursorTracker implements CursorTracker {
 	
@@ -26,7 +27,7 @@ public class LineCursorTracker implements CursorTracker {
 	public boolean addWillOverflowLine(AbsoluteSize unitSize, AbsoluteSize bounds) {
 		LineDimension unitLineSize = dimensionConverter.getLineDimension(unitSize);
 		LineDimension lineBounds = dimensionConverter.getLineDimension(bounds);
-		if (unitLineSize.run() == -1) {
+		if (unitLineSize.run() == RelativeDimension.UNBOUNDED) {
 			return false;
 		}
 		return lineSizeCoveredAfterAdd(unitLineSize).run() > lineBounds.run();

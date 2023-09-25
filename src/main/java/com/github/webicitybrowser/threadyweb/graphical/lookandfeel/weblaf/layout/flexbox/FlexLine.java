@@ -3,6 +3,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItem;
 
@@ -11,8 +12,8 @@ public class FlexLine {
 	private final FlexDirection flexDirection;
 	private final List<FlexItem> flexItems;
 
-	private float mainSize = -1;
-	private float crossSize = -1;
+	private float mainSize = RelativeDimension.UNBOUNDED;
+	private float crossSize = RelativeDimension.UNBOUNDED;
 
 	public FlexLine(FlexDirection flexDirection) {
 		this.flexDirection = flexDirection;
@@ -44,7 +45,7 @@ public class FlexLine {
 	}
 
 	public float getCrossSize() {
-		if (crossSize != -1) return crossSize;
+		if (crossSize != RelativeDimension.UNBOUNDED) return crossSize;
 
 		float crossSize = 0;
 		for (FlexItem flexItem : flexItems) {
@@ -59,7 +60,7 @@ public class FlexLine {
     }
 
 	public float getMainSize() {
-		if (mainSize == -1) {
+		if (mainSize == RelativeDimension.UNBOUNDED) {
 			mainSize = getUsedMainSize();
 		}
 

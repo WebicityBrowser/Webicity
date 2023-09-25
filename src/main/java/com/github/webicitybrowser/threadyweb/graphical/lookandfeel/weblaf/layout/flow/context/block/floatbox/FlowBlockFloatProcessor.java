@@ -50,9 +50,7 @@ public final class FlowBlockFloatProcessor {
 			if (floatEntry.orginatingBox() != flowContext.box()) break;
 			floatContext.getEndFloats().poll();
 
-			float blockPosition =
-				state.positionTracker().getPosition().y() +
-				flowRootContextSwitch.predictedPosition().y();
+			float blockPosition = state.positionTracker().getPosition().y();
 			FlowBlockFloatRenderer.addFloatBoxToLine(
 				state, floatEntry.floatUnit(),
 				floatEntry.floatBox().styleDirectives(), blockPosition);

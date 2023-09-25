@@ -128,13 +128,18 @@ public final class FlowInlineTextRenderer {
 		}
 
 		float availableWidth = parentWidth;
+		if (availableWidth == RelativeDimension.UNBOUNDED) {
+			return availableWidth;
+		}
+
 		if (contextSwitch != null) {
 			FloatTracker floatTracker = contextSwitch.floatContext().getFloatTracker();
 			AbsolutePosition currentPosition = getCurrentLinePosition(state);
 			availableWidth -= floatTracker.getLeftInlineOffset(currentPosition.y());
 			availableWidth -= floatTracker.getRightInlineOffset(currentPosition.y(), parentWidth);
 		}
-		return availableWidth - state.lineContext().currentLine().getSize().width();
+		availableWidth = availableWidth - state.lineContext().currentLine().getSize().width();
+		return Math.max(availableWidth, 0);
 	}
 
 	private static AbsolutePosition getCurrentLinePosition(FlowInlineRendererState state) {
