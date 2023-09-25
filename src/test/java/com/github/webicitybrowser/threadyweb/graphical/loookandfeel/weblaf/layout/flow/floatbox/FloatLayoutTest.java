@@ -90,4 +90,34 @@ public class FloatLayoutTest {
 		Assertions.assertEquals(new AbsolutePosition(0, 0), layoutResults[0].relativeRect().position());
 	}
 
+	@Test
+	@DisplayName("Can render block context with left float on line after other content")
+	public void canRenderBlockContextWithLeftFloatOnLineAfterOtherContent() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		ChildrenBox inlineBox = new TestStubChildrenBox(emptyDirectivePool, elementDisplay);
+		// We need to fill the line - 50 / 8 = 6 characters
+		Box textBox = FlowTestUtils.createTextBox("Hello!", emptyDirectivePool);
+		inlineBox.getChildrenTracker().addChild(textBox);
+		box.getChildrenTracker().addChild(inlineBox);
+		DirectivePool floatDirectivePool = new BasicDirectivePool();
+		floatDirectivePool.directive(FloatDirective.of(FloatDirection.LEFT));
+		Box floatBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), floatDirectivePool);
+		box.getChildrenTracker().addChild(floatBox);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
+		FlowRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext);
+		LayoutResult result = FlowBlockRenderer.render(renderContext);
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult inlineResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsoluteSize(50, 14), inlineResult.relativeRect().size());
+		ChildLayoutResult[] layoutResults = ((ElementUnit) ((StyledUnit) inlineResult.unit()).context().innerUnit())
+			.layoutResults().childLayoutResults();
+		Assertions.assertEquals(1, layoutResults.length);
+		Assertions.assertEquals(new AbsoluteSize(48, 14), layoutResults[0].relativeRect().size());
+		Assertions.assertEquals(new AbsolutePosition(0, 0), layoutResults[0].relativeRect().position());
+		ChildLayoutResult floatResult = result.childLayoutResults()[1];
+		Assertions.assertEquals(new AbsoluteSize(10, 10), floatResult.relativeRect().size());
+		Assertions.assertEquals(new AbsolutePosition(0, 14), floatResult.relativeRect().position());
+	}
+
 }

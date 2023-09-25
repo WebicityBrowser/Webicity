@@ -65,6 +65,7 @@ public final class FlowBlockUnitRenderer {
 		Box childBox = context.childBox();
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
 		LocalRenderContext childLocalRenderContext = context.localRenderContextGenerator().apply(
+			state,
 			context.childSizeGenerator().apply(state, prerenderSizingInfo.enforcedChildSize()));
 		return UIPipeline.render(childBox, globalRenderContext, childLocalRenderContext);
 	}

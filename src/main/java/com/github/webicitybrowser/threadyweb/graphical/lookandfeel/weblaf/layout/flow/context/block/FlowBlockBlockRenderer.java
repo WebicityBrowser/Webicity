@@ -23,7 +23,7 @@ public final class FlowBlockBlockRenderer {
 		AbsoluteSize parentSize = renderParameters.parentSize();
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
 			state, childBox, renderParameters,
-			childSize -> createChildLocalRenderContext(state, childSize),
+			FlowBlockBlockRenderer::createChildLocalRenderContext,
 			(childState, childSize) -> computeFallbackPreferredSize(parentSize, childSize, renderParameters.margins())
 		);
 		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(context);

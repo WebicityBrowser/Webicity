@@ -8,6 +8,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.floatbox.FlowBlockFloatProcessor;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.floatbox.FlowBlockFloatRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 
 public final class FlowBlockRenderer {
@@ -27,29 +29,20 @@ public final class FlowBlockRenderer {
 
 	private static void renderChildren(FlowBlockRendererState state, ChildrenBox box) {
 		List<Box> children = box.getChildrenTracker().getChildren();
-		int nonFloatOffset = renderFloats(state, children);
-		for (Box childBox: children.subList(nonFloatOffset, children.size())) {
+		int nonFloatOffset = FlowBlockFloatProcessor.renderInitialFloats(state, children);
+		for (int i = nonFloatOffset; i < children.size(); i++) {
+			Box childBox = children.get(i);
 			if (childBox instanceof BasicAnonymousFluidBox) {
+				FlowBlockFloatProcessor.collectPostFloats(state, children, i + 1);
 				FlowBlockAnonRenderer.renderAnonBox(state, childBox);
 			} else if (FlowBlockFloatRenderer.isFloatBox(childBox)) {
 				continue;
 			} else {
+				FlowBlockFloatProcessor.collectPostFloats(state, children, i + 1);
 				FlowBlockBlockRenderer.renderChild(state, childBox);
 			}
+			FlowBlockFloatProcessor.addRemainingFloats(state);
 		}
-	}
-
-	private static int renderFloats(FlowBlockRendererState state, List<Box> children) {
-		int floats = 0;
-		for (int i = 0; i < children.size(); i++) {
-			Box childBox = children.get(i);
-			if (!FlowBlockFloatRenderer.isFloatBox(childBox)) break;
-			float blockPosition = state.positionTracker().getPosition().y();
-			FlowBlockFloatRenderer.addFloatBoxToLine(state, childBox, blockPosition);
-			floats++;
-		}
-
-		return floats;
 	}
 
 }

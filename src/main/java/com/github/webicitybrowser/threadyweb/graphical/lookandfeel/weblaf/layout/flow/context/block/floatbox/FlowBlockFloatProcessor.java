@@ -1,0 +1,62 @@
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.floatbox;
+
+import java.util.List;
+
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockRendererState;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatContext.FloatEntry;
+
+public final class FlowBlockFloatProcessor {
+	
+	private FlowBlockFloatProcessor() {}
+
+	public static int renderInitialFloats(FlowBlockRendererState state, List<Box> children) {
+		int floats = 0;
+		for (int i = 0; i < children.size(); i++) {
+			Box childBox = children.get(i);
+			if (!FlowBlockFloatRenderer.isFloatBox(childBox)) break;
+			float blockPosition = state.positionTracker().getPosition().y();
+			RenderedUnit childUnit = FlowBlockFloatRenderer.renderFloatBoxUnit(state, childBox);
+			FlowBlockFloatRenderer.addFloatBoxToLine(state, childUnit, childBox.styleDirectives(), blockPosition);
+			floats++;
+		}
+
+		return floats;
+	}
+
+	public static void collectPostFloats(FlowBlockRendererState state, List<Box> children, int index) {
+		FlowRenderContext flowContext = state.flowContext();
+		FlowRootContextSwitch flowRootContextSwitch = flowContext.flowRootContextSwitch();
+		FloatContext floatContext = flowRootContextSwitch.floatContext();
+		for (int i = index; i < children.size(); i++) {
+			Box childBox = children.get(i);
+			if (!FlowBlockFloatRenderer.isFloatBox(childBox)) break;
+			RenderedUnit childUnit = FlowBlockFloatRenderer.renderFloatBoxUnit(state, childBox);
+			floatContext.addEndFloat(childBox, childUnit, flowContext.box());
+		}
+	}
+
+	public static void addRemainingFloats(FlowBlockRendererState state) {
+		FlowRenderContext flowContext = state.flowContext();
+		FlowRootContextSwitch flowRootContextSwitch = flowContext.flowRootContextSwitch();
+		FloatContext floatContext = flowRootContextSwitch.floatContext();
+
+		while (!floatContext.getEndFloats().isEmpty()) {
+			FloatEntry floatEntry = floatContext.getEndFloats().peek();
+			if (floatEntry.orginatingBox() != flowContext.box()) break;
+			floatContext.getEndFloats().poll();
+
+			float blockPosition =
+				state.positionTracker().getPosition().y() +
+				flowRootContextSwitch.predictedPosition().y();
+			FlowBlockFloatRenderer.addFloatBoxToLine(
+				state, floatEntry.floatUnit(),
+				floatEntry.floatBox().styleDirectives(), blockPosition);
+		}
+	}
+
+}
