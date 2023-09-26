@@ -42,7 +42,10 @@ public final class FlowBlockUnitRenderer {
 		RenderedUnit childUnit = renderChildUnit(context, prerenderSizingInfo);
 		AbsoluteSize adjustedSize = FlowSizeUtils.enforcePreferredSize(childUnit.fitSize(), prerenderSizingInfo.enforcedChildSize());
 		precomputedSize = FlowBlockSizeCalculations.clipContentSize(childBox.styleDirectives(), adjustedSize, prerenderSizingInfo);
-		RenderedUnit unit = renderChildUnit(context, prerenderSizingInfo);
+		FlowBlockPrerenderSizingInfo adjustedPrerenderSizingInfo = new FlowBlockPrerenderSizingInfo(
+			prerenderSizingInfo.enforcedChildSize(), precomputedSize, prerenderSizingInfo.parentSize(), prerenderSizingInfo.sizingContext()
+		);
+		RenderedUnit unit = renderChildUnit(context, adjustedPrerenderSizingInfo);
 		adjustedSize = FlowSizeUtils.enforcePreferredSize(unit.fitSize(), precomputedSize);
 
 		return new FlowBlockChildRenderResult(unit, adjustedSize);
@@ -68,7 +71,7 @@ public final class FlowBlockUnitRenderer {
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
 		LocalRenderContext childLocalRenderContext = context.localRenderContextGenerator().apply(
 			state,
-			context.childSizeGenerator().apply(state, prerenderSizingInfo.enforcedChildSize()));
+			context.childSizeGenerator().apply(state, prerenderSizingInfo.precomputedChildSize()));
 		return UIPipeline.render(childBox, globalRenderContext, childLocalRenderContext);
 	}
 

@@ -255,7 +255,7 @@ public class FlowBlockRendererTest {
 		DirectivePool styleDirectives = new BasicDirectivePool();
 		styleDirectives.directive(WidthDirective.of(_1 -> 10));
 		styleDirectives.directive(MaxWidthDirective.of(_1 -> 5));
-		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		TestStubContentBox childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
@@ -269,6 +269,7 @@ public class FlowBlockRendererTest {
 		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
 		Assertions.assertEquals(new AbsoluteSize(5, 10), styledUnit.context().innerUnitSize());
 		Assertions.assertEquals(new AbsolutePosition(0, 0), styledUnit.context().innerUnitPosition());
+		Assertions.assertEquals(5, childBox.getLastTargetSize().width());
 	}
 
 	@Test

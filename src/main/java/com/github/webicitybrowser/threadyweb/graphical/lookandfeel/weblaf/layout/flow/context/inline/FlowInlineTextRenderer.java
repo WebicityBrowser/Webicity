@@ -53,6 +53,7 @@ public final class FlowInlineTextRenderer {
 	}
 
 	private static String getNextSplit(FlowInlineRendererState state, TextSplitter splitter) {
+		// TODO: Don't force fit if floats are present.
 		LineContext lineContext = state.lineContext();
 		boolean forceFit = lineContext.currentLine().isEmpty();
 		float remainingWidth = calculateRemainingLineWidth(state);
