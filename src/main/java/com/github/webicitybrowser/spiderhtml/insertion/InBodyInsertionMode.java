@@ -156,7 +156,9 @@ public class InBodyInsertionMode implements InsertionMode {
 			}
 		}
 
-		// TODO: Close p if in button scope
+		if (StackLogic.hasElementInButtonScope(stack, "p", Namespace.HTML_NAMESPACE)) {
+			StackLogic.closeAPElement(stack, context);
+		}
 		InsertionLogic.insertHTMLElement(insertionContext, token);
 	}
 
@@ -289,7 +291,10 @@ public class InBodyInsertionMode implements InsertionMode {
 	private void handleMiscNoPEndTag(SharedContext context, InsertionContext insertionContext, EndTagToken token) {
 		String tokenName = token.getName(insertionContext.getStringCache());
 		ElementStack stack = insertionContext.getOpenElementStack();
-		// TODO: Ensure element in scope
+		if (!StackLogic.hasElementInScope(stack, tokenName, Namespace.HTML_NAMESPACE)) {
+			context.recordError();
+			return;
+		}
 		StackLogic.generateImpliedEndTags(stack, tokenName);
 		if (!ElementUtil.isHTMLElementWithName(stack.peek(), tokenName)) {
 			context.recordError();
