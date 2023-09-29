@@ -16,17 +16,20 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MinWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionTypeDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.HeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MinWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubBlockBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubContentBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.weblaf.layout.flow.FlowTestUtils;
+import com.github.webicitybrowser.threadyweb.graphical.value.PositionType;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 
 public class FlowBlockRendererTest {
@@ -318,6 +321,32 @@ public class FlowBlockRendererTest {
 		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
 		Assertions.assertEquals(new AbsoluteSize(25, 10), styledUnit.context().innerUnitSize());
 		Assertions.assertEquals(new AbsolutePosition(5, 10), styledUnit.context().innerUnitPosition());
+	}
+
+	@Test
+	@DisplayName("Relative position is respected")
+	public void relativePositionIsRespected() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool styleDirectives = new BasicDirectivePool();
+		styleDirectives.directive(PositionTypeDirective.of(PositionType.RELATIVE));
+		styleDirectives.directive(PositionDirective.ofLeft(_1 -> 10));
+		styleDirectives.directive(PositionDirective.ofTop(_1 -> 20));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		FlowRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext, FlowTestUtils.createLocalRenderContext());
+		LayoutResult result = FlowBlockRenderer.render(renderContext);
+		// Relative positions do not affect the size of the parent box
+		Assertions.assertEquals(new AbsoluteSize(50, 10), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(50, 10), childLayoutResult.relativeRect().size());
+		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
+		Assertions.assertEquals(new AbsoluteSize(50, 10), styledUnit.context().innerUnitSize());
+		Assertions.assertEquals(new AbsolutePosition(0, 0), styledUnit.context().innerUnitPosition());
+		Assertions.assertEquals(new AbsolutePosition(10, 20), styledUnit.context().boxPositioningOverride().positionOffset());
+		Assertions.assertEquals(PositionType.RELATIVE, styledUnit.context().boxPositioningOverride().positionType());
 	}
 
 }

@@ -10,16 +10,19 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxPositioningOverride;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutPaddingCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils.LayoutSizingContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.position.PositionOffsetUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public class FlexItemSizePreferences {
 	
 	private final DirectivePool styleDirectives;
 	private final LayoutSizingContext sizingContext;
+	private final BoxPositioningOverride boxPositioningOverride;
 
 	public FlexItemSizePreferences(Box box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator = 
@@ -31,10 +34,15 @@ public class FlexItemSizePreferences {
 		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, box);
 		BoxOffsetDimensions boxOffsetDimensions = new BoxOffsetDimensions(margins, padding, borders);
 		this.sizingContext = LayoutSizeUtils.createLayoutSizingContext(styleDirectives, sizeCalculationContextGenerator, boxOffsetDimensions);
+		this.boxPositioningOverride = PositionOffsetUtil.getPositioningOverride(sizeCalculationContextGenerator, box);
 	}
 	
 	public BoxOffsetDimensions getBoxOffsetDimensions() {
 		return sizingContext.boxOffsetDimensions();
+	}
+
+	public BoxPositioningOverride getBoxPositioningOverride() {
+		return boxPositioningOverride;
 	}
 
 	public float getMainSize(FlexDirection flexDirection) {

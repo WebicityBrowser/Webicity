@@ -24,8 +24,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexGrowDirective;

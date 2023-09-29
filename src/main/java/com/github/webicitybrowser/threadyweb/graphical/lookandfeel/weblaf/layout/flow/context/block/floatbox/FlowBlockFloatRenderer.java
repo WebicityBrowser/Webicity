@@ -18,8 +18,11 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockUnitRenderingContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxPositioningOverride;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.position.PositionOffsetUtil;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.FloatDirection;
 
 public final class FlowBlockFloatRenderer {
@@ -60,9 +63,15 @@ public final class FlowBlockFloatRenderer {
 		FlowBlockChildRenderResult childRenderResult = FlowBlockUnitRenderer.generateChildUnit(context, prerenderSizingInfo);
 		AbsoluteSize styledUnitSize = LayoutSizeUtils.addPadding(childRenderResult.adjustedSize(), renderParameters.totalPadding());
 
+		// TODO: Account for nested relative positioning
+		BoxPositioningOverride boxPositioningOverride = PositionOffsetUtil.getPositioningOverride(
+			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), isHorizontal),
+			childBox
+		);
 		StyledUnitContext styledUnitContext = new StyledUnitContext(
 			childBox, childRenderResult.unit(), styledUnitSize,
-			prerenderSizingInfo.sizingContext().boxOffsetDimensions()
+			prerenderSizingInfo.sizingContext().boxOffsetDimensions(),
+			boxPositioningOverride
 		);
 		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 		

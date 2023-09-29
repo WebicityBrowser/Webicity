@@ -17,14 +17,14 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.HeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpacingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.FlowInlineRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatTracker;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubChildrenBox;

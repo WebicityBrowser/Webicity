@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
+package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.padding;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.padding.PaddingShorthandValueParser;

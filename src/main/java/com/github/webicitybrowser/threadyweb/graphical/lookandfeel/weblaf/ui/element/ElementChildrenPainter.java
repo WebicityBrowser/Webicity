@@ -16,6 +16,7 @@ public final class ElementChildrenPainter {
 	public static void paintChildren(ElementUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		for (ChildLayoutResult childResult: unit.layoutResults().childLayoutResults()) {
 			Rectangle childRect = computeResultDocumentRect(localPaintContext.documentRect(), childResult.relativeRect());
+			// TODO: Account for positioned elements
 			if (childInViewport(childRect, globalPaintContext.viewport())) {
 				paintChild(globalPaintContext, localPaintContext, childResult, childRect);
 			}

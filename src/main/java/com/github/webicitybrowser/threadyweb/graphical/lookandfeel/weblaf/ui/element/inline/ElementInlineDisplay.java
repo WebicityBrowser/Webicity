@@ -13,7 +13,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.BuildableRenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementContext;
 
 public class ElementInlineDisplay implements UIDisplay<ElementContext, ChildrenBox, BuildableRenderedUnit> {

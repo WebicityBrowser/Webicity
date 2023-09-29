@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
@@ -6,8 +6,12 @@ import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxPositioningOverride;
 
-public record StyledUnitContext(Box box, RenderedUnit innerUnit, AbsoluteSize size, BoxOffsetDimensions boxOffsetDimensions) {
+public record StyledUnitContext(
+	Box box, RenderedUnit innerUnit, AbsoluteSize size,
+	BoxOffsetDimensions boxOffsetDimensions, BoxPositioningOverride boxPositioningOverride
+) {
 
 	public AbsoluteSize innerUnitSize() {
 		float[] totalPadding = boxOffsetDimensions.totalPadding();

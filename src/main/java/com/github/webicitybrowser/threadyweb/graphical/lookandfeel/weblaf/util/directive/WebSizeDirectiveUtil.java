@@ -1,12 +1,12 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.HeightDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxHeightDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MaxWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MinHeightDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MinWidthDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.WidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.HeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxHeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MinHeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MinWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 
 public final class WebSizeDirectiveUtil {

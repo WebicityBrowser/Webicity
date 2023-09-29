@@ -12,13 +12,15 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxPositioningOverride;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutPaddingCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils.LayoutSizingContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.position.PositionOffsetUtil;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public final class FlowInlineSelfManagedRenderer {
@@ -37,8 +39,9 @@ public final class FlowInlineSelfManagedRenderer {
 		AbsoluteSize rawChildSize = childUnit.fitSize();
 		AbsoluteSize adjustedChildSize = FlowSizeUtils.enforcePreferredSize(rawChildSize, contentSize);
 		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(adjustedChildSize, boxOffsetDimensions.padding());
+		BoxPositioningOverride boxPositioningOverride = PositionOffsetUtil.getPositioningOverride(sizeCalculationContextGenerator, childBox);
 
-		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedSize, boxOffsetDimensions);
+		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedSize, boxOffsetDimensions, boxPositioningOverride);
 		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 
 		FlowInlineRendererUtil.startNewLineIfNotFits(state, adjustedSize);

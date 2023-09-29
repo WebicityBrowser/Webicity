@@ -19,8 +19,8 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItemSizePreferences;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.unit.StyledUnitGenerator;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
 
 public class FlexInnerDisplayLayout implements SolidLayoutManager {
@@ -104,23 +104,29 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 		List<FlexItem> flexItems = flexLine.getFlexItems();
 		FlexDirection flexDirection = flexLine.getFlexDirection();
 		for (FlexItem flexItem : flexItems) {
-			BoxOffsetDimensions boxOffsetDimensions = flexItem.getSizePreferences().getBoxOffsetDimensions();
-			float[] margins = boxOffsetDimensions.margins();
-			FlexDimension marginsOffset = FlexDimension.createFrom(new AbsoluteSize(margins[0], margins[2]), flexDirection);
-			FlexDimension itemOffset = flexItem.getItemOffset();
-			FlexDimension childPosition = new FlexDimension(
-				itemOffset.main() + marginsOffset.main(),
-				crossPosition + itemOffset.cross() + marginsOffset.cross(),
-				flexDirection);
-			FlexDimension flexChildSize = new FlexDimension(flexItem.getMainSize(), flexItem.getCrossSize(), flexDirection);
-			AbsoluteSize childSize = flexChildSize.toAbsoluteSize();
-			AbsoluteSize childInnerSize = LayoutSizeUtils.subtractPadding(childSize, margins);
-			Rectangle childBounds = new Rectangle(childPosition.toAbsolutePosition(), childInnerSize);
+			Rectangle childBounds = computeFinalChildBounds(flexItem, crossPosition, flexDirection);
 			RenderedUnit renderedUnit = flexItem.getRenderedUnit();
-			RenderedUnit styledUnit = styledUnitGenerator.generateStyledUnit(
-				new StyledUnitContext(flexItem.getBox(), renderedUnit, childInnerSize, boxOffsetDimensions));
+			FlexItemSizePreferences sizePreferences = flexItem.getSizePreferences();
+			RenderedUnit styledUnit = styledUnitGenerator.generateStyledUnit(new StyledUnitContext(
+				flexItem.getBox(), renderedUnit, childBounds.size(),
+				sizePreferences.getBoxOffsetDimensions(), sizePreferences.getBoxPositioningOverride()));
 			layoutResults.add(new ChildLayoutResult(styledUnit, childBounds));
 		}
+	}
+
+	private Rectangle computeFinalChildBounds(FlexItem flexItem, float crossPosition, FlexDirection flexDirection) {
+		BoxOffsetDimensions boxOffsetDimensions = flexItem.getSizePreferences().getBoxOffsetDimensions();
+		float[] margins = boxOffsetDimensions.margins();
+		FlexDimension marginsOffset = FlexDimension.createFrom(new AbsoluteSize(margins[0], margins[2]), flexDirection);
+		FlexDimension itemOffset = flexItem.getItemOffset();
+		FlexDimension childPosition = new FlexDimension(
+			itemOffset.main() + marginsOffset.main(),
+			crossPosition + itemOffset.cross() + marginsOffset.cross(),
+			flexDirection);
+		FlexDimension flexChildSize = new FlexDimension(flexItem.getMainSize(), flexItem.getCrossSize(), flexDirection);
+		AbsoluteSize childSize = flexChildSize.toAbsoluteSize();
+		AbsoluteSize childInnerSize = LayoutSizeUtils.subtractPadding(childSize, margins);
+		return new Rectangle(childPosition.toAbsolutePosition(), childInnerSize);
 	}
 	
 }
