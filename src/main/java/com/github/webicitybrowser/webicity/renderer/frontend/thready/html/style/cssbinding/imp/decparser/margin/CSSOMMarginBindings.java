@@ -10,11 +10,11 @@ public final class CSSOMMarginBindings {
 	private CSSOMMarginBindings() {}
 
 	public static void installTo(Map<String, CSSOMNamedDeclarationParser<?>> namedDeclarationParsers) {
-		namedDeclarationParsers.put("margin-left", new CSSOMLonghandMarginParser(MarginDirective::ofLeft));
-		namedDeclarationParsers.put("margin-right", new CSSOMLonghandMarginParser(MarginDirective::ofRight));
-		namedDeclarationParsers.put("margin-top", new CSSOMLonghandMarginParser(MarginDirective::ofTop));
-		namedDeclarationParsers.put("margin-bottom", new CSSOMLonghandMarginParser(MarginDirective::ofBottom));
-		namedDeclarationParsers.put("margin", new CSSOMShorthandMarginParser());
+		namedDeclarationParsers.put("margin-left", new CSSOMLonghandMarginDeclarationParser(MarginDirective::ofLeft));
+		namedDeclarationParsers.put("margin-right", new CSSOMLonghandMarginDeclarationParser(MarginDirective::ofRight));
+		namedDeclarationParsers.put("margin-top", new CSSOMLonghandMarginDeclarationParser(MarginDirective::ofTop));
+		namedDeclarationParsers.put("margin-bottom", new CSSOMLonghandMarginDeclarationParser(MarginDirective::ofBottom));
+		namedDeclarationParsers.put("margin", new CSSOMShorthandMarginDeclarationParser());
 	}
 
 }

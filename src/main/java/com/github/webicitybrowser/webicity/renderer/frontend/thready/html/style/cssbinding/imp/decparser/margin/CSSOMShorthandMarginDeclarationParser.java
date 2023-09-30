@@ -11,7 +11,7 @@ import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.componentparser.SizeParser;
 
-public class CSSOMShorthandMarginParser implements CSSOMNamedDeclarationParser<MarginValue> {
+public class CSSOMShorthandMarginDeclarationParser implements CSSOMNamedDeclarationParser<MarginValue> {
 
 	private final MarginShorthandValueParser shorthandParser = new MarginShorthandValueParser();
 

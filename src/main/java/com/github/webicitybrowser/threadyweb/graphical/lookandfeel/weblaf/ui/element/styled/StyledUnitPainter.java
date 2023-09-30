@@ -10,6 +10,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipel
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxPositioningOverride;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.paint.BackgroundPainter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.paint.BorderPainter;
 
@@ -19,7 +20,8 @@ public final class StyledUnitPainter {
 
 	private StyledUnitPainter() {}
 
-	public static void paint(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
+	public static void paint(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext originalLocalPaintContext) {
+		LocalPaintContext localPaintContext = adjustLocalPaintContext(unit, originalLocalPaintContext);
 		if (PAINT_DEBUG_RECTANGLES) {
 			paintDebugRectangle(localPaintContext);
 		}
@@ -27,6 +29,25 @@ public final class StyledUnitPainter {
 		BackgroundPainter.paintBackground(unit.context().styleDirectives(), globalPaintContext, localPaintContext);
 		paintOutlines(unit, globalPaintContext, localPaintContext);
 		paintInnerUnit(unit, globalPaintContext, localPaintContext);
+	}
+
+	private static LocalPaintContext adjustLocalPaintContext(StyledUnit unit, LocalPaintContext originalLocalPaintContext) {
+		AbsolutePosition originalPosition = originalLocalPaintContext.documentRect().position();
+		BoxPositioningOverride positioningOverride = unit.context().boxPositioningOverride();
+		AbsolutePosition positionOffsets = positioningOverride.positionOffset();
+		AbsolutePosition adjustedPosition = switch (positioningOverride.positionType()) {
+			case STATIC -> originalPosition;
+			case RELATIVE -> new AbsolutePosition(
+				originalPosition.x() + positionOffsets.x(),
+				originalPosition.y() + positionOffsets.y());
+			default -> throw new IllegalStateException("Unexpected value: " + positioningOverride.positionType());
+		};
+
+		Rectangle adjustedDocumentRect = new Rectangle(
+			adjustedPosition,
+			originalLocalPaintContext.documentRect().size());
+
+		return new LocalPaintContext(originalLocalPaintContext.canvas(), adjustedDocumentRect);
 	}
 
 	private static void paintOutlines(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {

@@ -17,7 +17,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionOffsetDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionTypeDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxWidthDirective;
@@ -329,8 +329,8 @@ public class FlowBlockRendererTest {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
 		DirectivePool styleDirectives = new BasicDirectivePool();
 		styleDirectives.directive(PositionTypeDirective.of(PositionType.RELATIVE));
-		styleDirectives.directive(PositionDirective.ofLeft(_1 -> 10));
-		styleDirectives.directive(PositionDirective.ofTop(_1 -> 20));
+		styleDirectives.directive(PositionOffsetDirective.ofLeft(_1 -> 10));
+		styleDirectives.directive(PositionOffsetDirective.ofTop(_1 -> 20));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();

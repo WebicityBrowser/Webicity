@@ -23,6 +23,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.margin.CSSOMMarginBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.padding.CSSOMPaddingBindings;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.position.CSSOMPositionBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.size.CSSOMSizeBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.text.CSSOMTextBindings;
 
@@ -47,6 +48,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		CSSOMPaddingBindings.installTo(namedDeclarationParsers);
 		CSSOMSizeBindings.installTo(namedDeclarationParsers);
 		CSSOMMarginBindings.installTo(namedDeclarationParsers);
+		CSSOMPositionBindings.installTo(namedDeclarationParsers);
 	}
 	
 	@Override
