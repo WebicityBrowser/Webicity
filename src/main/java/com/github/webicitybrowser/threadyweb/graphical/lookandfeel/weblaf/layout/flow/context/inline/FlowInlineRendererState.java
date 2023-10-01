@@ -8,7 +8,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension.LineDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
 
 public class FlowInlineRendererState {
@@ -19,9 +19,10 @@ public class FlowInlineRendererState {
 	private final TextConsolidation textConsolidation = TextConsolidation.create();
 	private final Stack<Font2D> fontStack = new Stack<>();
 
-	public FlowInlineRendererState(LineDimensionConverter dimensionConverter, FlowRenderContext context) {
-		this.lineContext = new LineContext(dimensionConverter, context);
+	public FlowInlineRendererState(LineDirection lineDirection, FlowRenderContext context) {
+		this.lineContext = new LineContext(lineDirection, context);
 		this.context = context;
+		FlowInlineRendererUtil.startNewLine(this);
 	}
 
 	public LineContext lineContext() {

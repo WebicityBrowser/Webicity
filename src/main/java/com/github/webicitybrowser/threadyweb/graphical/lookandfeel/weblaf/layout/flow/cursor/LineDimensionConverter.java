@@ -2,15 +2,42 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension.LineDirection;
 
-public interface LineDimensionConverter {
+public final class LineDimensionConverter {
+	
+	private LineDimensionConverter() {}
 
-	AbsoluteSize getAbsoluteSize(LineDimension lineDimension);
+	public static AbsoluteSize convertToAbsoluteSize(LineDimension lineDimension) {
+		return switch (lineDimension.direction()) {
+			case LTR, RTL -> new AbsoluteSize(lineDimension.run(), lineDimension.depth());
+			case TTB, BTT -> new AbsoluteSize(lineDimension.depth(), lineDimension.run());
+		};
+	}
 
-	AbsolutePosition getAbsolutePosition(LineDimension currentPointer);
-	
-	LineDimension getLineDimension(AbsoluteSize absoluteSize);
-	
-	LineDimension getLineDimension(AbsolutePosition absolutePosition);
-	
+	public static AbsolutePosition convertToAbsolutePosition(LineDimension lineDimension, AbsoluteSize parentSize, AbsoluteSize objectSize) {
+		return switch (lineDimension.direction()) {
+			case LTR -> new AbsolutePosition(lineDimension.run(), lineDimension.depth());
+			case RTL -> new AbsolutePosition(parentSize.width() - lineDimension.run() - objectSize.width(), lineDimension.depth());
+			case TTB -> new AbsolutePosition(lineDimension.depth(), lineDimension.run());
+			case BTT -> new AbsolutePosition(lineDimension.depth(), parentSize.height() - lineDimension.run() - objectSize.height());
+		};
+	}
+
+	public static LineDimension convertToLineDimension(AbsoluteSize dimensions, LineDirection lineDirection) {
+		return switch (lineDirection) {
+			case LTR, RTL -> new LineDimension(dimensions.width(), dimensions.height(), lineDirection);
+			case TTB, BTT -> new LineDimension(dimensions.height(), dimensions.width(), lineDirection);
+		};
+	}
+
+	public static LineDimension convertToLineDimension(AbsolutePosition position, LineDirection lineDirection) {
+		return switch (lineDirection) {
+			case LTR -> new LineDimension(position.x(), position.y(), lineDirection);
+			case RTL -> new LineDimension(position.x(), position.y(), lineDirection);
+			case TTB -> new LineDimension(position.y(), position.x(), lineDirection);
+			case BTT -> new LineDimension(position.y(), position.x(), lineDirection);
+		};
+	}
+
 }

@@ -3,7 +3,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.displ
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
+import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.builder.Paint2DBuilder;
@@ -33,7 +33,7 @@ public final class ScrollPainter {
 
 		Rectangle viewport = globalPaintContext.viewport();
 		Rectangle childViewport = new Rectangle(
-			AbsolutePositionMath.sum(viewport.position(), scrollPosition),
+			AbsoluteDimensionsMath.sum(viewport.position(), scrollPosition, AbsolutePosition::new),
 			viewport.size());
 		GlobalPaintContext childGlobalPaintContext = GlobalPaintContext.create(
 			childViewport,

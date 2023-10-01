@@ -2,7 +2,7 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.u
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
+import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.dimensions.util.RectangleUtil;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
@@ -38,9 +38,8 @@ public final class ContainerPainter {
 	}
 
 	private static Rectangle computeResultDocumentRect(Rectangle documentRect, Rectangle renderedRect) {
-		AbsolutePosition documentPosition = AbsolutePositionMath.sum(
-			documentRect.position(),
-			renderedRect.position());
+		AbsolutePosition documentPosition = AbsoluteDimensionsMath.sum(
+			documentRect.position(), renderedRect.position(), AbsolutePosition::new);
 		
 		return new Rectangle(documentPosition, renderedRect.size());
 	}

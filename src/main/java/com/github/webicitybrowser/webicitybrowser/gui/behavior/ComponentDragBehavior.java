@@ -3,7 +3,7 @@ package com.github.webicitybrowser.webicitybrowser.gui.behavior;
 import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
-import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
+import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.gui.directive.basics.ChildrenDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.ExternalMouseListenerDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.MouseListenerDirective;
@@ -29,8 +29,8 @@ public final class ComponentDragBehavior {
 			public void accept(MouseEvent e) {
 				ComponentDragTracker<T> tracker = configuration.getTracker();
 				if (e.getAction() == MouseConstants.DRAG && selectedComponentTile != null) {
-					AbsolutePosition mouseChange = AbsolutePositionMath.diff(e.getViewportPosition(), mouseStartPosition);
-					AbsolutePosition newComponentPosition = AbsolutePositionMath.sum(componentStartPosition, mouseChange);
+					AbsolutePosition mouseChange = AbsoluteDimensionsMath.diff(e.getViewportPosition(), mouseStartPosition, AbsolutePosition::new);
+					AbsolutePosition newComponentPosition = AbsoluteDimensionsMath.sum(componentStartPosition, mouseChange, AbsolutePosition::new);
 					target.directive(PositionDirective.of(newComponentPosition));
 				} else if (e.getButton() != MouseConstants.LEFT_BUTTON) {
 					return;

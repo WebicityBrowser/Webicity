@@ -3,7 +3,7 @@ package com.github.webicitybrowser.webicitybrowser.gui.behavior;
 import java.util.function.Supplier;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
-import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
+import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.gui.graphical.directive.ExternalMouseListenerDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.MouseListenerDirective;
 import com.github.webicitybrowser.thready.gui.graphical.event.MouseEvent;
@@ -27,8 +27,8 @@ public final class WindowDragBehavior {
 			public void accept(MouseEvent e) {
 				GUIWindow window = windowSupplier.get();
 				if (e.getAction() == MouseConstants.DRAG && isSelected) {
-					AbsolutePosition mouseChange = AbsolutePositionMath.diff(e.getScreenPosition(), mouseStartPosition);
-					AbsolutePosition newWindowPosition = AbsolutePositionMath.sum(windowStartPosition, mouseChange);
+					AbsolutePosition mouseChange = AbsoluteDimensionsMath.diff(e.getScreenPosition(), mouseStartPosition, AbsolutePosition::new);
+					AbsolutePosition newWindowPosition = AbsoluteDimensionsMath.sum(windowStartPosition, mouseChange, AbsolutePosition::new);
 					window.setPosition(newWindowPosition);
 				} else if (e.getButton() != MouseConstants.LEFT_BUTTON) {
 					return;

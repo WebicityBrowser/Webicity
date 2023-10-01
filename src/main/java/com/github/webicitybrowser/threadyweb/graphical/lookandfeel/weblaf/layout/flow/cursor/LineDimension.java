@@ -1,5 +1,21 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor;
 
-public record LineDimension(float run, float depth) {
+import com.github.webicitybrowser.thready.dimensions.AbsoluteDimensions;
+
+public record LineDimension(float run, float depth, LineDirection direction) implements AbsoluteDimensions {
+
+	@Override
+	public float xComponent() {
+		return run;
+	}
+
+	@Override
+	public float yComponent() {
+		return depth;
+	}
+
+	public static enum LineDirection {
+		LTR, RTL, TTB, BTT
+	}
 
 }

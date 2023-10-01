@@ -4,7 +4,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
+import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -35,9 +35,10 @@ public final class FlowBlockAnonRenderer {
 
 	private static ContextSwitch createChildFlowRootContextSwitch(FlowBlockRendererState state, Box anonBox) {
 		FlowRootContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
-		AbsolutePosition predictedChildPosition = AbsolutePositionMath.sum(
+		AbsolutePosition predictedChildPosition = AbsoluteDimensionsMath.sum(
 			state.positionTracker().getPosition(),
-			flowRootContextSwitch.predictedPosition());
+			flowRootContextSwitch.predictedPosition(),
+			AbsolutePosition::new);
 		return new FlowRootContextSwitch(predictedChildPosition, flowRootContextSwitch.floatContext());
 	}
 

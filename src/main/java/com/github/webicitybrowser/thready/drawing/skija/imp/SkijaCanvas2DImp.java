@@ -5,7 +5,7 @@ import com.github.webicitybrowser.thready.color.imp.InternalColorImp;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
+import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.ChildCanvasSettings;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
@@ -193,13 +193,13 @@ public class SkijaCanvas2DImp implements Canvas2D {
 	private SkijaCanvasSettings createMovedChildSettings(ChildCanvasSettings childCanvasSettings, Rectangle childRectangle) {
 		AbsolutePosition childOffset = childCanvasSettings.preservePosition() ?
 			canvasSettings.offset() :
-			AbsolutePositionMath.sum(canvasSettings.offset(), childRectangle.position());
+			AbsoluteDimensionsMath.sum(canvasSettings.offset(), childRectangle.position(), AbsolutePosition::new);
 		
 		return new SkijaCanvasSettings(childOffset, childRectangle, canvasSettings.translation());
 	}
 
 	private SkijaCanvasSettings createTranslatedCanvasSettings(float x, float y) {
-		AbsolutePosition newTranslation = AbsolutePositionMath.sum(canvasSettings.translation(), new AbsolutePosition(x, y));
+		AbsolutePosition newTranslation = AbsoluteDimensionsMath.sum(canvasSettings.translation(), new AbsolutePosition(x, y), AbsolutePosition::new);
 		return new SkijaCanvasSettings(canvasSettings.offset(), canvasSettings.clipBounds(), newTranslation);
 	}
 	

@@ -2,21 +2,16 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 
 import java.util.List;
 
-import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineMarkerEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedCollapsibleTextView;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedTextCollapser;
@@ -56,10 +51,11 @@ public final class FlowInlineTextRenderer {
 		// TODO: Don't force fit if floats are present.
 		LineContext lineContext = state.lineContext();
 		boolean forceFit = lineContext.currentLine().isEmpty();
-		float remainingWidth = calculateRemainingLineWidth(state);
-		String text = splitter.getFittingText(forceFit, remainingWidth);
+		LineBox currentLine = lineContext.currentLine();
+		float remainingRun = currentLine.getMaxLineSize().run() - currentLine.getSize().width();
+		String text = splitter.getFittingText(forceFit, remainingRun);
 		if (text == null) {
-			lineContext.startNewLine();
+			FlowInlineRendererUtil.startNewLine(state);
 			return "";
 		}
 
@@ -79,7 +75,7 @@ public final class FlowInlineTextRenderer {
 
 		LineBox currentLine = state.lineContext().currentLine();
 		
-		currentLine.add(new TextUnit(fitSize, textBox, text, font, letterSpacing));
+		currentLine.add(new TextUnit(fitSize, textBox, text, font, letterSpacing), fitSize);
 	}
 
 	private static String trimTextIfLineStart(FlowInlineRendererState state, String text) {
@@ -119,34 +115,6 @@ public final class FlowInlineTextRenderer {
 				collectPreadjustTextBoxes(state, (ChildrenBox) childBox);
 			}
 		}
-	}
-
-	private static float calculateRemainingLineWidth(FlowInlineRendererState state) {
-		FlowRootContextSwitch contextSwitch = state.flowContext().flowRootContextSwitch();
-		float parentWidth = state.getLocalRenderContext().getPreferredSize().width();
-		if (parentWidth == RelativeDimension.UNBOUNDED) {
-			return parentWidth;
-		}
-
-		float availableWidth = parentWidth;
-		if (availableWidth == RelativeDimension.UNBOUNDED) {
-			return availableWidth;
-		}
-
-		if (contextSwitch != null) {
-			FloatTracker floatTracker = contextSwitch.floatContext().getFloatTracker();
-			AbsolutePosition currentPosition = getCurrentLinePosition(state);
-			availableWidth -= floatTracker.getLeftInlineOffset(currentPosition.y());
-			availableWidth -= floatTracker.getRightInlineOffset(currentPosition.y(), parentWidth);
-		}
-		availableWidth = availableWidth - state.lineContext().currentLine().getSize().width();
-		return Math.max(availableWidth, 0);
-	}
-
-	private static AbsolutePosition getCurrentLinePosition(FlowInlineRendererState state) {
-		FlowRootContextSwitch contextSwitch = state.flowContext().flowRootContextSwitch();
-		AbsolutePosition currentPositionOffset = state.lineContext().currentLine().getEstimatedPosition();
-		return AbsolutePositionMath.sum(contextSwitch.predictedPosition(), currentPositionOffset);
 	}
 
 	private static LocalRenderContext createLocalRenderContext(FlowInlineRendererState state) {

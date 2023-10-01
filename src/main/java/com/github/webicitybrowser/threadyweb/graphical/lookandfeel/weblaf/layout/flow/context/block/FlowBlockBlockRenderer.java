@@ -4,7 +4,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
+import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -101,8 +101,8 @@ public final class FlowBlockBlockRenderer {
 	private static LocalRenderContext createChildLocalRenderContext(FlowBlockRendererState state, AbsoluteSize childSize) {
 		FlowRootContextSwitch parentSwitch = state.flowContext().flowRootContextSwitch();
 		AbsolutePosition predictedChildPosition = state.positionTracker().getPosition();
-		AbsolutePosition offsetPredictedChildPosition = AbsolutePositionMath.sum(
-			predictedChildPosition, parentSwitch.predictedPosition());
+		AbsolutePosition offsetPredictedChildPosition = AbsoluteDimensionsMath.sum(
+			predictedChildPosition, parentSwitch.predictedPosition(), AbsolutePosition::new);
 		FlowRootContextSwitch childSwitch = new FlowRootContextSwitch(
 			offsetPredictedChildPosition, parentSwitch.floatContext());
 

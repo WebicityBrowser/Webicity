@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.dimensions.util.AbsolutePositionMath;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
@@ -16,7 +15,8 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitExitMarker;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.HorizontalLineDimensionConverter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension.LineDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
@@ -27,8 +27,8 @@ public final class FlowInlineRenderer {
 	private FlowInlineRenderer() {}
 
 	public static LayoutResult render(FlowRenderContext context) {
-		LineDimensionConverter lineDimensionConverter = new HorizontalLineDimensionConverter();
-		FlowInlineRendererState state = new FlowInlineRendererState(lineDimensionConverter, context);
+		LineDirection lineDirection = LineDirection.LTR;
+		FlowInlineRendererState state = new FlowInlineRendererState(lineDirection, context);
 		ChildrenBox box = context.box();
 
 		state.getFontStack().push(FlowUtils.computeFont(
@@ -80,34 +80,42 @@ public final class FlowInlineRenderer {
 	private static LayoutResult createInnerDisplayUnit(ChildrenBox box, FlowInlineRendererState state) {
 		List<ChildLayoutResult> childLayoutResults = new ArrayList<>();
 		FlowRootContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
+		LineDirection lineDirection = state.lineContext().lineDirection();
 
-		AbsolutePosition linePosition = new AbsolutePosition(0, 0);
+
+		LineDimension linePosition = new LineDimension(0, 0, lineDirection);
+		AbsoluteSize maxSize = state.getLocalRenderContext().getPreferredSize();
 		AbsoluteSize totalSize = new AbsoluteSize(0, 0);
 		for (LineBox line: state.lineContext().lines()) {
-			
-			childLayoutResults.addAll(layoutFinalLine(line, linePosition, flowRootContextSwitch));
-			// TODO: Use the LineDimensionConverter so we can handle vertical lines.
-			linePosition = new AbsolutePosition(0, linePosition.y() + line.getSize().height());
+			childLayoutResults.addAll(layoutFinalLine(line, linePosition, flowRootContextSwitch, maxSize));
+			float lineDepth = LineDimensionConverter.convertToLineDimension(line.getSize(), lineDirection).depth();
+
+			AbsoluteSize lineSize = line.getSize();
+			AbsolutePosition absoluteLinePosition = LineDimensionConverter.convertToAbsolutePosition(linePosition, maxSize, lineSize);
 			totalSize = new AbsoluteSize(
-				Math.max(totalSize.width(), line.getSize().width()),
-				Math.max(totalSize.height(), linePosition.y())
+				Math.max(totalSize.width(), lineSize.width()),
+				Math.max(totalSize.height(), absoluteLinePosition.y() + lineSize.height())
 			);
+
+			linePosition = new LineDimension(0, linePosition.depth() + lineDepth, lineDirection);
 		}
 
 		return LayoutResult.create(childLayoutResults.toArray(ChildLayoutResult[]::new), totalSize);
 	}
 
 	private static List<ChildLayoutResult> layoutFinalLine(
-		LineBox line, AbsolutePosition linePosition, FlowRootContextSwitch flowRootContextSwitch
+		LineBox line, LineDimension linePosition, FlowRootContextSwitch flowRootContextSwitch, AbsoluteSize maxSize
 	) {
-		float lineX = 0;
-		if (flowRootContextSwitch != null) {
-			AbsolutePosition offsetPosition = AbsolutePositionMath.sum(
-				linePosition, flowRootContextSwitch.predictedPosition());
+		LineDimension actualLinePosition = linePosition;
+		if (flowRootContextSwitch != null && line.getLineDirection() == LineDirection.LTR) {
+			float offsetY = flowRootContextSwitch.predictedPosition().y() + actualLinePosition.depth();
 			FloatTracker floatTracker = flowRootContextSwitch.floatContext().getFloatTracker();
-			lineX += floatTracker.getLeftInlineOffset(offsetPosition.y());
+			float lineXOffset = floatTracker.getLeftInlineOffset(offsetY);
+			actualLinePosition = new LineDimension(
+				actualLinePosition.run() + lineXOffset, actualLinePosition.depth(),
+				line.getLineDirection());
 		}
-		AbsolutePosition actualLinePosition = new AbsolutePosition(lineX, linePosition.y());
+		// TODO: Handle non-LTR line direction
 		
 		return line.layoutAtPos(actualLinePosition);
 	}

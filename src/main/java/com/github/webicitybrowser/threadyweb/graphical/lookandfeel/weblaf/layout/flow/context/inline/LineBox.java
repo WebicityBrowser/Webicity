@@ -7,22 +7,27 @@ import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.LineMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitExitMarker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.section.LineRootSectionBuilder;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.section.LineSectionBuilder;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.section.LineSubsectionBuilder;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.CursorTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineCursorTracker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension.LineDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
 
 public class LineBox {
 
 	private final CursorTracker cursorTracker;
-	private final LineDimensionConverter dimensionConverter;
+	private final LineDirection lineDirection;
+	private final LineDimension maxLineSize;
 	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator;
 	
 	private final List<LineEntry> lineItems = new ArrayList<>();
@@ -30,9 +35,10 @@ public class LineBox {
 
 	private AbsolutePosition estimatedPosition;
 
-	public LineBox(LineDimensionConverter dimensionConverter, Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator) {
-		this.cursorTracker = new LineCursorTracker(dimensionConverter);
-		this.dimensionConverter = dimensionConverter;
+	public LineBox(LineDimension maxLineSize, Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator) {
+		this.lineDirection = maxLineSize.direction();
+		this.cursorTracker = new LineCursorTracker(lineDirection);
+		this.maxLineSize = maxLineSize;
 		this.innerUnitGenerator = innerUnitGenerator;
 	}
 	
@@ -40,14 +46,9 @@ public class LineBox {
 		return cursorTracker.getSizeCovered().width() == 0;
 	}
 
-	public void add(RenderedUnit unit) {
-		add(unit, unit.fitSize());
-	}
-
 	public void add(RenderedUnit unit, AbsoluteSize adjustedSize) {
-		AbsolutePosition startPosition = cursorTracker.getNextPosition();
-		Rectangle bounds = new Rectangle(startPosition, adjustedSize);
-		lineItems.add(new LineBoxRenderResultEntry(unit, bounds));
+		LineDimension startPosition = cursorTracker.getNextPosition();
+		lineItems.add(new LineBoxRenderResultEntry(unit, startPosition, adjustedSize));
 		cursorTracker.add(adjustedSize);
 	}
 
@@ -62,7 +63,7 @@ public class LineBox {
 		}
 	 }
 	
-	public boolean canFit(AbsoluteSize unitSize, AbsoluteSize maxLineSize) {
+	public boolean canFit(AbsoluteSize unitSize) {
 		return
 			(unitSize.width() == 0 && unitSize.height() == 0) ||
 			!cursorTracker.addWillOverflowLine(unitSize, maxLineSize);
@@ -72,12 +73,16 @@ public class LineBox {
 		return cursorTracker.getSizeCovered();
 	};
 
+	public LineDimension getMaxLineSize() {
+		return maxLineSize;
+	}
+
 	public List<LineMarker> getActiveMarkers() {
 		return activeMarkers;
 	}
 	
-	public List<ChildLayoutResult> layoutAtPos(AbsolutePosition linePosition) {
-		CursorTracker cursorTracker = new LineCursorTracker(dimensionConverter);
+	public List<ChildLayoutResult> layoutAtPos(LineDimension linePosition) {
+		CursorTracker cursorTracker = new LineCursorTracker(lineDirection);
 		Stack<LineSectionBuilder> sectionBuilderStack = new Stack<>();
 		LineRootSectionBuilder rootSectionBuilder = new LineRootSectionBuilder(linePosition);
 		sectionBuilderStack.push(rootSectionBuilder);
@@ -101,9 +106,13 @@ public class LineBox {
 	}
 
 	public float getEstimatedBlockSize() {
-		return dimensionConverter
-			.getLineDimension(cursorTracker.getSizeCovered())
+		return LineDimensionConverter
+			.convertToLineDimension(cursorTracker.getSizeCovered(), lineDirection)
 			.depth();
+	}
+
+	public LineDirection getLineDirection() {
+		return lineDirection;
 	}
 
 	//
@@ -130,34 +139,37 @@ public class LineBox {
 
 	private void handleBoxLayout(Stack<LineSectionBuilder> sectionBuilderStack, LineBoxRenderResultEntry lineItem, CursorTracker cursorTracker) {
 		LineSectionBuilder sectionBuilder = sectionBuilderStack.peek();
-		Rectangle lineItemBounds = new Rectangle(
-			cursorTracker.getNextPosition(),
-			lineItem.bounds().size());
-		sectionBuilder.addUnit(lineItemBounds, lineItem.unit());
-		cursorTracker.add(lineItemBounds.size());
+		LineDimension lineItemPosition = cursorTracker.getNextPosition();
+		LineDimension lineItemSize = LineDimensionConverter.convertToLineDimension(lineItem.size(), lineDirection);
+		sectionBuilder.addUnit(lineItem.unit(), lineItemSize, lineItemPosition);
+		cursorTracker.add(lineItem.size());
 	}
 
 	private void closeAllSubsections(Stack<LineSectionBuilder> sectionBuilderStack, CursorTracker cursorTracker) {
 		while (sectionBuilderStack.size() > 1) {
 			closeSubsection(sectionBuilderStack, cursorTracker, false);
 		}
+
+		AbsoluteSize parentSize = LineDimensionConverter.convertToAbsoluteSize(maxLineSize);
+		sectionBuilderStack.peek().finalize(parentSize);
 	}
 	
 	private void closeSubsection(Stack<LineSectionBuilder> sectionStack, CursorTracker cursorTracker, boolean markedFinished) {
 		LineSubsectionBuilder subsectionBuilder = (LineSubsectionBuilder) sectionStack.pop();
-		subsectionBuilder.finalize(cursorTracker.getNextPosition());
+		subsectionBuilder.finalize(new AbsoluteSize(-1, -1));
 		if (markedFinished) {
 			subsectionBuilder.getUnit().markFinished();
 		}
-		Rectangle subsectionBounds = new Rectangle(
-			subsectionBuilder.getStartPosition(),
-			subsectionBuilder.getUnit().fitSize());
+
+		LineDimension subsectionSize = LineDimensionConverter.convertToLineDimension(subsectionBuilder.getUnit().fitSize(), lineDirection);
+		LineDimension subsectionPosition = subsectionBuilder.getStartPosition();
+
 		LineSectionBuilder parentSectionBuilder = sectionStack.peek();
-		parentSectionBuilder.addUnit(subsectionBounds, subsectionBuilder.getUnit());
+		parentSectionBuilder.addUnit(subsectionBuilder.getUnit(), subsectionSize, subsectionPosition);
 	}
 
 	public interface LineEntry {}
-	public record LineMarkerEntry(LineMarker marker, AbsolutePosition position) implements LineEntry {}
-	public record LineBoxRenderResultEntry(RenderedUnit unit, Rectangle bounds) implements LineEntry {}
+	public record LineMarkerEntry(LineMarker marker, LineDimension startPosition) implements LineEntry {}
+	public record LineBoxRenderResultEntry(RenderedUnit unit, LineDimension startPosition, AbsoluteSize size) implements LineEntry {}
 	
 }
