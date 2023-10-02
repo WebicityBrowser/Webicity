@@ -19,6 +19,10 @@ Thanks to [@Minecraftian14](https://github.com/Minecraftian14), [@PiotrJagla](ht
 
 Want to talk about Webicity? Consider joining our [Discord server](https://discord.gg/HxPHHk6N8w).
 
+## Screenshot
+
+![image](https://i.imgur.com/2f7iygD.png)
+
 ## Requirements
 
 Webicity is meant to be compatible with Windows, Linux distributions with Java support, and MacOS.
@@ -55,10 +59,6 @@ MacOS users must instead this command:
 ```bash
 java -XstartOnFirstThread -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 --XX:+UseG1GC -jar Webicity-all.jar
 ```
-
-## Screenshot
-
-![image](https://i.imgur.com/2f7iygD.png)
 
 ## Disclaimer
 Webicity is not suitable for use in medical applications, banking applications, or other applications in which security, accuracy, and/or performance is critical.

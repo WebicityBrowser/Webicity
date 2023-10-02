@@ -1,16 +1,15 @@
 package com.github.webicitybrowser.webicitybrowser.engine.protocol;
 
-import com.github.webicitybrowser.spec.url.URL;
-import com.github.webicitybrowser.webicity.core.net.Connection;
-import com.github.webicitybrowser.webicity.core.net.Protocol;
-import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
-
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import com.github.webicitybrowser.spec.url.URL;
+import com.github.webicitybrowser.webicity.core.net.Connection;
+import com.github.webicitybrowser.webicity.core.net.Protocol;
+import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 
 public class WebicityProtocol implements Protocol {
 	@Override
@@ -21,8 +20,8 @@ public class WebicityProtocol implements Protocol {
 	@Override
 	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
 
-		InputStream inputStream = new FileInputStream(
-			"./src/main/resources/pages/" + url.getHost() + ( url.getPath().equals("/") ? "" : url.getPath() ) + ".html"
+		InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(
+			"pages/" + url.getHost() + ( url.getPath().equals("/") ? "" : url.getPath() ) + ".html"
 		);
 		BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
 		Reader reader = new InputStreamReader(bufferedStream);
