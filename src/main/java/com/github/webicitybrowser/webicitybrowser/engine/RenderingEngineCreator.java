@@ -15,6 +15,7 @@ import com.github.webicitybrowser.webicity.protocol.HTTPProtocol;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicitybrowser.engine.file.FileUnicodeLookup;
 import com.github.webicitybrowser.webicitybrowser.engine.net.SocketChannelHTTPTransportFactory;
+import com.github.webicitybrowser.webicitybrowser.engine.protocol.WebicityProtocol;
 import com.github.webicitybrowser.webicitybrowser.loader.ResourceAssetLoader;
 
 public final class RenderingEngineCreator {
@@ -34,6 +35,7 @@ public final class RenderingEngineCreator {
 		HTTPService httpService = createHTTPService();
 		
 		protocolRegistry.registerProtocol(new FileProtocol());
+		protocolRegistry.registerProtocol(new WebicityProtocol());
 		protocolRegistry.registerProtocol(new AboutProtocol());
 		protocolRegistry.registerProtocol(new HTTPProtocol(httpService));
 	}

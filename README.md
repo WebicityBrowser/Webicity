@@ -13,7 +13,7 @@ Webicity consists of multiple components:
 *   Thready web extensions: Part of Webicity. Allows for rendering web pages with Thready.
 *   EcmaSpiral Engine: An experimental Javascript runtime. Not yet attached to the main codebase.
 
-Thanks to [@Minecraftian14](https://github.com/Minecraftian14) and [@shabman](https://github.com/shabman) for helping!
+Thanks to [@Minecraftian14](https://github.com/Minecraftian14), [@PiotrJagla](https://github.com/PiotrJagla) and [@shabman](https://github.com/shabman) for helping!
 
 ## Join our Discord server!
 
