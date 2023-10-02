@@ -86,13 +86,16 @@ public final class FlowBlockBlockRenderer {
 	private static AbsoluteSize stretchToParentSize(
 		AbsoluteSize adjustedSize, AbsoluteSize parentSize, AbsoluteSize preferredSize, float[] margins
 	) {
-		if (margins[0] == RelativeDimension.UNBOUNDED || margins[1] == RelativeDimension.UNBOUNDED) {
-			return adjustedSize;
-		}
+		boolean canNotStretch =
+			margins[0] == RelativeDimension.UNBOUNDED ||
+			margins[1] == RelativeDimension.UNBOUNDED ||
+			preferredSize.width() != RelativeDimension.UNBOUNDED ||
+			parentSize.width() == RelativeDimension.UNBOUNDED;
+		if (canNotStretch) return adjustedSize;
+
 		float marginOffset = Math.max(0, margins[0]) + Math.max(0, margins[1]);
-		float stretchedPreferredWidth = preferredSize.width() != RelativeDimension.UNBOUNDED ?
-			adjustedSize.width() :
-			Math.max(parentSize.width() - marginOffset, adjustedSize.width());
+		
+		float stretchedPreferredWidth = Math.max(parentSize.width() - marginOffset, adjustedSize.width());
 		float stretchedPreferredHeight = adjustedSize.height();
 
 		return new AbsoluteSize(stretchedPreferredWidth, stretchedPreferredHeight);

@@ -3,7 +3,6 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
@@ -18,7 +17,6 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension.LineDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
 
@@ -31,9 +29,7 @@ public final class FlowInlineRenderer {
 		FlowInlineRendererState state = new FlowInlineRendererState(lineDirection, context);
 		ChildrenBox box = context.box();
 
-		state.getFontStack().push(FlowUtils.computeFont(
-			context, context.box().styleDirectives(), context.localRenderContext().getParentFontMetrics()));
-		FlowInlineTextRenderer.preadjustTextBoxes(state, box);
+		prepareTextRendering(state, box);
 
 		for (Box childBox: box.getChildrenTracker().getChildren()) {
 			addBoxToLine(state, childBox);
@@ -42,80 +38,88 @@ public final class FlowInlineRenderer {
 		return createInnerDisplayUnit(box, state);
 	}
 
+	private static void prepareTextRendering(FlowInlineRendererState state, ChildrenBox box) {
+		FlowRenderContext context = state.flowContext();
+		state.getFontStack().push(FlowUtils.computeFont(
+			context, context.box().styleDirectives(), context.localRenderContext().getParentFontMetrics()));
+		FlowInlineTextRenderer.preadjustTextBoxes(state, box);
+	}
+
 	private static void addBoxToLine(FlowInlineRendererState state, Box childBox) {
 		if (childBox instanceof TextBox textBox) {
 			FlowInlineTextRenderer.addTextBoxToLine(state, textBox);
 		} else if (childBox.managesSelf()) {
 			FlowInlineSelfManagedRenderer.addSelfManagedBoxToLine(state, childBox);
 		} else {
-			addInlineBoxToLine(state, childBox);
+			assert childBox instanceof ChildrenBox;
+			addInlineBoxToLine(state, (ChildrenBox) childBox);
 		}
 	}
 
-	private static void addInlineBoxToLine(FlowInlineRendererState state, Box childBox) {
-		assert childBox instanceof ChildrenBox;
-		LineContext lineContext = state.lineContext();
-		UnitEnterMarker unitEnterMarker = new UnitEnterMarker(true, childBox.styleDirectives());
-		FontMetrics parentFontMetrics = state.getFontStack().peek().getMetrics();
-		state.getFontStack().push(FlowUtils.computeFont(state.flowContext(), childBox.styleDirectives(), parentFontMetrics));
-		FlowInlineRendererUtil.startNewLineIfNotFits(state, createSizeFromUnitEnterMarker(unitEnterMarker));
-		lineContext.currentLine().addMarker(unitEnterMarker);
-		for (Box inlineChildBox: ((ChildrenBox) childBox).getChildrenTracker().getChildren()) {
+	private static void addInlineBoxToLine(FlowInlineRendererState state, ChildrenBox childBox) {
+		pushFormattingInfo(state, childBox);
+
+		for (Box inlineChildBox: childBox.getChildrenTracker().getChildren()) {
 			addBoxToLine(state, inlineChildBox);
 		}
+		
+		popFormattingInfo(state, childBox);
+	}
+
+	private static void pushFormattingInfo(FlowInlineRendererState state, Box childBox) {
+		LineContext lineContext = state.lineContext();
+		
+		UnitEnterMarker unitEnterMarker = new UnitEnterMarker(true, childBox.styleDirectives());
+		FlowInlineRendererUtil.startNewLineIfNotFits(state, createSizeFromUnitEnterMarker(unitEnterMarker));
+		lineContext.currentLine().addMarker(unitEnterMarker);
+
+		FontMetrics parentFontMetrics = state.getFontStack().peek().getMetrics();
+		state.getFontStack().push(FlowUtils.computeFont(state.flowContext(), childBox.styleDirectives(), parentFontMetrics));
+	}
+
+	private static void popFormattingInfo(FlowInlineRendererState state, Box childBox) {
+		LineContext lineContext = state.lineContext();
+
 		UnitExitMarker unitExitMarker = new UnitExitMarker(childBox.styleDirectives());
 		FlowInlineRendererUtil.startNewLineIfNotFits(state, createSizeFromUnitExitMarker(unitExitMarker));
 		lineContext.currentLine().addMarker(unitExitMarker);
+
 		state.getFontStack().pop();
 	}
 
 	private static AbsoluteSize createSizeFromUnitEnterMarker(UnitEnterMarker marker) {
-		return new AbsoluteSize(marker.leftEdgeSize() , marker.topEdgeSize());
+		return new AbsoluteSize(marker.leftEdgeSize(), marker.topEdgeSize());
 	}
 
 	private static AbsoluteSize createSizeFromUnitExitMarker(UnitExitMarker marker) {
-		return new AbsoluteSize(marker.rightEdgeSize() , marker.bottomEdgeSize());
+		return new AbsoluteSize(marker.rightEdgeSize(), marker.bottomEdgeSize());
 	}
 
 	private static LayoutResult createInnerDisplayUnit(ChildrenBox box, FlowInlineRendererState state) {
 		List<ChildLayoutResult> childLayoutResults = new ArrayList<>();
-		FlowRootContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
 		LineDirection lineDirection = state.lineContext().lineDirection();
 
-
 		LineDimension linePosition = new LineDimension(0, 0, lineDirection);
-		AbsoluteSize maxSize = state.getLocalRenderContext().getPreferredSize();
-		AbsoluteSize totalSize = new AbsoluteSize(0, 0);
+		LineDimension totalSize = new LineDimension(0, 0, lineDirection);
+
 		for (LineBox line: state.lineContext().lines()) {
-			childLayoutResults.addAll(layoutFinalLine(line, linePosition, flowRootContextSwitch, maxSize));
-			float lineDepth = LineDimensionConverter.convertToLineDimension(line.getSize(), lineDirection).depth();
+			childLayoutResults.addAll(layoutFinalLine(line, linePosition, state));
 
-			AbsoluteSize lineSize = line.getSize();
-			AbsolutePosition absoluteLinePosition = LineDimensionConverter.convertToAbsolutePosition(linePosition, maxSize, lineSize);
-			totalSize = new AbsoluteSize(
-				Math.max(totalSize.width(), lineSize.width()),
-				Math.max(totalSize.height(), absoluteLinePosition.y() + lineSize.height())
-			);
+			LineDimension lineSize = LineDimensionConverter.convertToLineDimension(line.getSize(), lineDirection);
+			linePosition = new LineDimension(0, linePosition.depth() + lineSize.depth(), lineDirection);
 
-			linePosition = new LineDimension(0, linePosition.depth() + lineDepth, lineDirection);
+			totalSize = new LineDimension(Math.max(totalSize.run(), lineSize.run()), linePosition.depth(), lineDirection);
 		}
 
-		return LayoutResult.create(childLayoutResults.toArray(ChildLayoutResult[]::new), totalSize);
+		AbsoluteSize absoluteTotalSize = LineDimensionConverter.convertToAbsoluteSize(totalSize);
+		return LayoutResult.create(childLayoutResults.toArray(ChildLayoutResult[]::new), absoluteTotalSize);
 	}
 
 	private static List<ChildLayoutResult> layoutFinalLine(
-		LineBox line, LineDimension linePosition, FlowRootContextSwitch flowRootContextSwitch, AbsoluteSize maxSize
+		LineBox line, LineDimension linePosition, FlowInlineRendererState state
 	) {
-		LineDimension actualLinePosition = linePosition;
-		if (flowRootContextSwitch != null && line.getLineDirection() == LineDirection.LTR) {
-			float offsetY = flowRootContextSwitch.predictedPosition().y() + actualLinePosition.depth();
-			FloatTracker floatTracker = flowRootContextSwitch.floatContext().getFloatTracker();
-			float lineXOffset = floatTracker.getLeftInlineOffset(offsetY);
-			actualLinePosition = new LineDimension(
-				actualLinePosition.run() + lineXOffset, actualLinePosition.depth(),
-				line.getLineDirection());
-		}
-		// TODO: Handle non-LTR line direction
+		FlowRootContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
+		LineDimension actualLinePosition = LineOffsetCalculator.offsetLinePosition(linePosition, line, flowRootContextSwitch);
 		
 		return line.layoutAtPos(actualLinePosition);
 	}

@@ -13,7 +13,7 @@ public record FlowRenderContext(
 	ChildrenBox box,
 	GlobalRenderContext globalRenderContext,
 	LocalRenderContext localRenderContext,
-	Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator,
+	Function<DirectivePool, BuildableRenderedUnit> builableUnitGenerator,
 	StyledUnitGenerator styledUnitGenerator,
 	FlowRootContextSwitch flowRootContextSwitch
 ) {

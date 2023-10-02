@@ -41,7 +41,7 @@ public class LineContext {
 		AbsolutePosition nextLinePosition = determineNextLinePosition();
 		LineDimension maxLineSize = maxLineSizeGenerator.apply(nextLinePosition);
 
-		LineBox newLine = new LineBox(maxLineSize, context.innerUnitGenerator());
+		LineBox newLine = new LineBox(maxLineSize, context.builableUnitGenerator());
 		newLine.setEstimatedPosition(nextLinePosition);
 		copyUnresolvedMarkers(newLine);
 		this.currentLine = newLine;

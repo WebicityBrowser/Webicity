@@ -32,6 +32,7 @@ public class TextSplitter {
 			if (currentWidth != 0) {
 				currentWidth += letterSpacing;
 			}
+			
 			currentWidth += charWidths[windowEnd];
 			windowEnd++;
 		}
