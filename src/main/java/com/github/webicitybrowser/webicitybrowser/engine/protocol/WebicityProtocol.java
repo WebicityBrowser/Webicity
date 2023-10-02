@@ -5,26 +5,25 @@ import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.net.Protocol;
 import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 public class WebicityProtocol implements Protocol {
 	@Override
 	public String[] getSchemes() {
-		return new String[]{"webicity"};
+		return new String[] { "webicity" };
 	}
 
 	@Override
 	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
 
-		StringBuilder path = new StringBuilder(
-			url.toString().substring( url.getHost().length() + 3)
+		InputStream inputStream = new FileInputStream(
+			"./src/main/resources/pages/" + url.getHost() + ( url.getPath().equals("/") ? "" : url.getPath() ) + ".html"
 		);
-
-		if(!path.toString().contains(".html")) {
-			path.append(".html");
-		}
-
-		InputStream inputStream = new FileInputStream("./src/main/resources/pages" + path);
 		BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
 		Reader reader = new InputStreamReader(bufferedStream);
 
