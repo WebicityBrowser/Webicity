@@ -26,6 +26,7 @@ public class FetchEngineImp implements FetchEngine {
 	private void mainFetch(FetchParams params) {
 		FetchResponse response = httpFetch(params);
 		fetchResponseHandover(params, response);
+		params.consumeBodyAction().execute(response, true, new byte[]{});
 	}
 
 	private FetchResponse httpFetch(FetchParams params) {

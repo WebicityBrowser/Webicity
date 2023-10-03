@@ -13,16 +13,19 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
 import com.github.webicitybrowser.spec.url.URL;
 
+import static org.mockito.ArgumentMatchers.eq;
+
 public class FetchEngineTest {
 
 	private static final byte[] DUMMY_BODY = new byte[] { 1, 2, 3 };
 	private static final URL DUMMY_URL = URL.ofSafe("https://www.google.com/");
 
-	/*@Test
+	@Test
 	@DisplayName("Can reach process response consume body")
 	public void canReachProcessResponseConsumeBody() {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+
 		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool());
 		FetchRequest request = createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
@@ -32,8 +35,8 @@ public class FetchEngineTest {
 		fetchEngineImp.fetch(parameters);
 
 		Mockito.verify(consumeBodyAction, Mockito.times(1))
-			.execute(Mockito.any(), true, Mockito.any());
-	}*/
+			.execute(Mockito.any(), eq(true), Mockito.any());
+	}
 	
 
 	private FetchConnectionPool mockConnectionPool() {
