@@ -6,9 +6,18 @@ import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
 
 public class FetchResponseBuilderImp implements FetchResponseBuilder {
 
+	private byte[] body;
+
+
+
 	@Override
 	public FetchResponse build() {
-		return new FetchResponseImp();
+		return new FetchResponseImp(body);
 	}
-	
+
+	@Override
+	public void setBody(byte[] body) {
+		this.body = body;
+	}
+
 }

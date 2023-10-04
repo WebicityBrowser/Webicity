@@ -2,7 +2,6 @@ package com.github.webicitybrowser.spec.fetch.builder.imp;
 
 import com.github.webicitybrowser.spec.fetch.FetchRequest;
 import com.github.webicitybrowser.spec.fetch.builder.FetchRequestBuilder;
-import com.github.webicitybrowser.spec.fetch.imp.FetchRequestImp;
 import com.github.webicitybrowser.spec.url.URL;
 
 public class FetchRequestBuilderImp implements FetchRequestBuilder {
@@ -22,7 +21,7 @@ public class FetchRequestBuilderImp implements FetchRequestBuilder {
 
 	@Override
 	public FetchRequest build() {
-		return new FetchRequestImp(method, url);
+		return new FetchRequest(method, url);
 	}
 	
 }

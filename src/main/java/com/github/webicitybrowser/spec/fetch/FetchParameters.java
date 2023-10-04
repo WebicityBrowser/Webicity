@@ -1,9 +1,7 @@
 package com.github.webicitybrowser.spec.fetch;
 
-public interface FetchParameters {
+public record FetchParameters(
+	FetchRequest request, FetchConsumeBodyAction consumeBodyAction
+){
 	
-	FetchRequest request();
-
-	FetchConsumeBodyAction consumeBodyAction();
-
 }

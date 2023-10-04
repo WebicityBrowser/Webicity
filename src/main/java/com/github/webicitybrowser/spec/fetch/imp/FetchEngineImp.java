@@ -1,20 +1,22 @@
 package com.github.webicitybrowser.spec.fetch.imp;
 
-import com.github.webicitybrowser.spec.fetch.FetchEngine;
-import com.github.webicitybrowser.spec.fetch.FetchParameters;
-import com.github.webicitybrowser.spec.fetch.FetchParams;
-import com.github.webicitybrowser.spec.fetch.FetchResponse;
+import com.github.webicitybrowser.spec.fetch.*;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
 import com.github.webicitybrowser.spec.url.URL;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class FetchEngineImp implements FetchEngine {
 
 	private final FetchConnectionPool connectionPool;
+	private Queue<FetchConsumeBodyAction> fetchQueue;
 
 	public FetchEngineImp(FetchConnectionPool connectionPool) {
 		this.connectionPool = connectionPool;
+		fetchQueue = new LinkedList<>();
 	}
 
 	@Override
@@ -26,7 +28,6 @@ public class FetchEngineImp implements FetchEngine {
 	private void mainFetch(FetchParams params) {
 		FetchResponse response = httpFetch(params);
 		fetchResponseHandover(params, response);
-		params.consumeBodyAction().execute(response, true, new byte[]{});
 	}
 
 	private FetchResponse httpFetch(FetchParams params) {
@@ -42,8 +43,15 @@ public class FetchEngineImp implements FetchEngine {
 
 	private void fetchResponseHandover(FetchParams params, FetchResponse response) {
 		if (params.consumeBodyAction() != null) {
-			// TODO: Queue a response
+			if(response.body() == null) {
+				// TODO: Queue a response
+				fetchQueue.add(params.consumeBodyAction());
+			}
+			else {
+				params.consumeBodyAction().execute(response, true, new byte[]{});
+			}
 		}
 	}
-	
+
+
 }

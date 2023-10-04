@@ -4,7 +4,6 @@ import com.github.webicitybrowser.spec.fetch.FetchConsumeBodyAction;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchRequest;
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
-import com.github.webicitybrowser.spec.fetch.imp.FetchParametersImp;
 
 public class FetchParametersBuilderImp implements FetchParametersBuilder {
 
@@ -23,7 +22,7 @@ public class FetchParametersBuilderImp implements FetchParametersBuilder {
 
 	@Override
 	public FetchParameters build() {
-		return new FetchParametersImp(request, consumeBodyAction);
+		return new FetchParameters(request, consumeBodyAction);
 	}
 	
 }

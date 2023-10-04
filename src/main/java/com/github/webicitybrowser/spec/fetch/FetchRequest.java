@@ -2,10 +2,6 @@ package com.github.webicitybrowser.spec.fetch;
 
 import com.github.webicitybrowser.spec.url.URL;
 
-public interface FetchRequest {
+public record FetchRequest(String method, URL url){
 	
-	String method();
-
-	URL url();
-
 }

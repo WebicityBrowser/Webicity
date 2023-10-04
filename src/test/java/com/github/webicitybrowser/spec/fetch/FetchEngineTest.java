@@ -1,5 +1,8 @@
 package com.github.webicitybrowser.spec.fetch;
 
+import com.github.webicitybrowser.spec.fetch.builder.imp.FetchResponseBuilderImp;
+import com.github.webicitybrowser.spec.fetch.imp.FetchConsumeBodyActionImpl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -37,6 +40,21 @@ public class FetchEngineTest {
 		Mockito.verify(consumeBodyAction, Mockito.times(1))
 			.execute(Mockito.any(), eq(true), Mockito.any());
 	}
+
+	@Test
+	public void testFetchWithMockData() {
+		FetchConsumeBodyAction consumeBodyAction = new FetchConsumeBodyActionImpl();
+		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool());
+		FetchRequest request = createRequest("GET", DUMMY_URL);
+		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
+		parametersBuilder.setRequest(request);
+		parametersBuilder.setConsumeBodyAction(consumeBodyAction);
+		FetchParameters parameters = parametersBuilder.build();
+		fetchEngine.fetch(parameters);
+
+		FetchResponse fetchResponse = consumeBodyAction.getFetchResponse();
+		Assertions.assertEquals(DUMMY_BODY, fetchResponse.body());
+	}
 	
 
 	private FetchConnectionPool mockConnectionPool() {
@@ -70,8 +88,11 @@ public class FetchEngineTest {
 	}
 
 	private FetchResponse mockFetchResponse() {
-		return new FetchResponse() {
-			
+		return new FetchResponse(){
+			@Override
+			public byte[] body() {
+				return DUMMY_BODY;
+			}
 		};
 	}
 
