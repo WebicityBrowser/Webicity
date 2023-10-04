@@ -174,6 +174,7 @@ public class GUIContentImp implements GUIContent {
 			performRenderCycle(redrawContext);
 			System.gc();
 		case COMPOSITE:
+			performCompositeCycle();
 		case PAINT:
 		case NONE:
 			// Even if the invalidation level is NONE, there is
@@ -201,6 +202,7 @@ public class GUIContentImp implements GUIContent {
 		}
 		
 		Box rootBox = generatedBoxes.get(0);
+		
 		this.rootBox = rootBox;
 	}
 
@@ -214,6 +216,10 @@ public class GUIContentImp implements GUIContent {
 			contentSize, baseFont.getMetrics(), new ContextSwitch[0]);
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();
 		this.rootUnit = rootDisplay.renderBox((U) rootBox, globalRenderContext, localRenderContext);
+	}
+
+	private void performCompositeCycle() {
+		//CompositeContextImp compositeContext = new CompositeContextImp();
 	}
 	
 	@SuppressWarnings("unchecked")
