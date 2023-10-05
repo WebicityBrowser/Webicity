@@ -2,7 +2,6 @@ package com.github.webicitybrowser.spec.fetch;
 
 import com.github.webicitybrowser.spec.fetch.builder.imp.FetchResponseBuilderImp;
 import com.github.webicitybrowser.spec.fetch.imp.BodyImp;
-import com.github.webicitybrowser.spec.fetch.imp.FetchConsumeBodyActionImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -5,6 +5,6 @@ import com.github.webicitybrowser.spec.fetch.FetchConsumeBodyAction;
 
 public interface TaskDestination {
 
-	void enqueue(FetchConsumeBodyAction algorithm);
+	void enqueue(Runnable task);
 
 }

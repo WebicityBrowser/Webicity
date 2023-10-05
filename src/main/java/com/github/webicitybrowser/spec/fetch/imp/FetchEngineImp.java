@@ -1,15 +1,14 @@
 package com.github.webicitybrowser.spec.fetch.imp;
 
-import com.github.webicitybrowser.spec.fetch.*;
+import com.github.webicitybrowser.spec.fetch.FetchEngine;
+import com.github.webicitybrowser.spec.fetch.FetchParameters;
+import com.github.webicitybrowser.spec.fetch.FetchParams;
+import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.TaskDestination.ParallelQueue;
-import com.github.webicitybrowser.spec.fetch.TaskDestination.TaskDestination;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
 import com.github.webicitybrowser.spec.url.URL;
-
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class FetchEngineImp implements FetchEngine {
 
@@ -44,16 +43,19 @@ public class FetchEngineImp implements FetchEngine {
 	private void fetchResponseHandover(FetchParams params, FetchResponse response) {
 		if (params.consumeBodyAction() != null) {
 			if(response.body() == null) {
-				// TODO: Queue a response
-				queueAFetchTask(params, response);
+				queueAFetchTask(() -> params.consumeBodyAction().execute(response, true, new byte[]{}), params);
 			} else {
-				params.consumeBodyAction().execute(response, false, new byte[]{});
+				fullyReadBody();
 			}
 		}
 	}
 
-	private void queueAFetchTask(FetchParams params, FetchResponse response) {
-		params.taskDestination().enqueue(params.consumeBodyAction());
+	private void queueAFetchTask(Runnable fetchTask, FetchParams params) {
+		params.taskDestination().enqueue(fetchTask);
+	}
+
+	private void fullyReadBody() {
+		//TODO: implement fully read
 	}
 
 }

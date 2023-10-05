@@ -1,21 +1,19 @@
 package com.github.webicitybrowser.spec.fetch.TaskDestination;
 
-import com.github.webicitybrowser.spec.fetch.FetchConsumeBodyAction;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class ParallelQueue implements TaskDestination{
 
-	private final Queue<FetchConsumeBodyAction> fetchTasks;
+	private final Queue<Runnable> tasksQueue;
 
 	public ParallelQueue() {
-		fetchTasks = new LinkedList<>();
+		tasksQueue = new LinkedList<>();
 	}
 
 	@Override
-	public void enqueue(FetchConsumeBodyAction algorithm) {
-		fetchTasks.add(algorithm);
+	public void enqueue(Runnable task) {
+		tasksQueue.add(task);
 	}
 
 }
