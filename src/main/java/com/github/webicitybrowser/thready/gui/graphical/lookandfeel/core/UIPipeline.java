@@ -6,6 +6,8 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
@@ -40,6 +42,14 @@ public final class UIPipeline {
 		renderCache.put(box, localRenderContext.getPreferredSize(), result);
 		renderCache.put(box, result.fitSize(), result);
 		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <V extends RenderedUnit> void composite(
+		RenderedUnit unit, GlobalCompositeContext compositeContext, LocalCompositeContext localCompositeContext
+	) {
+		UIDisplay<?, ?, V> display = (UIDisplay<?, ?, V>) unit.display();
+		display.composite((V) unit, compositeContext, localCompositeContext);
 	}
 
 	@SuppressWarnings("unchecked")

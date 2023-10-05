@@ -19,7 +19,6 @@ public class SimpleWrapperPainter {
 		SimpleWrapperUnit<V> unit, UIDisplay<?, ?, V> childDisplay, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext
 	) {
 		paintBackground(unit, localPaintContext);
-		paintInnerContent(unit, childDisplay, globalPaintContext, localPaintContext);
 	}
 
 	private static <V extends RenderedUnit> void paintBackground(SimpleWrapperUnit<V> unit, LocalPaintContext localPaintContext) {
@@ -36,12 +35,6 @@ public class SimpleWrapperPainter {
 				documentRect.position().y(),
 				documentRect.size().width(),
 				documentRect.size().height());
-	}
-	
-	private static <V extends RenderedUnit> void paintInnerContent(
-		SimpleWrapperUnit<V> unit,  UIDisplay<?, ?, V> childDisplay, GlobalPaintContext context, LocalPaintContext localPaintContext
-	) {
-		childDisplay.paint(unit.childUnit(), context, localPaintContext);
 	}
 	
 	private static ColorFormat getBackgroundColor(DirectivePool styleDirectives) {

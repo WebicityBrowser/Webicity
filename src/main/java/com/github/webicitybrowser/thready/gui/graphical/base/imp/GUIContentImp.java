@@ -19,8 +19,10 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAnd
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer.CompositeReference;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -55,6 +57,7 @@ public class GUIContentImp implements GUIContent {
 	private AbsoluteSize oldContentSize;
 	private Object rootContext;
 	private Box rootBox;
+	private List<CompositeLayer> compositeLayers;
 	private RenderedUnit rootUnit;
 
 	@Override
@@ -82,23 +85,23 @@ public class GUIContentImp implements GUIContent {
 
 	@Override
 	public void handleEvent(ScreenEvent e, AbsoluteSize contentSize) {
-		if (rootUnit != null) {
-			Message message = MessageConverter.convertEventToMessage(e);
-			if (message == null) {
-				return;
-			}
-			
-			MessageContext messageContext = createMessageContext();
-			if (message instanceof KeyMessage || message instanceof CharMessage) {
-				focusManager.messageFocused(messageContext, message);
-			} else if (message instanceof ScrollMessage) {
-				sloppyFocusManager.messageFocused(messageContext, message);
-			} else if (message instanceof MouseMessage) {
-				sloppyFocusManager.clearFocus();
-				messageRoot(messageContext, message, contentSize);
-			} else {
-				messageRoot(messageContext, message, contentSize);
-			}
+		if (rootUnit == null) return;
+
+		Message message = MessageConverter.convertEventToMessage(e);
+		if (message == null) {
+			return;
+		}
+		
+		MessageContext messageContext = createMessageContext();
+		if (message instanceof KeyMessage || message instanceof CharMessage) {
+			focusManager.messageFocused(messageContext, message);
+		} else if (message instanceof ScrollMessage) {
+			sloppyFocusManager.messageFocused(messageContext, message);
+		} else if (message instanceof MouseMessage) {
+			sloppyFocusManager.clearFocus();
+			messageRoot(messageContext, message, contentSize);
+		} else {
+			messageRoot(messageContext, message, contentSize);
 		}
 	}
 	
@@ -174,7 +177,7 @@ public class GUIContentImp implements GUIContent {
 			performRenderCycle(redrawContext);
 			System.gc();
 		case COMPOSITE:
-			performCompositeCycle();
+			performCompositeCycle(redrawContext);
 		case PAINT:
 		case NONE:
 			// Even if the invalidation level is NONE, there is
@@ -218,22 +221,31 @@ public class GUIContentImp implements GUIContent {
 		this.rootUnit = rootDisplay.renderBox((U) rootBox, globalRenderContext, localRenderContext);
 	}
 
-	private void performCompositeCycle() {
-		//CompositeContextImp compositeContext = new CompositeContextImp();
+	@SuppressWarnings("unchecked")
+	private <V extends RenderedUnit> void performCompositeCycle(ScreenContentRedrawContext redrawContext) {
+		AbsoluteSize contentSize = redrawContext.contentSize();
+		Rectangle rootBounds = new Rectangle(new AbsolutePosition(0, 0), contentSize);
+		GlobalCompositeContextImp compositeContext = new GlobalCompositeContextImp();
+		LocalCompositeContext localCompositeContext = new LocalCompositeContext(rootBounds);
+		UIDisplay<?, ?, V> rootDisplay = (UIDisplay<?, ?, V>) rootUI.getRootDisplay();
+		compositeContext.enterChildContext(rootBounds, CompositeReference.PAGE);
+		rootDisplay.composite((V) rootUnit, compositeContext, localCompositeContext);
+		compositeContext.exitChildContext();
+		this.compositeLayers = compositeContext.getLayers();
 	}
 	
-	@SuppressWarnings("unchecked")
-	private <V extends RenderedUnit> void performPaintCycle(ScreenContentRedrawContext redrawContext) {
+	private void performPaintCycle(ScreenContentRedrawContext redrawContext) {
 		AbsoluteSize contentSize = redrawContext.contentSize();
 		Canvas2D canvas = redrawContext.canvas();
 		Rectangle viewport = new Rectangle(new AbsolutePosition(0, 0), contentSize);
 		
 		clearPaint(canvas, contentSize);
-		
-		UIDisplay<?, ?, V> display = (UIDisplay<?, ?, V>) rootUI.getRootDisplay();
-		GlobalPaintContext globalPaintContext = new PaintContextImp(viewport, redrawContext.invalidationScheduler());
-		LocalPaintContext localPaintContext = new LocalPaintContext(canvas, createDocumentRect(contentSize));
-		display.paint((V) rootUnit, globalPaintContext, localPaintContext);
+
+		for (CompositeLayer layer : compositeLayers) {
+			layer.paint(
+				new PaintContextImp(viewport, redrawContext.invalidationScheduler()),
+				new LocalPaintContext(canvas, createDocumentRect(contentSize)));
+		}
 	}
 
 	private void clearPaint(Canvas2D canvas, AbsoluteSize contentSize) {

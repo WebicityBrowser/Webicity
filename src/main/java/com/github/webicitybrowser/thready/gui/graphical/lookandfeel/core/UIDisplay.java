@@ -6,6 +6,8 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
@@ -21,6 +23,10 @@ public interface UIDisplay<T extends Context, U extends Box, V extends RenderedU
 	List<U> generateBoxes(T displayContext, BoxContext boxContext, StyleGenerator styleGenerator);
 
 	V renderBox(U box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext);
+
+	default void composite(V unit, GlobalCompositeContext compositeContext, LocalCompositeContext localCompositeContext) {
+		compositeContext.addPaintUnit(unit, localCompositeContext);
+	};
 	
 	void paint(V unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext);
 
