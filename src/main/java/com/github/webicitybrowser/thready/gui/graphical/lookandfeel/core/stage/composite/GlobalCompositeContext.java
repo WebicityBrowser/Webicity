@@ -2,15 +2,14 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer.CompositeReference;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
-public interface CompositeContext {
+public interface GlobalCompositeContext {
 
 	void enterChildContext(Rectangle bounds, CompositeReference reference);
 
 	void exitChildContext();
 
-	void addPaintUnit(RenderedUnit paintableUnit, LocalPaintContext localPaintContext);
+	void addPaintUnit(RenderedUnit paintableUnit, LocalCompositeContext localCompositeContext);
 	
 }

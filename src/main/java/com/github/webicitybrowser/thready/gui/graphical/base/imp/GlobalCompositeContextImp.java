@@ -6,13 +6,13 @@ import java.util.Deque;
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer.CompositeReference;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
-public class CompositeContextImp implements CompositeContext {
+public class GlobalCompositeContextImp implements GlobalCompositeContext {
 
 	private final List<CompositeLayer> layers = new ArrayList<>();
 	private final List<LayerPaintEntry> paintEntries = new ArrayList<>();
@@ -32,11 +32,17 @@ public class CompositeContextImp implements CompositeContext {
 	}
 
 	@Override
-	public void addPaintUnit(RenderedUnit paintableUnit, LocalPaintContext localPaintContext) {
-		paintEntries.add(new LayerPaintEntry(paintableUnit, localPaintContext));
+	public void addPaintUnit(RenderedUnit paintableUnit, LocalCompositeContext localCompositeContext) {
+		paintEntries.add(new LayerPaintEntry(paintableUnit, localCompositeContext));
+	}
+
+	public List<CompositeLayer> getLayers() {
+		return layers;
 	}
 
 	private void finalizeCurrentEntry() {
+		if (entryStack.isEmpty()) return;
+		
 		final CompositeLayerEntry entry = entryStack.peek();;
 		final CompositeLayerImp layer = new CompositeLayerImp(
 			entry.bounds(),

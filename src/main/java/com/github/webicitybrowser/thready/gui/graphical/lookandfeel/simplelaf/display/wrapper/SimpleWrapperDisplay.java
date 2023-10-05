@@ -10,6 +10,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.Compone
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
@@ -49,6 +51,11 @@ public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends Re
 	public SimpleWrapperUnit<V> renderBox(SimpleWrapperBox<U> box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		V childUnit = childDisplay.renderBox(box.innerBox(), renderContext, localRenderContext);
 		return new SimpleWrapperUnit<>(this, childUnit.fitSize(), box.styleDirectives(), childUnit);
+	}
+
+	@Override
+	public void composite(SimpleWrapperUnit<V> unit, GlobalCompositeContext compositeContext, LocalCompositeContext localCompositeContext) {
+		SimpleWrapperCompositor.<V>composite(unit, childDisplay, compositeContext, localCompositeContext);
 	}
 
 	@Override
