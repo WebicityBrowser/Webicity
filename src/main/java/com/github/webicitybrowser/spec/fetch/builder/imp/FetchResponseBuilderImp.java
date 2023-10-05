@@ -1,12 +1,13 @@
 package com.github.webicitybrowser.spec.fetch.builder.imp;
 
+import com.github.webicitybrowser.spec.fetch.Body;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.builder.FetchResponseBuilder;
 import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
 
 public class FetchResponseBuilderImp implements FetchResponseBuilder {
 
-	private byte[] body;
+	private Body body;
 
 
 
@@ -16,7 +17,7 @@ public class FetchResponseBuilderImp implements FetchResponseBuilder {
 	}
 
 	@Override
-	public void setBody(byte[] body) {
+	public void setBody(Body body) {
 		this.body = body;
 	}
 

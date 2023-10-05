@@ -1,6 +1,8 @@
 package com.github.webicitybrowser.spec.fetch.imp;
 
 import com.github.webicitybrowser.spec.fetch.*;
+import com.github.webicitybrowser.spec.fetch.TaskDestination.ParallelQueue;
+import com.github.webicitybrowser.spec.fetch.TaskDestination.TaskDestination;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
@@ -12,16 +14,14 @@ import java.util.Queue;
 public class FetchEngineImp implements FetchEngine {
 
 	private final FetchConnectionPool connectionPool;
-	private Queue<FetchConsumeBodyAction> fetchQueue;
 
 	public FetchEngineImp(FetchConnectionPool connectionPool) {
 		this.connectionPool = connectionPool;
-		fetchQueue = new LinkedList<>();
 	}
 
 	@Override
 	public void fetch(FetchParameters parameters) {
-		FetchParams params = new FetchParams(parameters.request(), parameters.consumeBodyAction());
+		FetchParams params = new FetchParams(parameters.request(), parameters.consumeBodyAction(), new ParallelQueue());
 		mainFetch(params);
 	}
 
@@ -45,13 +45,15 @@ public class FetchEngineImp implements FetchEngine {
 		if (params.consumeBodyAction() != null) {
 			if(response.body() == null) {
 				// TODO: Queue a response
-				fetchQueue.add(params.consumeBodyAction());
-			}
-			else {
-				params.consumeBodyAction().execute(response, true, new byte[]{});
+				queueAFetchTask(params, response);
+			} else {
+				params.consumeBodyAction().execute(response, false, new byte[]{});
 			}
 		}
 	}
 
+	private void queueAFetchTask(FetchParams params, FetchResponse response) {
+		params.taskDestination().enqueue(params.consumeBodyAction());
+	}
 
 }
