@@ -1,7 +1,13 @@
 package com.github.webicitybrowser.spec.fetch;
 
 import com.github.webicitybrowser.spec.fetch.builder.imp.FetchResponseBuilderImp;
+import com.github.webicitybrowser.spec.fetch.connection.imp.FetchConnectionImp;
 import com.github.webicitybrowser.spec.fetch.imp.BodyImp;
+import com.github.webicitybrowser.spec.http.HTTPService;
+import com.github.webicitybrowser.spec.http.encoding.chunked.ChunkedEncoding;
+import com.github.webicitybrowser.spec.http.imp.HTTPServiceImp;
+import com.github.webicitybrowser.spec.http.version.http11.HTTP11Version;
+import com.github.webicitybrowser.webicitybrowser.engine.net.SocketChannelHTTPTransportFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +53,22 @@ public class FetchEngineTest {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool());
+		FetchEngine fetchEngine = new FetchEngineImp(new FetchConnectionPool() {
+			@Override
+			public FetchConnection createNewConnection(FetchConnectionInfo info) {
+				HTTPService service = HTTPService.create("Webicity/0.1.0 ThreadyWeb/0.1.0 Firefox/113.0 (Not actually Firefox)");
+				service.setTransportFactory(new SocketChannelHTTPTransportFactory());
+				service.registerHTTPVersion(new HTTP11Version());
+				service.registerTransferEncoding(new ChunkedEncoding());
+				return new FetchConnectionImp(info, service);
+			}
+
+			@Override
+			public void close() throws Exception {
+
+			}
+		});
+
 		FetchRequest request = createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
