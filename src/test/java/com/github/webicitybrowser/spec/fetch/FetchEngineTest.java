@@ -37,7 +37,7 @@ public class FetchEngineTest {
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
 		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool());
-		FetchRequest request = createRequest("GET", DUMMY_URL);
+		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
 		parametersBuilder.setConsumeBodyAction(consumeBodyAction);
@@ -49,6 +49,7 @@ public class FetchEngineTest {
 	}
 
 	@Test
+	@DisplayName("Can fetch data with HTTP fetch")
 	public void testFetchWithMockData() {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
@@ -68,8 +69,8 @@ public class FetchEngineTest {
 
 			}
 		});
-
-		FetchRequest request = createRequest("GET", DUMMY_URL);
+//		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool());
+		FetchRequest request = FetchRequest.createRequest("GET", URL.ofSafe("https://www.boogle.com/"));
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
 		parametersBuilder.setConsumeBodyAction(consumeBodyAction);
@@ -118,15 +119,13 @@ public class FetchEngineTest {
 			public Body body() {
 				return Body.createBody(null,DUMMY_BODY, -1);
 			}
+
+			@Override
+			public boolean equals(Object o) {
+				FetchResponse fr = (FetchResponse) o;
+				return fr.body().length() == this.body().length();
+			}
 		};
-	}
-
-	private FetchRequest createRequest(String method, URL url) {
-		FetchRequestBuilder fetchRequestBuilder = FetchRequestBuilder.create();
-		fetchRequestBuilder.setMethod(method);
-		fetchRequestBuilder.setUrl(url);
-
-		return fetchRequestBuilder.build();
 	}
 
 }

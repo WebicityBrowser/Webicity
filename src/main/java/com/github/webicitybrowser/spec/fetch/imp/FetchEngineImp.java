@@ -43,9 +43,9 @@ public class FetchEngineImp implements FetchEngine {
 	private void fetchResponseHandover(FetchParams params, FetchResponse response) {
 		if (params.consumeBodyAction() != null) {
 			if(response.body() == null) {
-				queueAFetchTask(() -> params.consumeBodyAction().execute(response, true, new byte[]{}), params);
+				queueAFetchTask(() -> params.consumeBodyAction().execute(response, true, new byte[] {}), params);
 			} else {
-				fullyReadBody();
+				fullyReadBody(params, response);
 			}
 		}
 	}
@@ -54,8 +54,9 @@ public class FetchEngineImp implements FetchEngine {
 		params.taskDestination().enqueue(fetchTask);
 	}
 
-	private void fullyReadBody() {
+	private void fullyReadBody(FetchParams params, FetchResponse response) {
 		//TODO: implement fully read
+		params.consumeBodyAction().execute(response, true, new byte[] {});
 	}
 
 }

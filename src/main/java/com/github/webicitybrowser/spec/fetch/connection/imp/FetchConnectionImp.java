@@ -13,6 +13,8 @@ import com.github.webicitybrowser.spec.http.response.HTTPResponse;
 import com.github.webicitybrowser.spec.http.response.HTTPSuccessResponse;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,6 +23,7 @@ public class FetchConnectionImp implements FetchConnection {
 
 	private final FetchConnectionInfo info;
 	private final HTTPService httpService;
+	private final static Logger logger = LoggerFactory.getLogger(FetchConnectionImp.class);
 
 	public FetchConnectionImp(FetchConnectionInfo fetchConnectionInfo, HTTPService httpService) {
 		this.info = fetchConnectionInfo;
@@ -37,21 +40,22 @@ public class FetchConnectionImp implements FetchConnection {
 		ProtocolContext context = new ProtocolContext(request.method(), redirectURL -> true);
 		HTTPResponse response = null;
 		try {
-			response = httpService.resolveRequest(createRequest(request.url(), context));
+			response = httpService.resolveRequest(HTTPRequest.createRequest(request.url(), context));
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			logger.error("HTTP: Unrecognized method (" + request.method() + ")!");
+			return FetchResponse.createNetworkError();
 		}
 
 		if (response instanceof HTTPSuccessResponse successResponse) {
-			return new FetchResponseImp(Body.createBody(new InputStreamReader(successResponse.getInputStream()),  new byte[]{}, -1));
+			return convertHTTPResponseToFetchResponse(successResponse);
 		} else {
-			throw new UnsupportedOperationException("Unhandled HTTP response object: " + response);
+			logger.error("Unhandled HTTP response object: " + response);
+			return FetchResponse.createNetworkError();
 		}
 	}
 
-	private HTTPRequest createRequest(URL url, ProtocolContext context) {
-		HTTPRedirectHandler redirectHandler = redirectURL -> context.redirectHandler().onRedirectRequest(redirectURL);
-		return new HTTPRequest(url, context.action(), redirectHandler);
+	private FetchResponse convertHTTPResponseToFetchResponse(HTTPSuccessResponse response) {
+		return new FetchResponseImp(Body.createBody(new InputStreamReader(response.getInputStream()),  new byte[] {}, -1));
 	}
 
 }

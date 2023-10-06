@@ -30,7 +30,7 @@ public class HTTPProtocol implements Protocol {
 
 	@Override
 	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
-		HTTPResponse response = httpService.resolveRequest(createRequest(url, context));
+		HTTPResponse response = httpService.resolveRequest(HTTPRequest.createRequest(url, context));
 		if (response instanceof HTTPSuccessResponse successResponse) {
 			return createConnection(successResponse, url);
 		} else {
@@ -38,11 +38,6 @@ public class HTTPProtocol implements Protocol {
 		}
 	}
 	
-	private HTTPRequest createRequest(URL url, ProtocolContext context) {
-		HTTPRedirectHandler redirectHandler = redirectURL -> context.redirectHandler().onRedirectRequest(redirectURL);
-		return new HTTPRequest(url, context.action(), redirectHandler);
-	}
-
 	private Connection createConnection(HTTPSuccessResponse response, URL url) {
 		return new Connection() {
 			@Override
