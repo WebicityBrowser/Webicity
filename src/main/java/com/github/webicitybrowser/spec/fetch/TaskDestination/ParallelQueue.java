@@ -16,4 +16,11 @@ public class ParallelQueue implements TaskDestination{
 		tasksQueue.add(task);
 	}
 
+	@Override
+	public void dequeueAll() {
+		while(tasksQueue.isEmpty() == false) {
+			tasksQueue.remove().run();
+		}
+	}
+
 }

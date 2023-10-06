@@ -9,8 +9,6 @@ public class FetchResponseBuilderImp implements FetchResponseBuilder {
 
 	private Body body;
 
-
-
 	@Override
 	public FetchResponse build() {
 		return new FetchResponseImp(body);

@@ -7,4 +7,9 @@ public class GlobalObject implements TaskDestination{
 
 	}
 
+	@Override
+	public void dequeueAll() {
+
+	}
+
 }

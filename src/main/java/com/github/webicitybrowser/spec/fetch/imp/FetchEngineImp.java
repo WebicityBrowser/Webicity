@@ -10,6 +10,9 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
 import com.github.webicitybrowser.spec.url.URL;
 
+import java.io.*;
+import java.nio.Buffer;
+
 public class FetchEngineImp implements FetchEngine {
 
 	private final FetchConnectionPool connectionPool;
@@ -20,7 +23,7 @@ public class FetchEngineImp implements FetchEngine {
 
 	@Override
 	public void fetch(FetchParameters parameters) {
-		FetchParams params = new FetchParams(parameters.request(), parameters.consumeBodyAction(), new ParallelQueue());
+		FetchParams params = new FetchParams(parameters.request(), parameters.consumeBodyAction(), parameters.taskDestination());
 		mainFetch(params);
 	}
 
@@ -56,7 +59,22 @@ public class FetchEngineImp implements FetchEngine {
 
 	private void fullyReadBody(FetchParams params, FetchResponse response) {
 		//TODO: implement fully read
-		params.consumeBodyAction().execute(response, true, new byte[] {});
+		params.taskDestination().dequeueAll();
+
+		try {
+			int next;
+			BufferedReader br = new BufferedReader(response.body().readableStream());
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			while((next = br.read()) != -1) {
+				outputStream.write(next);
+			}
+			params.taskDestination().enqueue(
+				() -> params.consumeBodyAction().execute(response, true, outputStream.toByteArray())
+			);
+		} catch (Exception e) {
+			params.taskDestination().enqueue(() -> params.consumeBodyAction().execute(response, false, new byte[] {}));
+		}
+
 	}
 
 }

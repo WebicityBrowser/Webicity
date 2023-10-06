@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.spec.fetch;
 
+import com.github.webicitybrowser.spec.fetch.TaskDestination.ParallelQueue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,6 +12,11 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
 import com.github.webicitybrowser.spec.url.URL;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.IntStream;
 
 import static org.mockito.ArgumentMatchers.eq;
 
@@ -30,7 +36,9 @@ public class FetchEngineTest {
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
 		parametersBuilder.setConsumeBodyAction(consumeBodyAction);
+		parametersBuilder.setTaskDestination(new ParallelQueue());
 		FetchParameters parameters = parametersBuilder.build();
+		fetchEngineImp.fetch(parameters);
 		fetchEngineImp.fetch(parameters);
 
 		Mockito.verify(consumeBodyAction, Mockito.times(1))
@@ -48,8 +56,11 @@ public class FetchEngineTest {
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
 		parametersBuilder.setConsumeBodyAction(consumeBodyAction);
+		parametersBuilder.setTaskDestination(new ParallelQueue());
 		FetchParameters parameters = parametersBuilder.build();
 		fetchEngine.fetch(parameters);
+		fetchEngine.fetch(parameters);
+
 
 		Mockito.verify(consumeBodyAction, Mockito.times(1))
 			.execute(eq(mockFetchResponse()), Mockito.anyBoolean(), Mockito.any());
@@ -91,7 +102,7 @@ public class FetchEngineTest {
 		return new FetchResponse(){
 			@Override
 			public Body body() {
-				return Body.createBody(null,DUMMY_BODY, -1);
+				return Body.createBody(new InputStreamReader(new ByteArrayInputStream(new byte[] {1,2,3,4})),DUMMY_BODY, -1);
 			}
 
 			@Override
