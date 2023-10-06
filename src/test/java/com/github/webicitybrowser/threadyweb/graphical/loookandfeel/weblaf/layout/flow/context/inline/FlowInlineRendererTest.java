@@ -50,14 +50,12 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can render box with child inline content box")
 	public void canRenderBoxWithChildSolidBox() {
-		System.out.println("canRenderBoxWithChildSolidBox");
 		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 50));
 		LayoutResult result = FlowInlineRenderer.render(FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext));
-		System.out.println("canRenderBoxWithChildSolidBox");
 		Assertions.assertEquals(new AbsoluteSize(10, 10), result.fitSize());
 		Assertions.assertEquals(1, result.childLayoutResults().length);
 		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];

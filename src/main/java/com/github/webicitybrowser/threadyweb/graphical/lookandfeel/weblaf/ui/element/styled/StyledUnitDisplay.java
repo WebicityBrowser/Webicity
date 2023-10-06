@@ -8,6 +8,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.Compone
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
@@ -30,6 +32,11 @@ public class StyledUnitDisplay implements UIDisplay<Context, Box, StyledUnit> {
 	@Override
 	public StyledUnit renderBox(Box box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		throw new UnsupportedOperationException("Unimplemented method 'renderBox'");
+	}
+
+	@Override
+	public void composite(StyledUnit unit, GlobalCompositeContext compositeContext, LocalCompositeContext localCompositeContext) {
+		StyledUnitCompositor.composite(unit, compositeContext, localCompositeContext);
 	}
 
 	@Override

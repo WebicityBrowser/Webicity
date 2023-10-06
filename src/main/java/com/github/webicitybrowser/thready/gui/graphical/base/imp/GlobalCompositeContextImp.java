@@ -43,7 +43,7 @@ public class GlobalCompositeContextImp implements GlobalCompositeContext {
 	private void finalizeCurrentEntry() {
 		if (entryStack.isEmpty()) return;
 		
-		final CompositeLayerEntry entry = entryStack.peek();;
+		final CompositeLayerEntry entry = entryStack.peek();
 		final CompositeLayerImp layer = new CompositeLayerImp(
 			entry.bounds(),
 			entry.reference(), List.copyOf(paintEntries));

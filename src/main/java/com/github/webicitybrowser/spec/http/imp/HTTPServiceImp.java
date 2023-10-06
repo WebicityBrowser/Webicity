@@ -31,7 +31,7 @@ public class HTTPServiceImp implements HTTPService {
 	@Override
 	public void registerHTTPVersion(HTTPVersion version) {
 		versions.put(version.getName(), version);
-		defaultHTTPVersion = version;;
+		defaultHTTPVersion = version;
 	}
 	
 	@Override

@@ -9,6 +9,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDispl
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
@@ -42,6 +44,11 @@ public class ScrollDisplay implements UIDisplay<ScrollContext, ScrollBox, Scroll
 	@Override
 	public ScrollUnit renderBox(ScrollBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		return ScrollRenderer.renderBox(box, globalRenderContext, localRenderContext);
+	}
+
+	@Override
+	public void composite(ScrollUnit unit, GlobalCompositeContext compositeContext, LocalCompositeContext localCompositeContext) {
+		ScrollCompositor.composite(unit, compositeContext, localCompositeContext);
 	}
 
 	@Override

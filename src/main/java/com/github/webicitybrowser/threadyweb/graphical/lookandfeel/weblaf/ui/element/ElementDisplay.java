@@ -11,6 +11,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.Compone
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
@@ -53,6 +55,11 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, El
 			elementBox.layout().render(box, globalRenderContext, localRenderContext) :
 			defaultLayout.render(box, globalRenderContext, localRenderContext);
 		return new ElementUnit(this, box.styleDirectives(), layoutResult);
+	}
+
+	@Override
+	public void composite(ElementUnit unit, GlobalCompositeContext compositeContext, LocalCompositeContext localCompositeContext) {
+		ElementCompositor.composite(unit, compositeContext, localCompositeContext);
 	}
 
 	@Override
