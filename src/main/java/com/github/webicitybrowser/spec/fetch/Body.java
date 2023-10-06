@@ -7,11 +7,11 @@ import java.io.InputStreamReader;
 public interface Body {
 
 	InputStreamReader readableStream();
-	byte[] source();
-	int length();
 
-	static Body createBody(InputStreamReader isr, byte[] source, int length) {
-		return new BodyImp(isr,source,length);
+	byte[] source();
+
+	static Body createBody(InputStreamReader isr, byte[] source) {
+		return new BodyImp(isr,source);
 	}
 
 }

@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.IntStream;
 
-import static org.mockito.ArgumentMatchers.eq;
 
 public class FetchEngineTest {
 
@@ -42,7 +41,7 @@ public class FetchEngineTest {
 		fetchEngineImp.fetch(parameters);
 
 		Mockito.verify(consumeBodyAction, Mockito.times(1))
-			.execute(Mockito.any(), eq(true), Mockito.any());
+			.execute(Mockito.any(), Mockito.eq(true), Mockito.any());
 	}
 
 	@Test
@@ -63,7 +62,7 @@ public class FetchEngineTest {
 
 
 		Mockito.verify(consumeBodyAction, Mockito.times(1))
-			.execute(eq(mockFetchResponse()), Mockito.anyBoolean(), Mockito.any());
+			.execute(Mockito.eq(mockFetchResponse()), Mockito.anyBoolean(), Mockito.any());
 
 	}
 	
@@ -99,16 +98,16 @@ public class FetchEngineTest {
 	}
 
 	private FetchResponse mockFetchResponse() {
-		return new FetchResponse(){
+		return new FetchResponse() {
 			@Override
 			public Body body() {
-				return Body.createBody(new InputStreamReader(new ByteArrayInputStream(new byte[] {1,2,3,4})),DUMMY_BODY, -1);
+				return Body.createBody(new InputStreamReader(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 })), DUMMY_BODY);
 			}
 
 			@Override
 			public boolean equals(Object o) {
-				FetchResponse fr = (FetchResponse) o;
-				return fr.body().length() == this.body().length();
+				FetchResponse otherFetchResponse = (FetchResponse) o;
+				return otherFetchResponse.body().source()[0] == this.body().source()[0];
 			}
 		};
 	}

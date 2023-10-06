@@ -6,26 +6,20 @@ import java.io.InputStreamReader;
 
 public class BodyImp implements Body {
 
-	private InputStreamReader isr;
-	private byte[] source;
-	private int length;
+	private InputStreamReader bodyStream;
+	private byte[] bodyBytes;
 
-	public BodyImp(InputStreamReader isr, byte[] source, int length) {
-		this.isr = isr;
-		this.source = source;
-		this.length = length;
+	public BodyImp(InputStreamReader isr, byte[] source) {
+		this.bodyStream = isr;
+		this.bodyBytes = source;
 	}
 
 	public InputStreamReader readableStream() {
-		return isr;
+		return bodyStream;
 	}
 
 	public byte[] source() {
-		return source;
-	}
-
-	public int length() {
-		return length;
+		return bodyBytes;
 	}
 
 }

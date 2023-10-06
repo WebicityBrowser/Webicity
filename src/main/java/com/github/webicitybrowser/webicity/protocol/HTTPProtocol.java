@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
+import com.github.webicitybrowser.spec.http.HTTPRedirectHandler;
 import com.github.webicitybrowser.spec.http.HTTPRequest;
 import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.http.response.HTTPResponse;
@@ -29,14 +30,19 @@ public class HTTPProtocol implements Protocol {
 
 	@Override
 	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
-		HTTPResponse response = httpService.resolveRequest(HTTPRequest.createRequest(url, context));
+		HTTPResponse response = httpService.resolveRequest(createRequest(url, context));
 		if (response instanceof HTTPSuccessResponse successResponse) {
 			return createConnection(successResponse, url);
 		} else {
 			throw new UnsupportedOperationException("Unhandled HTTP response object: " + response);
 		}
 	}
-	
+
+	private HTTPRequest createRequest(URL url, ProtocolContext context) {
+		HTTPRedirectHandler redirectHandler = redirectURL -> context.redirectHandler().onRedirectRequest(redirectURL);
+		return new HTTPRequest(url, context.action(), redirectHandler);
+	}
+
 	private Connection createConnection(HTTPSuccessResponse response, URL url) {
 		return new Connection() {
 			@Override
@@ -68,5 +74,5 @@ public class HTTPProtocol implements Protocol {
 		
 		return field;
 	}
-	
+
 }
