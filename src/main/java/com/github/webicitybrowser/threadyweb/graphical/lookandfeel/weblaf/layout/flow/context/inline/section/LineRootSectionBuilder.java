@@ -55,12 +55,8 @@ public class LineRootSectionBuilder implements LineSectionBuilder {
 		}
 	}
 
-	
-
 	public List<ChildLayoutResult> getChildLayoutResults() {
 		return childLayoutResults;
 	}
 
-	
-	
 }

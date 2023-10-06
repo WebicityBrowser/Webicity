@@ -3,11 +3,9 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.displ
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.Paint2D;
 import com.github.webicitybrowser.thready.drawing.core.builder.Paint2DBuilder;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 
@@ -16,30 +14,8 @@ public final class ScrollPainter {
 	private ScrollPainter() {}
 
 	public static void paint(ScrollUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
-		// TODO: Crop child document rect
-		paintChild(unit, globalPaintContext, localPaintContext);
 		paintScrollbar(unit, globalPaintContext, localPaintContext, ScrollbarStyles.VERTICAL_SCROLLBAR);
 		paintScrollbar(unit, globalPaintContext, localPaintContext, ScrollbarStyles.HORIZONTAL_SCROLLBAR);
-	}
-
-	private static void paintChild(ScrollUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
-		AbsolutePosition scrollPosition = unit.box().scrollContext().scrollPosition();
-
-		Canvas2D childCanvas = localPaintContext.canvas().createTranslatedCanvas(scrollPosition.x(), scrollPosition.y());
-		Rectangle childDocumentRect = new Rectangle(
-			localPaintContext.documentRect().position(),
-			unit.innerUnitSize());
-		LocalPaintContext childLocalPaintContext = new LocalPaintContext(childCanvas, childDocumentRect);
-
-		Rectangle viewport = globalPaintContext.viewport();
-		Rectangle childViewport = new Rectangle(
-			AbsoluteDimensionsMath.sum(viewport.position(), scrollPosition, AbsolutePosition::new),
-			viewport.size());
-		GlobalPaintContext childGlobalPaintContext = GlobalPaintContext.create(
-			childViewport,
-			globalPaintContext.invalidationScheduler());
-		
-		UIPipeline.paint(unit.innerUnit(), childGlobalPaintContext, childLocalPaintContext);
 	}
 
 	private static void paintScrollbar(

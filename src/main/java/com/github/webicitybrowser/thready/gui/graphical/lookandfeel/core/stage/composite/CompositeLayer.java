@@ -16,7 +16,7 @@ public interface CompositeLayer {
 	void paint(GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext);
 
 	static enum CompositeReference {
-		PAGE, VIEWPORT
+		PAGE, VIEWPORT, SCROLLPORT, SCROLLROOT
 	}
 
 }

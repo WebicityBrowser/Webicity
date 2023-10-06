@@ -7,8 +7,6 @@ public final class ElementPainter {
 	
 	private ElementPainter() {}
 	
-	public static void paint(ElementUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
-		ElementChildrenPainter.paintChildren(unit, globalPaintContext, localPaintContext);
-	}
+	public static void paint(ElementUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {}
 
 }
