@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.channels.UnresolvedAddressException;
 
 public class FetchConnectionImp implements FetchConnection {
 
@@ -41,8 +42,8 @@ public class FetchConnectionImp implements FetchConnection {
 		HTTPResponse response = null;
 		try {
 			response = httpService.resolveRequest(HTTPRequest.createRequest(request.url(), context));
-		} catch (IOException e) {
-			logger.error("HTTP: Unrecognized method (" + request.method() + ")!");
+		} catch(Exception e) {
+			logger.error(e.getClass().toString());
 			return FetchResponse.createNetworkError();
 		}
 
