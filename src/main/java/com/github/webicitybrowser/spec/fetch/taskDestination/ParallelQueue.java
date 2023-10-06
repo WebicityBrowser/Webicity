@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spec.fetch.TaskDestination;
+package com.github.webicitybrowser.spec.fetch.taskDestination;
 
 import java.util.LinkedList;
 import java.util.Queue;
