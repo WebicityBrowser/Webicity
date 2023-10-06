@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spec.fetch.taskDestination;
+package com.github.webicitybrowser.spec.fetch.taskdestination;
 
 public class GlobalObject implements TaskDestination{
 

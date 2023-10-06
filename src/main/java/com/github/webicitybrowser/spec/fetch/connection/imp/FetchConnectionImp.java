@@ -42,16 +42,16 @@ public class FetchConnectionImp implements FetchConnection {
 			return FetchResponse.createNetworkError();
 		}
 
+		return convertHTTPResponseToFetchResponse(response);
+	}
+
+	private FetchResponse convertHTTPResponseToFetchResponse(HTTPResponse response) {
 		if (response instanceof HTTPSuccessResponse successResponse) {
-			return convertHTTPResponseToFetchResponse(successResponse);
+			return new FetchResponseImp(Body.createBody(new InputStreamReader(successResponse.getInputStream()),  new byte[] {}));
 		} else {
 			logger.error("Unhandled HTTP response object: " + response);
 			return FetchResponse.createNetworkError();
 		}
-	}
-
-	private FetchResponse convertHTTPResponseToFetchResponse(HTTPSuccessResponse response) {
-		return new FetchResponseImp(Body.createBody(new InputStreamReader(response.getInputStream()),  new byte[] {}));
 	}
 
 }

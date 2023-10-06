@@ -3,7 +3,7 @@ package com.github.webicitybrowser.spec.fetch.builder.imp;
 import com.github.webicitybrowser.spec.fetch.FetchConsumeBodyAction;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchRequest;
-import com.github.webicitybrowser.spec.fetch.taskDestination.TaskDestination;
+import com.github.webicitybrowser.spec.fetch.taskdestination.TaskDestination;
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
 
 public class FetchParametersBuilderImp implements FetchParametersBuilder {
