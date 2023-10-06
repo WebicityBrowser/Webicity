@@ -1,16 +1,25 @@
 package com.github.webicitybrowser.spec.stream;
 
-import com.github.webicitybrowser.spec.stream.imp.ByteStreamReaderImp;
-
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public interface ByteStreamReader {
+public final class ByteStreamReader {
 
-	byte[] readAllBytes(InputStreamReader inputStream) throws IOException;
+	private ByteStreamReader() {
 
-	static ByteStreamReader createStreamReader() {
-		return new ByteStreamReaderImp();
+	}
+
+	public static byte[] readAllBytes(InputStreamReader inputStream) throws IOException {
+		BufferedReader br = new BufferedReader(inputStream);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+		int next;
+		while((next = br.read()) != -1) {
+			outputStream.write(next);
+		}
+		return outputStream.toByteArray();
 	}
 
 }

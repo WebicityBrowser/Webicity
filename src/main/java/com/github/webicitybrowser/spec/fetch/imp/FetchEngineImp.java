@@ -58,8 +58,7 @@ public class FetchEngineImp implements FetchEngine {
 	private void fullyReadBody(FetchParams params, FetchResponse response) {
 		params.consumeBodyAction().execute(response, true, new byte[] {});
 		try {
-			ByteStreamReader streamReader = ByteStreamReader.createStreamReader();
-			final byte[] allBytes =  streamReader.readAllBytes(response.body().readableStream());
+			final byte[] allBytes =  ByteStreamReader.readAllBytes(response.body().readableStream());
 			params.taskDestination().enqueue(
 				() -> params.consumeBodyAction().execute(response, true, allBytes)
 			);
