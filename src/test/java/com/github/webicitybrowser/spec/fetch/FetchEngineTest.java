@@ -1,21 +1,10 @@
 package com.github.webicitybrowser.spec.fetch;
 
-import com.github.webicitybrowser.spec.fetch.builder.imp.FetchResponseBuilderImp;
-import com.github.webicitybrowser.spec.fetch.connection.imp.FetchConnectionImp;
-import com.github.webicitybrowser.spec.fetch.imp.BodyImp;
-import com.github.webicitybrowser.spec.http.HTTPService;
-import com.github.webicitybrowser.spec.http.encoding.chunked.ChunkedEncoding;
-import com.github.webicitybrowser.spec.http.imp.HTTPServiceImp;
-import com.github.webicitybrowser.spec.http.version.http11.HTTP11Version;
-import com.github.webicitybrowser.webicitybrowser.engine.net.SocketChannelHTTPTransportFactory;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
-import com.github.webicitybrowser.spec.fetch.builder.FetchRequestBuilder;
 import com.github.webicitybrowser.spec.fetch.builder.FetchResponseBuilder;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;

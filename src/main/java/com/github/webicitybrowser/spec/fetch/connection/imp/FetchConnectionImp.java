@@ -6,19 +6,15 @@ import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
 import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
-import com.github.webicitybrowser.spec.http.HTTPRedirectHandler;
 import com.github.webicitybrowser.spec.http.HTTPRequest;
 import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.http.response.HTTPResponse;
 import com.github.webicitybrowser.spec.http.response.HTTPSuccessResponse;
-import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.channels.UnresolvedAddressException;
 
 public class FetchConnectionImp implements FetchConnection {
 

@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
-import com.github.webicitybrowser.spec.http.HTTPRedirectHandler;
 import com.github.webicitybrowser.spec.http.HTTPRequest;
 import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.http.response.HTTPResponse;
