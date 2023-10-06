@@ -10,8 +10,6 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey
 import com.github.webicitybrowser.spec.stream.ByteStreamReader;
 import com.github.webicitybrowser.spec.url.URL;
 
-import java.io.ByteArrayOutputStream;
-import java.io.BufferedReader;
 
 public class FetchEngineImp implements FetchEngine {
 
