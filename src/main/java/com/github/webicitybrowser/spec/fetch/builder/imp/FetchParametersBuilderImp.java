@@ -3,13 +3,14 @@ package com.github.webicitybrowser.spec.fetch.builder.imp;
 import com.github.webicitybrowser.spec.fetch.FetchConsumeBodyAction;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchRequest;
+import com.github.webicitybrowser.spec.fetch.taskdestination.TaskDestination;
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
-import com.github.webicitybrowser.spec.fetch.imp.FetchParametersImp;
 
 public class FetchParametersBuilderImp implements FetchParametersBuilder {
 
 	private FetchRequest request;
 	private FetchConsumeBodyAction consumeBodyAction;
+	private TaskDestination taskDestination;
 
 	@Override
 	public void setRequest(FetchRequest request) {
@@ -22,8 +23,13 @@ public class FetchParametersBuilderImp implements FetchParametersBuilder {
 	}
 
 	@Override
+	public void setTaskDestination(TaskDestination taskDestination) {
+		this.taskDestination = taskDestination;
+	}
+
+	@Override
 	public FetchParameters build() {
-		return new FetchParametersImp(request, consumeBodyAction);
+		return new FetchParameters(request, consumeBodyAction, taskDestination);
 	}
 	
 }

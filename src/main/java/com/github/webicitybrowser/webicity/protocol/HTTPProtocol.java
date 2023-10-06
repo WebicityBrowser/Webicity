@@ -37,7 +37,7 @@ public class HTTPProtocol implements Protocol {
 			throw new UnsupportedOperationException("Unhandled HTTP response object: " + response);
 		}
 	}
-	
+
 	private HTTPRequest createRequest(URL url, ProtocolContext context) {
 		HTTPRedirectHandler redirectHandler = redirectURL -> context.redirectHandler().onRedirectRequest(redirectURL);
 		return new HTTPRequest(url, context.action(), redirectHandler);
@@ -74,5 +74,5 @@ public class HTTPProtocol implements Protocol {
 		
 		return field;
 	}
-	
+
 }

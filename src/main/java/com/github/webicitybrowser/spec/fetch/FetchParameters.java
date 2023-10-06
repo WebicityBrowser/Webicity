@@ -1,9 +1,9 @@
 package com.github.webicitybrowser.spec.fetch;
 
-public interface FetchParameters {
+import com.github.webicitybrowser.spec.fetch.taskdestination.TaskDestination;
+
+public record FetchParameters(
+	FetchRequest request, FetchConsumeBodyAction consumeBodyAction, TaskDestination taskDestination
+) {
 	
-	FetchRequest request();
-
-	FetchConsumeBodyAction consumeBodyAction();
-
 }
