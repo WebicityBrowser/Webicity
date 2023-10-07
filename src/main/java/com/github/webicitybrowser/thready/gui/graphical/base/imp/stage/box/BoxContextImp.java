@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.base.imp;
+package com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.box;
 
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;

@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.base.imp;
+package com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.render;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
@@ -9,6 +9,5 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 public record RenderContextImp(
 	AbsoluteSize viewportSize, ResourceLoader resourceLoader, FontMetrics rootFontMetrics, RenderCache renderCache
 ) implements GlobalRenderContext {
-	
 
 }

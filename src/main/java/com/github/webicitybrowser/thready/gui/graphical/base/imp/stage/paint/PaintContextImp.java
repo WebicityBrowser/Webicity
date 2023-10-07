@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.base.imp;
+package com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.paint;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.animation.InvalidationScheduler;

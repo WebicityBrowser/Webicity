@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.base.imp;
+package com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.composite;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

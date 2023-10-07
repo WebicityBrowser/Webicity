@@ -14,7 +14,7 @@ import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.thready.gui.graphical.base.imp.RenderCacheImp;
+import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.render.RenderCacheImp;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;

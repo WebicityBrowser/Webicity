@@ -8,45 +8,35 @@ import org.slf4j.LoggerFactory;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.drawing.core.Canvas2D;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
-import com.github.webicitybrowser.thready.gui.graphical.animation.AnimationContext;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
+import com.github.webicitybrowser.thready.gui.graphical.base.imp.message.ContentMessageHandler;
+import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.box.BoxContextImp;
+import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.composite.ContentCompositor;
+import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.paint.ContentPainter;
+import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.render.RenderCacheImp;
+import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.render.RenderContextImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer.CompositeReference;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.CharMessage;
-import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyMessage;
-import com.github.webicitybrowser.thready.gui.graphical.message.mouse.MouseMessage;
-import com.github.webicitybrowser.thready.gui.graphical.message.mouse.ScrollMessage;
-import com.github.webicitybrowser.thready.gui.message.FocusManager;
-import com.github.webicitybrowser.thready.gui.message.Message;
-import com.github.webicitybrowser.thready.gui.message.MessageContext;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.event.ScreenEvent;
-import com.github.webicitybrowser.thready.windowing.core.event.mouse.MouseConstants;
 
 public class GUIContentImp implements GUIContent {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GUIContentImp.class);
-	
-	private final FocusManager focusManager = new FocusManagerImp();
-	private final FocusManager sloppyFocusManager = new FocusManagerImp();
 
-	private final AnimationContextImp animationContext = new AnimationContextImp();
+	private final ContentMessageHandler messageHandler = new ContentMessageHandler();
 	
 	private InvalidationLevel invalidationLevel = InvalidationLevel.NONE;
 	
@@ -85,62 +75,8 @@ public class GUIContentImp implements GUIContent {
 
 	@Override
 	public void handleEvent(ScreenEvent e, AbsoluteSize contentSize) {
-		if (rootUnit == null) return;
-
-		Message message = MessageConverter.convertEventToMessage(e);
-		if (message == null) {
-			return;
-		}
-		
-		MessageContext messageContext = createMessageContext();
-		if (message instanceof KeyMessage || message instanceof CharMessage) {
-			focusManager.messageFocused(messageContext, message);
-		} else if (message instanceof ScrollMessage) {
-			sloppyFocusManager.messageFocused(messageContext, message);
-		} else if (message instanceof MouseMessage) {
-			sloppyFocusManager.clearFocus();
-			messageRoot(messageContext, message, contentSize);
-		} else {
-			messageRoot(messageContext, message, contentSize);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <V extends RenderedUnit> void messageRoot(MessageContext messageContext, Message message, AbsoluteSize contentSize) {
-		resetFocusIfClick(messageContext, message);
-		UIDisplay<?, ?, V> display = (UIDisplay<?, ?, V>) rootUI.getRootDisplay();
-		display
-			.createMessageHandler((V) rootUnit, createDocumentRect(contentSize))
-			.onMessage(messageContext, message);
-	}
-
-	private void resetFocusIfClick(MessageContext messageContext, Message message) {
-		if (
-			message instanceof MouseMessage mouseMessage &&
-			mouseMessage.getScreenEvent().getAction() == MouseConstants.PRESS
-		) {
-			focusManager.setFocused(null, messageContext);
-		}
-	}
-
-	private MessageContext createMessageContext() {
-		animationContext.tick();
-		return new MessageContext() {
-			@Override
-			public FocusManager getFocusManager() {
-				return focusManager;
-			}
-
-			@Override
-			public FocusManager getSloppyFocusManager() {
-				return sloppyFocusManager;
-			}
-
-			@Override
-			public AnimationContext getAnimationContext() {
-				return animationContext;
-			}
-		};
+		Rectangle rootDocumentRect = new Rectangle(new AbsolutePosition(0, 0), contentSize);
+		messageHandler.handleEvent(e, rootUnit, rootDocumentRect);
 	}
 
 	private ComponentUI createRootUI(Component component, LookAndFeel lookAndFeel) {
@@ -177,13 +113,13 @@ public class GUIContentImp implements GUIContent {
 			performRenderCycle(redrawContext);
 			System.gc();
 		case COMPOSITE:
-			performCompositeCycle(redrawContext);
+			this.compositeLayers = ContentCompositor.performCompositeCycle(redrawContext, rootUnit);
 		case PAINT:
 		case NONE:
 			// Even if the invalidation level is NONE, there is
 			// probably a reason that redraw was called.
 			// For example, if a buffer must be drawn twice.
-			performPaintCycle(redrawContext);
+			ContentPainter.performPaintCycle(redrawContext, compositeLayers);
 			invalidationLevel = InvalidationLevel.NONE;
 			break;
 		default:
@@ -220,39 +156,6 @@ public class GUIContentImp implements GUIContent {
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();
 		this.rootUnit = rootDisplay.renderBox((U) rootBox, globalRenderContext, localRenderContext);
 	}
-
-	@SuppressWarnings("unchecked")
-	private <V extends RenderedUnit> void performCompositeCycle(ScreenContentRedrawContext redrawContext) {
-		AbsoluteSize contentSize = redrawContext.contentSize();
-		Rectangle rootBounds = new Rectangle(new AbsolutePosition(0, 0), contentSize);
-		GlobalCompositeContextImp compositeContext = new GlobalCompositeContextImp();
-		LocalCompositeContext localCompositeContext = new LocalCompositeContext(rootBounds);
-		UIDisplay<?, ?, V> rootDisplay = (UIDisplay<?, ?, V>) rootUI.getRootDisplay();
-		compositeContext.enterChildContext(rootBounds, CompositeReference.PAGE);
-		rootDisplay.composite((V) rootUnit, compositeContext, localCompositeContext);
-		compositeContext.exitChildContext();
-		this.compositeLayers = compositeContext.getLayers();
-	}
-	
-	private void performPaintCycle(ScreenContentRedrawContext redrawContext) {
-		AbsoluteSize contentSize = redrawContext.contentSize();
-		Canvas2D canvas = redrawContext.canvas();
-		Rectangle viewport = new Rectangle(new AbsolutePosition(0, 0), contentSize);
-		
-		clearPaint(canvas, contentSize);
-
-		for (CompositeLayer layer : compositeLayers) {
-			layer.paint(
-				new PaintContextImp(viewport, redrawContext.invalidationScheduler()),
-				new LocalPaintContext(canvas, createDocumentRect(contentSize)));
-		}
-	}
-
-	private void clearPaint(Canvas2D canvas, AbsoluteSize contentSize) {
-		// TODO: What if we have a transparent window?
-		// The default paint is white
-		canvas.drawRect(0, 0, contentSize.width(), contentSize.height());
-	}
 	
 	private void detectPipelineInvalidations(ScreenContentRedrawContext redrawContext) {
 		if (!redrawContext.contentSize().equals(oldContentSize) && invalidationLevel.compareTo(InvalidationLevel.RENDER) < 0) {
@@ -261,8 +164,6 @@ public class GUIContentImp implements GUIContent {
 		}
 	}
 	
-	private Rectangle createDocumentRect(AbsoluteSize windowSize) {
-		return new Rectangle(new AbsolutePosition(0, 0), windowSize);
-	}
+	
 	
 }

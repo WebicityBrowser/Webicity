@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.base.imp;
+package com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.render;
 
 import java.util.HashMap;
 import java.util.Map;
