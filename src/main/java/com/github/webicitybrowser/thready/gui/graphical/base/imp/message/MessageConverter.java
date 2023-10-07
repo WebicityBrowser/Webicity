@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.thready.gui.graphical.base.imp;
+package com.github.webicitybrowser.thready.gui.graphical.base.imp.message;
 
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.CharMessage;
 import com.github.webicitybrowser.thready.gui.graphical.message.keyboard.KeyMessage;
