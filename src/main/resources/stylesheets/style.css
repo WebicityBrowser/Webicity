@@ -1,0 +1,24 @@
+body {
+    font-family: "Open Sans", "Roboto", "Helvetica Neue", "Arial", sans-serif;
+}
+.vpsize {
+    width: 100vw;
+    height: 75vh;
+}
+.hzcenter {
+    margin: auto;
+}
+.webicity-name {
+    color: #00b298;
+    font-size: 3em;
+}
+.valign {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    justify-content: center;
+}
+.about {
+    margin-left: 10%;
+    margin-right: 10%;
+}
