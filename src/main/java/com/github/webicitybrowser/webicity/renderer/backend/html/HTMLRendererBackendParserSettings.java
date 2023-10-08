@@ -1,9 +1,10 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html;
 
 
-import java.io.*;
-import java.util.function.Function;
-
+import java.io.StringReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.IOException;
 
 import com.github.webicitybrowser.spec.css.parser.CSSParser;
 import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
