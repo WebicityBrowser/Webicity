@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer.CompositeReference;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeParameters;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
@@ -20,9 +20,9 @@ public class GlobalCompositeContextImp implements GlobalCompositeContext {
 	private Deque<CompositeLayerEntry> entryStack = new ArrayDeque<>();
 
 	@Override
-	public void enterChildContext(Rectangle bounds, CompositeReference reference) {
+	public void enterChildContext(Rectangle bounds, CompositeParameters parameters) {
 		finalizeCurrentEntry();
-		entryStack.push(new CompositeLayerEntry(bounds, reference));
+		entryStack.push(new CompositeLayerEntry(bounds, parameters));
 	}
 
 	@Override
@@ -46,13 +46,12 @@ public class GlobalCompositeContextImp implements GlobalCompositeContext {
 		final CompositeLayerEntry entry = entryStack.peek();
 		final CompositeLayerImp layer = new CompositeLayerImp(
 			entry.bounds(),
-			entry.reference(), List.copyOf(paintEntries));
+			entry.parameters(), List.copyOf(paintEntries), entryStack.size() - 1);
 		layers.add(layer);
 		
 		paintEntries.clear();
 	}
 
-	private record CompositeLayerEntry(Rectangle bounds, CompositeReference reference) {
-	}
+	private record CompositeLayerEntry(Rectangle bounds, CompositeParameters parameters) {}
 	
 }

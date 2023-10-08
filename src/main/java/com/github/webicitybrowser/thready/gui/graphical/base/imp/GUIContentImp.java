@@ -115,6 +115,7 @@ public class GUIContentImp implements GUIContent {
 		case COMPOSITE:
 			this.compositeLayers = ContentCompositor.performCompositeCycle(redrawContext, rootUnit);
 		case PAINT:
+		case PAINT_LAYERS:
 		case NONE:
 			// Even if the invalidation level is NONE, there is
 			// probably a reason that redraw was called.

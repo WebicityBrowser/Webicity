@@ -7,6 +7,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeParameters;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer.CompositeReference;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
@@ -23,7 +24,8 @@ public final class ContentCompositor {
 		GlobalCompositeContextImp compositeContext = new GlobalCompositeContextImp();
 		LocalCompositeContext localCompositeContext = new LocalCompositeContext(rootBounds);
 		UIDisplay<?, ?, V> rootDisplay = (UIDisplay<?, ?, V>) rootUnit.display();
-		compositeContext.enterChildContext(rootBounds, CompositeReference.PAGE);
+		CompositeParameters parameters = new CompositeParameters(CompositeReference.VIEWPORT, () -> new AbsolutePosition(0, 0));
+		compositeContext.enterChildContext(rootBounds, parameters);
 		rootDisplay.composite((V) rootUnit, compositeContext, localCompositeContext);
 		compositeContext.exitChildContext();
 		return compositeContext.getLayers();
