@@ -3,9 +3,11 @@ package com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.composit
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.dimensions.util.RectangleUtil;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeLayer;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.CompositeParameters;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
@@ -17,15 +19,17 @@ public class CompositeLayerImp implements CompositeLayer {
 	private final GlobalCompositeContext context = new GlobalCompositeContextImp();
 
 	private final Rectangle bounds;
-	private final CompositeReference reference;
+	private final CompositeParameters parameters;
 	private final List<LayerPaintEntry> paintEntries;
+	private final int stackLevel;
 
 	private InvalidationLevel invalidationLevel;
 
-	public CompositeLayerImp(Rectangle bounds, CompositeReference reference, List<LayerPaintEntry> paintEntries) {
+	public CompositeLayerImp(Rectangle bounds, CompositeParameters parameters, List<LayerPaintEntry> paintEntries, int stackLevel) {
 		this.bounds = bounds;
-		this.reference = reference;
+		this.parameters = parameters;
 		this.paintEntries = paintEntries;
+		this.stackLevel = stackLevel;
 		this.invalidationLevel = InvalidationLevel.PAINT;
 	}
 
@@ -35,23 +39,36 @@ public class CompositeLayerImp implements CompositeLayer {
 	}
 
 	@Override
+	public int getStackLevel() {
+		return stackLevel;
+	}
+
+	@Override
 	public Rectangle getBounds() {
 		return bounds;
 	}
 
 	@Override
-	public CompositeReference getReference() {
-		return reference;
+	public CompositeParameters getParameters() {
+		return parameters;
 	}
 
 	@Override
-	public void paint(GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
+	public void paint(GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext, Rectangle viewport) {
 		for (LayerPaintEntry entry : paintEntries) {
+			if (!entryIsInViewport(entry, viewport)) {
+				continue;
+			}
 			RenderedUnit paintableUnit = entry.paintableUnit();
 			LocalCompositeContext childCompositeContext = entry.compositeContext();
 			LocalPaintContext childPaintContext = createChildLocalPaintContext(localPaintContext, childCompositeContext);
 			UIPipeline.paint(paintableUnit, globalPaintContext, childPaintContext);
 		}
+	}
+
+	private boolean entryIsInViewport(LayerPaintEntry entry, Rectangle viewport) {
+		Rectangle entryBounds = entry.compositeContext().documentRect();
+		return RectangleUtil.intersects(entryBounds, viewport);
 	}
 
 	private LocalPaintContext createChildLocalPaintContext(LocalPaintContext localPaintContext, LocalCompositeContext childCompositeContext) {

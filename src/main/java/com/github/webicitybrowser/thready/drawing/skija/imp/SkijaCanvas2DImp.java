@@ -194,8 +194,28 @@ public class SkijaCanvas2DImp implements Canvas2D {
 		AbsolutePosition childOffset = childCanvasSettings.preservePosition() ?
 			canvasSettings.offset() :
 			AbsoluteDimensionsMath.sum(canvasSettings.offset(), childRectangle.position(), AbsolutePosition::new);
+		Rectangle childClipRectangle = determineChildClipRectangle(childCanvasSettings, childRectangle);
 		
-		return new SkijaCanvasSettings(childOffset, childRectangle, canvasSettings.translation());
+		return new SkijaCanvasSettings(childOffset, childClipRectangle, canvasSettings.translation());
+	}
+
+	private Rectangle determineChildClipRectangle(ChildCanvasSettings childCanvasSettings, Rectangle childRectangle) {
+		Rectangle parentClipBounds = canvasSettings.clipBounds();
+		float clipX = canvasSettings.offset().x() + childRectangle.position().x();
+		float clipY = canvasSettings.offset().y() + childRectangle.position().y();
+		
+		float clipWidth = childRectangle.size().width();
+		float clipHeight = childRectangle.size().height();
+		if (parentClipBounds != null) {
+			float maxClipWidth = parentClipBounds.size().width() - childRectangle.position().x();
+			float maxClipHeight = parentClipBounds.size().height() - childRectangle.position().y();
+			clipWidth = Math.min(clipWidth, maxClipWidth);
+			clipHeight = Math.min(clipHeight, maxClipHeight);
+		}
+ 
+		return new Rectangle(
+			new AbsolutePosition(clipX, clipY),
+			new AbsoluteSize(clipWidth, clipHeight));
 	}
 
 	private SkijaCanvasSettings createTranslatedCanvasSettings(float x, float y) {

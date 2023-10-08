@@ -5,6 +5,6 @@ package com.github.webicitybrowser.thready.gui.graphical.base;
  */
 public enum InvalidationLevel {
 
-	NONE, PAINT, COMPOSITE, RENDER, BOX
+	NONE, PAINT_LAYERS, PAINT, COMPOSITE, RENDER, BOX
 	
 }

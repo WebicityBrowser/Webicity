@@ -9,14 +9,16 @@ public interface CompositeLayer {
 	
 	InvalidationLevel getInvalidationLevel();
 
+	int getStackLevel();
+
 	Rectangle getBounds();
 
-	CompositeReference getReference();
+	CompositeParameters getParameters();
 
-	void paint(GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext);
+	void paint(GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext, Rectangle viewport);
 
 	static enum CompositeReference {
-		PAGE, VIEWPORT, SCROLLPORT, SCROLLROOT
+		PARENT, VIEWPORT, SCROLLPORT
 	}
 
 }

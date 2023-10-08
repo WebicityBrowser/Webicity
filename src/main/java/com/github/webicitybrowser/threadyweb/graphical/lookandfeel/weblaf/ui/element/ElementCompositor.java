@@ -30,8 +30,6 @@ public final class ElementCompositor {
 		ChildLayoutResult childLayoutResult, Rectangle childRect
 	) {
 		LocalCompositeContext childCompositeContext = new LocalCompositeContext(childRect);
-		
-		// TODO: Pass properly clipped canvas
 		UIPipeline.composite(childLayoutResult.unit(), globalCompositeContext, childCompositeContext);
 	}
 	
