@@ -10,11 +10,11 @@ import com.github.webicitybrowser.thready.gui.graphical.directive.PositionDirect
 import com.github.webicitybrowser.thready.gui.graphical.directive.SizeDirective;
 import com.github.webicitybrowser.thready.gui.graphical.layout.base.flowing.imp.RenderCursorTracker;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
@@ -22,27 +22,26 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 public class FlowingLayoutManager implements SolidLayoutManager {
 
 	@Override
-	public LayoutResult render(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+	public LayoutResult render(LayoutManagerContext layoutManagerContext) {
 		RenderCursorTracker renderCursor = new RenderCursorTracker();
-		ChildLayoutResult[] childrenResults = renderChildren(box, globalRenderContext, localRenderContext, renderCursor);
+		ChildLayoutResult[] childrenResults = renderChildren(layoutManagerContext, renderCursor);
 		return LayoutResult.create(childrenResults, renderCursor.getCoveredSize());
 	}
 
-	private ChildLayoutResult[] renderChildren(
-		ChildrenBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext, RenderCursorTracker renderCursor
-	) {
-		List<Box> children = box.getChildrenTracker().getChildren();
+	private ChildLayoutResult[] renderChildren(LayoutManagerContext layoutManagerContext, RenderCursorTracker renderCursor) {
+		List<Box> children = layoutManagerContext.children();
 		ChildLayoutResult[] results = new ChildLayoutResult[children.size()];
 		for (int i = 0; i < children.size(); i++) {
-			results[i] = renderChild(renderContext, localRenderContext, children.get(i), renderCursor);
+			results[i] = renderChild(layoutManagerContext, children.get(i), renderCursor);
 		}
 		
 		return results;
 	}
 
-	private ChildLayoutResult renderChild(
-		GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext, Box childBox, RenderCursorTracker renderCursor
-	) {
+	private ChildLayoutResult renderChild(LayoutManagerContext layoutManagerContext, Box childBox, RenderCursorTracker renderCursor) {
+		GlobalRenderContext globalRenderContext = layoutManagerContext.globalRenderContext();
+		LocalRenderContext localRenderContext = layoutManagerContext.localRenderContext();
+
 		AbsoluteSize parentSize = localRenderContext.getPreferredSize();
 		AbsoluteSize precomputedSize = precomputeChildSize(childBox, parentSize);
 		LocalRenderContext childRenderContext = LocalRenderContext.create(

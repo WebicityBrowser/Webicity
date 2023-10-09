@@ -8,6 +8,8 @@ import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerato
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.LocalCompositeContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
@@ -37,6 +39,11 @@ public class FrameDisplay implements UIDisplay<FrameContext, FrameBox, FrameUnit
 	@Override
 	public FrameUnit renderBox(FrameBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		return FrameRenderer.render(box, renderContext, localRenderContext);
+	}
+
+	@Override
+	public void composite(FrameUnit unit, GlobalCompositeContext globalCompositeContext, LocalCompositeContext localCompositeContext) {
+		FrameCompositor.composite(unit, globalCompositeContext, localCompositeContext);
 	}
 
 	@Override

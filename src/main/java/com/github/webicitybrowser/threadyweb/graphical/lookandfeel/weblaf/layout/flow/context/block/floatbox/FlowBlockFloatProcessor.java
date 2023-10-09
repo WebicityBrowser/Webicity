@@ -36,7 +36,8 @@ public final class FlowBlockFloatProcessor {
 			Box childBox = children.get(i);
 			if (!FlowBlockFloatRenderer.isFloatBox(childBox)) break;
 			RenderedUnit childUnit = FlowBlockFloatRenderer.renderFloatBoxUnit(state, childBox);
-			floatContext.addEndFloat(childBox, childUnit, flowContext.box());
+			Box currentBox = flowContext.layoutManagerContext().parentBox();
+			floatContext.addEndFloat(childBox, childUnit, currentBox);
 		}
 	}
 
@@ -47,7 +48,8 @@ public final class FlowBlockFloatProcessor {
 
 		while (!floatContext.getEndFloats().isEmpty()) {
 			FloatEntry floatEntry = floatContext.getEndFloats().peek();
-			if (floatEntry.orginatingBox() != flowContext.box()) break;
+			Box currentBox = flowContext.layoutManagerContext().parentBox();
+			if (floatEntry.orginatingBox() != currentBox) break;
 			floatContext.getEndFloats().poll();
 
 			float blockPosition = state.positionTracker().getPosition().y();

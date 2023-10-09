@@ -6,7 +6,9 @@ import java.util.function.Function;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -19,6 +21,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.adjusted.AdjustedLayoutManager;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitGenerator;
@@ -51,9 +54,13 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, El
 
 	@Override
 	public ElementUnit renderBox(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		LayoutResult layoutResult = box instanceof ElementBlockBox elementBox ?
-			elementBox.layout().render(box, globalRenderContext, localRenderContext) :
-			defaultLayout.render(box, globalRenderContext, localRenderContext);
+		SolidLayoutManager layoutManager = box instanceof ElementBlockBox elementBox ? elementBox.layout() : defaultLayout;
+		SolidLayoutManager adjustedLayoutManager = new AdjustedLayoutManager(layoutManager);
+		LayoutManagerContext layoutManagerContext = new LayoutManagerContext(
+			box, box.getChildrenTracker().getChildren(),
+			globalRenderContext, localRenderContext);
+		LayoutResult layoutResult = adjustedLayoutManager.render(layoutManagerContext);
+		
 		return new ElementUnit(this, box.styleDirectives(), layoutResult);
 	}
 

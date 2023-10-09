@@ -91,7 +91,7 @@ public final class ContentPainter {
 		AbsoluteSize size = layer.getBounds().size();
 		Canvas2D childCanvas = switch (layer.getParameters().reference()) {
 			case PARENT -> createChildCanvas(parentCanvas, position, size, true);
-			case VIEWPORT -> rootCanvas;
+			case VIEWPORT -> createChildCanvas(rootCanvas, position, size, false);
 			case SCROLLPORT -> throw new UnsupportedOperationException("Not implemented yet");
 		};
 
@@ -117,7 +117,7 @@ public final class ContentPainter {
 		return canvas.createClippedCanvas(
 			position.x(), position.y(),
 			size.width(), size.height(),
-			new ChildCanvasSettings(true)
+			new ChildCanvasSettings(false)
 		);
 	}
 

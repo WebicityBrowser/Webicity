@@ -9,6 +9,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.render.RenderCacheImp;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -63,9 +64,13 @@ public class FlowTestUtils {
 				flowRootContextSwitch = (FlowRootContextSwitch) contextSwitch;
 			}
 		}
+
+		LayoutManagerContext layoutManagerContext = new LayoutManagerContext(
+			box, box.getChildrenTracker().getChildren(),
+			globalRenderContext, localRenderContext);
 		
 		return new FlowRenderContext(
-			box, globalRenderContext, localRenderContext,
+			layoutManagerContext,
 			directives -> new BuildableRenderedUnitImp(null, directives),
 			context -> new StyledUnit(null, context),
 			flowRootContextSwitch);

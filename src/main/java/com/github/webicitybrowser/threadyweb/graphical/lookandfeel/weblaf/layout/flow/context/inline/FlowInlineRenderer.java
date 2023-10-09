@@ -6,6 +6,7 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
@@ -27,22 +28,22 @@ public final class FlowInlineRenderer {
 	public static LayoutResult render(FlowRenderContext context) {
 		LineDirection lineDirection = LineDirection.LTR;
 		FlowInlineRendererState state = new FlowInlineRendererState(lineDirection, context);
-		ChildrenBox box = context.box();
 
-		prepareTextRendering(state, box);
+		prepareTextRendering(state);
 
-		for (Box childBox: box.getChildrenTracker().getChildren()) {
+		for (Box childBox: context.layoutManagerContext().children()) {
 			addBoxToLine(state, childBox);
 		}
 
-		return createInnerDisplayUnit(box, state);
+		return createInnerDisplayUnit(state);
 	}
 
-	private static void prepareTextRendering(FlowInlineRendererState state, ChildrenBox box) {
+	private static void prepareTextRendering(FlowInlineRendererState state) {
 		FlowRenderContext context = state.flowContext();
+		LayoutManagerContext layoutManagerContext = context.layoutManagerContext();
 		state.getFontStack().push(FlowUtils.computeFont(
-			context, context.box().styleDirectives(), context.localRenderContext().getParentFontMetrics()));
-		FlowInlineTextRenderer.preadjustTextBoxes(state, box);
+			context, layoutManagerContext.layoutDirectives(), context.localRenderContext().getParentFontMetrics()));
+		FlowInlineTextRenderer.preadjustTextBoxes(state, layoutManagerContext.children());
 	}
 
 	private static void addBoxToLine(FlowInlineRendererState state, Box childBox) {
@@ -95,7 +96,7 @@ public final class FlowInlineRenderer {
 		return new AbsoluteSize(marker.rightEdgeSize(), marker.bottomEdgeSize());
 	}
 
-	private static LayoutResult createInnerDisplayUnit(ChildrenBox box, FlowInlineRendererState state) {
+	private static LayoutResult createInnerDisplayUnit(FlowInlineRendererState state) {
 		List<ChildLayoutResult> childLayoutResults = new ArrayList<>();
 		LineDirection lineDirection = state.lineContext().lineDirection();
 

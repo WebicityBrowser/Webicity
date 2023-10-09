@@ -51,13 +51,13 @@ Your Jarfile should appear at `./build/libs/Webicity-all.jar`.
 ## Running a built jar (Windows, Linux)
 You can run the application with this command:
 ```bash
-java -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 --XX:+UseG1GC -jar Webicity-all.jar
+java -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 -XX:+UseG1GC -jar Webicity-all.jar
 ```
 
 ## Running a built jar (MacOS)
 MacOS users must instead this command:
 ```bash
-java -XstartOnFirstThread -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 --XX:+UseG1GC -jar Webicity-all.jar
+java -XstartOnFirstThread -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 -XX:+UseG1GC -jar Webicity-all.jar
 ```
 
 ## Disclaimer
