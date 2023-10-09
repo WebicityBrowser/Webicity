@@ -5,7 +5,8 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
@@ -16,52 +17,49 @@ public final class FlexMainSizeDetermination {
 
 	private FlexMainSizeDetermination() {}
 
-	public static List<FlexLine> determineLinesWithMainSizes(
-		Box parentBox, List<FlexItem> flexItems, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
-	) {
-		FlexWrap flexWrap = FlexUtils.getFlexWrap(parentBox);
+	public static List<FlexLine> determineLinesWithMainSizes(LayoutManagerContext layoutManagerContext, List<FlexItem> flexItems) {
+		FlexWrap flexWrap = FlexUtils.getFlexWrap(layoutManagerContext.layoutDirectives());
 		switch (flexWrap) {
 		case NOWRAP:
-			return determineLinesWithMainSizesNoWrap(parentBox, flexItems, globalRenderContext, localRenderContext);
+			return determineLinesWithMainSizesNoWrap(layoutManagerContext, flexItems);
 		case WRAP:
 		case WRAP_REVERSE:
-			return determineLinesWithMainSizesWrap(parentBox, flexItems, globalRenderContext, localRenderContext);
+			return determineLinesWithMainSizesWrap(layoutManagerContext, flexItems);
 		default:
 			throw new IllegalArgumentException("Unknown flex wrap: " + flexWrap);
 		}
 	}
 
-	private static List<FlexLine> determineLinesWithMainSizesNoWrap(
-		Box parentBox, List<FlexItem> flexItems, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
-	) {
-		FlexDirection flexDirection = FlexUtils.getFlexDirection(parentBox);
-		float crossSize = FlexDimension.createFrom(localRenderContext.getPreferredSize(), flexDirection).cross();
+	private static List<FlexLine> determineLinesWithMainSizesNoWrap(LayoutManagerContext layoutManagerContext, List<FlexItem> flexItems) {
+		AbsoluteSize preferredSize = layoutManagerContext.localRenderContext().getPreferredSize();
+		FlexDirection flexDirection = FlexUtils.getFlexDirection(layoutManagerContext.layoutDirectives());
+		float crossSize = FlexDimension.createFrom(preferredSize, flexDirection).cross();
 		FlexLine flexLine = new FlexLine(flexDirection);
-		setLineInitialMainSize(flexLine, flexDirection, localRenderContext);
+		setLineInitialMainSize(layoutManagerContext, flexLine, flexDirection);
 		for (FlexItem flexItem: flexItems) {
 			flexItem.setCrossSize(crossSize);
-			determineMainSize(flexItem, flexDirection, globalRenderContext, localRenderContext);
+			determineMainSize(layoutManagerContext, flexItem, flexDirection);
 			flexLine.addFlexItem(flexItem);
 		}
 
 		return List.of(flexLine);
 	}
 
-	private static List<FlexLine> determineLinesWithMainSizesWrap(
-		Box parentBox, List<FlexItem> flexItems, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
-	) {
-		FlexDirection flexDirection = FlexUtils.getFlexDirection(parentBox);
-		float crossSize = FlexDimension.createFrom(localRenderContext.getPreferredSize(), flexDirection).cross();
+	private static List<FlexLine> determineLinesWithMainSizesWrap(LayoutManagerContext layoutManagerContext, List<FlexItem> flexItems) {
+		DirectivePool layoutDirectives = layoutManagerContext.layoutDirectives();
+		FlexDirection flexDirection = FlexUtils.getFlexDirection(layoutDirectives);
+		AbsoluteSize preferredSize = layoutManagerContext.localRenderContext().getPreferredSize();
+		float crossSize = FlexDimension.createFrom(preferredSize, flexDirection).cross();
 		for (FlexItem flexItem: flexItems) {
 			flexItem.setCrossSize(crossSize);
-			determineMainSize(flexItem, FlexUtils.getFlexDirection(parentBox), globalRenderContext, localRenderContext);
+			determineMainSize(layoutManagerContext, flexItem, FlexUtils.getFlexDirection(layoutDirectives));
 		}
 
 		List<FlexLine> flexLines = new ArrayList<>();
-		float availableMainSpace = FlexDimension.createFrom(localRenderContext.getPreferredSize(), flexDirection).main();
+		float availableMainSpace = FlexDimension.createFrom(preferredSize, flexDirection).main();
 		for (int i = 0; i < flexItems.size();) {
 			FlexLine flexLine = new FlexLine(flexDirection);
-			setLineInitialMainSize(flexLine, flexDirection, localRenderContext);
+			setLineInitialMainSize(layoutManagerContext, flexLine, flexDirection);
 
 			FlexItem flexItem = flexItems.get(i);
 			flexLine.addFlexItem(flexItem);
@@ -81,15 +79,16 @@ public final class FlexMainSizeDetermination {
 		return flexLines;
 	}
 
-	private static void setLineInitialMainSize(FlexLine flexLine, FlexDirection flexDirection, LocalRenderContext localRenderContext) {
-		float mainSize = FlexDimension.createFrom(localRenderContext.getPreferredSize(), flexDirection).main();
+	private static void setLineInitialMainSize(LayoutManagerContext layoutManagerContext, FlexLine flexLine, FlexDirection flexDirection) {
+		AbsoluteSize preferredSize = layoutManagerContext.localRenderContext().getPreferredSize();
+		float mainSize = FlexDimension.createFrom(preferredSize, flexDirection).main();
 		if (mainSize != RelativeDimension.UNBOUNDED) {
 			flexLine.setMainSize(mainSize);
 		}
 	}
 
 	private static void determineMainSize(
-		FlexItem flexItem, FlexDirection flexDirection, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
+		LayoutManagerContext layoutManagerContext, FlexItem flexItem, FlexDirection flexDirection
 	) {
 		// TODO: Check flex basis
 		float preferredWidth = flexItem.getSizePreferences().getMainSize(flexDirection);
@@ -99,6 +98,8 @@ public final class FlexMainSizeDetermination {
 			return;
 		}
 		
+		GlobalRenderContext globalRenderContext = layoutManagerContext.globalRenderContext();
+		LocalRenderContext localRenderContext = layoutManagerContext.localRenderContext();
 		FlexItemRenderer.FlexItemRenderContext flexItemRenderContext = new FlexItemRenderer.FlexItemRenderContext(
 			globalRenderContext, flexDirection, localRenderContext.getParentFontMetrics()
 		);

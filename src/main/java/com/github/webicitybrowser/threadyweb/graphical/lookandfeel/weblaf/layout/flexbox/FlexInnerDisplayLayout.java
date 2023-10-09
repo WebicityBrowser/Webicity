@@ -5,14 +5,13 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicAnonymousFluidBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.item.FlexItem;
@@ -32,29 +31,29 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 	}
 
 	@Override
-	public LayoutResult render(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		List<Box> children = box.getChildrenTracker().getChildren();
-		int numChildren = children.size();
+	public LayoutResult render(LayoutManagerContext layoutManagerContext) {
+		int numChildren = layoutManagerContext.children().size();
 		if (numChildren == 0) {
 			return LayoutResult.create(new ChildLayoutResult[0], new AbsoluteSize(0, 0));
 		}
 
-		FlexDirection flexDirection = FlexUtils.getFlexDirection(box);
-		List<FlexItem> flexItems = createFlexItems(children, globalRenderContext, localRenderContext);
-		List<FlexLine> flexLines = FlexMainSizeDetermination.determineLinesWithMainSizes(
-			box, flexItems, globalRenderContext, localRenderContext);
+		DirectivePool layoutDirectives = layoutManagerContext.layoutDirectives();
 
-		for (FlexLine flexLine : flexLines) {
-			Flexer.resolveFlexibleLengths(flexLine, localRenderContext);
+		FlexDirection flexDirection = FlexUtils.getFlexDirection(layoutDirectives);
+		List<FlexItem> flexItems = createFlexItems(layoutManagerContext);
+		List<FlexLine> flexLines = FlexMainSizeDetermination.determineLinesWithMainSizes(layoutManagerContext, flexItems);
+
+		for (FlexLine flexLine: flexLines) {
+			Flexer.resolveFlexibleLengths(flexLine, layoutManagerContext.localRenderContext());
 		}
 		
-		FlexCrossSizeDetermination.determineLineCrossSizes(box, flexLines, globalRenderContext, localRenderContext);
+		FlexCrossSizeDetermination.determineLineCrossSizes(layoutManagerContext, flexLines);
 		
-		FlexContentJustification.justifyContent(flexLines, FlexUtils.getFlexJustifyContent(box), flexDirection);
+		FlexContentJustification.justifyContent(flexLines, FlexUtils.getFlexJustifyContent(layoutDirectives), flexDirection);
 
 		List<ChildLayoutResult> childLayoutResults = new ArrayList<>();
 		float crossPosition = 0;
-		for (FlexLine flexLine : flexLines) {
+		for (FlexLine flexLine: flexLines) {
 			addLineChildLayoutResults(crossPosition, childLayoutResults, flexLine);
 			crossPosition += flexLine.getCrossSize();
 		}
@@ -66,24 +65,22 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 			lineDimensions.toAbsoluteSize());
 	}
 
-	private List<FlexItem> createFlexItems(List<Box> children, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		List<FlexItem> flexItems = new ArrayList<>(children.size());
-		addFlexItems(flexItems, children, globalRenderContext, localRenderContext);
+	private List<FlexItem> createFlexItems(LayoutManagerContext layoutManagerContext) {
+		List<FlexItem> flexItems = new ArrayList<>(layoutManagerContext.children().size());
+		addFlexItems(layoutManagerContext, flexItems, layoutManagerContext.children());
 
 		return flexItems;
 	}
 
-	private void addFlexItems(
-		List<FlexItem> flexItems, List<Box> children, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
-	) {
-		for (Box child : children) {
+	private void addFlexItems(LayoutManagerContext layoutManagerContext, List<FlexItem> flexItems, List<Box> children) {
+		for (Box child: children) {
 			if (child instanceof TextBox textBox && textBox.text().isBlank()) continue;
 			if (child instanceof BasicAnonymousFluidBox anonBox) {
-				addFlexItems(flexItems, anonBox.getChildrenTracker().getChildren(), globalRenderContext, localRenderContext);
+				addFlexItems(layoutManagerContext, flexItems, anonBox.getChildrenTracker().getChildren());
 				continue;
 			};
 
-			FlexItemSizePreferences sizePreferences = new FlexItemSizePreferences(child, globalRenderContext, localRenderContext);
+			FlexItemSizePreferences sizePreferences = new FlexItemSizePreferences(layoutManagerContext, child);
 			FlexItem childFlexItem = new FlexItem(child, sizePreferences);
 			flexItems.add(childFlexItem);
 		}

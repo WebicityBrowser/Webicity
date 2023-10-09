@@ -4,10 +4,9 @@ import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.imp.FloatContextImp;
@@ -29,15 +28,16 @@ public class FlowInnerDisplayLayout implements SolidLayoutManager {
 	}
 
 	@Override
-	public LayoutResult render(ChildrenBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		return FlowRenderer.render(createFlowRenderContext(box, renderContext, localRenderContext));
+	public LayoutResult render(LayoutManagerContext layoutManagerContext) {
+		return FlowRenderer.render(createFlowRenderContext(layoutManagerContext));
 	}
 
-	private FlowRenderContext createFlowRenderContext(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+	private FlowRenderContext createFlowRenderContext(LayoutManagerContext layoutManagerContext) {
+		LocalRenderContext localRenderContext = layoutManagerContext.localRenderContext();
 		FlowRootContextSwitch flowRootContextSwitch = getFlowRootContextSwitch(localRenderContext);
 
 		return new FlowRenderContext(
-			box, globalRenderContext, localRenderContext, innerUnitGenerator, styledUnitGenerator, flowRootContextSwitch
+			layoutManagerContext, innerUnitGenerator, styledUnitGenerator, flowRootContextSwitch
 		);
 	}
 

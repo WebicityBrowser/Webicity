@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -48,7 +49,10 @@ public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, 
 
 	@Override
 	public ElementUnit renderBox(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		LayoutResult layoutResult = INNER_DISPLAY_LAYOUT.render(box, globalRenderContext, localRenderContext);
+		LayoutManagerContext layoutManagerContext = new LayoutManagerContext(
+			box, box.getChildrenTracker().getChildren(),
+			globalRenderContext, localRenderContext);
+		LayoutResult layoutResult = INNER_DISPLAY_LAYOUT.render(layoutManagerContext);
 		return new ElementUnit(this, box.styleDirectives(), layoutResult);
 	}
 

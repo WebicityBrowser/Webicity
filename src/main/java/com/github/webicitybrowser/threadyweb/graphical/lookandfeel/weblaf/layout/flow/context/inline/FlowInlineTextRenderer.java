@@ -26,8 +26,8 @@ public final class FlowInlineTextRenderer {
 	
 	private FlowInlineTextRenderer() {}
 
-	public static void preadjustTextBoxes(FlowInlineRendererState state, ChildrenBox box) {
-		collectPreadjustTextBoxes(state, box);
+	public static void preadjustTextBoxes(FlowInlineRendererState state, List<Box> children) {
+		collectPreadjustTextBoxes(state, children);
 		ConsolidatedCollapsibleTextView textView = state.getTextConsolidation().getTextView();
 		ConsolidatedTextCollapser.collapse(textView, WhiteSpaceCollapse.COLLAPSE);
 	}
@@ -107,12 +107,13 @@ public final class FlowInlineTextRenderer {
 		return true;
 	}
 
-	private static void collectPreadjustTextBoxes(FlowInlineRendererState state, ChildrenBox box) {
-		for (Box childBox: box.getChildrenTracker().getChildren()) {
+	private static void collectPreadjustTextBoxes(FlowInlineRendererState state, List<Box> children) {
+		for (Box childBox: children) {
 			if (childBox instanceof TextBox textBox) {
 				state.getTextConsolidation().addText(textBox, textBox.text());
 			} else if (childBox instanceof ChildrenBox && !childBox.managesSelf()) {
-				collectPreadjustTextBoxes(state, (ChildrenBox) childBox);
+				List<Box> childBoxes = ((ChildrenBox) childBox).getChildrenTracker().getChildren();
+				collectPreadjustTextBoxes(state, childBoxes);
 			}
 		}
 	}

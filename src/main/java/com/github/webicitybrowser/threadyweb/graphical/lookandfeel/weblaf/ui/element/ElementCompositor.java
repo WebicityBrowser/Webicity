@@ -20,7 +20,6 @@ public final class ElementCompositor {
 	private static void compositeChildren(ElementUnit unit, GlobalCompositeContext globalCompositeContext, LocalCompositeContext localCompositeContext) {
 		for (ChildLayoutResult childResult: unit.layoutResults().childLayoutResults()) {
 			Rectangle childRect = computeResultDocumentRect(localCompositeContext.documentRect(), childResult.relativeRect());
-			// TODO: Account for positioned elements
 			compositeChild(globalCompositeContext, localCompositeContext, childResult, childRect);
 		}
 	}

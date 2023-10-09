@@ -3,6 +3,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layou
 import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -24,7 +25,10 @@ public class FlexItemSizePreferences {
 	private final LayoutSizingContext sizingContext;
 	private final BoxPositioningOverride boxPositioningOverride;
 
-	public FlexItemSizePreferences(Box box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+	public FlexItemSizePreferences(LayoutManagerContext layoutManagerContext, Box box) {
+		GlobalRenderContext globalRenderContext = layoutManagerContext.globalRenderContext();
+		LocalRenderContext localRenderContext = layoutManagerContext.localRenderContext();
+		
 		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator = 
 			isHorizontal -> FlexUtils.createSizeCalculationContext(globalRenderContext, localRenderContext, isHorizontal);
 		this.styleDirectives = box.styleDirectives();

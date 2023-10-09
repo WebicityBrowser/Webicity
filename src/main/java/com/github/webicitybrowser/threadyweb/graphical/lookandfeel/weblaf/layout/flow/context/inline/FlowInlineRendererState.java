@@ -42,7 +42,7 @@ public class FlowInlineRendererState {
 	}
 
 	public DirectivePool getStyleDirectives() {
-		return context.box().styleDirectives();
+		return context.layoutManagerContext().layoutDirectives();
 	}
 
 	public TextConsolidation getTextConsolidation() {
