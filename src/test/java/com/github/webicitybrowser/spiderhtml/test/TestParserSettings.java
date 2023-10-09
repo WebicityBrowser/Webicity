@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.spiderhtml.test;
 
+import com.github.webicitybrowser.webicity.renderer.backend.html.tags.TagAction;
 import org.mockito.Mockito;
 
 import com.github.webicitybrowser.spec.dom.node.Node;

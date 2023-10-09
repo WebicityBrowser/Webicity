@@ -2,6 +2,11 @@ package com.github.webicitybrowser.webicity.core.renderer.imp;
 
 import java.util.Optional;
 
+import com.github.webicitybrowser.spec.fetch.FetchEngine;
+import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
+import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
+import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
+import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
 import com.github.webicitybrowser.webicity.core.RenderingEngine;
@@ -25,12 +30,14 @@ import com.github.webicitybrowser.webicity.core.ui.imp.FrameImp;
 public class RenderingEngineImp implements RenderingEngine {
 
 	private final AssetLoader assetLoader;
+	private final FetchEngine fetchEngine;
 	
 	private final ProtocolRegistry protocolRegistry = new ProtocolRegistryImp();
 	private final RendererBackendRegistry rendererBackendRegistry = new RendererBackendRegistryImp();
 
-	public RenderingEngineImp(AssetLoader assetLoader) {
+	public RenderingEngineImp(AssetLoader assetLoader, FetchEngine fetchEngine) {
 		this.assetLoader = assetLoader;
+		this.fetchEngine = fetchEngine;
 	}
 
 	@Override
@@ -61,6 +68,10 @@ public class RenderingEngineImp implements RenderingEngine {
 	public AssetLoader getAssetLoader() {
 		return this.assetLoader;
 	}
+	@Override
+	public FetchEngine getFetchEngine() {
+		return null;
+	}
 
 	@Override
 	public ProtocolRegistry getProtocolRegistry() {
@@ -90,6 +101,16 @@ public class RenderingEngineImp implements RenderingEngine {
 	}
 
 	private RendererContext createRendererContext() {
-		return new RendererContextImp(assetLoader);
+		return new RendererContextImp(assetLoader, new FetchEngineImp(new FetchConnectionPool() {
+			@Override
+			public FetchConnection createNewConnection(FetchConnectionInfo info) {
+				return null;
+			}
+
+			@Override
+			public void close() throws Exception {
+
+			}
+		}));
 	}
 }
