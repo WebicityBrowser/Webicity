@@ -5,6 +5,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.FlowBlockRendererState;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutPaddingCalculations;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public record BoxOffsetDimensions(float[] margins, float[] padding, float[] borders) {
@@ -18,8 +19,8 @@ public record BoxOffsetDimensions(float[] margins, float[] padding, float[] bord
 	}
 
 	public static BoxOffsetDimensions create(FlowBlockRendererState state, Box childBox) {
-		SizeCalculationContext sizeCalculationContext = FlowUtils.createSizeCalculationContext(
-			state.flowContext(), state.getFont().getMetrics(), true);
+		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
+			state.flowContext().layoutManagerContext(), state.getFont().getMetrics(), true);
 		float[] margins = FlowBlockMarginCalculations.computeMargins(state, childBox);
 		float[] paddings = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, childBox);
 		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, childBox);

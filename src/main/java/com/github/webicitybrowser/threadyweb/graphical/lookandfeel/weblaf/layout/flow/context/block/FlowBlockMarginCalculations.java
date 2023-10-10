@@ -8,7 +8,7 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.M
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective.LeftMarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective.RightMarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective.TopMarginDirective;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
@@ -82,7 +82,8 @@ public final class FlowBlockMarginCalculations {
 			return defaultValue;
 		}
 
-		SizeCalculationContext sizeCalculationContext = FlowUtils.createSizeCalculationContext(state.flowContext(), true);
+		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
+			state.flowContext().layoutManagerContext(), true);
 		return sizeCalculation.calculate(sizeCalculationContext);
 	}
 

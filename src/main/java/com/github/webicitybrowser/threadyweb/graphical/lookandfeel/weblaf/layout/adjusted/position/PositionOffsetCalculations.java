@@ -1,10 +1,10 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.position;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.adjusted.position;
 
 import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionOffsetDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionOffsetDirective.BottomPositionOffsetDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionOffsetDirective.LeftPositionOffsetDirective;
@@ -19,24 +19,23 @@ public class PositionOffsetCalculations {
 
 	private PositionOffsetCalculations() {}
 
-	public static float[] calculateOffset(Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator, Box box) {
+	public static float[] calculateOffset(Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator, DirectivePool styleDirectives) {
 		float[] margins = new float[4];
 		SizeCalculationContext horizontalSizeCalculationContext = sizeCalculationContextGenerator.apply(true);
 		SizeCalculationContext verticalSizeCalculationContext = sizeCalculationContextGenerator.apply(false);
-		margins[0] = computePosition(horizontalSizeCalculationContext, box, LeftPositionOffsetDirective.class, POSITION_AUTO);
-		margins[1] = computePosition(horizontalSizeCalculationContext, box, RightPositionOffsetDirective.class, POSITION_AUTO);
-		margins[2] = computePosition(verticalSizeCalculationContext, box, TopPositionOffsetDirective.class, POSITION_AUTO);
-		margins[3] = computePosition(verticalSizeCalculationContext, box, BottomPositionOffsetDirective.class, POSITION_AUTO);
+		margins[0] = computePosition(horizontalSizeCalculationContext, styleDirectives, LeftPositionOffsetDirective.class, POSITION_AUTO);
+		margins[1] = computePosition(horizontalSizeCalculationContext, styleDirectives, RightPositionOffsetDirective.class, POSITION_AUTO);
+		margins[2] = computePosition(verticalSizeCalculationContext, styleDirectives, TopPositionOffsetDirective.class, POSITION_AUTO);
+		margins[3] = computePosition(verticalSizeCalculationContext, styleDirectives, BottomPositionOffsetDirective.class, POSITION_AUTO);
 
 		return margins;
 	}
 
 	private static float computePosition(
-		SizeCalculationContext sizeCalculationContext,
-		Box box, Class<? extends PositionOffsetDirective> directiveClass, float defaultValue
+		SizeCalculationContext sizeCalculationContext, DirectivePool styleDirectives,
+		Class<? extends PositionOffsetDirective> directiveClass, float defaultValue
 	) {
-		SizeCalculation sizeCalculation = box
-			.styleDirectives()
+		SizeCalculation sizeCalculation = styleDirectives
 			.getDirectiveOrEmpty(directiveClass)
 			.map(directive -> directive.getSizeCalculation())
 			.orElse(_1 -> POSITION_AUTO);

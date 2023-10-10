@@ -6,11 +6,9 @@ import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxPositioningOverride;
 
 public record StyledUnitContext(
-	Box box, RenderedUnit innerUnit, AbsoluteSize size,
-	BoxOffsetDimensions boxOffsetDimensions, BoxPositioningOverride boxPositioningOverride
+	Box box, RenderedUnit innerUnit, AbsoluteSize size, BoxOffsetDimensions boxOffsetDimensions
 ) {
 
 	public AbsoluteSize innerUnitSize() {

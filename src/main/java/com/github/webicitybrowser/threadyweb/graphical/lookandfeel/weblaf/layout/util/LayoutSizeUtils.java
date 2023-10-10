@@ -4,7 +4,9 @@ import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective.BoxSizing;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
@@ -81,6 +83,19 @@ public final class LayoutSizeUtils {
 			initialSize.height() + paddings[2] + paddings[3];
 
 		return new AbsoluteSize(widthComponent, heightComponent);
+	}
+
+	public static SizeCalculationContext createSizeCalculationContext(LayoutManagerContext context, FontMetrics parentFontMetrics, boolean isHorizontal) {
+		return new SizeCalculationContext(
+			context.localRenderContext().getPreferredSize(),
+			context.globalRenderContext().viewportSize(),
+			parentFontMetrics,
+			context.globalRenderContext().rootFontMetrics(),
+			isHorizontal);
+	}
+
+	public static SizeCalculationContext createSizeCalculationContext(LayoutManagerContext context, boolean isHorizontal) {
+		return createSizeCalculationContext(context, context.localRenderContext().getParentFontMetrics(), isHorizontal);
 	}
 
 	private static float computeSize(
