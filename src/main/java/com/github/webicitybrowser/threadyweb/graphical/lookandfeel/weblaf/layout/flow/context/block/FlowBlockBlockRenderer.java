@@ -12,10 +12,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxPositioningOverride;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.position.PositionOffsetUtil;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitContext;
 
 public final class FlowBlockBlockRenderer {
@@ -45,12 +42,7 @@ public final class FlowBlockBlockRenderer {
 	private static void addChildToLayout(
 		FlowBlockRendererState state, Box childBox, RenderedUnit childUnit, Rectangle childRect, BoxOffsetDimensions boxDimensions
 	) {
-		BoxPositioningOverride boxPositioningOverride = PositionOffsetUtil.getPositioningOverride(
-			isHorizontal -> FlowUtils.createSizeCalculationContext(state.flowContext(), isHorizontal),
-			childBox);
-		StyledUnitContext styledUnitContext = new StyledUnitContext(
-			childBox, childUnit, childRect.size(),
-			boxDimensions, boxPositioningOverride);
+		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, childRect.size(), boxDimensions);
 		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 		state.addChildLayoutResult(new ChildLayoutResult(styledUnit, childRect));
 	}

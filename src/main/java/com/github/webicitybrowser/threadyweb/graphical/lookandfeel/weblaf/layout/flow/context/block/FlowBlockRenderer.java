@@ -17,7 +17,7 @@ public final class FlowBlockRenderer {
 
 	public static LayoutResult render(FlowRenderContext context) {
 		Font2D font = FlowUtils.computeFont(
-			context,
+			context.layoutManagerContext(),
 			context.layoutManagerContext().layoutDirectives(),
 			context.localRenderContext().getParentFontMetrics());
 		FlowBlockRendererState state = new FlowBlockRendererState(context, font);

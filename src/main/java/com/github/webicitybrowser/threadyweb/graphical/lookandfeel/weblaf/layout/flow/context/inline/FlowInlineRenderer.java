@@ -42,7 +42,7 @@ public final class FlowInlineRenderer {
 		FlowRenderContext context = state.flowContext();
 		LayoutManagerContext layoutManagerContext = context.layoutManagerContext();
 		state.getFontStack().push(FlowUtils.computeFont(
-			context, layoutManagerContext.layoutDirectives(), context.localRenderContext().getParentFontMetrics()));
+			context.layoutManagerContext(), layoutManagerContext.layoutDirectives(), context.localRenderContext().getParentFontMetrics()));
 		FlowInlineTextRenderer.preadjustTextBoxes(state, layoutManagerContext.children());
 	}
 
@@ -75,7 +75,8 @@ public final class FlowInlineRenderer {
 		lineContext.currentLine().addMarker(unitEnterMarker);
 
 		FontMetrics parentFontMetrics = state.getFontStack().peek().getMetrics();
-		state.getFontStack().push(FlowUtils.computeFont(state.flowContext(), childBox.styleDirectives(), parentFontMetrics));
+		state.getFontStack().push(FlowUtils.computeFont(
+			state.flowContext().layoutManagerContext(), childBox.styleDirectives(), parentFontMetrics));
 	}
 
 	private static void popFormattingInfo(FlowInlineRendererState state, Box childBox) {

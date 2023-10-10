@@ -12,7 +12,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineMarkerEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.UnitEnterMarker;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedCollapsibleTextView;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedTextCollapser;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
@@ -36,8 +36,8 @@ public final class FlowInlineTextRenderer {
 		TextConsolidation textConsolidation = state.getTextConsolidation();
 		String adjustedText = textConsolidation.readNextText(textBox);
 		Font2D font = textBox.getFont(state.getGlobalRenderContext(), createLocalRenderContext(state));	
-		SizeCalculationContext context = FlowUtils.createSizeCalculationContext(
-			state.flowContext(), font.getMetrics(), true);
+		SizeCalculationContext context = LayoutSizeUtils.createSizeCalculationContext(
+			state.flowContext().layoutManagerContext(), font.getMetrics(), true);
 		float letterSpacing = WebTextDirectiveUtil.getLetterSpacing(textBox.styleDirectives(), context);
 		TextSplitter splitter = new TextSplitter(adjustedText, font, letterSpacing);
 		while (!splitter.completed()) {

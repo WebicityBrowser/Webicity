@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.scroll;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 
@@ -33,6 +34,11 @@ public class ScrollUnit implements RenderedUnit {
 	@Override
 	public AbsoluteSize fitSize() {
 		return fitSize;
+	}
+
+	@Override
+	public DirectivePool styleDirectives() {
+		return box.styleDirectives();
 	}
 
 	public ScrollBox box() {
