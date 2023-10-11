@@ -68,9 +68,10 @@ public class RenderingEngineImp implements RenderingEngine {
 	public AssetLoader getAssetLoader() {
 		return this.assetLoader;
 	}
+
 	@Override
 	public FetchEngine getFetchEngine() {
-		return null;
+		return fetchEngine;
 	}
 
 	@Override
@@ -101,16 +102,6 @@ public class RenderingEngineImp implements RenderingEngine {
 	}
 
 	private RendererContext createRendererContext() {
-		return new RendererContextImp(assetLoader, new FetchEngineImp(new FetchConnectionPool() {
-			@Override
-			public FetchConnection createNewConnection(FetchConnectionInfo info) {
-				return null;
-			}
-
-			@Override
-			public void close() throws Exception {
-
-			}
-		}));
+		return new RendererContextImp(assetLoader, fetchEngine);
 	}
 }

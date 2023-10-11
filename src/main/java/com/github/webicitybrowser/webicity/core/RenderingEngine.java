@@ -4,6 +4,7 @@ import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
+import com.github.webicitybrowser.spec.fetch.connection.imp.HTTPFetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
@@ -26,17 +27,7 @@ public interface RenderingEngine {
 	RendererBackendRegistry getBackendRendererRegistry();
 	
 	public static RenderingEngine create(AssetLoader assetLoader) {
-		return new RenderingEngineImp(assetLoader, new FetchEngineImp(new FetchConnectionPool() {
-			@Override
-			public FetchConnection createNewConnection(FetchConnectionInfo info) {
-				return null;
-			}
-
-			@Override
-			public void close() throws Exception {
-
-			}
-		}));
+		return new RenderingEngineImp(assetLoader, new FetchEngineImp(new HTTPFetchConnectionPool()));
 	}
 	
 }

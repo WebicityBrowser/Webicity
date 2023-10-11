@@ -4,10 +4,18 @@ import com.github.webicitybrowser.spec.css.rule.CSSRule;
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
 import com.github.webicitybrowser.spec.css.rule.imp.CSSRuleListImp;
 import com.github.webicitybrowser.spec.dom.node.Element;
+import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
+import com.github.webicitybrowser.webicity.renderer.backend.html.CSSRulesUtils;
 
 import java.io.InputStreamReader;
 
 public class LinkTagHandler implements TagAction{
+
+	private final RendererContext context;
+
+	public LinkTagHandler(RendererContext context) {
+		this.context = context;
+	}
 
 	@Override
 	public CSSRuleList getCSSRuleList(Element element) {
@@ -18,7 +26,7 @@ public class LinkTagHandler implements TagAction{
 	}
 
 	private CSSRuleList createRulesFromExternalResources(String href) {
-		return createRuleList(new InputStreamReader(
+		return CSSRulesUtils.createRuleList(new InputStreamReader(
 			ClassLoader.getSystemClassLoader().getResourceAsStream("stylesheets/" + href)
 		));
 	}
