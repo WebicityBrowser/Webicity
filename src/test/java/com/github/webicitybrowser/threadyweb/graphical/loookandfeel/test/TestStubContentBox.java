@@ -38,6 +38,7 @@ public class TestStubContentBox implements Box {
 		UIDisplay<?, TestStubContentBox, RenderedUnit> display = Mockito.mock(UIDisplay.class);
 		RenderedUnit renderedUnit = Mockito.mock(RenderedUnit.class);
 		Mockito.when(renderedUnit.fitSize()).thenReturn(size);
+		Mockito.when(renderedUnit.styleDirectives()).thenReturn(styleDirectives);
 		Mockito.when(display.renderBox(Mockito.eq(this), Mockito.any(), Mockito.any())).thenAnswer((invocation) -> {
 			LocalRenderContext localRenderContext = invocation.getArgument(2);
 			lastTargetSize = localRenderContext.getPreferredSize();

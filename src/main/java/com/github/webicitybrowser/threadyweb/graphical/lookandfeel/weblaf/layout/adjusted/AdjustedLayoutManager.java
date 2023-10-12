@@ -28,7 +28,7 @@ public class AdjustedLayoutManager implements SolidLayoutManager {
 
 	@Override
 	public LayoutResult render(LayoutManagerContext layoutManagerContext) {
-		Function<Boolean, SizeCalculationContext>	 sizeCalculationContextGenerator =
+		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator =
 			isHorizontal -> LayoutSizeUtils.createSizeCalculationContext(layoutManagerContext, false);
 
 		List<Box> children = layoutManagerContext.children();
