@@ -18,11 +18,11 @@ public class LinkTagHandler implements TagAction{
 	}
 
 	@Override
-	public CSSRuleList getCSSRuleList(Element element) {
+	public void handleTag(Element element) {
 		if(!element.hasAttribute("href") && !element.hasAttribute("imagesrcset")) {
-			return new CSSRuleListImp(new CSSRule[] {});
+			return;
 		}
-		return createRulesFromExternalResources(element.getAttribute("href"));
+		CSSRulesUtils.addStylesheet(createRulesFromExternalResources(element.getAttribute("href")), element);
 	}
 
 	private CSSRuleList createRulesFromExternalResources(String href) {

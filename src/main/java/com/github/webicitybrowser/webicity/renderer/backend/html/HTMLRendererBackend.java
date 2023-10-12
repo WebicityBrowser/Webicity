@@ -60,14 +60,18 @@ public class HTMLRendererBackend implements RendererBackend {
 	}
 	
 	private void parseDocument(Reader inputReader) throws IOException {
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		new SpiderHTMLParserImp().parse(inputReader, treeBuilder, new HTMLRendererBackendParserSettings(characterReferenceLookup, createTagActions()));
+	}
+
+	private TagActions createTagActions() {
 		FetchEngine fetchEngine = new FetchEngineImp(new HTTPFetchConnectionPool());
 		RendererContext rendererContext = new RendererContextImp(new ResourceAssetLoader(), fetchEngine);
 
 		TagActions tagActions = new ActionsRegistry();
 		tagActions.registerTagAction("link", new LinkTagHandler(rendererContext));
 		tagActions.registerTagAction("style", new StyleTagHandler());
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		new SpiderHTMLParserImp().parse(inputReader, treeBuilder, new HTMLRendererBackendParserSettings(characterReferenceLookup, tagActions));
+		return tagActions;
 	}
 
 	public <T extends RendererFrontend> T createFrontend(Function<RendererContext, T> factory) {

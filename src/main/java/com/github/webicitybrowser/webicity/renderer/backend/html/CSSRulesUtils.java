@@ -6,6 +6,9 @@ import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
 import com.github.webicitybrowser.spec.css.parser.tokens.Token;
 import com.github.webicitybrowser.spec.css.rule.CSSRule;
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
+import com.github.webicitybrowser.spec.css.stylesheet.CSSStyleSheet;
+import com.github.webicitybrowser.spec.dom.node.Element;
+import com.github.webicitybrowser.spec.html.node.HTMLDocument;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -22,6 +25,15 @@ public final class CSSRulesUtils {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static void addStylesheet(CSSRuleList cssRuleList, Element element) {
+		CSSRuleList ruleList = cssRuleList;
+		if(ruleList.getLength() > 0) {
+			CSSStyleSheet styleSheet = () -> ruleList;
+			((HTMLDocument) element.getOwnerDocument()).getStyleSheets().add(styleSheet);
+		}
+
 	}
 
 }

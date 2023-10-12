@@ -8,14 +8,9 @@ import com.github.webicitybrowser.spec.html.node.HTMLDocument;
 
 public interface TagAction {
 
-	CSSRuleList getCSSRuleList(Element element);
+	void handleTag(Element element);
 
 	default void onTagParsed(Element element) {
-		CSSRuleList ruleList = getCSSRuleList(element);
-		if(ruleList.getLength() > 0) {
-			CSSStyleSheet styleSheet = () -> ruleList;
-			((HTMLDocument) element.getOwnerDocument()).getStyleSheets().add(styleSheet);
-		}
 	}
 
 }

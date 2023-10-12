@@ -9,8 +9,7 @@ import com.github.webicitybrowser.spec.dom.node.Element;
 public class NoTagAction implements TagAction{
 
 	@Override
-	public CSSRuleList getCSSRuleList(Element element) {
-		return new CSSRuleListImp(new CSSRule[] {});
+	public void handleTag(Element element) {
 	}
 
 }

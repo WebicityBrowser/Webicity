@@ -10,8 +10,8 @@ import java.io.StringReader;
 public class StyleTagHandler implements TagAction{
 
 	@Override
-	public CSSRuleList getCSSRuleList(Element element) {
-		return createRulesFromStyleTag(element);
+	public void handleTag(Element element) {
+		CSSRulesUtils.addStylesheet(createRulesFromStyleTag(element), element);
 	}
 
 	private CSSRuleList createRulesFromStyleTag(Element element) {
@@ -19,3 +19,4 @@ public class StyleTagHandler implements TagAction{
 	}
 
 }
+
