@@ -11,6 +11,11 @@ public interface TagAction {
 	void handleTag(Element element);
 
 	default void onTagParsed(Element element) {
+		handleTags(element);
+	}
+
+	private void handleTags(Element element) {
+		handleTag(element);
 	}
 
 }

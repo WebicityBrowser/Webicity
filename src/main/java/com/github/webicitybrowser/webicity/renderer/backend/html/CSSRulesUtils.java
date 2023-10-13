@@ -33,7 +33,6 @@ public final class CSSRulesUtils {
 			CSSStyleSheet styleSheet = () -> ruleList;
 			((HTMLDocument) element.getOwnerDocument()).getStyleSheets().add(styleSheet);
 		}
-
 	}
 
 }

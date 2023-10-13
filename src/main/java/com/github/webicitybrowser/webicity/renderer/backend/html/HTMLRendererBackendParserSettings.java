@@ -31,7 +31,7 @@ public class HTMLRendererBackendParserSettings implements ParserSettings {
 			element.getNamespace().equals(Namespace.HTML_NAMESPACE)
 		) {
 			TagAction tagAction = tagActions.getAction(element.getLocalName());
-			tagAction.handleTag(element);
+			tagAction.onTagParsed(element);
 		}
 	}
 
