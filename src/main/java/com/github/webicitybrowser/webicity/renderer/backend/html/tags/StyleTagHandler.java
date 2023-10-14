@@ -9,9 +9,14 @@ import java.io.StringReader;
 
 public class StyleTagHandler implements TagAction{
 
-	@Override
 	public void handleTag(Element element) {
 		CSSRulesUtils.addStylesheet(createRulesFromStyleTag(element), element);
+	}
+
+	@Override
+	public void onTagParsed(Element element) {
+		TagAction.super.onTagParsed(element);
+		handleTag(element);
 	}
 
 	private CSSRuleList createRulesFromStyleTag(Element element) {

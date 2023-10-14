@@ -65,9 +65,6 @@ public class HTMLRendererBackend implements RendererBackend {
 	}
 
 	private TagActions createTagActions() {
-		FetchEngine fetchEngine = new FetchEngineImp(new HTTPFetchConnectionPool());
-		RendererContext rendererContext = new RendererContextImp(new ResourceAssetLoader(), fetchEngine);
-
 		TagActions tagActions = new ActionsRegistry();
 		tagActions.registerTagAction("link", new LinkTagHandler(rendererContext));
 		tagActions.registerTagAction("style", new StyleTagHandler());

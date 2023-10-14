@@ -21,8 +21,9 @@ import com.github.webicitybrowser.webicitybrowser.loader.ResourceAssetLoader;
 public final class RenderingEngineCreator {
 
 	public static RenderingEngine create() {
+		HTTPService httpService = createHTTPService();
 		AssetLoader assetLoader = new ResourceAssetLoader();
-		RenderingEngine renderingEngine = RenderingEngine.create(assetLoader);
+		RenderingEngine renderingEngine = RenderingEngine.create(assetLoader, httpService);
 		
 		registerProtocols(renderingEngine);
 		registerBackendRenderers(renderingEngine);

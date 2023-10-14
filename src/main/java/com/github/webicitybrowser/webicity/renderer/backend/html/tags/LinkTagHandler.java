@@ -10,9 +10,13 @@ import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
 import com.github.webicitybrowser.spec.fetch.builder.imp.FetchParametersBuilderImp;
 import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
 import com.github.webicitybrowser.spec.fetch.taskdestination.ParallelQueue;
+import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.CSSRulesUtils;
+import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.NoStylesheetAction;
+import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.StylesheetAction;
+import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.StylesheetLink;
 
 import java.io.InputStreamReader;
 
@@ -25,12 +29,26 @@ public class LinkTagHandler implements TagAction{
 	}
 
 	@Override
+	public void onTagParsed(Element element) {
+		TagAction.super.onTagParsed(element);
+		handleTag(element);
+	}
+
 	public void handleTag(Element element) {
 		if(!element.hasAttribute("href") && !element.hasAttribute("imagesrcset")) {
 			return;
 		}
+		defaultFetchAndProcessLinkResource(element);
+	}
 
-		FetchRequest request = FetchRequest.createRequest("GET", URL.ofSafe(element.getAttribute("href")));
+	private void defaultFetchAndProcessLinkResource(Element element) {
+		FetchRequest request = null;
+		try {
+			request = FetchRequest.createRequest("GET", URL.of(context.currentDocumentURL(), element.getAttribute("href")));
+		} catch (InvalidURLException e) {
+			throw new RuntimeException(e);
+		}
+
 		if(!linkedResourceFetchSetupSteps(element, request)) {
 			return;
 		}
@@ -50,22 +68,19 @@ public class LinkTagHandler implements TagAction{
 		});
 		FetchEngine fetchEngine = context.getFetchEngine();
 		fetchEngine.fetch(parametersBuilder.build());
+
 	}
 
 	private boolean linkedResourceFetchSetupSteps(Element element, FetchRequest request) {
-
 		return true;
 	}
 
 	private void processStylesheetResource(Element el, boolean success, FetchResponse response, byte[] bodyBytes) {
-		CSSRuleList ruleList = CSSRulesUtils.createRuleList(response.body().readableStream());
-		CSSRulesUtils.addStylesheet(ruleList, el);
-	}
-
-	private CSSRuleList createRulesFromExternalResources(String href) {
-		return CSSRulesUtils.createRuleList(new InputStreamReader(
-			ClassLoader.getSystemClassLoader().getResourceAsStream("stylesheets/" + href)
-		));
+		StylesheetAction stylesheetAction = new NoStylesheetAction();
+		if(el.getAttribute("rel").equals("stylesheet")) {
+			stylesheetAction = new StylesheetLink();
+		}
+		stylesheetAction.processThisTypeOfLinkedResource(el, success, response, bodyBytes);
 	}
 
 }

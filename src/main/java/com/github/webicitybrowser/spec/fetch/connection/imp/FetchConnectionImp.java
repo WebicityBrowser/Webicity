@@ -39,6 +39,7 @@ public class FetchConnectionImp implements FetchConnection {
 			response = httpService.resolveRequest(new HTTPRequest(request.url(), request.method(), redirectURL -> true));
 		} catch(Exception e) {
 			logger.error(e.getClass().toString());
+			e.printStackTrace();
 			return FetchResponse.createNetworkError();
 		}
 

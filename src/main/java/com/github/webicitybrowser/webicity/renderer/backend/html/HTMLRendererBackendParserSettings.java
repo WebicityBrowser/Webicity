@@ -30,8 +30,13 @@ public class HTMLRendererBackendParserSettings implements ParserSettings {
 			node instanceof Element element &&
 			element.getNamespace().equals(Namespace.HTML_NAMESPACE)
 		) {
-			TagAction tagAction = tagActions.getAction(element.getLocalName());
-			tagAction.onTagParsed(element);
+			try{
+				TagAction tagAction = tagActions.getAction(element.getLocalName());
+				tagAction.onTagParsed(element);
+			} catch (Exception e) {
+				System.out.println(element.getLocalName());
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

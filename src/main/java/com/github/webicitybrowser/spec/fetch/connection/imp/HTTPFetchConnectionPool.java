@@ -7,11 +7,17 @@ import com.github.webicitybrowser.spec.http.HTTPService;
 
 public class HTTPFetchConnectionPool implements FetchConnectionPool {
 
+	private final HTTPService httpService;
+
+	public HTTPFetchConnectionPool(HTTPService httpService) {
+		this.httpService = httpService;
+	}
+
 	@Override
 	public FetchConnection createNewConnection(FetchConnectionInfo info) {
 		return new FetchConnectionImp(
 			info,
-			HTTPService.create("Webicity/0.1.0 ThreadyWeb/0.1.0 Firefox/113.0 (Not actually Firefox)")
+			httpService
 		);
 	}
 
