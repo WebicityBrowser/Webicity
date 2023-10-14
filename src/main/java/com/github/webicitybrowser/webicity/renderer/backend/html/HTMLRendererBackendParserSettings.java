@@ -1,62 +1,41 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html;
 
 
-
-import java.io.IOException;
-import java.io.StringReader;
-
-import com.github.webicitybrowser.spec.css.parser.CSSParser;
-import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
-import com.github.webicitybrowser.spec.css.parser.tokens.Token;
-import com.github.webicitybrowser.spec.css.rule.CSSRule;
-import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
-import com.github.webicitybrowser.spec.css.stylesheet.CSSStyleSheet;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
-import com.github.webicitybrowser.spec.dom.node.imp.util.DOMTextUtil;
-import com.github.webicitybrowser.spec.html.node.HTMLDocument;
 import com.github.webicitybrowser.spec.html.parse.ParserSettings;
 import com.github.webicitybrowser.spec.html.parse.CharacterReferenceLookup;
 import com.github.webicitybrowser.spec.infra.Namespace;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tags.TagAction;
+
 
 public class HTMLRendererBackendParserSettings implements ParserSettings {
 	
 	private final CharacterReferenceLookup unicodeLookup;
+	private final TagActions tagActions;
 
-	public HTMLRendererBackendParserSettings(CharacterReferenceLookup unicodeLookup) {
+	public HTMLRendererBackendParserSettings(CharacterReferenceLookup unicodeLookup, TagActions actions) {
 		this.unicodeLookup = unicodeLookup;
+		this.tagActions = actions;
 	}
 
-	@Override
-	public void onNodePopped(Node node) {
-		if (
-			node instanceof Element element &&
-			element.getLocalName().equals("style") &&
-			element.getNamespace().equals(Namespace.HTML_NAMESPACE)
-		) {
-			addDocumentStylesheet(element);
-		}
-	}
-	
 	@Override
 	public CharacterReferenceLookup getUnicodeLookup() {
 		return this.unicodeLookup;
 	}
 
-	private void addDocumentStylesheet(Element element) {
-		CSSRuleList ruleList = createRuleList(DOMTextUtil.getChildTextContent(element));
-		CSSStyleSheet styleSheet = () -> ruleList;
-		((HTMLDocument) element.getOwnerDocument()).getStyleSheets().add(styleSheet);
-	}
-
-	private CSSRuleList createRuleList(String childTextContent) {
-		StringReader reader = new StringReader(childTextContent);
-		try {
-			Token[] tokens = CSSTokenizer.create().tokenize(reader);
-			CSSRule[] rules = CSSParser.create().parseAListOfRules(tokens);
-			return CSSRuleList.create(rules);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+	@Override
+	public void onNodePopped(Node node) {
+		if(
+			node instanceof Element element &&
+			element.getNamespace().equals(Namespace.HTML_NAMESPACE)
+		) {
+			try{
+				TagAction tagAction = tagActions.getAction(element.getLocalName());
+				tagAction.onTagParsed(element);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

@@ -1,5 +1,12 @@
 package com.github.webicitybrowser.webicity.core;
 
+import com.github.webicitybrowser.spec.fetch.FetchEngine;
+import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
+import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
+import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
+import com.github.webicitybrowser.spec.fetch.connection.imp.HTTPFetchConnectionPool;
+import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
+import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
 import com.github.webicitybrowser.webicity.core.renderer.RendererBackendRegistry;
@@ -14,13 +21,16 @@ public interface RenderingEngine {
 	Frame createFrame();
 	
 	AssetLoader getAssetLoader();
-	
+	FetchEngine getFetchEngine();
+
+	HTTPService getHTTPService();
+
 	ProtocolRegistry getProtocolRegistry();
 	
 	RendererBackendRegistry getBackendRendererRegistry();
 	
-	public static RenderingEngine create(AssetLoader assetLoader) {
-		return new RenderingEngineImp(assetLoader);
+	public static RenderingEngine create(AssetLoader assetLoader, HTTPService httpService) {
+		return new RenderingEngineImp(assetLoader, httpService);
 	}
 	
 }

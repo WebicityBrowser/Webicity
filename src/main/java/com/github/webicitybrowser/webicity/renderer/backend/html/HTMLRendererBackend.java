@@ -4,6 +4,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.function.Function;
 
+import com.github.webicitybrowser.spec.fetch.FetchEngine;
+import com.github.webicitybrowser.spec.fetch.connection.imp.HTTPFetchConnectionPool;
+import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
+import com.github.webicitybrowser.webicity.core.renderer.imp.RendererContextImp;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tags.LinkTagHandler;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tags.StyleTagHandler;
+import com.github.webicitybrowser.webicitybrowser.loader.ResourceAssetLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +23,7 @@ import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.renderer.RendererBackend;
 import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.core.renderer.RendererFrontend;
+
 
 public class HTMLRendererBackend implements RendererBackend {
 	
@@ -53,7 +61,14 @@ public class HTMLRendererBackend implements RendererBackend {
 	
 	private void parseDocument(Reader inputReader) throws IOException {
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		new SpiderHTMLParserImp().parse(inputReader, treeBuilder, new HTMLRendererBackendParserSettings(characterReferenceLookup));
+		new SpiderHTMLParserImp().parse(inputReader, treeBuilder, new HTMLRendererBackendParserSettings(characterReferenceLookup, createTagActions()));
+	}
+
+	private TagActions createTagActions() {
+		TagActions tagActions = new ActionsRegistry();
+		tagActions.registerTagAction("link", new LinkTagHandler(rendererContext));
+		tagActions.registerTagAction("style", new StyleTagHandler());
+		return tagActions;
 	}
 
 	public <T extends RendererFrontend> T createFrontend(Function<RendererContext, T> factory) {
