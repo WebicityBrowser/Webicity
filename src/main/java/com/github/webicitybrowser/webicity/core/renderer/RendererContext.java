@@ -7,8 +7,10 @@ import com.github.webicitybrowser.webicity.core.AssetLoader;
 public interface RendererContext {
 
 	AssetLoader getAssetLoader();
+
 	FetchEngine getFetchEngine();
-	URL currentDocumentURL();
+
+	URL getCurrentDocumentURL();
 	
 	void crash(RendererCrashReason reason) throws RendererCrashException;
 	

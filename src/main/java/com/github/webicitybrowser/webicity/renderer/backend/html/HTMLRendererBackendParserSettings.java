@@ -34,7 +34,6 @@ public class HTMLRendererBackendParserSettings implements ParserSettings {
 				TagAction tagAction = tagActions.getAction(element.getLocalName());
 				tagAction.onTagParsed(element);
 			} catch (Exception e) {
-				System.out.println(element.getLocalName());
 				throw new RuntimeException(e);
 			}
 		}

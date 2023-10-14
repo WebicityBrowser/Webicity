@@ -12,12 +12,12 @@ public class RendererContextImp implements RendererContext {
 
 	private final AssetLoader assetLoader;
 	private final FetchEngine fetchEngine;
-	private final URL docURL;
+	private final URL documentURL;
 
 	public RendererContextImp(AssetLoader assetLoader, FetchEngine fetchEngine, URL docURL) {
 		this.assetLoader = assetLoader;
 		this.fetchEngine = fetchEngine;
-		this.docURL = docURL;
+		this.documentURL = docURL;
 	}
 
 	@Override
@@ -31,8 +31,8 @@ public class RendererContextImp implements RendererContext {
 	}
 
 	@Override
-	public URL currentDocumentURL() {
-		return docURL;
+	public URL getCurrentDocumentURL() {
+		return documentURL;
 	}
 
 	@Override
