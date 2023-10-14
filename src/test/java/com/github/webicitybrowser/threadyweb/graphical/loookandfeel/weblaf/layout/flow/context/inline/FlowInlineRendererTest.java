@@ -20,6 +20,7 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirectiv
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpacingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.FlowInlineRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatContext;
@@ -205,7 +206,9 @@ public class FlowInlineRendererTest {
 	@DisplayName("Large text wraps")
 	public void largeTextWraps() {
 		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
-		TextBox textBox = FlowTestUtils.createTextBox("Hello World");
+		DirectivePool textBoxDirectives = new BasicDirectivePool();
+		textBoxDirectives.directive(LineBreakDirective.of(LineBreakDirective.LineBreak.ANYWHERE));
+		TextBox textBox = FlowTestUtils.createTextBox("Hello World", textBoxDirectives);
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 100));
@@ -214,6 +217,24 @@ public class FlowInlineRendererTest {
 		ChildLayoutResult child1 = result.childLayoutResults()[0];
 		ChildLayoutResult child2 = result.childLayoutResults()[1];
 		Assertions.assertEquals(8 * 6, child1.unit().fitSize().width());
+		Assertions.assertEquals(8 * 5, child2.unit().fitSize().width());
+	}
+
+	@Test
+	@DisplayName("Can render box with line breaks between words")
+	public void canRenderBoxWithLineBreaksBetweenWords() {
+		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		TextBox textBox = FlowTestUtils.createTextBox("Hello World");
+		box.getChildrenTracker().addChild(textBox);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(new AbsolutePosition(0, 0), FloatContext.create(FloatTracker.create()));
+		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(
+			new AbsoluteSize(70, 100), new ContextSwitch[] { contextSwitch });
+		LayoutResult result = FlowInlineRenderer.render(FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult child1 = result.childLayoutResults()[0];
+		ChildLayoutResult child2 = result.childLayoutResults()[1];
+		Assertions.assertEquals(8 * 5, child1.unit().fitSize().width());
 		Assertions.assertEquals(8 * 5, child2.unit().fitSize().width());
 	}
 
@@ -312,7 +333,7 @@ public class FlowInlineRendererTest {
 		Assertions.assertEquals(2, result.childLayoutResults().length);
 		ChildLayoutResult child = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(0, 0), child.relativeRect().position());
-		Assertions.assertEquals(48, child.unit().fitSize().width());
+		Assertions.assertEquals(5 * 8, child.unit().fitSize().width());
 	}
 
 }

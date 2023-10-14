@@ -9,10 +9,11 @@ public class CSSOMTextBindings {
 	private CSSOMTextBindings() {}
 
 	public static void installTo(Map<String, CSSOMNamedDeclarationParser<?>> namedDeclarationParsers) {
-		namedDeclarationParsers.put("font-family", new CSSOMFontFamilyParser());
+		namedDeclarationParsers.put("font-family", new CSSOMFontFamilyDeclarationParser());
 		namedDeclarationParsers.put("font-weight", new CSSOMFontWeightDeclarationParser());
 		namedDeclarationParsers.put("font-size", new CSSOMFontSizeDeclarationParser());
 		namedDeclarationParsers.put("letter-spacing", new CSSOMLetterSpacingDeclarationParser());
+		namedDeclarationParsers.put("line-break", new CSSOMLineBreakDeclarationParser());
 	}
 
 }
