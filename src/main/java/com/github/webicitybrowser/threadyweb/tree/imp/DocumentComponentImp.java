@@ -6,17 +6,20 @@ import com.github.webicitybrowser.spec.dom.node.Document;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.threadyweb.context.WebComponentContext;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 
 public class DocumentComponentImp extends BaseWebComponent implements DocumentComponent {
 
 	private final Document document;
+	private final WebComponentContext componentContext;
 	
 	private ElementComponent visibleChild;
 
-	public DocumentComponentImp(Document document) {
+	public DocumentComponentImp(Document document, WebComponentContext componentContext) {
 		this.document = document;
+		this.componentContext = componentContext;
 		updateVisibleChild();
 	}
 
@@ -43,7 +46,7 @@ public class DocumentComponentImp extends BaseWebComponent implements DocumentCo
 		}
 		
 		// TODO: Only create new component if node mismatches existing component's node
-		this.visibleChild = new ElementComponentImp(foundChild);
+		this.visibleChild = new ElementComponentImp(foundChild, componentContext);
 	}
 
 	private Element findElementChild() {

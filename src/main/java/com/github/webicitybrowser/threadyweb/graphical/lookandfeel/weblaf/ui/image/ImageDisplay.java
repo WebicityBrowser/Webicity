@@ -1,0 +1,48 @@
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image;
+
+import java.util.List;
+
+import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.GlobalPaintContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.message.MessageHandler;
+import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
+import com.github.webicitybrowser.threadyweb.tree.ImageComponent;
+
+public class ImageDisplay implements UIDisplay<ImageContext, ImageBox, ImageUnit> {
+
+	@Override
+	public ImageContext createContext(ComponentUI componentUI) {
+		return new ImageContext(this, componentUI);
+	}
+
+	@Override
+	public List<ImageBox> generateBoxes(ImageContext displayContext, BoxContext boxContext,StyleGenerator styleGenerator) {
+		ImageComponent component = (ImageComponent) displayContext.componentUI().getComponent();
+		DirectivePool directives = styleGenerator.getStyleDirectives();
+		return List.of(new ImageBox(this, component, directives));
+	}
+
+	@Override
+	public ImageUnit renderBox(ImageBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+		return ImageRenderer.render(box, globalRenderContext, localRenderContext);
+	}
+
+	@Override
+	public void paint(ImageUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
+		ImagePainter.paint(unit, globalPaintContext, localPaintContext);
+	}
+
+	@Override
+	public MessageHandler createMessageHandler(ImageUnit unit, Rectangle documentRect) {
+		return new NoopMessageHandler();
+	}
+
+}

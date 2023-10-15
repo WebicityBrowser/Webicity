@@ -33,6 +33,7 @@ import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.component.WebComponentContextImp;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGenerator;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGeneratorRoot;
@@ -56,7 +57,8 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 	}
 	
 	private ScreenContent createContent() {
-		Component documentComponent = DocumentComponent.create(backend.getDocument());
+		WebComponentContextImp componentContext = new WebComponentContextImp(rendererContext);
+		Component documentComponent = DocumentComponent.create(backend.getDocument(), componentContext);
 		LookAndFeelBuilder lookAndFeelBuilder = LookAndFeelBuilder.create();
 		SimpleLookAndFeel.installTo(lookAndFeelBuilder);
 		WebLookAndFeel.installTo(lookAndFeelBuilder);
