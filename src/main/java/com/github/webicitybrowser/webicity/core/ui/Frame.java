@@ -21,6 +21,8 @@ public interface Frame {
 
 	void forward();
 
+	void tick();
+
 	void addEventListener(FrameEventListener listener, boolean sync);
 	
 }

@@ -17,6 +17,7 @@ public class DocumentUI implements ComponentUI {
 	public DocumentUI(Component component, ComponentUI parent) {
 		this.component = (DocumentComponent) component;
 		this.parent = parent;
+		this.component.addStylesheetsChangedListener(() -> invalidate(InvalidationLevel.BOX));
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.tree.imp.image;
+package com.github.webicitybrowser.threadyweb.tree.imp;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
@@ -6,8 +6,8 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.context.WebComponentContext;
 import com.github.webicitybrowser.threadyweb.context.image.ImageEngine;
 import com.github.webicitybrowser.threadyweb.context.image.ImageState;
-import com.github.webicitybrowser.threadyweb.tree.ImageComponent;
-import com.github.webicitybrowser.threadyweb.tree.imp.BaseWebComponent;
+import com.github.webicitybrowser.threadyweb.tree.image.ImageComponent;
+import com.github.webicitybrowser.threadyweb.tree.image.ImageStatus;
 
 public class ImageWebComponent extends BaseWebComponent implements ImageComponent {
 
@@ -30,6 +30,12 @@ public class ImageWebComponent extends BaseWebComponent implements ImageComponen
 	@Override
 	public Class<? extends Component> getPrimaryType() {
 		return ImageComponent.class;
+	}
+
+	@Override
+	public ImageStatus getImageStatus() {
+		String altText = element.hasAttribute("alt") ? element.getAttribute("alt") : "Image";
+		return new ImageStatus(false, null, altText);
 	}
 	
 }

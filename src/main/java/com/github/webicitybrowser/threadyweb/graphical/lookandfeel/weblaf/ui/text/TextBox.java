@@ -6,6 +6,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDispl
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebFontUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 import com.github.webicitybrowser.threadyweb.tree.TextComponent;
@@ -28,18 +29,9 @@ public record TextBox(
 			return fontOverride;
 		}
 
-		SizeCalculationContext calculationContext = createSizeCalculationContext(renderContext, localRenderContext);
+		SizeCalculationContext calculationContext = LayoutSizeUtils.createSizeCalculationContext(renderContext, localRenderContext, true);
 
 		return WebFontUtil.getFont(styleDirectives, calculationContext, renderContext);
-	}
-
-	private SizeCalculationContext createSizeCalculationContext(GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
-		return new SizeCalculationContext(
-			localRenderContext.getPreferredSize(),
-			renderContext.viewportSize(),
-			localRenderContext.getParentFontMetrics(),
-			renderContext.rootFontMetrics(),
-			true);
 	}
 	
 }

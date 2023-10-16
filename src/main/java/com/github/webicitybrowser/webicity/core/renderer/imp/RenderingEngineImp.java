@@ -1,5 +1,8 @@
 package com.github.webicitybrowser.webicity.core.renderer.imp;
 
+import java.lang.ref.SoftReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
@@ -33,6 +36,7 @@ public class RenderingEngineImp implements RenderingEngine {
 	
 	private final ProtocolRegistry protocolRegistry = new ProtocolRegistryImp();
 	private final RendererBackendRegistry rendererBackendRegistry = new RendererBackendRegistryImp();
+	private final List<SoftReference<Frame>> frames = new ArrayList<>();
 
 	public RenderingEngineImp(AssetLoader assetLoader, HTTPService httpService) {
 		this.assetLoader = assetLoader;
@@ -41,7 +45,10 @@ public class RenderingEngineImp implements RenderingEngine {
 
 	@Override
 	public Frame createFrame() {
-		return new FrameImp(this);
+		Frame frame = new FrameImp(this);
+		frames.add(new SoftReference<>(frame));
+
+		return frame;
 	}
 	
 	@Override
@@ -86,6 +93,21 @@ public class RenderingEngineImp implements RenderingEngine {
 	@Override
 	public RendererBackendRegistry getBackendRendererRegistry() {
 		return this.rendererBackendRegistry;
+	}
+
+	@Override
+	public void tick() {
+		for (int i = 0; i < frames.size(); i++) {
+			SoftReference<Frame> frameReference = frames.get(i);
+			Frame frame = frameReference.get();
+			if (frame == null) {
+				frames.remove(i);
+				i--;
+				continue;
+			}
+			
+			frame.tick();
+		}
 	}
 	
 	private RendererHandle openRenderer(Connection connection) {

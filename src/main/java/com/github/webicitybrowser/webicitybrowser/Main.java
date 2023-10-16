@@ -105,7 +105,7 @@ public class Main {
 	}
 
 	private static void startGUIFor(BrowserInstance browserInstance, WindowSet windowSet) {
-		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
+		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault(() -> browserInstance.tick());
 		new WindowSetGUI(browserInstance, windowSet,
 			(component, callback) -> createWindowFor(graphicsSystem, component, callback)).start();
 		graphicsSystem.startRenderLoop();

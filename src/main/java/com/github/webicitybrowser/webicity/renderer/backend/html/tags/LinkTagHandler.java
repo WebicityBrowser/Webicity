@@ -1,26 +1,27 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.tags;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
-import com.github.webicitybrowser.spec.fetch.FetchRequest;
-import com.github.webicitybrowser.spec.fetch.FetchConsumeBodyAction;
-import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
+import com.github.webicitybrowser.spec.fetch.FetchRequest;
+import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
 import com.github.webicitybrowser.spec.fetch.builder.imp.FetchParametersBuilderImp;
 import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
-import com.github.webicitybrowser.spec.fetch.taskdestination.ParallelQueue;
+import com.github.webicitybrowser.spec.htmlbrowsers.tasks.EventLoop;
+import com.github.webicitybrowser.spec.htmlbrowsers.tasks.TaskQueue;
 import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
-import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
-import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.NoLinkAction;
+import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.LinkAction;
+import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.NoLinkAction;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.StylesheetAction;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tasks.TaskQueueTaskDestination;
 
 public class LinkTagHandler implements TagAction {
 
-	private final RendererContext context;
+	private final HTMLRendererContext context;
 
-	public LinkTagHandler(RendererContext context) {
+	public LinkTagHandler(HTMLRendererContext context) {
 		this.context = context;
 	}
 
@@ -40,7 +41,10 @@ public class LinkTagHandler implements TagAction {
 	private void defaultFetchAndProcessLinkResource(Element element) {
 		FetchRequest request = null;
 		try {
-			request = FetchRequest.createRequest("GET", URL.of(context.getCurrentDocumentURL(), element.getAttribute("href")));
+			URL url = URL.of(
+				context.rendererContext().getCurrentDocumentURL(),
+				element.getAttribute("href"));
+			request = FetchRequest.createRequest("GET", url);
 		} catch (InvalidURLException e) {
 			throw new RuntimeException(e);
 		}
@@ -50,21 +54,20 @@ public class LinkTagHandler implements TagAction {
 		}
 
 		FetchParametersBuilder parametersBuilder = new FetchParametersBuilderImp();
-		parametersBuilder.setRequest(request);
-		parametersBuilder.setTaskDestination(new ParallelQueue());
-		parametersBuilder.setConsumeBodyAction(new FetchConsumeBodyAction() {
-			@Override
-			public void execute(FetchResponse response, boolean success, byte[] body) {
-				success = true;
-				if(response.body().source() == null || !(response instanceof FetchResponseImp)) {
-					success = false;
-				}
-				processTheLinkedResource(element, success, response, body);
-			}
-		});
-		FetchEngine fetchEngine = context.getFetchEngine();
-		fetchEngine.fetch(parametersBuilder.build());
+		TaskQueue networkQueue = context.eventLoop().getTaskQueue(EventLoop.NETWORK_TASK_QUEUE);
 
+		parametersBuilder.setRequest(request);
+		parametersBuilder.setTaskDestination(new TaskQueueTaskDestination(networkQueue));
+		parametersBuilder.setConsumeBodyAction((response, success, body) -> {
+			success = true;
+			if(body == null || !(response instanceof FetchResponseImp)) {
+				success = false;
+			}
+			processTheLinkedResource(element, success, response, body);
+		});
+
+		FetchEngine fetchEngine = context.rendererContext().getFetchEngine();
+		fetchEngine.fetch(parametersBuilder.build());
 	}
 
 	private boolean linkedResourceFetchSetupSteps(Element element, FetchRequest request) {
@@ -72,14 +75,13 @@ public class LinkTagHandler implements TagAction {
 	}
 
 	private void processTheLinkedResource(Element el, boolean success, FetchResponse response, byte[] bodyBytes) {
-		LinkAction stylesheetAction = switch(el.getAttribute("rel")) {
+		if (!success || !el.hasAttribute("rel")) return;
+		LinkAction stylesheetAction = switch (el.getAttribute("rel")) {
 			case "stylesheet" -> new StylesheetAction();
 			default -> new NoLinkAction();
 		};
 
-		if(el.getAttribute("rel").equals("stylesheet")) {
-			stylesheetAction = new StylesheetAction();
-		}
+		// TODO: Make sure stylesheets are synchronous
 		stylesheetAction.processThisTypeOfLinkedResource(el, success, response, bodyBytes);
 	}
 

@@ -6,8 +6,8 @@ import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.Text;
 import com.github.webicitybrowser.threadyweb.context.WebComponentContext;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
-import com.github.webicitybrowser.threadyweb.tree.ImageComponent;
 import com.github.webicitybrowser.threadyweb.tree.WebComponent;
+import com.github.webicitybrowser.threadyweb.tree.image.ImageComponent;
 import com.github.webicitybrowser.threadyweb.tree.imp.TextComponentImp;
 
 public final class WebComponentFactory {

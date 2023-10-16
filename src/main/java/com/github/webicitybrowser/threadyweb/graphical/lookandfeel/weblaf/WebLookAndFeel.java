@@ -7,8 +7,8 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.ima
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextUI;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
-import com.github.webicitybrowser.threadyweb.tree.ImageComponent;
 import com.github.webicitybrowser.threadyweb.tree.TextComponent;
+import com.github.webicitybrowser.threadyweb.tree.image.ImageComponent;
 
 public final class WebLookAndFeel {
 

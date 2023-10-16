@@ -9,5 +9,7 @@ public interface RendererHandle {
 	Optional<RendererCrashReason> getCrashReason();
 
 	void crash(RendererCrashReason crashReason);
+
+	void tick();
 	
 }

@@ -7,6 +7,8 @@ import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective.BoxSizing;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.BoxOffsetDimensions;
@@ -85,17 +87,29 @@ public final class LayoutSizeUtils {
 		return new AbsoluteSize(widthComponent, heightComponent);
 	}
 
-	public static SizeCalculationContext createSizeCalculationContext(LayoutManagerContext context, FontMetrics parentFontMetrics, boolean isHorizontal) {
-		return new SizeCalculationContext(
-			context.localRenderContext().getPreferredSize(),
-			context.globalRenderContext().viewportSize(),
-			parentFontMetrics,
-			context.globalRenderContext().rootFontMetrics(),
-			isHorizontal);
-	}
-
 	public static SizeCalculationContext createSizeCalculationContext(LayoutManagerContext context, boolean isHorizontal) {
 		return createSizeCalculationContext(context, context.localRenderContext().getParentFontMetrics(), isHorizontal);
+	}
+
+	public static SizeCalculationContext createSizeCalculationContext(LayoutManagerContext context, FontMetrics parentFontMetrics, boolean isHorizontal) {
+		return createSizeCalculationContext(context.globalRenderContext(), context.localRenderContext(), parentFontMetrics, isHorizontal);
+	}
+
+	public static SizeCalculationContext createSizeCalculationContext(
+		GlobalRenderContext context, LocalRenderContext localRenderContext, boolean isHorizontal
+	) {
+		return createSizeCalculationContext(context, localRenderContext, localRenderContext.getParentFontMetrics(), isHorizontal);
+	}
+
+	public static SizeCalculationContext createSizeCalculationContext(
+		GlobalRenderContext context, LocalRenderContext localRenderContext, FontMetrics parentFontMetrics, boolean isHorizontal
+	) {
+		return new SizeCalculationContext(
+			localRenderContext.getPreferredSize(),
+			context.viewportSize(),
+			parentFontMetrics,
+			context.rootFontMetrics(),
+			isHorizontal);
 	}
 
 	private static float computeSize(

@@ -11,6 +11,6 @@ public interface SkijaWindowingThread {
 
 	InvalidationScheduler getInvalidationScheduler();
 
-	void startRenderLoop();
+	void startRenderLoop(Runnable tickHandler);
 
 }

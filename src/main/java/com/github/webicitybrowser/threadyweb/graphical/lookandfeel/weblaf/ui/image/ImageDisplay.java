@@ -14,7 +14,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
-import com.github.webicitybrowser.threadyweb.tree.ImageComponent;
+import com.github.webicitybrowser.threadyweb.tree.image.ImageComponent;
+import com.github.webicitybrowser.threadyweb.tree.image.ImageStatus;
 
 public class ImageDisplay implements UIDisplay<ImageContext, ImageBox, ImageUnit> {
 
@@ -32,12 +33,22 @@ public class ImageDisplay implements UIDisplay<ImageContext, ImageBox, ImageUnit
 
 	@Override
 	public ImageUnit renderBox(ImageBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		return ImageRenderer.render(box, globalRenderContext, localRenderContext);
+		ImageStatus imageStatus = box.owningComponent().getImageStatus();
+		if (imageStatus.canImageBeShown()) {
+			throw new UnsupportedOperationException("ImageRenderer.render");
+		} else {
+			String altText = imageStatus.imageAltText();
+			return ImageAltRenderer.render(box, globalRenderContext, localRenderContext, altText);
+		}
 	}
 
 	@Override
 	public void paint(ImageUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
-		ImagePainter.paint(unit, globalPaintContext, localPaintContext);
+		if (unit instanceof ImageAltUnit ImageAltUnit) {
+			ImageAltPainter.paint(ImageAltUnit, globalPaintContext, localPaintContext);
+		} else {
+			throw new UnsupportedOperationException("ImagePainter.paint");
+		}
 	}
 
 	@Override

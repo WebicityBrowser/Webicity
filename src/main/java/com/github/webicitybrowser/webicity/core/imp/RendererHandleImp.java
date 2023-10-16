@@ -36,6 +36,11 @@ public class RendererHandleImp implements RendererHandle {
 		this.crashReason = Optional.of(crashReason);
 	}
 
+	@Override
+	public void tick() {
+		this.renderer.ifPresent(RendererBackend::tick);
+	}
+
 	public static RendererHandle of(RendererBackend renderer) {
 		return new RendererHandleImp(renderer);
 	}

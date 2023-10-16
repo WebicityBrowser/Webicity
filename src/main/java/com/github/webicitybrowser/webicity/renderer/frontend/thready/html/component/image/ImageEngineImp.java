@@ -3,14 +3,14 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.compo
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.threadyweb.context.image.ImageEngine;
 import com.github.webicitybrowser.threadyweb.context.image.ImageState;
-import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
+import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererContext;
 
 public class ImageEngineImp implements ImageEngine {
 
-	private final RendererContext rendererContext;
+	private final HTMLRendererContext htmlRendererContext;
 
-	public ImageEngineImp(RendererContext rendererContext) {
-		this.rendererContext = rendererContext;
+	public ImageEngineImp(HTMLRendererContext rendererContext) {
+		this.htmlRendererContext = rendererContext;
 	}
 
 	@Override

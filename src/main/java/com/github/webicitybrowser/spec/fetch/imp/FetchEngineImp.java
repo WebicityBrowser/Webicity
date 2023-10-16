@@ -1,5 +1,8 @@
 package com.github.webicitybrowser.spec.fetch.imp;
 
+import java.util.function.Consumer;
+
+import com.github.webicitybrowser.spec.fetch.Body;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchParams;
@@ -7,6 +10,7 @@ import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
+import com.github.webicitybrowser.spec.fetch.taskdestination.TaskDestination;
 import com.github.webicitybrowser.spec.stream.ByteStreamReader;
 import com.github.webicitybrowser.spec.url.URL;
 
@@ -43,10 +47,11 @@ public class FetchEngineImp implements FetchEngine {
 
 	private void fetchResponseHandover(FetchParams params, FetchResponse response) {
 		if (params.consumeBodyAction() != null) {
+			Consumer<byte[]> processBody = nullOrBytes -> params.consumeBodyAction().execute(response, true, nullOrBytes);
 			if(response.body() == null) {
-				queueAFetchTask(() -> params.consumeBodyAction().execute(response, true, new byte[] {}), params);
+				queueAFetchTask(() -> processBody.accept(null), params);
 			} else {
-				fullyReadBody(params, response);
+				fullyReadBody(response.body(), processBody, params.taskDestination());
 			}
 		}
 	}
@@ -55,15 +60,13 @@ public class FetchEngineImp implements FetchEngine {
 		params.taskDestination().enqueue(fetchTask);
 	}
 
-	private void fullyReadBody(FetchParams params, FetchResponse response) {
-		params.consumeBodyAction().execute(response, true, new byte[] {});
+	private void fullyReadBody(Body body, Consumer<byte[]> processBody, TaskDestination taskDestination) {
 		try {
-			final byte[] allBytes =  ByteStreamReader.readAllBytes(response.body().readableStream());
-			params.taskDestination().enqueue(
-				() -> params.consumeBodyAction().execute(response, true, allBytes)
-			);
+			final byte[] allBytes = ByteStreamReader.readAllBytes(body.readableStream());
+			Consumer<byte[]> successSteps = bytes -> taskDestination.enqueue(() -> processBody.accept(bytes));
+			successSteps.accept(allBytes);
 		} catch (Exception e) {
-			params.taskDestination().enqueue(() -> params.consumeBodyAction().execute(response, false, new byte[] {}));
+			// TODO
 		}
 	}
 

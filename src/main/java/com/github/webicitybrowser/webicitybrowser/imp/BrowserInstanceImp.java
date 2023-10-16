@@ -16,4 +16,9 @@ public class BrowserInstanceImp implements BrowserInstance {
 		return this.renderingEngine;
 	}
 
+	@Override
+	public void tick() {
+		renderingEngine.tick();
+	}
+
 }

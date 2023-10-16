@@ -29,8 +29,8 @@ import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.WebLookAndFeel;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
-import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
+import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.component.WebComponentContextImp;
@@ -42,12 +42,12 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 
 	private final HTMLRendererBackend backend;
-	private final RendererContext rendererContext;
+	private final HTMLRendererContext htmlRendererContext;
 	private final ScreenContent content;
 
-	public ThreadyHTMLRendererFrontend(HTMLRendererBackend backend, RendererContext rendererContext) {
+	public ThreadyHTMLRendererFrontend(HTMLRendererBackend backend, HTMLRendererContext htmlRendererContext) {
 		this.backend = backend;
-		this.rendererContext = rendererContext;
+		this.htmlRendererContext = htmlRendererContext;
 		this.content = createContent();
 	}
 
@@ -57,7 +57,7 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 	}
 	
 	private ScreenContent createContent() {
-		WebComponentContextImp componentContext = new WebComponentContextImp(rendererContext);
+		WebComponentContextImp componentContext = new WebComponentContextImp(htmlRendererContext);
 		Component documentComponent = DocumentComponent.create(backend.getDocument(), componentContext);
 		LookAndFeelBuilder lookAndFeelBuilder = LookAndFeelBuilder.create();
 		SimpleLookAndFeel.installTo(lookAndFeelBuilder);
@@ -84,7 +84,7 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 
 	private CSSRuleList loadUAStylesheet() {
 		// TODO: Better error handling
-		AssetLoader assetLoader = rendererContext.getAssetLoader();
+		AssetLoader assetLoader = htmlRendererContext.rendererContext().getAssetLoader();
 		try (Reader reader = assetLoader.streamAsset("static", "renderer/html/ua.css")) {
 			Token[] tokens = CSSTokenizer.create().tokenize(reader);
 			CSSRule[] rules = CSSParser.create().parseAListOfRules(tokens);
