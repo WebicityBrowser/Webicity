@@ -35,7 +35,9 @@ public final class FlowInlineRenderer {
 			addBoxToLine(state, childBox);
 		}
 
-		return createInnerDisplayUnit(state);
+		LayoutManagerContext layoutManagerContext = context.layoutManagerContext();
+		float lineDepth = FlowUtils.getLineHeight(layoutManagerContext, layoutManagerContext.layoutDirectives());
+		return createInnerDisplayUnit(state, lineDepth);
 	}
 
 	private static void prepareTextRendering(FlowInlineRendererState state) {
@@ -97,7 +99,7 @@ public final class FlowInlineRenderer {
 		return new AbsoluteSize(marker.rightEdgeSize(), marker.bottomEdgeSize());
 	}
 
-	private static LayoutResult createInnerDisplayUnit(FlowInlineRendererState state) {
+	private static LayoutResult createInnerDisplayUnit(FlowInlineRendererState state, float lineDepth) {
 		List<ChildLayoutResult> childLayoutResults = new ArrayList<>();
 		LineDirection lineDirection = state.lineContext().lineDirection();
 
@@ -108,7 +110,8 @@ public final class FlowInlineRenderer {
 			childLayoutResults.addAll(layoutFinalLine(line, linePosition, state));
 
 			LineDimension lineSize = LineDimensionConverter.convertToLineDimension(line.getSize(), lineDirection);
-			linePosition = new LineDimension(0, linePosition.depth() + lineSize.depth(), lineDirection);
+			float finalLineDepth = lineDepth != -1 ? lineDepth : lineSize.depth();
+			linePosition = new LineDimension(0, linePosition.depth() + finalLineDepth, lineDirection);
 
 			totalSize = new LineDimension(Math.max(totalSize.run(), lineSize.run()), linePosition.depth(), lineDirection);
 		}
