@@ -12,9 +12,12 @@ import com.github.webicitybrowser.spec.fetch.taskdestination.ParallelQueue;
 import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
+import com.github.webicitybrowser.webicity.renderer.backend.html.CSSRulesUtils;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.NoLinkAction;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.LinkAction;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.StylesheetAction;
+
+import java.io.InputStreamReader;
 
 public class LinkTagHandler implements TagAction {
 
@@ -34,6 +37,7 @@ public class LinkTagHandler implements TagAction {
 		if(!element.hasAttribute("href") && !element.hasAttribute("imagesrcset")) {
 			return;
 		}
+
 		defaultFetchAndProcessLinkResource(element);
 	}
 
@@ -72,7 +76,9 @@ public class LinkTagHandler implements TagAction {
 	}
 
 	private void processTheLinkedResource(Element el, boolean success, FetchResponse response, byte[] bodyBytes) {
-		LinkAction stylesheetAction = switch(el.getAttribute("rel")) {
+		if(!el.hasAttribute("rel")) return;
+
+		LinkAction stylesheetAction = switch (el.getAttribute("rel")) {
 			case "stylesheet" -> new StylesheetAction();
 			default -> new NoLinkAction();
 		};
@@ -80,6 +86,7 @@ public class LinkTagHandler implements TagAction {
 		if(el.getAttribute("rel").equals("stylesheet")) {
 			stylesheetAction = new StylesheetAction();
 		}
+
 		stylesheetAction.processThisTypeOfLinkedResource(el, success, response, bodyBytes);
 	}
 
