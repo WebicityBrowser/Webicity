@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 
-public class CSSOMTextBindings {
+public final class CSSOMTextBindings {
 	
 	private CSSOMTextBindings() {}
 
