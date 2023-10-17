@@ -19,6 +19,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.HeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flow.LineHeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpacingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
@@ -334,6 +335,24 @@ public class FlowInlineRendererTest {
 		ChildLayoutResult child = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(0, 0), child.relativeRect().position());
 		Assertions.assertEquals(5 * 8, child.unit().fitSize().width());
+	}
+
+	@Test
+	@DisplayName("Line height is respected")
+	public void lineHeightIsRespected() {
+		DirectivePool directives = new BasicDirectivePool();
+		directives.directive(LineHeightDirective.of(_1 -> 13));
+		ChildrenBox box = new TestStubChildrenBox(directives);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 50));
+		LayoutResult result = FlowInlineRenderer.render(FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(10, 13), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(10, 10), childLayoutResult.relativeRect().size());
 	}
 
 }
