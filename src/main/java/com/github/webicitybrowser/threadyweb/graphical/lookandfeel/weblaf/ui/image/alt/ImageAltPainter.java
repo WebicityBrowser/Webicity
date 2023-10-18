@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.alt;
 
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;

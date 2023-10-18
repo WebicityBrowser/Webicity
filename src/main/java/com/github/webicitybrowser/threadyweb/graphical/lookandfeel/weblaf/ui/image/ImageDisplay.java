@@ -14,6 +14,12 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.alt.ImageAltPainter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.alt.ImageAltRenderer;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.alt.ImageAltUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.loaded.LoadedImagePainter;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.loaded.LoadedImageRenderer;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.loaded.LoadedImageUnit;
 import com.github.webicitybrowser.threadyweb.tree.image.ImageComponent;
 import com.github.webicitybrowser.threadyweb.tree.image.ImageStatus;
 
@@ -35,7 +41,7 @@ public class ImageDisplay implements UIDisplay<ImageContext, ImageBox, ImageUnit
 	public ImageUnit renderBox(ImageBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		ImageStatus imageStatus = box.owningComponent().getImageStatus();
 		if (imageStatus.canImageBeShown()) {
-			throw new UnsupportedOperationException("ImageRenderer.render");
+			return LoadedImageRenderer.render(box, globalRenderContext, localRenderContext, imageStatus.imageData());
 		} else {
 			String altText = imageStatus.imageAltText();
 			return ImageAltRenderer.render(box, globalRenderContext, localRenderContext, altText);
@@ -46,6 +52,8 @@ public class ImageDisplay implements UIDisplay<ImageContext, ImageBox, ImageUnit
 	public void paint(ImageUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		if (unit instanceof ImageAltUnit ImageAltUnit) {
 			ImageAltPainter.paint(ImageAltUnit, globalPaintContext, localPaintContext);
+		} else if (unit instanceof LoadedImageUnit loadedImageUnit) {
+			LoadedImagePainter.paint(loadedImageUnit, globalPaintContext, localPaintContext);
 		} else {
 			throw new UnsupportedOperationException("ImagePainter.paint");
 		}

@@ -3,6 +3,7 @@ package com.github.webicitybrowser.webicity.core;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.url.URL;
+import com.github.webicitybrowser.webicity.core.image.ImageLoaderRegistry;
 import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
 import com.github.webicitybrowser.webicity.core.renderer.RendererBackendRegistry;
 import com.github.webicitybrowser.webicity.core.renderer.RendererHandle;
@@ -22,6 +23,8 @@ public interface RenderingEngine {
 	HTTPService getHTTPService();
 
 	ProtocolRegistry getProtocolRegistry();
+
+	ImageLoaderRegistry getImageLoaderRegistry();
 	
 	RendererBackendRegistry getBackendRendererRegistry();
 	

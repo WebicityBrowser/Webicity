@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.threadyweb.tree.image;
 
-public record ImageStatus(boolean canImageBeShown, byte[] imageData, String imageAltText) {
+import com.github.webicitybrowser.webicity.core.image.ImageData;
+
+public record ImageStatus(boolean canImageBeShown, ImageData imageData, String imageAltText) {
 
 }
