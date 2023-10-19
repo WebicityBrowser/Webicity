@@ -26,6 +26,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.
 public class LineBox {
 
 	private final CursorTracker cursorTracker;
+	private final DirectivePool lineStyles;
 	private final LineDirection lineDirection;
 	private final LineDimension maxLineSize;
 	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator;
@@ -35,8 +36,9 @@ public class LineBox {
 
 	private AbsolutePosition estimatedPosition;
 
-	public LineBox(LineDimension maxLineSize, Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator) {
+	public LineBox(LineDimension maxLineSize, DirectivePool lineStyles, Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator) {
 		this.lineDirection = maxLineSize.direction();
+		this.lineStyles = lineStyles;
 		this.cursorTracker = new LineCursorTracker(lineDirection);
 		this.maxLineSize = maxLineSize;
 		this.innerUnitGenerator = innerUnitGenerator;
@@ -113,6 +115,10 @@ public class LineBox {
 
 	public LineDirection getLineDirection() {
 		return lineDirection;
+	}
+
+	public DirectivePool getLineStyles() {
+		return lineStyles;
 	}
 
 	//
