@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.marker.LineMarker;
@@ -41,7 +42,8 @@ public class LineContext {
 		AbsolutePosition nextLinePosition = determineNextLinePosition();
 		LineDimension maxLineSize = maxLineSizeGenerator.apply(nextLinePosition);
 
-		LineBox newLine = new LineBox(maxLineSize, context.builableUnitGenerator());
+		DirectivePool lineStyles = context.layoutManagerContext().layoutDirectives();
+		LineBox newLine = new LineBox(maxLineSize, lineStyles, context.builableUnitGenerator());
 		newLine.setEstimatedPosition(nextLinePosition);
 		copyUnresolvedMarkers(newLine);
 		this.currentLine = newLine;
