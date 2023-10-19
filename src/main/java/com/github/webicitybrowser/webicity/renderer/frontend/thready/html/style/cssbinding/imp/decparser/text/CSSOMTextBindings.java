@@ -14,6 +14,7 @@ public final class CSSOMTextBindings {
 		namedDeclarationParsers.put("font-size", new CSSOMFontSizeDeclarationParser());
 		namedDeclarationParsers.put("letter-spacing", new CSSOMLetterSpacingDeclarationParser());
 		namedDeclarationParsers.put("line-break", new CSSOMLineBreakDeclarationParser());
+		namedDeclarationParsers.put("text-align", new CSSOMTextAlignDeclarationParser());
 	}
 
 }

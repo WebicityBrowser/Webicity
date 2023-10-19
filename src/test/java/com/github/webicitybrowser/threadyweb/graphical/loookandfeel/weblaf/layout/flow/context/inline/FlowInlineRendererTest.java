@@ -22,6 +22,8 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.s
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flow.LineHeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpacingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.TextAlignDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.TextAlignDirective.TextAlign;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.FlowInlineRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatContext;
@@ -352,6 +354,24 @@ public class FlowInlineRendererTest {
 		Assertions.assertEquals(1, result.childLayoutResults().length);
 		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(10, 10), childLayoutResult.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can align line right")
+	public void canAlignLineRight() {
+		DirectivePool directives = new BasicDirectivePool();
+		directives.directive(TextAlignDirective.of(TextAlign.RIGHT));
+		ChildrenBox box = new TestStubChildrenBox(directives);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
+		box.getChildrenTracker().addChild(childBox);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 50), new ContextSwitch[0]);
+		LayoutResult result = FlowInlineRenderer.render(FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(new AbsoluteSize(10, 10), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(40, 0), childLayoutResult.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(10, 10), childLayoutResult.relativeRect().size());
 	}
 
