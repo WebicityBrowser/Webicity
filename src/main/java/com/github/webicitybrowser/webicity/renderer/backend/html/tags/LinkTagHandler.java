@@ -66,7 +66,7 @@ public class LinkTagHandler implements TagAction {
 			processTheLinkedResource(element, success, response, body);
 		});
 
-		FetchEngine fetchEngine = context.rendererContext().getFetchEngine();
+		FetchEngine fetchEngine = context.rendererContext().getRenderingEngine().getFetchEngine();
 		fetchEngine.fetch(parametersBuilder.build());
 	}
 

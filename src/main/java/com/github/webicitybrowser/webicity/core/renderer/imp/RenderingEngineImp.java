@@ -136,6 +136,6 @@ public class RenderingEngineImp implements RenderingEngine {
 	}
 
 	private RendererContext createRendererContext(URL url) {
-		return new RendererContextImp(assetLoader, fetchEngine, url);
+		return new RendererContextImp(this, url);
 	}
 }

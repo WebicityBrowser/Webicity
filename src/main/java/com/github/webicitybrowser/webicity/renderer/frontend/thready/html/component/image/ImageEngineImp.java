@@ -13,7 +13,8 @@ import com.github.webicitybrowser.threadyweb.context.image.ImageRequest;
 import com.github.webicitybrowser.threadyweb.context.image.ImageRequest.ImageRequestState;
 import com.github.webicitybrowser.threadyweb.context.image.ImageState;
 import com.github.webicitybrowser.webicity.core.image.ImageData;
-import com.github.webicitybrowser.webicity.core.image.ImageFrame;
+import com.github.webicitybrowser.webicity.core.image.ImageLoader;
+import com.github.webicitybrowser.webicity.core.image.ImageLoaderRegistry;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.tasks.TaskQueueTaskDestination;
 
@@ -45,23 +46,16 @@ public class ImageEngineImp implements ImageEngine {
 			.setConsumeBodyAction((response, success, body) -> onImageLoadComplete(imageState, imageRequest, response, success, body))
 			.setTaskDestination(createTaskDestination())
 			.build();
-		htmlRendererContext.rendererContext().getFetchEngine().fetch(parameters);
+		htmlRendererContext.rendererContext().getRenderingEngine().getFetchEngine().fetch(parameters);
 	}
 
 	private void onImageLoadComplete(ImageState imageState, ImageRequest request, FetchResponse response, boolean success, byte[] body) {
-		byte[] rasterData = new byte[60 * 60 * 4];
-		for (int i = 0; i < rasterData.length; i++) {
-			rasterData[i] = (byte) Math.floor(Math.random() * 255);
-			if (i % 4 == 3) rasterData[i] = (byte) 255;
-		}
+		String imageType = "image/png"; // TODO: Get from response
+		ImageLoaderRegistry imageLoaderRegistry = htmlRendererContext.rendererContext().getRenderingEngine().getImageLoaderRegistry();
+		ImageLoader imageLoader = imageLoaderRegistry.getImageLoaderForType(imageType);
+		ImageData imageData = imageLoader.loadImage(body);
 
 		request.setState(ImageRequestState.COMPLETELY_AVAILABLE);
-		ImageData imageData = () -> new ImageFrame[] { new ImageFrame() {
-			public int getWidth() { return 60; }
-			public int getHeight() { return 60; }
-			public byte[] getBitmap() { return rasterData; }
-		}};
-
 		request.setImageData(imageData);
 	}
 

@@ -8,12 +8,14 @@ import com.github.webicitybrowser.spec.http.encoding.chunked.ChunkedEncoding;
 import com.github.webicitybrowser.spec.http.version.http11.HTTP11Version;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
 import com.github.webicitybrowser.webicity.core.RenderingEngine;
+import com.github.webicitybrowser.webicity.core.image.ImageLoaderRegistry;
 import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
 import com.github.webicitybrowser.webicity.protocol.AboutProtocol;
 import com.github.webicitybrowser.webicity.protocol.FileProtocol;
 import com.github.webicitybrowser.webicity.protocol.HTTPProtocol;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicitybrowser.engine.file.FileUnicodeLookup;
+import com.github.webicitybrowser.webicitybrowser.engine.image.PNGImageLoader;
 import com.github.webicitybrowser.webicitybrowser.engine.net.SocketChannelHTTPTransportFactory;
 import com.github.webicitybrowser.webicitybrowser.engine.protocol.WebicityProtocol;
 import com.github.webicitybrowser.webicitybrowser.loader.ResourceAssetLoader;
@@ -27,6 +29,7 @@ public final class RenderingEngineCreator {
 		
 		registerProtocols(renderingEngine);
 		registerBackendRenderers(renderingEngine);
+		registerImageLoaders(renderingEngine);
 		
 		return renderingEngine;
 	}
@@ -46,6 +49,11 @@ public final class RenderingEngineCreator {
 		
 		renderingEngine.getBackendRendererRegistry()
 			.registerBackendFactory("text/html", (r, c) -> new HTMLRendererBackend(r, c, characterReferenceLookup));
+	}
+
+	private static void registerImageLoaders(RenderingEngine renderingEngine) {
+		ImageLoaderRegistry imageLoaderRegistry = renderingEngine.getImageLoaderRegistry();
+		imageLoaderRegistry.registerImageLoader(new PNGImageLoader());
 	}
 
 	private static HTTPService createHTTPService() {

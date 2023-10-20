@@ -84,7 +84,7 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 
 	private CSSRuleList loadUAStylesheet() {
 		// TODO: Better error handling
-		AssetLoader assetLoader = htmlRendererContext.rendererContext().getAssetLoader();
+		AssetLoader assetLoader = htmlRendererContext.rendererContext().getRenderingEngine().getAssetLoader();
 		try (Reader reader = assetLoader.streamAsset("static", "renderer/html/ua.css")) {
 			Token[] tokens = CSSTokenizer.create().tokenize(reader);
 			CSSRule[] rules = CSSParser.create().parseAListOfRules(tokens);
