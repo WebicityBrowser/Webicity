@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.codec.png.imp.chunk.ihdr;
+package com.github.webicitybrowser.codec.png.chunk.ihdr;
 
 public record IHDRChunkInfo(
 	int width, int height, byte bitDepth, byte colorType,

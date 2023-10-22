@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.codec.png.imp.chunk.plte;
+package com.github.webicitybrowser.codec.png.chunk.plte;
 
 import com.github.webicitybrowser.codec.png.exception.MalformedPNGException;
 

@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.codec.png.imp.chunk.idat;
+package com.github.webicitybrowser.codec.png.chunk.idat;
 
 public final class IDATColorDecoder {
 	

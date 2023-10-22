@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.codec.png.imp;
+package com.github.webicitybrowser.codec.png;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +20,11 @@ public final class PNGChunkInfoReader {
 	private static int readInt(InputStream inputStream) throws IOException {
 		int length = 0;
 		for (int i = 0; i < 4; i++) {
-			length = (length << 8) | readByte(inputStream);
+			int byteRead = inputStream.read();
+			if (byteRead == -1) {
+				throw new IOException("Unexpected end of stream");
+			}
+			length = (length << 8) | byteRead;
 		}
 
 		return length;
@@ -29,7 +33,7 @@ public final class PNGChunkInfoReader {
 	private static byte[] readType(InputStream inputStream) throws IOException {
 		byte[] type = new byte[4];
 		for (int i = 0; i < 4; i++) {
-			type[i] = (byte) inputStream.read();
+			type[i] = readByte(inputStream);
 		}
 
 		return type;
@@ -38,7 +42,7 @@ public final class PNGChunkInfoReader {
 	private static byte[] readData(InputStream inputStream, int length) throws IOException {
 		byte[] data = new byte[length];
 		for (int i = 0; i < length; i++) {
-			data[i] = (byte) inputStream.read();
+			data[i] = readByte(inputStream);
 		}
 
 		return data;

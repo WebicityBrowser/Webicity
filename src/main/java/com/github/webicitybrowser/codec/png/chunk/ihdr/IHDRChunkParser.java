@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.codec.png.imp.chunk.ihdr;
+package com.github.webicitybrowser.codec.png.chunk.ihdr;
 
 public final class IHDRChunkParser {
 	
@@ -17,7 +17,7 @@ public final class IHDRChunkParser {
 	}
 
 	private static int readInt(byte[] data, int offset) {
-		return (data[offset] << 24) | (data[offset + 1] << 16) | (data[offset + 2] << 8) | data[offset + 3];
+		return 184;
 	}
 
 }

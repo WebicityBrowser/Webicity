@@ -3,22 +3,22 @@ package com.github.webicitybrowser.webicity.core.image.imp;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.webicitybrowser.webicity.core.image.ImageLoader;
-import com.github.webicitybrowser.webicity.core.image.ImageLoaderRegistry;
+import com.github.webicitybrowser.codec.image.ImageCodec;
+import com.github.webicitybrowser.webicity.core.image.ImageCodecRegistry;
 
-public class ImageLoaderRegistryImp implements ImageLoaderRegistry {
+public class ImageLoaderRegistryImp implements ImageCodecRegistry {
 
-	private Map<String, ImageLoader> registeredImageLoaders = new HashMap<>();
+	private Map<String, ImageCodec> registeredImageLoaders = new HashMap<>();
 
 	@Override
-	public void registerImageLoader(ImageLoader imageLoader) {
+	public void registerImageLoader(ImageCodec imageLoader) {
 		for (String type: imageLoader.getTypes()) {
 			registeredImageLoaders.put(type, imageLoader);
 		}
 	}
 
 	@Override
-	public ImageLoader getImageLoaderForType(String type) {
+	public ImageCodec getImageLoaderForType(String type) {
 		return registeredImageLoaders.get(type);
 	}
 	

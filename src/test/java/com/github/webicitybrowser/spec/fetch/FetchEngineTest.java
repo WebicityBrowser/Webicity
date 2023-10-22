@@ -1,7 +1,6 @@
 package com.github.webicitybrowser.spec.fetch;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -97,7 +96,7 @@ public class FetchEngineTest {
 		return new FetchResponse() {
 			@Override
 			public Body body() {
-				return Body.createBody(new InputStreamReader(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 })), DUMMY_BODY);
+				return Body.createBody(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }), DUMMY_BODY);
 			}
 
 			@Override

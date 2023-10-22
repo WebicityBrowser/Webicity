@@ -1,5 +1,10 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.component.image;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.webicitybrowser.codec.image.ImageCodec;
+import com.github.webicitybrowser.codec.image.PossibleImage;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchRequest;
@@ -12,13 +17,13 @@ import com.github.webicitybrowser.threadyweb.context.image.ImageEngine;
 import com.github.webicitybrowser.threadyweb.context.image.ImageRequest;
 import com.github.webicitybrowser.threadyweb.context.image.ImageRequest.ImageRequestState;
 import com.github.webicitybrowser.threadyweb.context.image.ImageState;
-import com.github.webicitybrowser.webicity.core.image.ImageData;
-import com.github.webicitybrowser.webicity.core.image.ImageLoader;
-import com.github.webicitybrowser.webicity.core.image.ImageLoaderRegistry;
+import com.github.webicitybrowser.webicity.core.image.ImageCodecRegistry;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.tasks.TaskQueueTaskDestination;
 
 public class ImageEngineImp implements ImageEngine {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImageEngineImp.class);
 
 	private final HTMLRendererContext htmlRendererContext;
 
@@ -51,12 +56,18 @@ public class ImageEngineImp implements ImageEngine {
 
 	private void onImageLoadComplete(ImageState imageState, ImageRequest request, FetchResponse response, boolean success, byte[] body) {
 		String imageType = "image/png"; // TODO: Get from response
-		ImageLoaderRegistry imageLoaderRegistry = htmlRendererContext.rendererContext().getRenderingEngine().getImageLoaderRegistry();
-		ImageLoader imageLoader = imageLoaderRegistry.getImageLoaderForType(imageType);
-		ImageData imageData = imageLoader.loadImage(body);
+		ImageCodecRegistry imageLoaderRegistry = htmlRendererContext.rendererContext().getRenderingEngine().getImageLoaderRegistry();
+		ImageCodec imageLoader = imageLoaderRegistry.getImageLoaderForType(imageType);
+		PossibleImage imageData = imageLoader.loadImage(body, _1 -> {});
 
-		request.setState(ImageRequestState.COMPLETELY_AVAILABLE);
-		request.setImageData(imageData);
+		imageData.imageData().ifPresent(imageData_ -> {
+			request.setState(ImageRequestState.COMPLETELY_AVAILABLE);
+			request.setImageData(imageData_);
+		});
+		imageData.exception().ifPresent(exception -> {
+			LOGGER.error("Failed to load image", exception);
+			request.setState(ImageRequestState.UNAVAILABLE);
+		});
 	}
 
 	private String selectImageSource(Element element) {
@@ -67,8 +78,10 @@ public class ImageEngineImp implements ImageEngine {
 
 	private URL tryParseURL(String urlString) {
 		if (urlString == null) return null;
+
+		URL baseURL = htmlRendererContext.rendererContext().getCurrentDocumentURL();
 		try {
-			return URL.of(urlString);
+			return URL.of(baseURL, urlString);
 		} catch (Exception e) {
 			return null;
 		}

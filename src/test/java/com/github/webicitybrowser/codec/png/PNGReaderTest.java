@@ -8,14 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.github.webicitybrowser.codec.png.chunk.ihdr.IHDRChunkInfo;
+import com.github.webicitybrowser.codec.png.chunk.ihdr.IHDRChunkParser;
+import com.github.webicitybrowser.codec.png.chunk.plte.PLTEChunkInfo;
+import com.github.webicitybrowser.codec.png.chunk.plte.PLTEChunkParser;
 import com.github.webicitybrowser.codec.png.exception.MalformedPNGException;
-import com.github.webicitybrowser.codec.png.imp.PNGChunkInfo;
-import com.github.webicitybrowser.codec.png.imp.PNGChunkInfoReader;
-import com.github.webicitybrowser.codec.png.imp.PNGReader;
-import com.github.webicitybrowser.codec.png.imp.chunk.ihdr.IHDRChunkInfo;
-import com.github.webicitybrowser.codec.png.imp.chunk.ihdr.IHDRChunkParser;
-import com.github.webicitybrowser.codec.png.imp.chunk.plte.PLTEChunkInfo;
-import com.github.webicitybrowser.codec.png.imp.chunk.plte.PLTEChunkParser;
 
 public class PNGReaderTest {
 	

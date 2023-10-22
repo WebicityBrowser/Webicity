@@ -15,7 +15,7 @@ public class HTTPFetchConnectionPool implements FetchConnectionPool {
 
 	@Override
 	public FetchConnection createNewConnection(FetchConnectionInfo info) {
-		return new FetchConnectionImp(
+		return new HTTPFetchConnectionImp(
 			info,
 			httpService
 		);

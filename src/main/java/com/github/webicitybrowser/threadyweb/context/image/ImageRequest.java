@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.threadyweb.context.image;
 
+import com.github.webicitybrowser.codec.image.ImageData;
 import com.github.webicitybrowser.spec.url.URL;
-import com.github.webicitybrowser.webicity.core.image.ImageData;
 
 public class ImageRequest {
 

@@ -12,7 +12,7 @@ import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
 import com.github.webicitybrowser.webicity.core.RenderingEngine;
-import com.github.webicitybrowser.webicity.core.image.ImageLoaderRegistry;
+import com.github.webicitybrowser.webicity.core.image.ImageCodecRegistry;
 import com.github.webicitybrowser.webicity.core.image.imp.ImageLoaderRegistryImp;
 import com.github.webicitybrowser.webicity.core.imp.RendererHandleImp;
 import com.github.webicitybrowser.webicity.core.net.Connection;
@@ -37,7 +37,7 @@ public class RenderingEngineImp implements RenderingEngine {
 	private final FetchEngine fetchEngine;
 	
 	private final ProtocolRegistry protocolRegistry = new ProtocolRegistryImp();
-	private final ImageLoaderRegistry imageLoaderRegistry = new ImageLoaderRegistryImp();
+	private final ImageCodecRegistry imageLoaderRegistry = new ImageLoaderRegistryImp();
 	private final RendererBackendRegistry rendererBackendRegistry = new RendererBackendRegistryImp();
 	private final List<SoftReference<Frame>> frames = new ArrayList<>();
 
@@ -94,7 +94,7 @@ public class RenderingEngineImp implements RenderingEngine {
 	}
 
 	@Override
-	public ImageLoaderRegistry getImageLoaderRegistry() {
+	public ImageCodecRegistry getImageLoaderRegistry() {
 		return this.imageLoaderRegistry;
 	}
 

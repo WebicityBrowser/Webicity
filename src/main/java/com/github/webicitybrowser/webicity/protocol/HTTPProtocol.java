@@ -32,7 +32,7 @@ public class HTTPProtocol implements Protocol {
 	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
 		HTTPResponse response = httpService.resolveRequest(createRequest(url, context));
 		if (response instanceof HTTPSuccessResponse successResponse) {
-			return createConnection(successResponse, url);
+			return createConnection(successResponse);
 		} else {
 			throw new UnsupportedOperationException("Unhandled HTTP response object: " + response);
 		}
@@ -43,11 +43,11 @@ public class HTTPProtocol implements Protocol {
 		return new HTTPRequest(url, context.action(), redirectHandler);
 	}
 
-	private Connection createConnection(HTTPSuccessResponse response, URL url) {
+	private Connection createConnection(HTTPSuccessResponse response) {
 		return new Connection() {
 			@Override
 			public URL getURL() {
-				return url;
+				return response.getURL();
 			}
 			
 			@Override

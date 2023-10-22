@@ -1,17 +1,17 @@
 package com.github.webicitybrowser.spec.fetch;
 
-import com.github.webicitybrowser.spec.fetch.imp.BodyImp;
+import java.io.InputStream;
 
-import java.io.InputStreamReader;
+import com.github.webicitybrowser.spec.fetch.imp.BodyImp;
 
 public interface Body {
 
-	InputStreamReader readableStream();
+	InputStream readableStream();
 
 	byte[] source();
 
-	static Body createBody(InputStreamReader isr, byte[] source) {
-		return new BodyImp(isr,source);
+	static Body createBody(InputStream inputStreamReader, byte[] source) {
+		return new BodyImp(inputStreamReader, source);
 	}
 
 }

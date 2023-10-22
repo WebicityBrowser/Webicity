@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.loaded;
 
+import com.github.webicitybrowser.codec.image.ImageData;
+import com.github.webicitybrowser.codec.image.ImageFrame;
 import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
 import com.github.webicitybrowser.thready.drawing.core.image.Image;
 import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
@@ -8,8 +10,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.ImageBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.ImageUnit;
-import com.github.webicitybrowser.webicity.core.image.ImageData;
-import com.github.webicitybrowser.webicity.core.image.ImageFrame;
 
 public class LoadedImageRenderer {
 
@@ -19,10 +19,10 @@ public class LoadedImageRenderer {
 	}
 
 	private static Image[] loadImageFrames(ResourceLoader resourceLoader, ImageData imageData) {
-		Image[] imageFrames = new Image[imageData.getFrames().length];
-		for (int i = 0; i < imageData.getFrames().length; i++) {
-			ImageFrame frame = imageData.getFrames()[i];
-			ImageSource imageSource = new RasterBytesImageSource(frame.getWidth(), frame.getHeight(), frame.getBitmap());
+		Image[] imageFrames = new Image[imageData.frames().length];
+		for (int i = 0; i < imageData.frames().length; i++) {
+			ImageFrame frame = imageData.frames()[i];
+			ImageSource imageSource = new RasterBytesImageSource(frame.width(), frame.height(), frame.bitmap());
 			imageFrames[i] = resourceLoader.loadImage(imageSource);
 		}
 

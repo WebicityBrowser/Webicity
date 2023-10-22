@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.codec.png.imp.chunk.idat;
+package com.github.webicitybrowser.codec.png.chunk.idat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
