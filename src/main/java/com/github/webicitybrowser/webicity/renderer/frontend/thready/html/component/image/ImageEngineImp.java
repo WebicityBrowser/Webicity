@@ -58,13 +58,13 @@ public class ImageEngineImp implements ImageEngine {
 		String imageType = "image/png"; // TODO: Get from response
 		ImageCodecRegistry imageLoaderRegistry = htmlRendererContext.rendererContext().getRenderingEngine().getImageLoaderRegistry();
 		ImageCodec imageLoader = imageLoaderRegistry.getImageLoaderForType(imageType);
-		PossibleImage imageData = imageLoader.loadImage(body, _1 -> {});
+		PossibleImage possibleImageData = imageLoader.loadImage(body, _1 -> {});
 
-		imageData.imageData().ifPresent(imageData_ -> {
+		possibleImageData.imageData().ifPresent(imageData -> {
 			request.setState(ImageRequestState.COMPLETELY_AVAILABLE);
-			request.setImageData(imageData_);
+			request.setImageData(imageData);
 		});
-		imageData.exception().ifPresent(exception -> {
+		possibleImageData.exception().ifPresent(exception -> {
 			LOGGER.error("Failed to load image", exception);
 			request.setState(ImageRequestState.UNAVAILABLE);
 		});

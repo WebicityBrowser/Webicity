@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.codec.png.chunk.idat;
 
+import com.github.webicitybrowser.codec.png.chunk.plte.PLTEChunkInfo;
+
 public final class IDATColorDecoder {
 	
 	private IDATColorDecoder() {}
@@ -11,8 +13,8 @@ public final class IDATColorDecoder {
 		int decodedIndex = 0;
 		for (int i = 0; i < totalValues; i += 3) {
 			decoded[decodedIndex++] = scaledByteOf(chunk, i, bitDepth);
-			decoded[decodedIndex++] = chunk[i + 1];
-			decoded[decodedIndex++] = chunk[i + 2];
+			decoded[decodedIndex++] = scaledByteOf(chunk, i + 1, bitDepth);
+			decoded[decodedIndex++] = scaledByteOf(chunk, i + 2, bitDepth);
 			decoded[decodedIndex++] = (byte) 255;
 		}
 
@@ -30,12 +32,33 @@ public final class IDATColorDecoder {
 		return decoded;
 	}
 
+	public static byte[] decodeIndexedColor(byte[] data, IDATContext idatContext) {
+		PLTEChunkInfo plteChunkInfo = idatContext.plteChunkInfo();
+		byte[][] palette = plteChunkInfo.palette();
+
+		byte bitDepth = idatContext.ihdrChunkInfo().bitDepth();
+		int totalValues = determineTotalValues(data.length, bitDepth);
+		byte[] decoded = new byte[totalValues * 4];
+		int decodedIndex = 0;
+		for (int i = 0; i < totalValues; i++) {
+			int paletteIndex = byteOf(data, i, bitDepth) & 0xFF;
+			decoded[decodedIndex++] = palette[paletteIndex][0];
+			decoded[decodedIndex++] = palette[paletteIndex][1];
+			decoded[decodedIndex++] = palette[paletteIndex][2];
+			decoded[decodedIndex++] = (byte) 255;
+		}
+
+		return decoded;
+	}
+
 	private static int determineTotalValues(int length, byte bitDepth) {
 		return length * 8 / bitDepth;
 	}
 
 	private static byte scaledByteOf(byte[] chunk, int i, byte bitDepth) {
-		return (byte) (255f / bitDepth * byteOf(chunk, i, bitDepth));
+		int scaling = 255 / ((1 << bitDepth) - 1);
+		return (byte) (byteOf(chunk, i, bitDepth) * scaling);
+		//return (byte) (255f / bitDepth * byteOf(chunk, i, bitDepth));
 	}
 
 	private static byte byteOf(byte[] chunk, int i, byte bitDepth) {

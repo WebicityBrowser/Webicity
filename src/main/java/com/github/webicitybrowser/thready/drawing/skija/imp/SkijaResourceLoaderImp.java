@@ -11,6 +11,10 @@ import com.github.webicitybrowser.thready.drawing.core.image.RasterBytesImageSou
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
 
+import io.github.humbleui.skija.ColorAlphaType;
+import io.github.humbleui.skija.ColorInfo;
+import io.github.humbleui.skija.ColorSpace;
+import io.github.humbleui.skija.ColorType;
 import io.github.humbleui.skija.ImageInfo;
 
 public class SkijaResourceLoaderImp implements ResourceLoader {
@@ -27,7 +31,9 @@ public class SkijaResourceLoaderImp implements ResourceLoader {
 			loadedImage = io.github.humbleui.skija.Image.makeDeferredFromEncodedBytes(data);
 		} else if (source instanceof RasterBytesImageSource rasterBytesSource) {
 			byte[] data = rasterBytesSource.raster();
-			ImageInfo info = ImageInfo.makeN32Premul(rasterBytesSource.width(), rasterBytesSource.height());
+			ImageInfo info = new ImageInfo(
+				new ColorInfo(ColorType.RGBA_8888, ColorAlphaType.UNPREMUL, ColorSpace.getSRGB()),
+				rasterBytesSource.width(), rasterBytesSource.height());
 			loadedImage = io.github.humbleui.skija.Image.makeRasterFromBytes(info, data, rasterBytesSource.width() * 4);
 		} else {
 			throw new UnsupportedOperationException("Unknown image source type: " + source.getClass());

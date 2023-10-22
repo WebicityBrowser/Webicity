@@ -33,7 +33,7 @@ public final class IDATChunkParser {
 
 	private static byte[] unfilter(byte[] decompressedData, IDATContext idatContext) throws UnsupportedPNGException {
 		return switch (idatContext.ihdrChunkInfo().filterMethod()) {
-		case 0 -> decompressedData;
+		case 0 -> IDATUnfilter.unfilter(decompressedData, idatContext.ihdrChunkInfo());
 		default -> throw new UnsupportedPNGException();
 		};
 	}
@@ -41,6 +41,7 @@ public final class IDATChunkParser {
 	private static byte[] createImageRaster(byte[] unfilteredData, IDATContext idatContext) throws UnsupportedPNGException {
 		return switch (idatContext.ihdrChunkInfo().colorType()) {
 		case 2 -> IDATColorDecoder.decodeTrueColor(unfilteredData, idatContext);
+		case 3 -> IDATColorDecoder.decodeIndexedColor(unfilteredData, idatContext);
 		case 6 -> IDATColorDecoder.decodeTrueColorWithAlpha(unfilteredData, idatContext);
 		default -> throw new UnsupportedPNGException();
 		};

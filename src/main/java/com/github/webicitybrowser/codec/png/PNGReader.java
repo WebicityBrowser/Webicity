@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.webicitybrowser.codec.png.chunk.idat.IDATChunkInfo;
 import com.github.webicitybrowser.codec.png.chunk.idat.IDATChunkParser;
 import com.github.webicitybrowser.codec.png.chunk.idat.IDATContext;
 import com.github.webicitybrowser.codec.png.chunk.ihdr.IHDRChunkInfo;
@@ -23,7 +22,7 @@ public class PNGReader {
 	private PNGState state;
 	private IHDRChunkInfo ihdrChunkInfo;
 	private PLTEChunkInfo plteChunkInfo;
-	private List<IDATChunkInfo> idatChunkInfos;
+	private List<byte[]> idatBytes;
 
 	public PNGResult read(InputStream dataStream) throws MalformedPNGException, IOException {
 		clearState();
@@ -32,21 +31,19 @@ public class PNGReader {
 		while (true) {
 			PNGChunkInfo chunkInfo = PNGChunkInfoReader.read(dataStream);
 			if (isChunkType(chunkInfo, "IEND")) break;
-			System.out.println(new String(chunkInfo.type()));
 			handleChunk(chunkInfo);
 		}
 
 		if (dataStream.read() != -1) throw new MalformedPNGException();
 
-		IDATChunkInfo firstIDATChunkInfo = idatChunkInfos.get(0);
-		return new PNGResult(ihdrChunkInfo.width(), ihdrChunkInfo.height(), firstIDATChunkInfo.imageRaster());
+		return new PNGResult(ihdrChunkInfo.width(), ihdrChunkInfo.height(), createFinalImageRaster());
 	}
 
 	private void clearState() {
 		this.state = PNGState.HEADER;
 		this.ihdrChunkInfo = null;
 		this.plteChunkInfo = null;
-		this.idatChunkInfos = new ArrayList<>();
+		this.idatBytes = new ArrayList<>();
 	}
 
 	private void checkSignature(InputStream dataStream) throws MalformedPNGException, IOException {
@@ -149,12 +146,29 @@ public class PNGReader {
 
 	private void handleIDATChunk(PNGChunkInfo chunkInfo) throws UnsupportedPNGException, IOException {
 		this.state = PNGState.BEFORE_IEND;
-		IDATChunkInfo idatChunkInfo = IDATChunkParser.parse(chunkInfo.data(), new IDATContext(ihdrChunkInfo));
-		idatChunkInfos.add(idatChunkInfo);
+		idatBytes.add(chunkInfo.data());
 	}
 
 	private boolean canSkipChunk(PNGChunkInfo chunkInfo) {
-		return (chunkInfo.type()[0] & 0b00010000) == 1;
+		return (chunkInfo.type()[0] & 32) != 0;
+	}
+
+	private byte[] createFinalImageRaster() throws UnsupportedPNGException, IOException {
+		int numTotalBytes = 0;
+		for (byte[] idatBytes : idatBytes) {
+			numTotalBytes += idatBytes.length;
+		}
+
+		byte[] allIDATBytes = new byte[numTotalBytes];
+		int index = 0;
+		for (byte[] idatBytes : idatBytes) {
+			System.arraycopy(idatBytes, 0, allIDATBytes, index, idatBytes.length);
+			index += idatBytes.length;
+		}
+
+		IDATContext idatContext = new IDATContext(ihdrChunkInfo, plteChunkInfo);
+
+		return IDATChunkParser.parse(allIDATBytes, idatContext).imageRaster();
 	}
 
 	private static enum PNGState {
