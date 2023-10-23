@@ -39,38 +39,6 @@ public class FetchConnectionImp implements FetchConnection {
 
 	@Override
 	public FetchResponse send(FetchRequest request) {
-		if(request.url().getScheme().equals("file")) {
-			return getFileProtocolResponse(request);
-		}
-		else if(request.url().getScheme().equals("webicity")) {
-			return getWebicityProtocolResponse(request);
-		}
-		else if(request.url().getScheme().equals("http") || request.url().getScheme().equals("https")) {
-			return getHTTPFetchProtocolResponse(request);
-		}
-
-		throw new RuntimeException("Scheme not found");
-	}
-
-	private FetchResponse getFileProtocolResponse(FetchRequest request) {
-		try {
-			return new FetchResponseImp(new BodyImp(
-				new InputStreamReader(new FileInputStream(request.url().getPath())), new byte[] {}
-			));
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private FetchResponse getWebicityProtocolResponse(FetchRequest request) {
-		return new FetchResponseImp(new BodyImp(
-			new InputStreamReader(ClassLoader.getSystemClassLoader().getResourceAsStream(
-				"." + request.url().getPath()
-			)), new byte[] {}
-		));
-	}
-
-	private FetchResponse getHTTPFetchProtocolResponse(FetchRequest request) {
 		HTTPResponse response = null;
 		try {
 			response = httpService.resolveRequest(new HTTPRequest(request.url(), request.method(), redirectURL -> true));
@@ -82,7 +50,6 @@ public class FetchConnectionImp implements FetchConnection {
 
 		return convertHTTPResponseToFetchResponse(response);
 	}
-
 
 	@SuppressWarnings("resource")
 	private FetchResponse convertHTTPResponseToFetchResponse(HTTPResponse response) {

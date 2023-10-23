@@ -1,22 +1,26 @@
 package com.github.webicitybrowser.spec.fetch.imp;
 
-import com.github.webicitybrowser.spec.fetch.FetchEngine;
-import com.github.webicitybrowser.spec.fetch.FetchParameters;
-import com.github.webicitybrowser.spec.fetch.FetchParams;
-import com.github.webicitybrowser.spec.fetch.FetchResponse;
+import com.github.webicitybrowser.spec.fetch.*;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
 import com.github.webicitybrowser.spec.stream.ByteStreamReader;
 import com.github.webicitybrowser.spec.url.URL;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+
 
 public class FetchEngineImp implements FetchEngine {
 
 	private final FetchConnectionPool connectionPool;
 
-	public FetchEngineImp(FetchConnectionPool connectionPool) {
+	private final FetchProtocol fetchProtocol;
+
+	public FetchEngineImp(FetchConnectionPool connectionPool, FetchProtocol fetchProtocol) {
 		this.connectionPool = connectionPool;
+		this.fetchProtocol = fetchProtocol;
 	}
 
 	@Override
@@ -26,7 +30,27 @@ public class FetchEngineImp implements FetchEngine {
 	}
 
 	private void mainFetch(FetchParams params) {
-		FetchResponse response = httpFetch(params);
+		FetchResponse response = null;
+		if(params.request().url().getScheme().equals("webicity")) {
+			response = new FetchResponseImp(new BodyImp(
+				new InputStreamReader(
+					ClassLoader.getSystemClassLoader().getResourceAsStream("." + params.request().url().getPath())
+				) ,new byte[] {})
+			);
+		}
+		else if(params.request().url().getScheme().equals("file")) {
+			try {
+				System.out.println(params.request().url());
+				response = new FetchResponseImp(new BodyImp(
+					new InputStreamReader(new FileInputStream(params.request().url().getPath())), new byte[] {}
+				));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		else if(params.request().url().getScheme().equals("http") || params.request().url().getScheme().equals("https")){
+			response = httpFetch(params);
+		}
 		fetchResponseHandover(params, response);
 	}
 
