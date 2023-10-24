@@ -2,6 +2,7 @@ package com.github.webicitybrowser.webicitybrowser.engine;
 
 import java.io.InputStream;
 
+import com.github.webicitybrowser.codec.jpeg.JPEGCodec;
 import com.github.webicitybrowser.codec.png.PNGCodec;
 import com.github.webicitybrowser.spec.html.parse.CharacterReferenceLookup;
 import com.github.webicitybrowser.spec.http.HTTPService;
@@ -54,6 +55,7 @@ public final class RenderingEngineCreator {
 	private static void registerImageLoaders(RenderingEngine renderingEngine) {
 		ImageCodecRegistry imageLoaderRegistry = renderingEngine.getImageLoaderRegistry();
 		imageLoaderRegistry.registerImageLoader(new PNGCodec());
+		imageLoaderRegistry.registerImageLoader(new JPEGCodec());
 	}
 
 	private static HTTPService createHTTPService() {
