@@ -4,9 +4,6 @@ import java.util.Optional;
 
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.FetchProtocol;
-import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
-import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
-import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.imp.HTTPFetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
 import com.github.webicitybrowser.spec.http.HTTPService;
@@ -40,7 +37,8 @@ public class RenderingEngineImp implements RenderingEngine {
 
 	public RenderingEngineImp(AssetLoader assetLoader, HTTPService httpService) {
 		this.assetLoader = assetLoader;
-		this.fetchEngine = new FetchEngineImp(new HTTPFetchConnectionPool(httpService), FetchProtocol.createFetchProtocolRegistry(protocolRegistry));
+		FetchProtocol fetchProtocol = FetchProtocol.createFetchProtocolRegistry(protocolRegistry, new ProtocolContext("GET", redirectURL -> true));
+		this.fetchEngine = new FetchEngineImp(new HTTPFetchConnectionPool(httpService),fetchProtocol);
 	}
 
 	@Override

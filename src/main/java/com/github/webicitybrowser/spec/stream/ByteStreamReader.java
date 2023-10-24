@@ -1,9 +1,9 @@
 package com.github.webicitybrowser.spec.stream;
 
+import java.io.Reader;
+import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public final class ByteStreamReader {
 
@@ -11,7 +11,7 @@ public final class ByteStreamReader {
 
 	}
 
-	public static byte[] readAllBytes(InputStreamReader inputStream) throws IOException {
+	public static byte[] readAllBytes(Reader inputStream) throws IOException {
 		BufferedReader br = new BufferedReader(inputStream);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 

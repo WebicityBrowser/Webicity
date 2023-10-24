@@ -86,8 +86,8 @@ public class Main {
 	private static void openDefaultURLs(Window window) {
 		try {
 			//TODO: Configuration
-//			openURL(window, URL.of("webicity://welcome"));
-			openURL(window, URL.of("file:/C:/Users/piotr/Downloads/htmlTestFiles/externalCSS.html"));
+			openURL(window, URL.of("webicity://welcome"));
+//			openURL(window, URL.of("file:/C:/Users/piotr/Downloads/htmlTestFiles/externalCSS.html"));
 		} catch (InvalidURLException e) {
 			e.printStackTrace();
 		}
