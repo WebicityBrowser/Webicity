@@ -11,8 +11,11 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
 import com.github.webicitybrowser.spec.stream.ByteStreamReader;
 import com.github.webicitybrowser.spec.url.URL;
+import com.github.webicitybrowser.webicity.core.net.Protocol;
 
+import java.io.InputStream;
 import java.io.Reader;
+import java.util.Optional;
 
 
 public class FetchEngineImp implements FetchEngine {
@@ -44,12 +47,13 @@ public class FetchEngineImp implements FetchEngine {
 
 	private FetchResponse schemeFetch(FetchParams params) {
 		try {
-			Reader streamReader = fetchProtocol.registry().getProtocolForURL(params.request().url()).get().openConnection(
-				params.request().url(), fetchProtocol.context()).getInputReader();
+			Optional<Protocol> protocol = fetchProtocol.registry().getProtocolForURL(params.request().url());
+			if(protocol.isEmpty()) return FetchResponse.createNetworkError();
 
+			Reader streamReader = protocol.get().openConnection(params.request().url(), fetchProtocol.context()).getInputReader();
 			return new FetchResponseImp(Body.createBody( streamReader, new byte[] {}));
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			return FetchResponse.createNetworkError();
 		}
 	}
 
