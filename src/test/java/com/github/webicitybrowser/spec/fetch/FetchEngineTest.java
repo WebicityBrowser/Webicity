@@ -1,6 +1,8 @@
 package com.github.webicitybrowser.spec.fetch;
 
-import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,11 +13,8 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
-import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.spec.fetch.taskdestination.ParallelQueue;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
+import com.github.webicitybrowser.spec.url.URL;
 
 
 public class FetchEngineTest {

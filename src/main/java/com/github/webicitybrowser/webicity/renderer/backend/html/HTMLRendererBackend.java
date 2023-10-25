@@ -4,25 +4,20 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.function.Function;
 
-import com.github.webicitybrowser.spec.fetch.FetchEngine;
-import com.github.webicitybrowser.spec.fetch.connection.imp.HTTPFetchConnectionPool;
-import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
-import com.github.webicitybrowser.webicity.core.renderer.imp.RendererContextImp;
-import com.github.webicitybrowser.webicity.renderer.backend.html.tags.LinkTagHandler;
-import com.github.webicitybrowser.webicity.renderer.backend.html.tags.StyleTagHandler;
-import com.github.webicitybrowser.webicitybrowser.loader.ResourceAssetLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
 import com.github.webicitybrowser.spec.html.node.HTMLDocument;
-import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spec.html.parse.CharacterReferenceLookup;
+import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spiderhtml.SpiderHTMLParserImp;
 import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.renderer.RendererBackend;
 import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.core.renderer.RendererFrontend;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tags.LinkTagHandler;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tags.StyleTagHandler;
 
 
 public class HTMLRendererBackend implements RendererBackend {

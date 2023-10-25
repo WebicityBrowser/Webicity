@@ -6,11 +6,11 @@ import java.io.Reader;
 
 public class BodyImp implements Body {
 
-	private Reader bodyStream;
-	private byte[] bodyBytes;
+	private final Reader bodyStream;
+	private final byte[] bodyBytes;
 
-	public BodyImp(Reader isr, byte[] source) {
-		this.bodyStream = isr;
+	public BodyImp(Reader inputStreamReader, byte[] source) {
+		this.bodyStream = inputStreamReader;
 		this.bodyBytes = source;
 	}
 
