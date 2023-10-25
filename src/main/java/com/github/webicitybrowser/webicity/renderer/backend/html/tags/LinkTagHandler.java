@@ -1,10 +1,10 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.tags;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
-import com.github.webicitybrowser.spec.fetch.FetchRequest;
 import com.github.webicitybrowser.spec.fetch.FetchConsumeBodyAction;
-import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
+import com.github.webicitybrowser.spec.fetch.FetchRequest;
+import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
 import com.github.webicitybrowser.spec.fetch.builder.imp.FetchParametersBuilderImp;
 import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
@@ -12,12 +12,9 @@ import com.github.webicitybrowser.spec.fetch.taskdestination.ParallelQueue;
 import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
-import com.github.webicitybrowser.webicity.renderer.backend.html.CSSRulesUtils;
-import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.NoLinkAction;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.LinkAction;
+import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.NoLinkAction;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.StylesheetAction;
-
-import java.io.InputStreamReader;
 
 public class LinkTagHandler implements TagAction {
 
@@ -60,7 +57,7 @@ public class LinkTagHandler implements TagAction {
 			@Override
 			public void execute(FetchResponse response, boolean success, byte[] body) {
 				success = true;
-				if(response.body().source() == null || !(response instanceof FetchResponseImp)) {
+				if(body == null || !(response instanceof FetchResponseImp)) {
 					success = false;
 				}
 				processTheLinkedResource(element, success, response, body);
@@ -78,12 +75,14 @@ public class LinkTagHandler implements TagAction {
 	private void processTheLinkedResource(Element el, boolean success, FetchResponse response, byte[] bodyBytes) {
 		if(!el.hasAttribute("rel")) return;
 
+		// TODO: Handle multiple rels
 		LinkAction stylesheetAction = switch (el.getAttribute("rel")) {
 			case "stylesheet" -> new StylesheetAction();
 			default -> new NoLinkAction();
 		};
 
 		if(el.getAttribute("rel").equals("stylesheet")) {
+			System.out.println("bytes: " + new String(bodyBytes));
 			stylesheetAction = new StylesheetAction();
 		}
 

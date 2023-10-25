@@ -1,18 +1,20 @@
 package com.github.webicitybrowser.spec.fetch.imp;
 
+import java.io.Reader;
+import java.util.Optional;
+
+import com.github.webicitybrowser.spec.fetch.Body;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchParams;
 import com.github.webicitybrowser.spec.fetch.FetchProtocol;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
-import com.github.webicitybrowser.spec.fetch.Body;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
+import com.github.webicitybrowser.spec.fetch.imp.DataURLProcessor.DataURLStruct;
 import com.github.webicitybrowser.spec.stream.ByteStreamReader;
 import com.github.webicitybrowser.spec.url.URL;
-
-import java.io.Reader;
 
 
 public class FetchEngineImp implements FetchEngine {
@@ -43,6 +45,15 @@ public class FetchEngineImp implements FetchEngine {
 	}
 
 	private FetchResponse schemeFetch(FetchParams params) {
+		switch(params.request().url().getScheme()) {
+		case "data":
+			Optional<DataURLStruct> struct = DataURLProcessor.processDataURL(params.request());
+			if (struct.isEmpty()) return FetchResponse.createNetworkError();
+			return new FetchResponseImp(Body.createBody(null, struct.get().body()));
+		default:
+			break;
+		}
+
 		try {
 			Reader streamReader = fetchProtocol.registry().getProtocolForURL(params.request().url()).get().openConnection(
 				params.request().url(), fetchProtocol.context()).getInputReader();
@@ -79,9 +90,10 @@ public class FetchEngineImp implements FetchEngine {
 	}
 
 	private void fullyReadBody(FetchParams params, FetchResponse response) {
-		params.consumeBodyAction().execute(response, true, new byte[] {});
 		try {
-			final byte[] allBytes =  ByteStreamReader.readAllBytes(response.body().readableStream());
+			final byte[] allBytes = response.body().source() != null ?
+				response.body().source() :
+				ByteStreamReader.readAllBytes(response.body().readableStream());
 			params.taskDestination().enqueue(
 				() -> params.consumeBodyAction().execute(response, true, allBytes)
 			);

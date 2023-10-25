@@ -11,7 +11,7 @@ public interface Body {
 	byte[] source();
 
 	static Body createBody(Reader streamReader, byte[] source) {
-		return new BodyImp(streamReader,source);
+		return new BodyImp(streamReader, source);
 	}
 
 }
