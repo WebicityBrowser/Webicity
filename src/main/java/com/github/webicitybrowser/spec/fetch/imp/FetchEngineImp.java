@@ -59,7 +59,7 @@ public class FetchEngineImp implements FetchEngine {
 			if(protocol.isEmpty()) return FetchResponse.createNetworkError();
 
 			Reader streamReader = protocol.get().openConnection(params.request().url(), fetchProtocol.context()).getInputReader();
-			return new FetchResponseImp(Body.createBody( streamReader, new byte[] {}));
+			return new FetchResponseImp(Body.createBody(streamReader, null));
 		} catch (Exception e) {
 			return FetchResponse.createNetworkError();
 		}

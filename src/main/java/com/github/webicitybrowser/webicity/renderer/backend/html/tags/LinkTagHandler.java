@@ -1,13 +1,12 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.tags;
 
 import com.github.webicitybrowser.spec.dom.node.Element;
-import com.github.webicitybrowser.spec.fetch.FetchConsumeBodyAction;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.FetchRequest;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
 import com.github.webicitybrowser.spec.fetch.builder.imp.FetchParametersBuilderImp;
-import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
+import com.github.webicitybrowser.spec.fetch.imp.FetchNetworkError;
 import com.github.webicitybrowser.spec.fetch.taskdestination.ParallelQueue;
 import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
@@ -53,15 +52,9 @@ public class LinkTagHandler implements TagAction {
 		FetchParametersBuilder parametersBuilder = new FetchParametersBuilderImp();
 		parametersBuilder.setRequest(request);
 		parametersBuilder.setTaskDestination(new ParallelQueue());
-		parametersBuilder.setConsumeBodyAction(new FetchConsumeBodyAction() {
-			@Override
-			public void execute(FetchResponse response, boolean success, byte[] body) {
-				success = true;
-				if(body == null || !(response instanceof FetchResponseImp)) {
-					success = false;
-				}
-				processTheLinkedResource(element, success, response, body);
-			}
+		parametersBuilder.setConsumeBodyAction((response, success, body) -> {
+			success = success && response.body() != null && !(response instanceof FetchNetworkError);
+			processTheLinkedResource(element, success, response, body);
 		});
 		FetchEngine fetchEngine = context.getFetchEngine();
 		fetchEngine.fetch(parametersBuilder.build());
@@ -74,19 +67,17 @@ public class LinkTagHandler implements TagAction {
 
 	private void processTheLinkedResource(Element el, boolean success, FetchResponse response, byte[] bodyBytes) {
 		if(!el.hasAttribute("rel")) return;
+		String rel = el.getAttribute("rel");
 
-		// TODO: Handle multiple rels
-		LinkAction stylesheetAction = switch (el.getAttribute("rel")) {
-			case "stylesheet" -> new StylesheetAction();
-			default -> new NoLinkAction();
-		};
+		System.out.println("bodyBytes: " + new String(bodyBytes));
+		for (String relValue : rel.split(" ")) {
+			LinkAction stylesheetAction = switch (relValue) {
+				case "stylesheet" -> new StylesheetAction();
+				default -> new NoLinkAction();
+			};
 
-		if(el.getAttribute("rel").equals("stylesheet")) {
-			System.out.println("bytes: " + new String(bodyBytes));
-			stylesheetAction = new StylesheetAction();
+			stylesheetAction.processThisTypeOfLinkedResource(el, success, response, bodyBytes);	
 		}
-
-		stylesheetAction.processThisTypeOfLinkedResource(el, success, response, bodyBytes);
 	}
 
 }
