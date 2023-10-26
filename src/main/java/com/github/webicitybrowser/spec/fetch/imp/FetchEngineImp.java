@@ -58,7 +58,7 @@ public class FetchEngineImp implements FetchEngine {
 			Reader streamReader = fetchProtocol.registry().getProtocolForURL(params.request().url()).get().openConnection(
 				params.request().url(), fetchProtocol.context()).getInputReader();
 
-			return new FetchResponseImp(Body.createBody( streamReader, new byte[] {}));
+			return new FetchResponseImp(Body.createBody(streamReader, null));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
