@@ -45,9 +45,10 @@ public class FetchEngineImp implements FetchEngine {
 	}
 
 	private FetchResponse schemeFetch(FetchParams params) {
-		switch(params.request().url().getScheme()) {
+		URL url = params.request().url();
+		switch(url.getScheme()) {
 		case "data":
-			Optional<DataURLStruct> struct = DataURLProcessor.processDataURL(params.request());
+			Optional<DataURLStruct> struct = DataURLProcessor.processDataURL(url);
 			if (struct.isEmpty()) return FetchResponse.createNetworkError();
 			return new FetchResponseImp(Body.createBody(null, struct.get().body()));
 		default:

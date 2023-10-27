@@ -4,26 +4,39 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import com.github.webicitybrowser.spec.fetch.FetchRequest;
 import com.github.webicitybrowser.spec.url.URL;
 
 public class DataURLProcessor {
 
-	public static Optional<DataURLStruct> processDataURL(FetchRequest request) {
-		String input = getDataInput(request.url());
+	private DataURLProcessor() {}
+
+	public static Optional<DataURLStruct> processDataURL(URL url) {
+		String input = getDataInput(url);
 		String mimeType = determineMimeType(input);
 		int position = mimeType.length();
 		if (position >= input.length()) return Optional.empty();
 		String encodedBody = input.substring(position + 1);
 		String body = URLDecoder.decode(encodedBody, StandardCharsets.UTF_8);
-		// TODO: Handle B64
-		if (mimeType.startsWith(";")) mimeType = "text/plain" + mimeType;
+		if (mimeType.startsWith(";")) mimeType = "text/plain";
+		byte[] decodedBody = null;
 		if (mimeType.toLowerCase().matches(".*; *base64$")) {
-			// TODO: Handle B64
-			return Optional.empty();
+			// TODO: Forgiving base64 decoding
+			try {
+				decodedBody = java.util.Base64.getDecoder().decode(body);
+			} catch (IllegalArgumentException e) {
+				return Optional.empty();
+			}
+			mimeType = mimeType
+				.substring(0, mimeType.length() - 6)
+				.stripTrailing();
+			mimeType = mimeType.substring(0, mimeType.length() - 1);
+		} else {
+			decodedBody = body.getBytes(StandardCharsets.UTF_8);
 		}
 
-		return Optional.of(new DataURLStruct(mimeType, body.getBytes(StandardCharsets.UTF_8)));
+		// TODO: Mime type record
+
+		return Optional.of(new DataURLStruct(mimeType, decodedBody));
 	}
 	
 	private static String determineMimeType(String input) {

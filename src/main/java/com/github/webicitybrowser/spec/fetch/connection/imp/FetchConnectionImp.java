@@ -50,7 +50,7 @@ public class FetchConnectionImp implements FetchConnection {
 	@SuppressWarnings("resource")
 	private FetchResponse convertHTTPResponseToFetchResponse(HTTPResponse response) {
 		if (response instanceof HTTPSuccessResponse successResponse) {
-			return new FetchResponseImp(Body.createBody(new InputStreamReader(successResponse.getInputStream()),  new byte[] {}));
+			return new FetchResponseImp(Body.createBody(new InputStreamReader(successResponse.getInputStream()), null));
 		} else {
 			logger.error("Unhandled HTTP response object: " + response);
 			return FetchResponse.createNetworkError();
