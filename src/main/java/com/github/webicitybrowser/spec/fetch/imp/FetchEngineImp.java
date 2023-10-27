@@ -45,9 +45,10 @@ public class FetchEngineImp implements FetchEngine {
 	}
 
 	private FetchResponse schemeFetch(FetchParams params) {
-		switch(params.request().url().getScheme()) {
+		URL url = params.request().url();
+		switch(url.getScheme()) {
 		case "data":
-			Optional<DataURLStruct> struct = DataURLProcessor.processDataURL(params.request());
+			Optional<DataURLStruct> struct = DataURLProcessor.processDataURL(url);
 			if (struct.isEmpty()) return FetchResponse.createNetworkError();
 			return new FetchResponseImp(Body.createBody(null, struct.get().body()));
 		default:
@@ -55,12 +56,13 @@ public class FetchEngineImp implements FetchEngine {
 		}
 
 		try {
-			Reader streamReader = fetchProtocol.registry().getProtocolForURL(params.request().url()).get().openConnection(
-				params.request().url(), fetchProtocol.context()).getInputReader();
+			Reader streamReader = fetchProtocol.registry().getProtocolForURL(url).get()
+				.openConnection(url, fetchProtocol.context())
+				.getInputReader();
 
 			return new FetchResponseImp(Body.createBody(streamReader, null));
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			return FetchResponse.createNetworkError();
 		}
 	}
 
