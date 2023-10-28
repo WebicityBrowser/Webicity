@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
+import com.github.webicitybrowser.spec.infra.util.Base64Util;
 import com.github.webicitybrowser.spec.url.URL;
 
 public class DataURLProcessor {
@@ -20,9 +21,8 @@ public class DataURLProcessor {
 		if (mimeType.startsWith(";")) mimeType = "text/plain";
 		byte[] decodedBody = null;
 		if (mimeType.toLowerCase().matches(".*; *base64$")) {
-			// TODO: Forgiving base64 decoding
 			try {
-				decodedBody = java.util.Base64.getDecoder().decode(body);
+				decodedBody = Base64Util.forgivingBase64Decode(body);
 			} catch (IllegalArgumentException e) {
 				return Optional.empty();
 			}
