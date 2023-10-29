@@ -24,10 +24,8 @@ public class WebicityProtocol implements Protocol {
 		StringBuilder fullPath = new StringBuilder();
 		if(!isFileExtensionPresent(url.getPath())) {
 			fullPath.append("pages/" + url.getHost() + ( url.getPath().equals("/") ? "" : url.getPath() ) + ".html");
-			System.out.println(fullPath);
 		} else {
 			fullPath.append("." + url.getPath());
-			System.out.println(fullPath);
 		}
 		InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(
 			fullPath.toString()

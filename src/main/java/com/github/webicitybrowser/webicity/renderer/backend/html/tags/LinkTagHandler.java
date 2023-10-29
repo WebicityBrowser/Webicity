@@ -69,7 +69,6 @@ public class LinkTagHandler implements TagAction {
 		if(!el.hasAttribute("rel")) return;
 		String rel = el.getAttribute("rel");
 
-		System.out.println("bodyBytes: " + new String(bodyBytes));
 		for (String relValue : rel.split(" ")) {
 			LinkAction stylesheetAction = switch (relValue) {
 				case "stylesheet" -> new StylesheetAction();

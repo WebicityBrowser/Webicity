@@ -87,7 +87,6 @@ public class Main {
 		try {
 			//TODO: Configuration
 			openURL(window, URL.of("webicity://welcome"));
-//			openURL(window, URL.of("file:/C:/Users/piotr/Downloads/htmlTestFiles/externalCSS.html"));
 		} catch (InvalidURLException e) {
 			e.printStackTrace();
 		}

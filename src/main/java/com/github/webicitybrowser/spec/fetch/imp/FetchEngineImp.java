@@ -7,7 +7,7 @@ import com.github.webicitybrowser.spec.fetch.Body;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchParams;
-import com.github.webicitybrowser.spec.fetch.FetchProtocol;
+import com.github.webicitybrowser.spec.fetch.FetchProtocolRegistry;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
@@ -21,11 +21,11 @@ public class FetchEngineImp implements FetchEngine {
 
 	private final FetchConnectionPool connectionPool;
 
-	private final FetchProtocol fetchProtocol;
+	private final FetchProtocolRegistry fetchProtocolRegistry;
 
-	public FetchEngineImp(FetchConnectionPool connectionPool, FetchProtocol fetchProtocol) {
+	public FetchEngineImp(FetchConnectionPool connectionPool, FetchProtocolRegistry fetchProtocolRegistry) {
 		this.connectionPool = connectionPool;
-		this.fetchProtocol = fetchProtocol;
+		this.fetchProtocolRegistry = fetchProtocolRegistry;
 	}
 
 	@Override
@@ -56,11 +56,10 @@ public class FetchEngineImp implements FetchEngine {
 		}
 
 		try {
-			Reader streamReader = fetchProtocol.registry().getProtocolForURL(url).get()
-				.openConnection(url, fetchProtocol.context())
-				.getInputReader();
+			Optional<Reader> streamReader = fetchProtocolRegistry.openConnection(url);
+			if (streamReader.isEmpty()) return FetchResponse.createNetworkError();
 
-			return new FetchResponseImp(Body.createBody(streamReader, null));
+			return new FetchResponseImp(Body.createBody(streamReader.get(), null));
 		} catch (Exception e) {
 			return FetchResponse.createNetworkError();
 		}
