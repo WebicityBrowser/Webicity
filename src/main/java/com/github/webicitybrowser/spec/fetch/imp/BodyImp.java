@@ -2,19 +2,19 @@ package com.github.webicitybrowser.spec.fetch.imp;
 
 import com.github.webicitybrowser.spec.fetch.Body;
 
-import java.io.InputStreamReader;
+import java.io.Reader;
 
 public class BodyImp implements Body {
 
-	private InputStreamReader bodyStream;
+	private Reader bodyStream;
 	private byte[] bodyBytes;
 
-	public BodyImp(InputStreamReader isr, byte[] source) {
+	public BodyImp(Reader isr, byte[] source) {
 		this.bodyStream = isr;
 		this.bodyBytes = source;
 	}
 
-	public InputStreamReader readableStream() {
+	public Reader readableStream() {
 		return bodyStream;
 	}
 

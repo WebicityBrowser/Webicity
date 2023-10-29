@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.spec.fetch;
 
+import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -26,9 +27,10 @@ public class FetchEngineTest {
 	@DisplayName("Can reach process response consume body")
 	public void canReachProcessResponseConsumeBody() {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
+		FetchProtocol registry = Mockito.mock(FetchProtocol.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool());
+		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool(), registry);
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
@@ -45,9 +47,10 @@ public class FetchEngineTest {
 	@DisplayName("Can fetch data with HTTP fetch")
 	public void testFetchWithMockData() {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
+		FetchProtocol registry = Mockito.mock(FetchProtocol.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool());
+		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool(), registry);
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);

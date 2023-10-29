@@ -19,7 +19,7 @@ public class ActionsRegistry implements TagActions {
 
 	@Override
 	public TagAction getAction(String tagName) {
-		return actions.getOrDefault(tagName, new TagAction(){});
+		return actions.getOrDefault(tagName, new TagAction() {});
 	}
 
 }

@@ -87,6 +87,8 @@ public class Main {
 		try {
 			//TODO: Configuration
 			openURL(window, URL.of("webicity://welcome"));
+//			openURL(window, URL.of("file:/C:/Users/piotr/Downloads/htmlTestFiles/externalCSS.html"));
+//			openURL(window, URL.of("https://www.csszengarden.com/"));
 		} catch (InvalidURLException e) {
 			e.printStackTrace();
 		}
