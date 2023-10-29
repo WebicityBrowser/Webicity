@@ -9,12 +9,18 @@ import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchParams;
 import com.github.webicitybrowser.spec.fetch.FetchProtocolRegistry;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
+import com.github.webicitybrowser.spec.fetch.Body;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
 import com.github.webicitybrowser.spec.fetch.imp.DataURLProcessor.DataURLStruct;
 import com.github.webicitybrowser.spec.stream.ByteStreamReader;
 import com.github.webicitybrowser.spec.url.URL;
+import com.github.webicitybrowser.webicity.core.net.Protocol;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Optional;
 
 
 public class FetchEngineImp implements FetchEngine {

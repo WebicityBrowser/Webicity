@@ -10,6 +10,8 @@ import org.mockito.Mockito;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox;
@@ -26,8 +28,10 @@ public class LineBoxTest {
 
 	@BeforeEach
 	public void setup() {
+		DirectivePool directivePool = new BasicDirectivePool();
 		lineBox = new LineBox(
 			new LineDimension(100, 100, LineDirection.LTR),
+			directivePool,
 			directives -> new BuildableRenderedUnitImp(null, directives));
 	}
 

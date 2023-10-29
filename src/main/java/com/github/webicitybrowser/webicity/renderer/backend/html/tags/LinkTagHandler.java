@@ -15,6 +15,8 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactio
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.NoLinkAction;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.StylesheetAction;
 
+import java.io.InputStreamReader;
+
 public class LinkTagHandler implements TagAction {
 
 	private final RendererContext context;

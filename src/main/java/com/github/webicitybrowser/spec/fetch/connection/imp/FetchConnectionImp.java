@@ -10,6 +10,8 @@ import com.github.webicitybrowser.spec.fetch.FetchRequest;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
+import com.github.webicitybrowser.spec.fetch.imp.BodyImp;
+import com.github.webicitybrowser.spec.fetch.imp.FetchNetworkError;
 import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
 import com.github.webicitybrowser.spec.http.HTTPRequest;
 import com.github.webicitybrowser.spec.http.HTTPService;

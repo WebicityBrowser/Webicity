@@ -21,6 +21,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMFloatDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.border.CSSOMBorderBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox.CSSOMFlexBindings;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flow.CSSOMFlowBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.margin.CSSOMMarginBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.padding.CSSOMPaddingBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.position.CSSOMPositionBindings;
@@ -49,6 +50,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		CSSOMSizeBindings.installTo(namedDeclarationParsers);
 		CSSOMMarginBindings.installTo(namedDeclarationParsers);
 		CSSOMPositionBindings.installTo(namedDeclarationParsers);
+		CSSOMFlowBindings.installTo(namedDeclarationParsers);
 	}
 	
 	@Override
