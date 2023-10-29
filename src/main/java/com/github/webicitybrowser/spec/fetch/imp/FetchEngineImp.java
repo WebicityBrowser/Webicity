@@ -7,7 +7,7 @@ import com.github.webicitybrowser.spec.fetch.Body;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchParams;
-import com.github.webicitybrowser.spec.fetch.FetchProtocol;
+import com.github.webicitybrowser.spec.fetch.FetchProtocolRegistry;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
@@ -15,17 +15,16 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey
 import com.github.webicitybrowser.spec.fetch.imp.DataURLProcessor.DataURLStruct;
 import com.github.webicitybrowser.spec.stream.ByteStreamReader;
 import com.github.webicitybrowser.spec.url.URL;
-import com.github.webicitybrowser.webicity.core.net.Protocol;
 
 public class FetchEngineImp implements FetchEngine {
 
 	private final FetchConnectionPool connectionPool;
 
-	private final FetchProtocol fetchProtocol;
+	private final FetchProtocolRegistry fetchProtocolRegistry;
 
-	public FetchEngineImp(FetchConnectionPool connectionPool, FetchProtocol fetchProtocol) {
+	public FetchEngineImp(FetchConnectionPool connectionPool, FetchProtocolRegistry fetchProtocolRegistry) {
 		this.connectionPool = connectionPool;
-		this.fetchProtocol = fetchProtocol;
+		this.fetchProtocolRegistry = fetchProtocolRegistry;
 	}
 
 	@Override
@@ -56,11 +55,10 @@ public class FetchEngineImp implements FetchEngine {
 		}
 
 		try {
-			Optional<Protocol> protocol = fetchProtocol.registry().getProtocolForURL(params.request().url());
-			if(protocol.isEmpty()) return FetchResponse.createNetworkError();
+			Optional<Reader> streamReader = fetchProtocolRegistry.openConnection(url);
+			if (streamReader.isEmpty()) return FetchResponse.createNetworkError();
 
-			Reader streamReader = protocol.get().openConnection(params.request().url(), fetchProtocol.context()).getInputReader();
-			return new FetchResponseImp(Body.createBody(streamReader, null));
+			return new FetchResponseImp(Body.createBody(streamReader.get(), null));
 		} catch (Exception e) {
 			return FetchResponse.createNetworkError();
 		}
