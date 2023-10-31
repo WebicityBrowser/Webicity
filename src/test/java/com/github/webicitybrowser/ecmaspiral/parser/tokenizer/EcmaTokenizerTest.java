@@ -12,6 +12,7 @@ import com.github.webicitybrowser.ecmaspiral.parser.tokenizer.imp.TokenizerImp;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.CommentToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.IdentifierToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.NewlineToken;
+import com.github.webicitybrowser.ecmaspiral.parser.tokens.NumericToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.PunctuatorToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.StringToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.Token;
@@ -117,6 +118,19 @@ public class EcmaTokenizerTest {
 		Assertions.assertInstanceOf(PunctuatorToken.class, token);
 		PunctuatorToken punctuatorToken = (PunctuatorToken) token;
 		Assertions.assertEquals("!==", punctuatorToken.punctuator());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with integer")
+	public void canTokenizeSourceTextWithInteger() {
+		Reader source = new StringReader("123");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(123, numericToken.value().intValue());
 	}
 
 }

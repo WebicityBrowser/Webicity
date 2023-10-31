@@ -5,7 +5,9 @@ import java.io.IOException;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.NewlineToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.Token.TokenMeta;
 
-public class NewlineTokenizer {
+public final class NewlineTokenizer {
+
+	private NewlineTokenizer() {}
 
 	public static NewlineToken consumeNewlineToken(TokenizerStream tokenizerStream) throws IOException {
 		TokenMeta meta = tokenizerStream.meta();

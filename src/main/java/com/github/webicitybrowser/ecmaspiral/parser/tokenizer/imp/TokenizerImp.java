@@ -31,6 +31,8 @@ public class TokenizerImp implements Tokenizer {
 				tokens.add(StringTokenizer.consumeStringToken(stream));
 			} else if (PunctuatorTokenizer.isPunctuatorStart(stream)) {
 				tokens.add(PunctuatorTokenizer.consumePunctuatorToken(stream));
+			} else if (NumericTokenizer.isNumericStart(ch)) {
+				tokens.add(NumericTokenizer.consumeNumericToken(stream));
 			} else {
 				throw new IllegalStateException("Unexpected character: " + stream.peek());
 			}
