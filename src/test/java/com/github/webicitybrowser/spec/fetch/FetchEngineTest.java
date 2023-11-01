@@ -1,7 +1,6 @@
 package com.github.webicitybrowser.spec.fetch;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
-import com.github.webicitybrowser.spec.fetch.taskdestination.ParallelQueue;
+import com.github.webicitybrowser.spec.fetch.test.DummyTaskDestination;
 import com.github.webicitybrowser.spec.url.URL;
 
 
@@ -34,7 +33,7 @@ public class FetchEngineTest {
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
 		parametersBuilder.setConsumeBodyAction(consumeBodyAction);
-		parametersBuilder.setTaskDestination(new ParallelQueue());
+		parametersBuilder.setTaskDestination(new DummyTaskDestination());
 		FetchParameters parameters = parametersBuilder.build();
 		fetchEngineImp.fetch(parameters);
 
@@ -54,7 +53,7 @@ public class FetchEngineTest {
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
 		parametersBuilder.setConsumeBodyAction(consumeBodyAction);
-		parametersBuilder.setTaskDestination(new ParallelQueue());
+		parametersBuilder.setTaskDestination(new DummyTaskDestination());
 		FetchParameters parameters = parametersBuilder.build();
 		fetchEngine.fetch(parameters);
 
@@ -99,7 +98,7 @@ public class FetchEngineTest {
 		return new FetchResponse() {
 			@Override
 			public Body body() {
-				return Body.createBody(new InputStreamReader(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 })), DUMMY_BODY);
+				return Body.createBody(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }), DUMMY_BODY);
 			}
 
 			@Override

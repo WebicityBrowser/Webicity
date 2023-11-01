@@ -40,12 +40,13 @@ public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 	}
 
 	@Override
-	public void startRenderLoop() {
+	public void startRenderLoop(Runnable tickHandler) {
 		while (continueRunning()) {
 			GLFW.glfwPollEvents();
 			invalidationScheduler.tick();
 			startQueuedWindows();
 			continueRunningScreens();
+			tickHandler.run();
 		}
 	}
 

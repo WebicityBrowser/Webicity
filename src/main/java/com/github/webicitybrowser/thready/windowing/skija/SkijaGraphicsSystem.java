@@ -8,8 +8,8 @@ public interface SkijaGraphicsSystem extends GraphicsSystem {
 	
 	public InvalidationScheduler getInvalidationScheduler();
 	
-	public static SkijaGraphicsSystem createDefault() {
-		return new SkijaGraphicsSystemImp();
+	public static SkijaGraphicsSystem createDefault(Runnable tickHandler) {
+		return new SkijaGraphicsSystemImp(tickHandler);
 	}
 	
 }

@@ -14,7 +14,12 @@ public class SkijaGraphicsSystemImp implements SkijaGraphicsSystem {
 	private final SkijaWindowingThread windowingThread = new SkijaWindowingThreadImp(this);
 	private final ResourceLoader resourceLoader = new SkijaResourceLoaderImp();
 	private final InvalidationScheduler invalidationScheduler = windowingThread.getInvalidationScheduler();
+	private final Runnable tickHandler;
 	
+	public SkijaGraphicsSystemImp(Runnable tickHandler) {
+		this.tickHandler = tickHandler;
+	}
+
 	@Override
 	public void createWindow(Consumer<Window> callback) {
 		windowingThread.createWindow(callback);
@@ -32,7 +37,7 @@ public class SkijaGraphicsSystemImp implements SkijaGraphicsSystem {
 
 	@Override
 	public void startRenderLoop() {
-		windowingThread.startRenderLoop();
+		windowingThread.startRenderLoop(tickHandler);
 	}
 	
 }

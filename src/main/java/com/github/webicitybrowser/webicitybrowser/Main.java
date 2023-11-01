@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 
 import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
-import com.github.webicitybrowser.thready.drawing.core.image.BytesImageSource;
+import com.github.webicitybrowser.thready.drawing.core.image.EncodedBytesImageSource;
 import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
 import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
 import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
@@ -105,7 +105,7 @@ public class Main {
 	}
 
 	private static void startGUIFor(BrowserInstance browserInstance, WindowSet windowSet) {
-		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault();
+		GraphicsSystem graphicsSystem = SkijaGraphicsSystem.createDefault(() -> browserInstance.tick());
 		new WindowSetGUI(browserInstance, windowSet,
 			(component, callback) -> createWindowFor(graphicsSystem, component, callback)).start();
 		graphicsSystem.startRenderLoop();
@@ -126,7 +126,7 @@ public class Main {
 
 			try {
 				desktopWindow.setIcons(new ImageSource[] {
-					new BytesImageSource(ClassLoader.getSystemClassLoader().getResourceAsStream("webicity.png").readAllBytes())
+					new EncodedBytesImageSource(ClassLoader.getSystemClassLoader().getResourceAsStream("webicity.png").readAllBytes())
 				});
 			} catch (IOException e) {
 				e.printStackTrace();

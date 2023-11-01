@@ -1,9 +1,7 @@
 package com.github.webicitybrowser.webicity.protocol;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 
 import com.github.webicitybrowser.spec.http.HTTPRedirectHandler;
 import com.github.webicitybrowser.spec.http.HTTPRequest;
@@ -32,7 +30,7 @@ public class HTTPProtocol implements Protocol {
 	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
 		HTTPResponse response = httpService.resolveRequest(createRequest(url, context));
 		if (response instanceof HTTPSuccessResponse successResponse) {
-			return createConnection(successResponse, url);
+			return createConnection(successResponse);
 		} else {
 			throw new UnsupportedOperationException("Unhandled HTTP response object: " + response);
 		}
@@ -43,16 +41,16 @@ public class HTTPProtocol implements Protocol {
 		return new HTTPRequest(url, context.action(), redirectHandler);
 	}
 
-	private Connection createConnection(HTTPSuccessResponse response, URL url) {
+	private Connection createConnection(HTTPSuccessResponse response) {
 		return new Connection() {
 			@Override
 			public URL getURL() {
-				return url;
+				return response.getURL();
 			}
 			
 			@Override
-			public Reader getInputReader() {
-				return new InputStreamReader(response.getInputStream(), StandardCharsets.UTF_8);
+			public InputStream getInputStream() {
+				return response.getInputStream();
 			}
 			
 			@Override

@@ -13,18 +13,24 @@ public class FetchParametersBuilderImp implements FetchParametersBuilder {
 	private TaskDestination taskDestination;
 
 	@Override
-	public void setRequest(FetchRequest request) {
+	public FetchParametersBuilder setRequest(FetchRequest request) {
 		this.request = request;
+
+		return this;
 	}
 
 	@Override
-	public void setConsumeBodyAction(FetchConsumeBodyAction consumeBodyAction) {
+	public FetchParametersBuilder setConsumeBodyAction(FetchConsumeBodyAction consumeBodyAction) {
 		this.consumeBodyAction = consumeBodyAction;
+
+		return this;
 	}
 
 	@Override
-	public void setTaskDestination(TaskDestination taskDestination) {
+	public FetchParametersBuilder setTaskDestination(TaskDestination taskDestination) {
 		this.taskDestination = taskDestination;
+
+		return this;
 	}
 
 	@Override
