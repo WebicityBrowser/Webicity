@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.codec.jpeg.exception.chunk.jfif;
+package com.github.webicitybrowser.codec.jpeg.chunk.jfif;
 
 import java.io.IOException;
 import java.io.InputStream;
