@@ -133,4 +133,30 @@ public class EcmaTokenizerTest {
 		Assertions.assertEquals(123, numericToken.value().intValue());
 	}
 
+	@Test
+	@DisplayName("Can tokenize source text with float")
+	public void canTokenizeSourceTextWithFloat() {
+		Reader source = new StringReader("123.456");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(123.456, numericToken.value().doubleValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with float with leading dot")
+	public void canTokenizeSourceTextWithFloatWithLeadingDot() {
+		Reader source = new StringReader(".456");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(0.456, numericToken.value().doubleValue());
+	}
+
 }
