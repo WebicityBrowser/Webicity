@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.github.webicitybrowser.ecmaspiral.parser.exception.ParseException;
 import com.github.webicitybrowser.ecmaspiral.parser.tokenizer.Tokenizer;
+import com.github.webicitybrowser.ecmaspiral.parser.tokenizer.imp.numeric.NumericTokenizer;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.PunctuatorToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.Token;
 

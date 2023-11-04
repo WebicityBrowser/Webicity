@@ -159,4 +159,95 @@ public class EcmaTokenizerTest {
 		Assertions.assertEquals(0.456, numericToken.value().doubleValue());
 	}
 
+	@Test
+	@DisplayName("Can tokenize source text with exponent")
+	public void canTokenizeSourceTextWithExponent() {
+		Reader source = new StringReader("123e2");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(123e2, numericToken.value().doubleValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with integer with separator")
+	public void canTokenizeSourceTextWithIntegerWithSeparator() {
+		Reader source = new StringReader("123_456_789");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(123456789, numericToken.value().intValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with zero")
+	public void canTokenizeSourceTextWithZero() {
+		Reader source = new StringReader("0");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(0, numericToken.value().intValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with octal")
+	public void canTokenizeSourceTextWithOctal() {
+		Reader source = new StringReader("0o1234567");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(01234567, numericToken.value().intValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with non-octal integer starting with zero")
+	public void canTokenizeSourceTextWithNonOctalIntegerStartingWithZero() {
+		Reader source = new StringReader("01234567");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(01234567, numericToken.value().intValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with hexadecimal")
+	public void canTokenizeSourceTextWithHexadecimal() {
+		Reader source = new StringReader("0xF7");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(0xF7, numericToken.value().intValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with hexadecimal with separator")
+	public void canTokenizeSourceTextWithHexadecimalWithSeparator() {
+		Reader source = new StringReader("0xF_0");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(0xF0, numericToken.value().intValue());
+	}
+
 }
