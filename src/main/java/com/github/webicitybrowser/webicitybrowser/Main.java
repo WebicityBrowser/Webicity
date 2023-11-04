@@ -86,7 +86,8 @@ public class Main {
 	private static void openDefaultURLs(Window window) {
 		try {
 			//TODO: Configuration
-			openURL(window, URL.of("webicity://welcome"));
+//			openURL(window, URL.of("webicity://welcome"));
+			openURL(window, URL.of("webicity://float"));
 		} catch (InvalidURLException e) {
 			e.printStackTrace();
 		}

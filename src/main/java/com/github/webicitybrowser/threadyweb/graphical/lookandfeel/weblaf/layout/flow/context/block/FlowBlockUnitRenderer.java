@@ -37,10 +37,9 @@ public final class FlowBlockUnitRenderer {
 
 	public static FlowBlockChildRenderResult generateChildUnit(FlowBlockUnitRenderingContext context, FlowBlockPrerenderSizingInfo prerenderSizingInfo) {
 		Box childBox = context.childBox();
-		AbsoluteSize precomputedSize = prerenderSizingInfo.precomputedChildSize();
 		RenderedUnit childUnit = renderChildUnit(context, prerenderSizingInfo);
 		AbsoluteSize adjustedSize = FlowSizeUtils.enforcePreferredSize(childUnit.fitSize(), prerenderSizingInfo.enforcedChildSize());
-		precomputedSize = FlowBlockSizeCalculations.clipContentSize(childBox.styleDirectives(), adjustedSize, prerenderSizingInfo);
+		AbsoluteSize precomputedSize = FlowBlockSizeCalculations.clipContentSize(childBox.styleDirectives(), adjustedSize, prerenderSizingInfo);
 		FlowBlockPrerenderSizingInfo adjustedPrerenderSizingInfo = new FlowBlockPrerenderSizingInfo(
 			prerenderSizingInfo.enforcedChildSize(), precomputedSize, prerenderSizingInfo.parentSize(), prerenderSizingInfo.sizingContext()
 		);
