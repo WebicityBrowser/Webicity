@@ -2,6 +2,7 @@ package com.github.webicitybrowser.ecmaspiral.parser.tokenizer;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigInteger;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -212,6 +213,19 @@ public class EcmaTokenizerTest {
 	}
 
 	@Test
+	@DisplayName("Can tokenize source text with octal with separator")
+	public void canTokenizeSourceTextWithOctalWithSeparator() {
+		Reader source = new StringReader("0o1234567");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(01234567, numericToken.value().intValue());
+	}
+
+	@Test
 	@DisplayName("Can tokenize source text with non-octal integer starting with zero")
 	public void canTokenizeSourceTextWithNonOctalIntegerStartingWithZero() {
 		Reader source = new StringReader("01234567");
@@ -248,6 +262,45 @@ public class EcmaTokenizerTest {
 		Assertions.assertInstanceOf(NumericToken.class, token);
 		NumericToken numericToken = (NumericToken) token;
 		Assertions.assertEquals(0xF0, numericToken.value().intValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with binary")
+	public void canTokenizeSourceTextWithBinary() {
+		Reader source = new StringReader("0b11110000");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(0xF0, numericToken.value().intValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with binary with separator")
+	public void canTokenizeSourceTextWithBinaryWithSeparator() {
+		Reader source = new StringReader("0b1111_0000");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(0xF0, numericToken.value().intValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with decimal big integer")
+	public void canTokenizeSourceTextWithDecimalBigInteger() {
+		Reader source = new StringReader("1234567890123456789012345678901234567890n");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken = (NumericToken) token;
+		Assertions.assertEquals(new BigInteger("1234567890123456789012345678901234567890"), numericToken.value());
 	}
 
 }

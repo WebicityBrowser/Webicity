@@ -14,7 +14,10 @@ public final class OctalTokenizer {
 		if (!isOctalDigit(stream.peek())) {
 			throw new ParseException("Expected octal digit", stream.meta());
 		}
+
+		boolean separatorAllowed = false;
 		while (isOctalDigit(stream.peek())) {
+			separatorAllowed = NumericTokenizer.ignoreSeparator(separatorAllowed, stream);
 			value = value * 8 + (stream.read() - '0');
 		}
 		return value;

@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.ecmaspiral.parser.tokenizer.imp.numeric;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 import com.github.webicitybrowser.ecmaspiral.parser.exception.ParseException;
 import com.github.webicitybrowser.ecmaspiral.parser.tokenizer.imp.TokenizerStream;
@@ -9,6 +10,8 @@ public class DecimalTokenizer {
 	
 	public static Number consumeDecimalLiteral(TokenizerStream stream) throws IOException, ParseException {
 		Number numberValue = stream.peek() != '.' ? consumeDecimalIntegerLiteral(stream) : 0;
+		if (numberValue instanceof BigInteger) return numberValue;
+
 		if (stream.peek() == '.') {
 			stream.read();
 			Number fractionPart = consumeDecimalDigits(stream, true);
@@ -24,27 +27,26 @@ public class DecimalTokenizer {
 	}
 
 	public static Number consumeDecimalDigits(TokenizerStream stream, boolean isAfterDot) throws IOException, ParseException {
-		int intValue = 0;
-		int i = 0;
-		while (isDecimalDigit(stream.peek()) || stream.peek() == '_') {
-			if (stream.peek() == '_' && i == 0) {
-				throw new ParseException("Expected decimal digit", stream.meta());
-			} else if (stream.peek() == '_') {
-				stream.read();
-				continue;
-			}
-			intValue = intValue * 10 + stream.read() - '0';
-			i++;
-		}
-
-		if (isAfterDot && i == 0) {
+		if (!isDecimalDigit(stream.peek())) {
 			throw new ParseException("Expected decimal digit", stream.meta());
 		}
 
+		StringBuilder stringBuilder = new StringBuilder(isAfterDot ? "." : "");
+		boolean separatorAllowed = false;
+		while (isDecimalDigit(stream.peek()) || stream.peek() == '_') {
+			separatorAllowed = NumericTokenizer.ignoreSeparator(separatorAllowed, stream);
+			if (!separatorAllowed) continue;
+			
+			stringBuilder.appendCodePoint(stream.read());
+		}
+
 		if (isAfterDot) {
-			return intValue / Math.pow(10, i);
+			return Double.parseDouble(stringBuilder.toString());
+		} else if (stream.peek() == 'n') {
+			stream.read();
+			return new BigInteger(stringBuilder.toString());
 		} else {
-			return intValue;
+			return Integer.parseInt(stringBuilder.toString());
 		}
 	}
 

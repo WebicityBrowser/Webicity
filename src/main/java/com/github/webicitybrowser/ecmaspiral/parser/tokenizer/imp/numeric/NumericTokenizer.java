@@ -22,6 +22,19 @@ public final class NumericTokenizer {
 		return new NumericToken(numberValue, stream.meta());
 	}
 
+	public static boolean ignoreSeparator(boolean separatorAllowed, TokenizerStream stream) throws IOException, ParseException {
+		if (stream.peek() == '_') {
+			if (!separatorAllowed) {
+				throw new ParseException("Expected digit, got separator!", stream.meta());
+			}
+
+			stream.read();
+			return false;
+		}
+
+		return true;
+	}
+
 	private static Number consumeZeroSpecial(TokenizerStream stream) throws IOException, ParseException {
 		if (stream.peek() == 'o' || stream.peek() == 'O') {
 			stream.read();
@@ -29,6 +42,9 @@ public final class NumericTokenizer {
 		} else if (stream.peek() == 'x' || stream.peek() == 'X') {
 			stream.read();
 			return HexTokenizer.consumeHexDigits(stream);
+		} else if (stream.peek() == 'b' || stream.peek() == 'B') {
+			stream.read();
+			return BinaryTokenizer.consumeBinaryDigits(stream);
 		} else if (OctalTokenizer.isOctalDigit(stream.peek())) {
 			return OctalTokenizer.consumeOctalDigits(stream);
 		} else if (DecimalTokenizer.isDecimalDigit(stream.peek())) {

@@ -14,13 +14,10 @@ public final class HexTokenizer {
 		if (!isHexDigit(stream.peek())) {
 			throw new ParseException("Expected hex digit", stream.meta());
 		}
+
+		boolean separatorAllowed = false;
 		while (isHexDigit(stream.peek()) || stream.peek() == '_') {
-			if (stream.peek() == '_' && value == 0) {
-				throw new ParseException("Expected hex digit", stream.meta());
-			} else if (stream.peek() == '_') {
-				stream.read();
-				continue;
-			}
+			separatorAllowed = NumericTokenizer.ignoreSeparator(separatorAllowed, stream);
 			value = value * 16 + hexValue(stream.read());
 		}
 		return value;
