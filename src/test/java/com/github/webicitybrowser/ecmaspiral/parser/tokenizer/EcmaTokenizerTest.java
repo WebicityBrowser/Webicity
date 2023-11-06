@@ -10,9 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.github.webicitybrowser.ecmaspiral.parser.tokenizer.imp.TokenizerImp;
+import com.github.webicitybrowser.ecmaspiral.parser.tokens.BinaryToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.CommentToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.IdentifierToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.NewlineToken;
+import com.github.webicitybrowser.ecmaspiral.parser.tokens.NullToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.NumericToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.PunctuatorToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.StringToken;
@@ -301,6 +303,45 @@ public class EcmaTokenizerTest {
 		Assertions.assertInstanceOf(NumericToken.class, token);
 		NumericToken numericToken = (NumericToken) token;
 		Assertions.assertEquals(new BigInteger("1234567890123456789012345678901234567890"), numericToken.value());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with float starting with zero dot")
+	public void canTokenizeSourceTextWithFloatStartingWithZeroDot() {
+		Reader source = new StringReader("0.1234");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Token token = tokens.get(0);
+		Assertions.assertInstanceOf(NumericToken.class, token);
+		NumericToken numericToken1 = (NumericToken) token;
+		Assertions.assertEquals(0.1234, numericToken1.value().doubleValue());
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with null")
+	public void canTokenizeSourceTextWithNull() {
+		Reader source = new StringReader("null");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(1, tokens.size());
+		Assertions.assertInstanceOf(NullToken.class, tokens.get(0));
+	}
+
+	@Test
+	@DisplayName("Can tokenize source text with boolean")
+	public void canTokenizeSourceTextWithBoolean() {
+		Reader source = new StringReader("true false");
+		Tokenizer tokenizer = new TokenizerImp();
+		List<Token> tokens = Assertions.assertDoesNotThrow(() -> tokenizer.tokenize(source));
+		Assertions.assertEquals(3, tokens.size());
+		Assertions.assertInstanceOf(BinaryToken.class, tokens.get(0));
+		BinaryToken binaryToken1 = (BinaryToken) tokens.get(0);
+		Assertions.assertTrue(binaryToken1.value());
+		Assertions.assertInstanceOf(WhitespaceToken.class, tokens.get(1));
+		Assertions.assertInstanceOf(BinaryToken.class, tokens.get(2));
+		BinaryToken binaryToken2 = (BinaryToken) tokens.get(2);
+		Assertions.assertFalse(binaryToken2.value());
 	}
 
 }

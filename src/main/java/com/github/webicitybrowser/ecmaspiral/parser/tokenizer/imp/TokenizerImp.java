@@ -8,6 +8,9 @@ import java.util.List;
 import com.github.webicitybrowser.ecmaspiral.parser.exception.ParseException;
 import com.github.webicitybrowser.ecmaspiral.parser.tokenizer.Tokenizer;
 import com.github.webicitybrowser.ecmaspiral.parser.tokenizer.imp.numeric.NumericTokenizer;
+import com.github.webicitybrowser.ecmaspiral.parser.tokens.BinaryToken;
+import com.github.webicitybrowser.ecmaspiral.parser.tokens.IdentifierToken;
+import com.github.webicitybrowser.ecmaspiral.parser.tokens.NullToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.PunctuatorToken;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.Token;
 
@@ -27,7 +30,8 @@ public class TokenizerImp implements Tokenizer {
 			} else if (ch == '/') {
 				tokens.add(consumeTokenWithSlash(stream));
 			} else if (IdentifierTokenizer.isIdentifierStart(ch)) {
-				tokens.add(IdentifierTokenizer.consumeIdentifierToken(stream));
+				IdentifierToken token = IdentifierTokenizer.consumeIdentifierToken(stream);
+				tokens.add(convertIdentToLiteralIfNeeded(token));
 			} else if (ch == '"' || ch == '\'') {
 				tokens.add(StringTokenizer.consumeStringToken(stream));
 			} else if (PunctuatorTokenizer.isPunctuatorStart(stream)) {
@@ -58,6 +62,15 @@ public class TokenizerImp implements Tokenizer {
 			default:
 				return new PunctuatorToken("/", stream.meta());
 		}
+	}
+
+	private Token convertIdentToLiteralIfNeeded(IdentifierToken token) {
+		return switch (token.name()) {
+			case "null" -> new NullToken(token.meta());
+			case "true" -> new BinaryToken(true, token.meta());
+			case "false" -> new BinaryToken(false, token.meta());
+			default -> token;
+		};
 	}
 	
 }

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import com.github.webicitybrowser.ecmaspiral.parser.exception.ParseException;
 import com.github.webicitybrowser.ecmaspiral.parser.tokens.IdentifierToken;
-import com.github.webicitybrowser.ecmaspiral.parser.tokens.Token;
 
 public final class IdentifierTokenizer {
 
@@ -12,7 +11,7 @@ public final class IdentifierTokenizer {
 
 	// TODO: Unicode escape sequences
 
-	public static Token consumeIdentifierToken(TokenizerStream stream) throws IOException, ParseException {
+	public static IdentifierToken consumeIdentifierToken(TokenizerStream stream) throws IOException, ParseException {
 		if (!isIdentifierStart(stream.peek())) {
 			throw new IllegalStateException("Tokenize Error: Unexpected character: " + stream.peek());
 		}

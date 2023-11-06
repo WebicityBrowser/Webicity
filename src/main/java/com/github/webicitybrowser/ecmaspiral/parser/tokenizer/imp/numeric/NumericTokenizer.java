@@ -49,6 +49,9 @@ public final class NumericTokenizer {
 			return OctalTokenizer.consumeOctalDigits(stream);
 		} else if (DecimalTokenizer.isDecimalDigit(stream.peek())) {
 			return DecimalTokenizer.consumeDecimalDigits(stream, false);
+		} else if (stream.peek() == '.') {
+			stream.read();
+			return DecimalTokenizer.consumeDecimalDigits(stream, true);
 		} else {
 			return 0;
 		}
