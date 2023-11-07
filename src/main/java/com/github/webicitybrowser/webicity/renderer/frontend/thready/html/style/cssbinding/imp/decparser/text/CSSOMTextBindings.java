@@ -9,6 +9,7 @@ public final class CSSOMTextBindings {
 	private CSSOMTextBindings() {}
 
 	public static void installTo(Map<String, CSSOMNamedDeclarationParser<?>> namedDeclarationParsers) {
+		namedDeclarationParsers.put("font", new CSSOMFontShorthandDeclarationParser());
 		namedDeclarationParsers.put("font-family", new CSSOMFontFamilyDeclarationParser());
 		namedDeclarationParsers.put("font-weight", new CSSOMFontWeightDeclarationParser());
 		namedDeclarationParsers.put("font-size", new CSSOMFontSizeDeclarationParser());
