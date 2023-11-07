@@ -67,5 +67,11 @@ public class PNGReaderTest {
 			}, plteChunkInfo.palette()
 		);
 	}
+	
+	@Test
+	@DisplayName("Can decode adam7 interlaced data horizontal pass")
+	public void canDecodeAdam7InterlacedDataHorizontalPass() {
+		
+	}
 
 }
