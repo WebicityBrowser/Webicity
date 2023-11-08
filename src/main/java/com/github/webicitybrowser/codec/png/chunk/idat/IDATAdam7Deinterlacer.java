@@ -26,7 +26,7 @@ public class IDATAdam7Deinterlacer {
 			isHorizontal = !isHorizontal;
 		}
 
-		return new byte[0];
+		return deinterlacedData;
 	}
 
 	private static int pixelLengthToByteLength(IHDRChunkInfo headerInfo, int pixelLength) {
@@ -67,14 +67,41 @@ public class IDATAdam7Deinterlacer {
 	}
 
 	private static byte[] arrangeVerticalInterlacedData(
-		byte[] deinterlacedData, byte[] decodedPass, IHDRChunkInfo headerInfo, int passWidth, int passHeight
+		byte[] priorData, byte[] newPass, IHDRChunkInfo headerInfo, int passWidth, int passHeight
 	) {
+		if (priorData.length == 0) return newPass;
+		byte[] decodedPass = new byte[priorData.length + newPass.length];
+		for (int i = 0; i < decodedPass.length / 8; i++) {
+			// TODO: What about images with width not divisible by 8?
+			int j = i * 8;
+			for (int k = 0; k < 4; k++) {
+				decodedPass[j + k] = priorData[i * 4 + k];
+			}
+			if (j + 4 >= decodedPass.length) continue;
+			for (int k = 0; k < 4; k++) {
+				decodedPass[j + k + 4] = newPass[i * 4 + k];
+			}
+		}
+
 		return decodedPass;
 	}
 
 	private static byte[] arrangeHorizontalInterlacedData(
-		byte[] deinterlacedData, byte[] decodedPass, IHDRChunkInfo headerInfo, int passWidth, int passHeight
+		byte[] priorData, byte[] newPass, IHDRChunkInfo headerInfo, int passWidth, int passHeight
 	) {
+		if (priorData.length == 0) return newPass;
+		byte[] decodedPass = new byte[priorData.length + newPass.length];
+		for (int i = 0; i < passHeight; i++) {
+			for (int j = 0; j < passWidth * 4; j++) {
+				int sourceIndex = i * passWidth * 4 + j;
+				int destinationIndexPrior = i * 2 * passWidth * 4 + j;
+				int destinationIndexNew = (i * 2 + 1) * passWidth * 4 + j;
+				decodedPass[destinationIndexPrior] = priorData[sourceIndex];
+				if (destinationIndexNew >= decodedPass.length) continue;
+				decodedPass[destinationIndexNew] = newPass[sourceIndex];
+			}
+		}
+
 		return decodedPass;
 	}
 	

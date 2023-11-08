@@ -36,23 +36,23 @@ public class IDATAdam7DeinterlacerTest {
 			() -> IDATAdam7Deinterlacer.deinterlace(interlacedImage, ihdrChunkInfo, (b, w, h) -> removeScanlines(b, w, h))
 		);
 
-		Assertions.assertEquals(new byte[] {
-			1, 6, 4, 6, 2, 6, 4, 6,
-			7, 7, 7, 7, 5, 7, 7, 7,
-			5, 6, 5, 6, 5, 6, 5, 6,
-			7, 7, 7, 7, 7, 7, 7, 7,
-			3, 6, 4, 6, 3, 6, 4, 6,
-			7, 7, 7, 7, 7, 7, 7, 7,
-			5, 6, 5, 6, 5, 6, 5, 6,
-			7, 7, 7, 7, 7, 7, 7, 7,
+		Assertions.assertArrayEquals(new byte[] {
+			1, 0, 0, 0, 6, 0, 0, 0, 4, 0, 0, 0, 6, 0, 0, 0, 2, 0, 0, 0, 6, 0, 0, 0, 4, 0, 0, 0, 6, 0, 0, 0,
+			7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0,
+			5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0,
+			7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0,
+			3, 0, 0, 0, 6, 0, 0, 0, 4, 0, 0, 0, 6, 0, 0, 0, 3, 0, 0, 0, 6, 0, 0, 0, 4, 0, 0, 0, 6, 0, 0, 0,
+			7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0,
+			5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0, 5, 0, 0, 0, 6, 0, 0, 0,
+			7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 0, 0,
 		}, deinterlacedImage);
 	}
 
 	private byte[] removeScanlines(byte[] b, int w, int h) {
-		byte[] result = new byte[b.length - h];
+		byte[] result = new byte[(b.length - h) * 4];
 		int resultIndex = 0;
 		for (int i = 0; i < b.length; i++) {
-			if (i % (w + 1) != 0) result[resultIndex++] = b[i];
+			if (i % (w + 1) != 0) result[resultIndex++ * 4] = b[i];
 		}
 
 		return result;
