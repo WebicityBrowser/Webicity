@@ -10,6 +10,8 @@ public class ImageRequest {
 	private ImageRequestState state;
 	private ImageData imageData;
 
+	private Runnable onStateUpdateCallback;
+
 	public ImageRequest(ImageRequestState imageRequestState, URL url) {
 		this.url = url;
 
@@ -27,6 +29,7 @@ public class ImageRequest {
 
 	public void setState(ImageRequestState state) {
 		this.state = state;
+		runOnStateUpdateCallback();
 	}
 
 	public ImageData getImageData() {
@@ -35,10 +38,21 @@ public class ImageRequest {
 
 	public void setImageData(ImageData imageData) {
 		this.imageData = imageData;
+		runOnStateUpdateCallback();
 	}
 	
 	public static enum ImageRequestState {
 		UNAVAILABLE, PARTIALLY_AVAILABLE, COMPLETELY_AVAILABLE, BROKEN
+	}
+
+	public void addOnStateUpdateCallback(Runnable callback) {
+		this.onStateUpdateCallback = callback;
+	}
+
+	private void runOnStateUpdateCallback() {
+		if (onStateUpdateCallback != null) {
+			onStateUpdateCallback.run();
+		}
 	}
 
 }

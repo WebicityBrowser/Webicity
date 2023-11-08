@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.threadyweb.tree.imp;
 
+import java.util.function.Consumer;
+
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
@@ -16,10 +18,13 @@ public class ImageWebComponent extends BaseWebComponent implements ImageComponen
 	private final ImageEngine imageEngine;
 	private final ImageState imageState;
 
+	private Consumer<ImageStatus> onImageStatusUpdateCallback;
+
 	public ImageWebComponent(Element element, WebComponentContext componentContext) {
 		this.element = element;
 		this.imageEngine = componentContext.getContext(ImageEngine.class);
 		this.imageState = imageEngine.createImageState();
+		imageState.onImageStateUpdate(this::onImageStateUpdate);
 		imageEngine.updateImageData(imageState, element);
 	}
 
@@ -43,6 +48,17 @@ public class ImageWebComponent extends BaseWebComponent implements ImageComponen
 
 		String altText = element.hasAttribute("alt") ? element.getAttribute("alt") : "Image";
 		return new ImageStatus(canImageBeShown, imageRequest.getImageData(), altText);
+	}
+
+	@Override
+	public void onImageStatusUpdate(Consumer<ImageStatus> callback) {
+		this.onImageStatusUpdateCallback = callback;
+	}
+
+	private void onImageStateUpdate() {
+		if (onImageStatusUpdateCallback != null) {
+			onImageStatusUpdateCallback.accept(getImageStatus());
+		}
 	}
 	
 }

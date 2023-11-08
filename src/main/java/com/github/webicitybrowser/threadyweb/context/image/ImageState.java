@@ -10,4 +10,6 @@ public interface ImageState {
 
 	void setPendingRequest(ImageRequest request);
 
+	void onImageStateUpdate(Runnable callback);
+
 }

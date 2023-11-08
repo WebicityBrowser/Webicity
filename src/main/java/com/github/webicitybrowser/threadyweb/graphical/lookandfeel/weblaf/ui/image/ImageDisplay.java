@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
+import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -27,6 +28,8 @@ public class ImageDisplay implements UIDisplay<ImageContext, ImageBox, ImageUnit
 
 	@Override
 	public ImageContext createContext(ComponentUI componentUI) {
+		ImageComponent component = (ImageComponent) componentUI.getComponent();
+		component.onImageStatusUpdate(_1 -> componentUI.invalidate(InvalidationLevel.RENDER));
 		return new ImageContext(this, componentUI);
 	}
 
