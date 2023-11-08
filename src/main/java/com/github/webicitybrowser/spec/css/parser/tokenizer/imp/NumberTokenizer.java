@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.spec.css.parser.tokenizer.imp;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 import com.github.webicitybrowser.spec.css.parser.tokens.CDCToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.DimensionToken;
@@ -87,6 +88,12 @@ public final class NumberTokenizer {
 		type = consumeExponentIfPresent(reader, repr, type);
 		
 		if (type == NumberTypeFlag.INTEGER) {
+			if (repr.length() > 9) {
+				BigInteger bigInt = new BigInteger(repr.toString());
+				if (bigInt.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
+					return Integer.MAX_VALUE;
+				}
+			}
 			return Integer.valueOf(repr.toString());
 		} else {
 			return Double.parseDouble(repr.toString());
