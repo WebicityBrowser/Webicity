@@ -3,9 +3,10 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.NestingDirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 
 public class SolidBoxChildrenTracker implements BoxChildrenTracker {
@@ -85,7 +86,9 @@ public class SolidBoxChildrenTracker implements BoxChildrenTracker {
 			return;
 		}
 		
-		ChildrenBox anonymousBox = new BasicAnonymousFluidBox(anonDisplay, parentBox.owningComponent(), parentBox.styleDirectives());
+		ChildrenBox anonymousBox = new BasicAnonymousFluidBox(
+			anonDisplay, parentBox.owningComponent(),
+			new NestingDirectivePool(parentBox.styleDirectives()));
 		// TODO: Is the passed-through renderer generator fine?
 		if (clearPrior) {
 			children.clear();

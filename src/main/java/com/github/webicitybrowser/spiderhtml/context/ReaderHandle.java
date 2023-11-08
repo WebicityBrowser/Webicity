@@ -37,5 +37,11 @@ public class ReaderHandle {
 			reader.read();
 		}
 	}
+
+	public char peek() throws IOException {
+		int ch = reader.read();
+		if (ch != -1) reader.unread(ch);
+		return (char) ch;
+	}
 	
 }
