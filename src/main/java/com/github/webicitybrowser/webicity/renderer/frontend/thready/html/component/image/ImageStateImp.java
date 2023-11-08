@@ -9,6 +9,8 @@ public class ImageStateImp implements ImageState {
 	private ImageRequest currentRequest = new ImageRequest(ImageRequestState.BROKEN, null);
 	private ImageRequest pendingRequest;
 
+	private Runnable onImageStateUpdateCallback;
+
 	@Override
 	public ImageRequest getCurrentRequest() {
 		return currentRequest;
@@ -22,11 +24,24 @@ public class ImageStateImp implements ImageState {
 	@Override
 	public void setCurrentRequest(ImageRequest request) {
 		this.currentRequest = request;
+		request.addOnStateUpdateCallback(this::runOnImageStateUpdateCallback);
+		runOnImageStateUpdateCallback();
 	}
 
 	@Override
 	public void setPendingRequest(ImageRequest request) {
 		this.pendingRequest = request;
+	}
+
+	@Override
+	public void onImageStateUpdate(Runnable callback) {
+		this.onImageStateUpdateCallback = callback;
+	}
+
+	private void runOnImageStateUpdateCallback() {
+		if (onImageStateUpdateCallback != null) {
+			onImageStateUpdateCallback.run();
+		}
 	}
 
 }
