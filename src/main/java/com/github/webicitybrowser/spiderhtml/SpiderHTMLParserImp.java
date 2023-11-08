@@ -34,6 +34,11 @@ public class SpiderHTMLParserImp implements HTMLParser {
 			}
 			
 			int ch = reader.read();
+			if (ch == '\r') {
+				ch = '\n';
+			} else if (ch == '\n' && parsingContext.readerHandle().peek() == '\r') {
+				reader.read();
+			}
 			tokenizeState.process(sharedContext, parsingContext, ch);
 		}
 	}

@@ -14,6 +14,8 @@ button {
     display: inline-block;
 }
 
+li { display: block; }
+
 /* For content after this line, see licenses/WHATWG.txt for license information. */
 article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section {
     display: block;
@@ -31,3 +33,6 @@ address, blockquote, center, dialog, div, figure, figcaption, footer, form,
 header, hr, legend, listing, main, p, plaintext, pre, search, xmp {
     display: block;
 }
+
+/* Lists */
+dir, dd, dl, dt, menu, ol, ul { display: block; }
