@@ -7,25 +7,24 @@ public final class IDATUnfilter {
 
 	private IDATUnfilter() {}
 
-	public static byte[] unfilter(byte[] data, IHDRChunkInfo ihdrChunkInfo) throws UnsupportedPNGException {
+	public static byte[] unfilter(byte[] data, IHDRChunkInfo ihdrChunkInfo, int width, int height) throws UnsupportedPNGException {
 		switch (ihdrChunkInfo.filterMethod()) {
 		case 0:
-			return unfilterDefault(data, ihdrChunkInfo);
+			return unfilterDefault(data, ihdrChunkInfo, width, height);
 		default:
 			throw new UnsupportedPNGException();
 		}
 	}
 
-	private static byte[] unfilterDefault(byte[] data, IHDRChunkInfo ihdrChunkInfo) {
-		int height = ihdrChunkInfo.height();
-		int bytesPerRow = determineBytesPerRow(ihdrChunkInfo);
+	private static byte[] unfilterDefault(byte[] data, IHDRChunkInfo ihdrChunkInfo, int width, int height) {
+		int bytesPerRow = determineBytesPerRow(ihdrChunkInfo, width);
 		byte[] unfilteredData = new byte[data.length - height];
 		int i = 0;
 		int j = 0;
 		for (int y = 0; y < height; y++) {
 			int filterType = data[i++];
 			for (int x = 0; x < bytesPerRow; x++) {
-				int pixelLength = ihdrChunkInfo.bitDepth() < 8 ? 1 : Math.max(getColorBytes(ihdrChunkInfo), 1);
+				int pixelLength = ihdrChunkInfo.bitDepth() < 8 ? 1 : (int) IDATUtil.getColorBytes(ihdrChunkInfo);
 				int a = getByte(unfilteredData, x - pixelLength, y, bytesPerRow);
 				int b = getByte(unfilteredData, x, y - 1, bytesPerRow);
 				int c = getByte(unfilteredData, x - pixelLength, y - 1, bytesPerRow);
@@ -58,21 +57,8 @@ public final class IDATUnfilter {
 		return c;
 	}
 
-	private static int determineBytesPerRow(IHDRChunkInfo ihdrChunkInfo) {
-		return ihdrChunkInfo.width() * getColorBytes(ihdrChunkInfo);
-	}
-
-	private static int getColorBytes(IHDRChunkInfo ihdrChunkInfo) {
-		int channelsPerPixel = switch (ihdrChunkInfo.colorType()) {
-		case 0, 3 -> 1;
-		case 2 -> 3;
-		case 4 -> 2;
-		case 6 -> 4;
-		default -> throw new IllegalStateException("Unexpected value: " + ihdrChunkInfo.colorType());
-		};
-		// TODO: This probably returns 0 for some combinations of bit depth and color type
-
-		return channelsPerPixel * ihdrChunkInfo.bitDepth() / 8;
+	private static int determineBytesPerRow(IHDRChunkInfo ihdrChunkInfo, int width) {
+		return (int) Math.ceil(width * IDATUtil.getColorBytes(ihdrChunkInfo));
 	}
 
 	private static int getByte(byte[] data, int x, int y, int bytesPerRow) {

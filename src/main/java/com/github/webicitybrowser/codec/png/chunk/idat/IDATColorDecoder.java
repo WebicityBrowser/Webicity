@@ -58,7 +58,6 @@ public final class IDATColorDecoder {
 	private static byte scaledByteOf(byte[] chunk, int i, byte bitDepth) {
 		int scaling = 255 / ((1 << bitDepth) - 1);
 		return (byte) (byteOf(chunk, i, bitDepth) * scaling);
-		//return (byte) (255f / bitDepth * byteOf(chunk, i, bitDepth));
 	}
 
 	private static byte byteOf(byte[] chunk, int i, byte bitDepth) {

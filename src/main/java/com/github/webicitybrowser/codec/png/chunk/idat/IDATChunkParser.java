@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.InflaterInputStream;
 
+import com.github.webicitybrowser.codec.png.chunk.ihdr.IHDRChunkInfo;
 import com.github.webicitybrowser.codec.png.exception.UnsupportedPNGException;
 
 public final class IDATChunkParser {
@@ -13,8 +14,7 @@ public final class IDATChunkParser {
 
 	public static IDATChunkInfo parse(byte[] data, IDATContext idatContext) throws IOException, UnsupportedPNGException {
 		byte[] decompressedData = decompress(data, idatContext);
-		byte[] unfilteredData = unfilter(decompressedData, idatContext);
-		byte[] imageRaster = createImageRaster(unfilteredData, idatContext);
+		byte[] imageRaster = deinterlaceAndDecode(decompressedData, idatContext);
 		return new IDATChunkInfo(imageRaster);
 	}
 
@@ -31,9 +31,20 @@ public final class IDATChunkParser {
 		return decompressedStream.readAllBytes();
 	}
 
-	private static byte[] unfilter(byte[] decompressedData, IDATContext idatContext) throws UnsupportedPNGException {
+	private static byte[] deinterlaceAndDecode(byte[] unfilteredData, IDATContext idatContext) throws UnsupportedPNGException {
+		IDATImageRasterDecoder imageRasterDecoder = (b, w, h) -> createImageRaster(unfilter(b, idatContext, w, h), idatContext);
+		IHDRChunkInfo headerInfo = idatContext.ihdrChunkInfo();
+
+		return switch (idatContext.ihdrChunkInfo().interlaceMethod()) {
+		case 0 -> imageRasterDecoder.decode(unfilteredData, headerInfo.width(), headerInfo.height());
+		case 1 -> IDATAdam7Deinterlacer.deinterlace(unfilteredData, headerInfo, imageRasterDecoder);
+		default -> throw new UnsupportedPNGException();
+		};
+	}
+
+	private static byte[] unfilter(byte[] decompressedData, IDATContext idatContext, int width, int height) throws UnsupportedPNGException {
 		return switch (idatContext.ihdrChunkInfo().filterMethod()) {
-		case 0 -> IDATUnfilter.unfilter(decompressedData, idatContext.ihdrChunkInfo());
+		case 0 -> IDATUnfilter.unfilter(decompressedData, idatContext.ihdrChunkInfo(), width, height);
 		default -> throw new UnsupportedPNGException();
 		};
 	}
