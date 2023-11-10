@@ -2,17 +2,19 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.el
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.SolidBoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.CloneBox;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.box.InlineBoxChildrenTracker;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDefaults;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.InnerDisplay;
 
 public class ElementInlineBox implements ElementBox, CloneBox {
 
-	private final BoxChildrenTracker childrenTracker = new InlineBoxChildrenTracker(this);
+	private final BoxChildrenTracker childrenTracker;
 	
 	private final UIDisplay<?, ?, ?> display;
 	private final Component owningComponent;
@@ -20,12 +22,17 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 	private final SolidLayoutManager layout;
 	private final boolean managesSelf;
 
-	public ElementInlineBox(UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, SolidLayoutManager layout) {
+	public ElementInlineBox(
+		UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, SolidLayoutManager layout
+	) {
 		this.display = display;
 		this.owningComponent = owningComponent;
 		this.styleDirectives = styleDirectives;
 		this.layout = layout;
 		this.managesSelf = computeSelfManages();
+		this.childrenTracker = managesSelf ?
+			new SolidBoxChildrenTracker(this, WebDefaults.INLINE_DISPLAY) :
+			new InlineBoxChildrenTracker(this);
 	}
 
 	@Override
