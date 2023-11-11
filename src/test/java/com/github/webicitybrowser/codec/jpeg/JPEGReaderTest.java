@@ -7,9 +7,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkInfo;
+import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser;
+import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser.DHTBinaryTree;
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.jfif.JFIFChunkParser;
+import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkParser;
 
 public class JPEGReaderTest {
 	
@@ -40,6 +44,9 @@ public class JPEGReaderTest {
 		DQTChunkInfo chunk = Assertions.assertDoesNotThrow(() -> DQTChunkParser.read(chunkSection));
 		int[] table = chunk.tables()[0];
 		Assertions.assertEquals(11, table[11]);
+
+		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
+		Assertions.assertEquals(-1, finalByte);
 	}
 
 	@Test
@@ -72,12 +79,14 @@ public class JPEGReaderTest {
 		Assertions.assertEquals(11, table[11]);
 		table = chunk.tables()[3];
 		Assertions.assertEquals(64, table[11]);
+
+		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
+		Assertions.assertEquals(-1, finalByte);
 	}
 
 	@Test
 	@DisplayName("Can parse DQT chunk with two byte size")
 	public void canParseDQTChunkWithTwoByteSize() {
-		System.out.println("DQT chunk with two byte size");
 		InputStream chunkSection = new ByteArrayInputStream(new byte[] {
 			0, (byte) 131, (byte) 16,
 			1, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7,
@@ -93,6 +102,37 @@ public class JPEGReaderTest {
 		DQTChunkInfo chunk = Assertions.assertDoesNotThrow(() -> DQTChunkParser.read(chunkSection));
 		int[] table = chunk.tables()[0];
 		Assertions.assertEquals(267, table[11]);
+
+		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
+		Assertions.assertEquals(-1, finalByte);
+	}
+
+	@Test
+	@DisplayName("Can parse SOF chunk")
+	public void canParseSOFChunk() {
+		InputStream chunkSection = new ByteArrayInputStream(new byte[] {
+			0, 11, 8, 0, 8, 0, 8, 1, 0, 34, 0
+		});
+
+		Assertions.assertDoesNotThrow(() -> SOFChunkParser.read(chunkSection));
+
+		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
+		Assertions.assertEquals(-1, finalByte);
+	}
+
+	@Test
+	@DisplayName("Can parse simple DHT chunk")
+	public void canParseSimpleDHTChunk() {
+		InputStream chunkSection = new ByteArrayInputStream(new byte[] {
+			0, 31, 0, 0, 1, 5, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+		});
+
+		DHTChunkInfo dhtChunkInfo = Assertions.assertDoesNotThrow(() -> DHTChunkParser.read(chunkSection));
+		DHTBinaryTree testValue = dhtChunkInfo.huffmanTables()[0].left().right().left();
+		Assertions.assertEquals(2, testValue.value());
+
+		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
+		Assertions.assertEquals(-1, finalByte);
 	}
 
 }

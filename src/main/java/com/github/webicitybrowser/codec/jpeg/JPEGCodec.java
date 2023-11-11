@@ -13,8 +13,6 @@ import com.github.webicitybrowser.codec.jpeg.exception.MalformedJPEGException;
 
 public class JPEGCodec implements ImageCodec {
 
-	private final JPEGReader jpgReader = new JPEGReader();
-
 	@Override
 	public String[] getTypes() {
 		return new String[] { "image/jpeg" };
@@ -22,6 +20,8 @@ public class JPEGCodec implements ImageCodec {
 
 	@Override
 	public PossibleImage loadImage(byte[] data, ImageProgressiveCallback callback) {
+		JPEGReader jpgReader = new JPEGReader();
+
 		try {
 			JPEGResult jpgResult = jpgReader.read(new ByteArrayInputStream(data));
 			ImageFrame[] frames = new ImageFrame[1];
