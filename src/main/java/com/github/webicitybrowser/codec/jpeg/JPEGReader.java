@@ -6,6 +6,7 @@ import java.io.InputStream;
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkParser;
+import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkParser;
 import com.github.webicitybrowser.codec.jpeg.exception.InvalidJPEGSignatureException;
 import com.github.webicitybrowser.codec.jpeg.exception.MalformedJPEGException;
 import com.github.webicitybrowser.codec.jpeg.util.JPEGUtil;
@@ -32,6 +33,9 @@ public class JPEGReader {
 			break;
 		case 0xFFC4: // Huffman Table
 			DHTChunkParser.read(dataStream);
+			break;
+		case 0xFFDA: // Start of Scan
+			SOSChunkParser.read(dataStream);
 			break;
 		default:
 			throw new UnsupportedOperationException("Unimplemented chunk type: " + Integer.toHexString(chunkType));

@@ -14,6 +14,7 @@ import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.jfif.JFIFChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkParser;
+import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkParser;
 
 public class JPEGReaderTest {
 	
@@ -130,6 +131,19 @@ public class JPEGReaderTest {
 		DHTChunkInfo dhtChunkInfo = Assertions.assertDoesNotThrow(() -> DHTChunkParser.read(chunkSection));
 		DHTBinaryTree testValue = dhtChunkInfo.huffmanTables()[0].left().right().left();
 		Assertions.assertEquals(2, testValue.value());
+
+		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
+		Assertions.assertEquals(-1, finalByte);
+	}
+
+	@Test
+	@DisplayName("Can parse SOS chunk")
+	public void canParseSimpleSOSChunk() {
+		InputStream chunkSection = new ByteArrayInputStream(new byte[] {
+			0, 10, 2, 14, 18, 15, 18, 1, 1, 36
+		});
+
+		Assertions.assertDoesNotThrow(() -> SOSChunkParser.read(chunkSection));
 
 		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
 		Assertions.assertEquals(-1, finalByte);
