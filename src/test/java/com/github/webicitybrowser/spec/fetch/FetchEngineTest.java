@@ -28,7 +28,7 @@ public class FetchEngineTest {
 		FetchProtocolRegistry registry = Mockito.mock(FetchProtocolRegistry.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool(), registry);
+		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool(), registry, t -> t.run());
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
@@ -48,7 +48,7 @@ public class FetchEngineTest {
 		FetchProtocolRegistry registry = Mockito.mock(FetchProtocolRegistry.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool(), registry);
+		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool(), registry, t -> t.run());
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);

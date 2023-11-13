@@ -15,18 +15,20 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
 import com.github.webicitybrowser.spec.fetch.imp.DataURLProcessor.DataURLStruct;
 import com.github.webicitybrowser.spec.fetch.taskdestination.TaskDestination;
+import com.github.webicitybrowser.spec.htmlbrowsers.ParallelContext;
 import com.github.webicitybrowser.spec.stream.ByteStreamReader;
 import com.github.webicitybrowser.spec.url.URL;
 
 public class FetchEngineImp implements FetchEngine {
 
 	private final FetchConnectionPool connectionPool;
-
+	private final ParallelContext parallelContext;
 	private final FetchProtocolRegistry fetchProtocolRegistry;
 
-	public FetchEngineImp(FetchConnectionPool connectionPool, FetchProtocolRegistry fetchProtocolRegistry) {
+	public FetchEngineImp(FetchConnectionPool connectionPool, FetchProtocolRegistry fetchProtocolRegistry, ParallelContext parallelContext) {
 		this.connectionPool = connectionPool;
 		this.fetchProtocolRegistry = fetchProtocolRegistry;
+		this.parallelContext = parallelContext;
 	}
 
 	@Override
@@ -36,13 +38,15 @@ public class FetchEngineImp implements FetchEngine {
 	}
 
 	private void mainFetch(FetchParams params) {
-		FetchResponse response;
-		if(params.request().url().getScheme().equals("http") || params.request().url().getScheme().equals("https")) {
-			response = httpFetch(params);
-		} else {
-			response = schemeFetch(params);
-		}
-		fetchResponseHandover(params, response);
+		parallelContext.inParallel(() -> {
+			FetchResponse response;
+			if(params.request().url().getScheme().equals("http") || params.request().url().getScheme().equals("https")) {
+				response = httpFetch(params);
+			} else {
+				response = schemeFetch(params);
+			}
+			fetchResponseHandover(params, response);
+		});
 	}
 
 	private FetchResponse schemeFetch(FetchParams params) {

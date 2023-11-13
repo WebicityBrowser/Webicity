@@ -13,8 +13,6 @@ import com.github.webicitybrowser.codec.png.exception.MalformedPNGException;
 
 public class PNGCodec implements ImageCodec {
 
-	private final PNGReader pngReader = new PNGReader();
-	
 	@Override
 	public String[] getTypes() {
 		return new String[] { "image/png" };
@@ -22,6 +20,8 @@ public class PNGCodec implements ImageCodec {
 
 	@Override
 	public PossibleImage loadImage(byte[] data, ImageProgressiveCallback callback) {
+		PNGReader pngReader = new PNGReader();
+
 		try {
 			PNGResult pngResult = pngReader.read(new ByteArrayInputStream(data));
 			ImageFrame[] frames = new ImageFrame[1];

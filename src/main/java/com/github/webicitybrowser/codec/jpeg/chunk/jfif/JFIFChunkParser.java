@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import com.github.webicitybrowser.codec.jpeg.exception.InvalidJPEGSignatureException;
 import com.github.webicitybrowser.codec.jpeg.exception.MalformedJPEGException;
+import com.github.webicitybrowser.codec.jpeg.util.JPEGUtil;
 
 public final class JFIFChunkParser {
 	
@@ -22,15 +23,8 @@ public final class JFIFChunkParser {
 		return new JFIFChunkInfo();
 	}
 
-	private static int readLength(InputStream chunkSection) throws IOException {
-		int byteRead = chunkSection.read();
-		if (byteRead == -1) throw new IOException("Unexpected end of stream");
-		int length = byteRead << 8;
-		byteRead = chunkSection.read();
-		if (byteRead == -1) throw new IOException("Unexpected end of stream");
-		length += byteRead;
-
-		return length;
+	private static int readLength(InputStream chunkSection) throws IOException, MalformedJPEGException {
+		return (JPEGUtil.read(chunkSection) << 8) + JPEGUtil.read(chunkSection);
 	}
 
 	private static String readIdentifier(InputStream chunkSection) throws IOException {
