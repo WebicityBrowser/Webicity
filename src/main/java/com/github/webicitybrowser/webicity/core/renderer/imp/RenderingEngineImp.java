@@ -43,7 +43,7 @@ public class RenderingEngineImp implements RenderingEngine {
 
 	public RenderingEngineImp(AssetLoader assetLoader, HTTPService httpService) {
 		this.assetLoader = assetLoader;
-		this.fetchEngine = new FetchEngineImp(new HTTPFetchConnectionPool(httpService));
+		this.fetchEngine = new FetchEngineImp(new HTTPFetchConnectionPool(httpService), new ParallelContextImp());
 	}
 
 	@Override

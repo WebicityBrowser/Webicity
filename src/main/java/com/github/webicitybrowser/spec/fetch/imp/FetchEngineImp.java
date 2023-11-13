@@ -11,6 +11,7 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey;
 import com.github.webicitybrowser.spec.fetch.taskdestination.TaskDestination;
+import com.github.webicitybrowser.spec.htmlbrowsers.ParallelContext;
 import com.github.webicitybrowser.spec.stream.ByteStreamReader;
 import com.github.webicitybrowser.spec.url.URL;
 
@@ -18,9 +19,11 @@ import com.github.webicitybrowser.spec.url.URL;
 public class FetchEngineImp implements FetchEngine {
 
 	private final FetchConnectionPool connectionPool;
+	private final ParallelContext parallelContext;
 
-	public FetchEngineImp(FetchConnectionPool connectionPool) {
+	public FetchEngineImp(FetchConnectionPool connectionPool, ParallelContext parallelContext) {
 		this.connectionPool = connectionPool;
+		this.parallelContext = parallelContext;
 	}
 
 	@Override
@@ -30,8 +33,10 @@ public class FetchEngineImp implements FetchEngine {
 	}
 
 	private void mainFetch(FetchParams params) {
-		FetchResponse response = httpFetch(params);
-		fetchResponseHandover(params, response);
+		parallelContext.inParallel(() -> {
+			FetchResponse response = httpFetch(params);
+			fetchResponseHandover(params, response);
+		});
 	}
 
 	private FetchResponse httpFetch(FetchParams params) {

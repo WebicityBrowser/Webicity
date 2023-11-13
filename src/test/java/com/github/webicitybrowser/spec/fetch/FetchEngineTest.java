@@ -27,7 +27,7 @@ public class FetchEngineTest {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool());
+		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool(), task -> task.run());
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
@@ -46,7 +46,7 @@ public class FetchEngineTest {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool());
+		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool(), task -> task.run());
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
