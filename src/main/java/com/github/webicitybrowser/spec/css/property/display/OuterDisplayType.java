@@ -6,5 +6,4 @@ public enum OuterDisplayType implements CSSValue {
 
 	BLOCK, INLINE,
 	NONE, CONTENTS
-	
 }

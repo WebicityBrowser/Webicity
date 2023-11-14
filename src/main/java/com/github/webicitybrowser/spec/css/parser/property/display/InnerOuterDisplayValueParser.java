@@ -33,6 +33,8 @@ public class InnerOuterDisplayValueParser implements PropertyValueParser<Display
 			return OuterDisplayType.INLINE;
 		case "block":
 		case "flex":
+		case "table-cell":
+		case "table-row":
 			return OuterDisplayType.BLOCK;
 		default:
 			return null;
@@ -48,6 +50,10 @@ public class InnerOuterDisplayValueParser implements PropertyValueParser<Display
 			return InnerDisplayType.FLOW_ROOT;
 		case "flex":
 			return InnerDisplayType.FLEX;
+		case "table-cell":
+			return InnerDisplayType.TABLE_CELL;
+		case "table-row":
+			return InnerDisplayType.TABLE_ROW;
 		default:
 			return null;
 		}
