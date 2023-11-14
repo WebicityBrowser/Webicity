@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.block.flexbox;
+package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox;
 
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;

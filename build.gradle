@@ -35,8 +35,6 @@ dependencies {
 	implementation "org.lwjgl:lwjgl"
 	implementation "org.lwjgl:lwjgl-glfw"
 	implementation "org.lwjgl:lwjgl-opengl"
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 	runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
