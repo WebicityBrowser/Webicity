@@ -13,7 +13,7 @@ public final class JFIFChunkParser {
 
 	public static JFIFChunkInfo read(InputStream chunkSection) throws IOException, MalformedJPEGException {
 		int length = readLength(chunkSection);
-		if (length < 16) throw new MalformedJPEGException("Invalid JFIF chunk length");
+		if (length < 16) throw new MalformedJPEGException("JFIF chunk length mismatch");
 		String identifier = readIdentifier(chunkSection);
 		if (!identifier.equals("JFIF\0")) throw new InvalidJPEGSignatureException("Invalid JFIF chunk identifier");
 		for (int i = 0; i < length - 7; i++) {

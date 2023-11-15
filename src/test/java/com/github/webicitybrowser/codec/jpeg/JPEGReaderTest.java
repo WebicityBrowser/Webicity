@@ -2,10 +2,12 @@ package com.github.webicitybrowser.codec.jpeg;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.PushbackInputStream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser;
@@ -15,6 +17,9 @@ import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.jfif.JFIFChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkParser;
+import com.github.webicitybrowser.codec.jpeg.scan.EntropyDecoder;
+import com.github.webicitybrowser.codec.jpeg.scan.ScanParser;
+import com.github.webicitybrowser.codec.jpeg.scan.huffman.HuffmanEntropyDecoder;
 
 public class JPEGReaderTest {
 	
@@ -129,7 +134,7 @@ public class JPEGReaderTest {
 		});
 
 		DHTChunkInfo dhtChunkInfo = Assertions.assertDoesNotThrow(() -> DHTChunkParser.read(chunkSection));
-		DHTBinaryTree testValue = dhtChunkInfo.huffmanTables()[0].left().right().left();
+		DHTBinaryTree testValue = dhtChunkInfo.dcHuffmanTables()[0].left().right().left();
 		Assertions.assertEquals(2, testValue.value());
 
 		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
@@ -147,6 +152,151 @@ public class JPEGReaderTest {
 
 		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
 		Assertions.assertEquals(-1, finalByte);
+	}
+
+	@Test
+	@DisplayName("Can parse empty scan")
+	public void canParseEmptyScan() {
+		PushbackInputStream chunkSection = new PushbackInputStream(new ByteArrayInputStream(new byte[] {
+			(byte) 0xFF, (byte) 0xD9
+		}), 2);
+
+		EntropyDecoder entropyDecoder = Mockito.mock(EntropyDecoder.class);
+		Mockito.when(entropyDecoder.getDecoded()).thenReturn(new int[0]);
+		int[] output = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, entropyDecoder));
+		Assertions.assertEquals(0, output.length);
+
+		Assertions.assertEquals(0xFF, Assertions.assertDoesNotThrow(() -> chunkSection.read()));
+		Assertions.assertEquals(0xD9, Assertions.assertDoesNotThrow(() -> chunkSection.read()));
+	}
+
+	@Test
+	@DisplayName("Can parse scan with data")
+	public void canParseScanWithData() {
+		PushbackInputStream chunkSection = new PushbackInputStream(new ByteArrayInputStream(new byte[] {
+			1, (byte) 0xFF, (byte) 0xD9
+		}), 2);
+
+		EntropyDecoder entropyDecoder = Mockito.mock(EntropyDecoder.class);
+		
+		Mockito.doAnswer(invocation -> {
+			Assertions.assertEquals(1, (byte) invocation.getArgument(0));
+			return null;
+		}).when(entropyDecoder).next(Mockito.anyByte());
+
+		Mockito.when(entropyDecoder.getDecoded()).thenReturn(new int[] { 5, -1, 6 });
+
+		int[] output = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, entropyDecoder));
+
+		Assertions.assertArrayEquals(new int[] { 5, -1, 6 }, output);
+
+		Assertions.assertEquals(0xFF, Assertions.assertDoesNotThrow(() -> chunkSection.read()));
+		Assertions.assertEquals(0xD9, Assertions.assertDoesNotThrow(() -> chunkSection.read()));
+	}
+
+	@Test
+	@DisplayName("Can parse scan with stuffed data")
+	public void canParseScanWithStuffedData() {
+		PushbackInputStream chunkSection = new PushbackInputStream(new ByteArrayInputStream(new byte[] {
+			(byte) 0xFF, 0x00, (byte) 0xFF, (byte) 0xD9
+		}), 2);
+
+		EntropyDecoder entropyDecoder = Mockito.mock(EntropyDecoder.class);
+		Mockito.doAnswer(invocation -> {
+			Assertions.assertEquals((byte) 255, (byte) invocation.getArgument(0));
+			return null;
+		}).when(entropyDecoder).next(Mockito.anyByte());
+		Mockito.when(entropyDecoder.getDecoded()).thenReturn(new int[] { 5, -1, 6 });
+
+		Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, entropyDecoder));
+
+		Assertions.assertEquals(0xFF, Assertions.assertDoesNotThrow(() -> chunkSection.read()));
+		Assertions.assertEquals(0xD9, Assertions.assertDoesNotThrow(() -> chunkSection.read()));
+	}
+
+	@Test
+	@DisplayName("Can parse huffman encoded data with immediate EOB")
+	public void canParseHuffmanEncodedDataWithImmediateEOB() {
+		byte[] chunkSection = new byte[] {
+			0b01010111
+		};
+
+		DHTBinaryTree dcBinaryTree = new DHTBinaryTree(-1,
+			new DHTBinaryTree(-1, null, new DHTBinaryTree(2, null, null)), null);
+		DHTBinaryTree acBinaryTree = new DHTBinaryTree(-1,
+			new DHTBinaryTree(-1, null, new DHTBinaryTree(0, null, null)), null);
+
+		EntropyDecoder entropyDecoder = new HuffmanEntropyDecoder(dcBinaryTree, acBinaryTree);
+		for (int i = 0; i < chunkSection.length; i++) {
+			entropyDecoder.next(chunkSection[i]);
+		}
+		entropyDecoder.done();
+		int[] output = entropyDecoder.getDecoded();
+
+		Assertions.assertEquals(64, output.length);
+		Assertions.assertEquals(3, output[0]);
+		for (int i = 1; i < 64; i++) {
+			Assertions.assertEquals(0, output[i]);
+		}
+	}
+
+	@Test
+	@DisplayName("Can parse huffman encoded data with RLE AC values")
+	public void canParseHuffmanEncodedDataWithRLEACValues() {
+		byte[] chunkSection = new byte[] {
+			0b01010101, 0b01010101, 0b00011111
+		};
+
+		DHTBinaryTree dcBinaryTree = new DHTBinaryTree(-1,
+			new DHTBinaryTree(-1, null, new DHTBinaryTree(2, null, null)), null);
+		DHTBinaryTree acBinaryTree = new DHTBinaryTree(-1, new DHTBinaryTree(-1,
+			new DHTBinaryTree(0b11100010, null, null),
+			new DHTBinaryTree(0b11110010, null, null)),
+		null);
+
+		EntropyDecoder entropyDecoder = new HuffmanEntropyDecoder(dcBinaryTree, acBinaryTree);
+		for (int i = 0; i < chunkSection.length; i++) {
+			entropyDecoder.next(chunkSection[i]);
+		}
+		entropyDecoder.done();
+		int[] output = entropyDecoder.getDecoded();
+
+		Assertions.assertArrayEquals(new int[] {
+			3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3
+		}, output);
+	}
+
+	@Test
+	@DisplayName("Can parse huffman encoded data with multiple blocks")
+	public void canParseHuffmanEncodedDataWithMultipleBlocks() {
+		byte[] chunkSection = new byte[] {
+			0b01010101, 0b01011111
+		};
+
+		DHTBinaryTree dcBinaryTree = new DHTBinaryTree(-1,
+			new DHTBinaryTree(-1, null, new DHTBinaryTree(2, null, null)), null);
+		DHTBinaryTree acBinaryTree = new DHTBinaryTree(-1,
+			new DHTBinaryTree(-1, null, new DHTBinaryTree(0, null, null)), null);
+
+		EntropyDecoder entropyDecoder = new HuffmanEntropyDecoder(dcBinaryTree, acBinaryTree);
+		for (int i = 0; i < chunkSection.length; i++) {
+			entropyDecoder.next(chunkSection[i]);
+		}
+		entropyDecoder.done();
+		int[] output = entropyDecoder.getDecoded();
+
+		Assertions.assertEquals(128, output.length);
+		Assertions.assertEquals(3, output[0]);
+		Assertions.assertEquals(6, output[64]);
+		for (int i = 1; i < 64; i++) {
+			Assertions.assertEquals(0, output[i]);
+		}
+		for (int i = 65; i < 128; i++) {
+			Assertions.assertEquals(0, output[i]);
+		}
 	}
 
 }
