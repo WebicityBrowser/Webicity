@@ -357,7 +357,7 @@ public class FlexInnerDisplayLayoutTest {
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
 		box.getChildrenTracker().addChild(childBox);
 		LocalRenderContext localRenderContext = createLocalRenderContext();
-		LayoutResult result = render(box, localRenderContext);;
+		LayoutResult result = render(box, localRenderContext);
 		Assertions.assertEquals(new AbsoluteSize(50, 50), result.fitSize());
 		Assertions.assertEquals(1, result.childLayoutResults().length);
 		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];

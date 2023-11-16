@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.spec.css.parser.property.margin;
+package com.github.webicitybrowser.spec.css.property.border.margin;
 
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;

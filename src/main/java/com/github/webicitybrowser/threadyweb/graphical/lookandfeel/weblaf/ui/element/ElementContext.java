@@ -16,7 +16,8 @@ public class ElementContext implements ChildrenContext {
 
 	private final MappingCache<Component, Context> childCache = new MappingCacheImp<>(
 		Context[]::new,
-		context -> context.componentUI().getComponent());
+		context -> context.componentUI().getComponent()
+	);
 	
 	private final UIDisplay<?, ?, ElementUnit> display;
 	private final ComponentUI componentUI;

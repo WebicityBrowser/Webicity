@@ -15,6 +15,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.c
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flexbox.FlexInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.FlowInnerDisplayLayout;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.table.TableInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebBoxGeneratorUtil;
@@ -64,6 +65,8 @@ public class ElementBoxGenerator {
 		InnerDisplay innerDisplay = WebDirectiveUtil.getInnerDisplay(directives);
 		return switch (innerDisplay) {
 			case FLEX -> new FlexInnerDisplayLayout(styledUnitGenerator);
+			case TABLE_CELL -> new TableInnerDisplayLayout();
+			case TABLE_ROW -> new TableInnerDisplayLayout();
 			default -> new FlowInnerDisplayLayout(innerUnitGenerator, styledUnitGenerator);
 		};
 	}

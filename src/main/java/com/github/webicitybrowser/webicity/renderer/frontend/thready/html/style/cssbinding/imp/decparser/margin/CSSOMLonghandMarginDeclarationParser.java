@@ -3,7 +3,7 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 import java.util.function.Function;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
-import com.github.webicitybrowser.spec.css.parser.property.margin.MarginLonghandValueParser;
+import com.github.webicitybrowser.spec.css.property.border.margin.MarginLonghandValueParser;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.property.shared.basic.AutoValue;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;

@@ -52,6 +52,10 @@ public class CSSOMDisplayDeclarationParser implements CSSOMNamedDeclarationParse
 			return InnerDisplay.FLOW_ROOT;
 		case FLEX:
 			return InnerDisplay.FLEX;
+		case TABLE_CELL:
+			return InnerDisplay.TABLE_CELL;
+		case TABLE_ROW:
+			return InnerDisplay.TABLE_ROW;
 		default:
 			throw new UnsupportedOperationException("Unsupported display type: " + innerDisplayType);
 		}
