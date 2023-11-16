@@ -55,7 +55,7 @@ public class ImageEngineImp implements ImageEngine {
 	}
 
 	private void onImageLoadComplete(ImageState imageState, ImageRequest request, FetchResponse response, boolean success, byte[] body) {
-		String imageType = "image/png"; // TODO: Get from response
+		String imageType = "image/jpeg"; // TODO: Get from response
 		ImageCodecRegistry imageLoaderRegistry = htmlRendererContext.rendererContext().getRenderingEngine().getImageLoaderRegistry();
 		ImageCodec imageLoader = imageLoaderRegistry.getImageLoaderForType(imageType);
 		PossibleImage possibleImageData = imageLoader.loadImage(body, _1 -> {});

@@ -16,10 +16,13 @@ import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.jfif.JFIFChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkParser;
+import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkInfo;
+import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkInfo.SOSComponentInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkParser;
 import com.github.webicitybrowser.codec.jpeg.scan.EntropyDecoder;
 import com.github.webicitybrowser.codec.jpeg.scan.ScanParser;
 import com.github.webicitybrowser.codec.jpeg.scan.huffman.HuffmanEntropyDecoder;
+import com.github.webicitybrowser.codec.jpeg.stage.ZigZagDecoder;
 
 public class JPEGReaderTest {
 	
@@ -148,10 +151,23 @@ public class JPEGReaderTest {
 			0, 10, 2, 14, 18, 15, 18, 1, 1, 36
 		});
 
-		Assertions.assertDoesNotThrow(() -> SOSChunkParser.read(chunkSection));
+		SOSChunkInfo chunkInfo = Assertions.assertDoesNotThrow(() -> SOSChunkParser.read(chunkSection));
 
 		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
 		Assertions.assertEquals(-1, finalByte);
+
+		SOSComponentInfo[] components = chunkInfo.components();
+
+		Assertions.assertEquals(14, components[0].componentId());
+		Assertions.assertEquals(1, components[0].dcCodingTableSelector());
+		Assertions.assertEquals(2, components[0].acCodingTableSelector());
+
+		Assertions.assertEquals(15, components[1].componentId());
+		Assertions.assertEquals(1, components[1].dcCodingTableSelector());
+		Assertions.assertEquals(2, components[1].acCodingTableSelector());
+		
+		Assertions.assertNull(components[2]);
+		Assertions.assertNull(components[3]);
 	}
 
 	@Test
@@ -296,6 +312,27 @@ public class JPEGReaderTest {
 		}
 		for (int i = 65; i < 128; i++) {
 			Assertions.assertEquals(0, output[i]);
+		}
+	}
+
+	@Test
+	@DisplayName("Can un-zig-zag data")
+	public void canUnZigZagData() {
+		int[] input = new int[] {
+			0, 1, 5, 6, 14, 15, 27, 28,
+			2, 4, 7, 13, 16, 26, 29, 42,
+			3, 8, 12, 17, 25, 30, 41, 43,
+			9, 11, 18, 24, 31, 40, 44, 53,
+			10, 19, 23, 32, 39, 45, 52, 54,
+			20, 22, 33, 38, 46, 51, 55, 60,
+			21, 34, 37, 47, 50, 56, 59, 61,
+			35, 36, 48, 49, 57, 58, 62, 63
+		};
+
+		int[] output = ZigZagDecoder.decode(input, 0);
+		Assertions.assertEquals(64, output.length);
+		for (int i = 0; i < 64; i++) {
+			Assertions.assertEquals(i, output[i]);
 		}
 	}
 
