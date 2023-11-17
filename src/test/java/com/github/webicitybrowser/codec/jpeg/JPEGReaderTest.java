@@ -15,6 +15,7 @@ import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser.DHTBinaryT
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.jfif.JFIFChunkParser;
+import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkInfo.SOSComponentInfo;
@@ -123,7 +124,9 @@ public class JPEGReaderTest {
 			0, 11, 8, 0, 8, 0, 8, 1, 0, 34, 0
 		});
 
-		Assertions.assertDoesNotThrow(() -> SOFChunkParser.read(chunkSection));
+		SOFChunkInfo chunkInfo = Assertions.assertDoesNotThrow(() -> SOFChunkParser.read(chunkSection));
+		Assertions.assertEquals(8, chunkInfo.width());
+		Assertions.assertEquals(8, chunkInfo.height());
 
 		int finalByte = Assertions.assertDoesNotThrow(() -> chunkSection.read());
 		Assertions.assertEquals(-1, finalByte);

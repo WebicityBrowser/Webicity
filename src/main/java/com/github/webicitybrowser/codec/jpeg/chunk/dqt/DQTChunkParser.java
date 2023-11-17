@@ -40,12 +40,7 @@ public class DQTChunkParser {
 	}
 
 	private static int readDQTValue(InputStream chunkSection, int byteSize) throws IOException, MalformedJPEGException {
-		int dqtValue = byteSize == 1 ?
-			chunkSection.read() & 0xFF :
-			JPEGUtil.readTwoByte(chunkSection);
-		if (dqtValue == -1) throw new MalformedJPEGException("Unexpected end of stream");
-
-		return dqtValue;
+		return byteSize == 1 ? JPEGUtil.read(chunkSection) : JPEGUtil.readTwoByte(chunkSection);
 	}
 
 }

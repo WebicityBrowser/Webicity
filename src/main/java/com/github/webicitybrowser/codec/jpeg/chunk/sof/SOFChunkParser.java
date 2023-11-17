@@ -16,11 +16,18 @@ public final class SOFChunkParser {
 			throw new MalformedJPEGException("SOF chunk length mismatch");
 		}
 
-		for (int i = 0; i < remainingLength; i++) {
-			JPEGUtil.read(chunkSection);
+		JPEGUtil.read(chunkSection); // precision
+		int height = JPEGUtil.readTwoByte(chunkSection);
+		int width = JPEGUtil.readTwoByte(chunkSection);
+		
+		int componentCount = JPEGUtil.read(chunkSection);
+		for (int i = 0; i < componentCount; i++) {
+			JPEGUtil.read(chunkSection); // component id
+			JPEGUtil.read(chunkSection); // sampling factors
+			JPEGUtil.read(chunkSection); // quantization table id
 		}
 
-		return new SOFChunkInfo();
+		return new SOFChunkInfo(width, height);
 	}
 
 }
