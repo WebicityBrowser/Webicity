@@ -140,7 +140,7 @@ public class JPEGReader {
 			int pixelOffset = (x + cellX) * 4 + (y + cellY) * sofChunkInfo.width() * 4;
 			
 			cell += 128;
-			//cell = Math.max(0, Math.min(255, cell));
+			cell = Math.max(0, Math.min(255, cell));
 			completedImage[pixelOffset] = (byte) cell;
 			completedImage[pixelOffset + 1] = (byte) cell;
 			completedImage[pixelOffset + 2] = (byte) cell;

@@ -253,7 +253,7 @@ public class JPEGReaderTest {
 		int[] output = entropyDecoder.getDecoded();
 
 		Assertions.assertEquals(64, output.length);
-		Assertions.assertEquals(3, output[0]);
+		Assertions.assertEquals(-3, output[0]);
 		for (int i = 1; i < 64; i++) {
 			Assertions.assertEquals(0, output[i]);
 		}
@@ -281,10 +281,10 @@ public class JPEGReaderTest {
 		int[] output = entropyDecoder.getDecoded();
 
 		Assertions.assertArrayEquals(new int[] {
-			3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3
+			-3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			-3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			-3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			-3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3
 		}, output);
 	}
 
@@ -308,8 +308,8 @@ public class JPEGReaderTest {
 		int[] output = entropyDecoder.getDecoded();
 
 		Assertions.assertEquals(128, output.length);
-		Assertions.assertEquals(3, output[0]);
-		Assertions.assertEquals(6, output[64]);
+		Assertions.assertEquals(-3, output[0]);
+		Assertions.assertEquals(-6, output[64]);
 		for (int i = 1; i < 64; i++) {
 			Assertions.assertEquals(0, output[i]);
 		}

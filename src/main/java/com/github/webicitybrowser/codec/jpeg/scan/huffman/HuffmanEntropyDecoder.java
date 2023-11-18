@@ -5,11 +5,13 @@ import com.github.webicitybrowser.codec.jpeg.scan.EntropyDecoder;
 
 public class HuffmanEntropyDecoder implements EntropyDecoder {
 
+
+	private final IntArray decodedBytes = new IntArray();
+
 	private final DHTBinaryTree dcBinaryTree;
 	private final DHTBinaryTree acBinaryTree;
 
 	private ByteArray initialBytes = new ByteArray();
-	private IntArray decodedBytes = new IntArray();
 
 	private int lastDCValue = 0;
 
@@ -48,7 +50,7 @@ public class HuffmanEntropyDecoder implements EntropyDecoder {
 		int[] decodedBytes = new int[64];
 		int bitCount = decodeHuffmanValue(bitStream, dcBinaryTree);
 		decodedBytes[0] = readNumber(bitStream, bitCount) + lastDCValue;
-		lastDCValue = decodedBytes[0];
+		lastDCValue = Math.max(Math.min(decodedBytes[0], 128), -128);
 
 		int i = 1;
 		while (i < 64) {
@@ -79,7 +81,7 @@ public class HuffmanEntropyDecoder implements EntropyDecoder {
 		if (bitCount == 0) return 0;
 
 		int value = 0;
-		int multiplier = bitStream.readBit() == 0 ? 1 : -1;
+		int multiplier = bitStream.readBit() == 0 ? -1 : 1;
 		for (int i = 0; i < bitCount - 1; i++) {
 			value = (value << 1) | bitStream.readBit();
 		}
