@@ -7,7 +7,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 
 /**
  * Represents the appearance settings to load a font with.
- * @param fontSource A source that will provide glyph data.
+ * @param fontSources A source that will provide glyph data.
  * @param fontSize The size of the font. Uses pixel measurements.
  * @param fontWeight The weight of the font (boldness/lightness).
  * @param fontDecorations Decorations to be applied to the font

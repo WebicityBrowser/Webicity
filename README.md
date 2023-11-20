@@ -63,6 +63,23 @@ MacOS users must instead this command:
 java -XstartOnFirstThread -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 -XX:+UseG1GC -jar Webicity-all.jar
 ```
 
+## Generating documentation
+There is currently an ongoing effort to document the codebase, which has previously been poorly documented.
+```bash
+./gradlew javadoc
+```
+
+## Running unit tests
+While Webicity has rather low test coverage, it is still recommended you run tests before checking in changes.
+```bash
+./gradlew test
+```
+
+You can also generate a test report.
+```bash
+./gradlew jacocoTestReport
+```
+
 ## Disclaimer
 Webicity is not suitable for use in medical applications, banking applications, or other applications in which security, accuracy, and/or performance is critical.
 As stated in this software's license, the maintainers of this software are not responsible for any damages caused by use of this software.

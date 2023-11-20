@@ -4,7 +4,7 @@ package com.github.webicitybrowser.thready.dimensions;
  * A relative dimension is computed in relation to an
  * absolute dimension.
  * @param relativeComponent A percentage of the parent dimension.
- * @param absoluteDimension A fixed portion added after the the relative
+ * @param absoluteComponent A fixed portion added after the the relative
  *  portion is computed.
  */
 public record RelativeDimension(float relativeComponent, float absoluteComponent) {

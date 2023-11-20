@@ -20,7 +20,7 @@ private AbsoluteDimensionsMath() {}
 	 * the final result.
 	 * @param posA The first dimension to be summed.
 	 * @param posB The second dimension to be summed.
-	 * @param positionFactory A factory that creates a new dimension
+	 * @param dimensionFactory A factory that creates a new dimension
 	 * @return The final result.
 	 */
 	public static <T extends AbsoluteDimensions> T sum(T posA, T posB, BiFunction<Float, Float, T> dimensionFactory) {
