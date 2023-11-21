@@ -31,10 +31,11 @@ public class DCTDecoder {
 		int y = i / 8;
 
 		for (int j = 0; j < 64; j++) {
-			double c = (j == 0) ? (1 / Math.sqrt(2)) : 1;
 			int u = j % 8;
 			int v = j / 8;
-			result += c * dequantized[j] * Math.cos((2 * x + 1) * u * Math.PI / 16) * Math.cos((2 * y + 1) * v * Math.PI / 16);
+			double cu = (u == 0) ? (1 / Math.sqrt(2)) : 1;
+			double cv = (v == 0) ? (1 / Math.sqrt(2)) : 1;
+			result += cu * cv * dequantized[j] * Math.cos((2 * x + 1) * u * Math.PI / 16) * Math.cos((2 * y + 1) * v * Math.PI / 16);
 		}
 
 		return (int) (result / 4);

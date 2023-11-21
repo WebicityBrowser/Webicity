@@ -19,7 +19,7 @@ public final class ZigZagDecoder {
 		assert input.length >= offset + 64;
 		int[] output = new int[64];
 		for (int i = 0; i < 64; i++) {
-			output[ZIGZAG[i]] = input[offset + i];
+			output[i] = input[ZIGZAG[i] + offset];
 		}
 
 		return output;

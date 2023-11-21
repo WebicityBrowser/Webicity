@@ -50,7 +50,7 @@ public class HuffmanEntropyDecoder implements EntropyDecoder {
 		int[] decodedBytes = new int[64];
 		int bitCount = decodeHuffmanValue(bitStream, dcBinaryTree);
 		decodedBytes[0] = readNumber(bitStream, bitCount) + lastDCValue;
-		lastDCValue = Math.max(Math.min(decodedBytes[0], 128), -128);
+		lastDCValue = decodedBytes[0];
 
 		int i = 1;
 		while (i < 64) {
@@ -81,13 +81,13 @@ public class HuffmanEntropyDecoder implements EntropyDecoder {
 		if (bitCount == 0) return 0;
 
 		int value = 0;
-		int multiplier = bitStream.readBit() == 0 ? -1 : 1;
+		boolean isNegative = bitStream.readBit()  == 0;
 		for (int i = 0; i < bitCount - 1; i++) {
-			value = (value << 1) | bitStream.readBit();
+			value = (value << 1) | (!isNegative ? bitStream.readBit() : bitStream.readBit() ^ 1);
 		}
 
 		value += 1 << (bitCount - 1);
-		value *= multiplier;
+		value *= isNegative ? -1 : 1;
 
 		return value;
 	}
