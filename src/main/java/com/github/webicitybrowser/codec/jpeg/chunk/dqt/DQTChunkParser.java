@@ -27,7 +27,7 @@ public class DQTChunkParser {
 		int tableInfo = chunkSection.read();
 		int tableId = tableInfo & 0x0F;
 		if (tableId < 0 || tableId > 3) throw new MalformedJPEGException("Invalid DQT table id");
-		int byteSize = (tableInfo >> 4) + 1;
+		int byteSize = (tableInfo >>> 4) + 1;
 		if (byteSize != 1 && byteSize != 2) throw new MalformedJPEGException("Invalid DQT table byte size");
 		int[] table = tables[tableId];
 

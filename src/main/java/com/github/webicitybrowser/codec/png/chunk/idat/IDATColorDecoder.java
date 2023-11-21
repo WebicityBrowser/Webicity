@@ -64,7 +64,7 @@ public final class IDATColorDecoder {
 		int byteIndex = i * bitDepth / 8;
 		int bitIndex = i * bitDepth % 8;
 		int byteMask = (1 << bitDepth) - 1;
-		return (byte) ((chunk[byteIndex] >> (8 - bitIndex - bitDepth)) & byteMask);
+		return (byte) ((chunk[byteIndex] >>> (8 - bitIndex - bitDepth)) & byteMask);
 	}
 
 }

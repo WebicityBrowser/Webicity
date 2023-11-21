@@ -57,7 +57,7 @@ public class HuffmanEntropyDecoder implements EntropyDecoder {
 			int value = decodeHuffmanValue(bitStream, acBinaryTree);
 			if (value == 0) break;
 
-			int zeroCount = value >> 4;
+			int zeroCount = value >>> 4;
 			bitCount = value & 0x0F;
 			if (zeroCount + i + 1 > 64) throw new IllegalStateException("Block length mismatch");
 			for (int j = 0; j < zeroCount; j++) decodedBytes[i++] = 0;

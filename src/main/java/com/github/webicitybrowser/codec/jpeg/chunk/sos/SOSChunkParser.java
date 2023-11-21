@@ -21,7 +21,7 @@ public final class SOSChunkParser {
 		for (int i = 0; i < componentCount; i++) {
 			int componentId = JPEGUtil.read(chunkSection);
 			int codingTableSelectors = JPEGUtil.read(chunkSection);
-			int dcCodingTableSelector = codingTableSelectors >> 4;
+			int dcCodingTableSelector = codingTableSelectors >>> 4;
 			int acCodingTableSelector = codingTableSelectors & 0x0F;
 			componentInfos[i] = new SOSComponentInfo(componentId, dcCodingTableSelector, acCodingTableSelector);
 		}
