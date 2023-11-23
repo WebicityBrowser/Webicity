@@ -14,6 +14,11 @@ import com.github.webicitybrowser.spec.html.node.imp.HTMLHtmlElementImp;
 import com.github.webicitybrowser.spec.html.parse.ElementCreationOptions;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 
+/**
+ * This class implements methods needed to create
+ * various DOM nodes. It exists in order to reduce
+ * the coupling between the DOM and the HTML parser.
+ */
 public class BindingHTMLTreeBuilder implements HTMLTreeBuilder {
 
 	private final Document document;
