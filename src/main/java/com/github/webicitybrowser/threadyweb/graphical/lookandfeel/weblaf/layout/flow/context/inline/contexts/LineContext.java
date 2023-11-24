@@ -33,12 +33,6 @@ public class LineContext {
 	}
 
 	public LineBox startNewLine(Function<AbsolutePosition, LineDimension> maxLineSizeGenerator) {
-		// The code has the same effect as without the if statement,
-		// but the if statement skips some unnecessary work.
-		if (currentLine != null && currentLine.isEmpty()) {
-			return currentLine;
-		}
-
 		AbsolutePosition nextLinePosition = determineNextLinePosition();
 		LineDimension maxLineSize = maxLineSizeGenerator.apply(nextLinePosition);
 

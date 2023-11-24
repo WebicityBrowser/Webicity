@@ -1,8 +1,11 @@
 package com.github.webicitybrowser.threadyweb.graphical.loookandfeel.weblaf.layout.flow.context.inline;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
@@ -29,6 +32,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.br.BreakBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubChildrenBox;
@@ -355,6 +359,33 @@ public class FlowInlineRendererTest {
 		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(10, 10), childLayoutResult.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can manually break line")
+	public void canBreakLine() {
+		DirectivePool directives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubChildrenBox(directives);
+		TextBox textBox1 = FlowTestUtils.createTextBox("Hello");
+		box.getChildrenTracker().addChild(textBox1);
+		for (int i = 0; i < 2; i++) {
+			BreakBox breakBox = Mockito.mock(BreakBox.class);
+			Mockito.when(breakBox.getAdjustedBoxTree()).thenReturn(List.of(breakBox));
+			Mockito.when(breakBox.isFluid()).thenReturn(true);
+			box.getChildrenTracker().addChild(breakBox);
+		}
+		TextBox textBox2 = FlowTestUtils.createTextBox("World");
+		box.getChildrenTracker().addChild(textBox2);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(100, 100));
+		LayoutResult result = FlowInlineRenderer.render(FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext));
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult1 = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult1.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(8 * 5, 14), childLayoutResult1.relativeRect().size());
+		ChildLayoutResult childLayoutResult2 = result.childLayoutResults()[1];
+		Assertions.assertEquals(new AbsolutePosition(0, 28), childLayoutResult2.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(8 * 5, 14), childLayoutResult2.relativeRect().size());
 	}
 
 	@Test
