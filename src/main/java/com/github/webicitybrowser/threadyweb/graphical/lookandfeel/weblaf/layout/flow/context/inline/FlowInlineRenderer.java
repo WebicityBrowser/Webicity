@@ -19,8 +19,14 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimension.LineDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.util.FlowUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.br.BreakBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
 
+/**
+ * This class renders elements in the flow layout manager when they
+ * form an inline context. For more info on inline contexts, see
+ * the specification at https://www.w3.org/TR/CSS22/visuren.html#inline-formatting
+ */
 public final class FlowInlineRenderer {
 	
 	private FlowInlineRenderer() {}
@@ -48,9 +54,17 @@ public final class FlowInlineRenderer {
 		FlowInlineTextRenderer.preadjustTextBoxes(state, layoutManagerContext.children());
 	}
 
+	/**
+	 * Take a box to add to the line, and pass it to the appropriate
+	 * delegate method based on its type and properties.
+	 * @param state The inline context state
+	 * @param childBox The box to add to the line
+	 */
 	private static void addBoxToLine(FlowInlineRendererState state, Box childBox) {
 		if (childBox instanceof TextBox textBox) {
 			FlowInlineTextRenderer.addTextBoxToLine(state, textBox);
+		} else if (childBox instanceof BreakBox) {
+			FlowInlineBreakRenderer.addBreakBoxToLine(state);
 		} else if (childBox.managesSelf()) {
 			FlowInlineSelfManagedRenderer.addSelfManagedBoxToLine(state, childBox);
 		} else {

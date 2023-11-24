@@ -23,6 +23,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
 
+// TODO: This class is hefty, needs to be broken down
 public class LineBox {
 
 	private final CursorTracker cursorTracker;
@@ -35,6 +36,7 @@ public class LineBox {
 	private final List<LineMarker> activeMarkers = new ArrayList<>();
 
 	private AbsolutePosition estimatedPosition;
+	private float minLineSize = 0;
 
 	public LineBox(LineDimension maxLineSize, DirectivePool lineStyles, Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator) {
 		this.lineDirection = maxLineSize.direction();
@@ -72,7 +74,10 @@ public class LineBox {
 	}
 	
 	public AbsoluteSize getSize() {
-		return cursorTracker.getSizeCovered();
+		AbsoluteSize sizeCovered = cursorTracker.getSizeCovered();
+		return new AbsoluteSize(
+			sizeCovered.width(),
+			Math.max(sizeCovered.height(), minLineSize));
 	};
 
 	public LineDimension getMaxLineSize() {
@@ -108,9 +113,10 @@ public class LineBox {
 	}
 
 	public float getEstimatedBlockSize() {
-		return LineDimensionConverter
+		float calculatedSize = LineDimensionConverter
 			.convertToLineDimension(cursorTracker.getSizeCovered(), lineDirection)
 			.depth();
+		return Math.max(calculatedSize, minLineSize);
 	}
 
 	public LineDirection getLineDirection() {
@@ -119,6 +125,10 @@ public class LineBox {
 
 	public DirectivePool getLineStyles() {
 		return lineStyles;
+	}
+
+	public void ensureMinHeight(float newMinSize) {
+		minLineSize = Math.max(minLineSize, newMinSize);
 	}
 
 	//
