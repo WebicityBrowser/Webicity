@@ -38,10 +38,38 @@ public interface Canvas2D {
 	 */
 	void drawText(float x, float y, String string);
 	
+	/**
+	 * Draw a line from the given point to the point
+	 * that is the given run and fall away from the
+	 * given point.
+	 * @param x The leftmost x-coordinate of the point to draw the line from.
+	 * @param y The topmost y-coordinate of the point to draw the line from.
+	 * @param run The distance to the right of the given point that
+	 * 	the line extends to.
+	 * @param fall The distance below the given point that the line
+	 * 	extends to.
+	 */
 	void drawLine(float x, float y, float run, float fall);
 	
+	/**
+	 * Draw a loaded texture at the given points and with the given
+	 * dimensions.
+	 * @param x The leftmost x-coordinate of the texture.
+	 * @param y The topmost y-coordinate of the texture.
+	 * @param l The length of the texture (which grows to the right).
+	 * @param h The height of the texture (which grows downwards).
+	 * @param texture The loaded texture to be drawn. It should be loaded
+	 *  using the {@link ResourceLoader} that the backend defines.
+	 */
 	void drawTexture(float x, float y, float l, float h, Image texture);
 
+	/**
+	 * Create a child canvas in which all drawing operations are
+	 * translated by the given amount.
+	 * @param x The amount to translate in the x-direction.
+	 * @param y The amount to translate in the y-direction.
+	 * @return The child canvas.
+	 */
 	Canvas2D createTranslatedCanvas(float x, float y);
 	
 	/**
@@ -58,6 +86,17 @@ public interface Canvas2D {
 	Canvas2D withPaint(Paint2D paint);
 
 
+	/**
+	 * Create a child canvas in which all drawing operations are
+	 * clipped to the given clipping rectangle.
+	 * @param x The leftmost x-coordinate of the clipping rectangle.
+	 * @param y The topmost y-coordinate of the clipping rectangle.
+	 * @param width The width of the clipping rectangle (which grows to the right).
+	 * @param height The height of the clipping rectangle (which grows downwards).
+	 * @param childCanvasSettings The configurations for how the child canvas
+	 * 	should be created.
+	 * @return The child canvas.
+	 */
 	Canvas2D createClippedCanvas(float x, float y, float width, float height, ChildCanvasSettings childCanvasSettings);
 
 }
