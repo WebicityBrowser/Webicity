@@ -9,6 +9,10 @@ import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.net.Protocol;
 import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 
+/**
+ * A protocol that allows loading about: URLs. This is particularly useful
+ * for loading about:blank, which is used as the default URL for unloaded frames.
+ */
 public class AboutProtocol implements Protocol {
 
 	@Override

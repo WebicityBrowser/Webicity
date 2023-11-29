@@ -15,6 +15,12 @@ import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.net.Protocol;
 import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 
+/**
+ * The main event. This is the protocol that allows loading HTTP and HTTPS URLs.
+ * You can't really browse the web without this. As of now, HTTP requests are
+ * routed through the {@link HTTPService} class, which implements HTTP communication
+ * protocols
+ */
 public class HTTPProtocol implements Protocol {
 
 	private final HTTPService httpService;

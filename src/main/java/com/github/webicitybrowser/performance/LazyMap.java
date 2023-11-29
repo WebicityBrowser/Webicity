@@ -5,6 +5,21 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A map that is lazily initialized. Since the rendering engine
+ * uses a lot of maps, but doesn't always store values in them,
+ * and maps can be quite heavy, this class allows for lazy
+ * initialization of maps. It would be more ideal to null out
+ * the map when it is empty, but that would require null checks
+ * everywhere, which would make the code harder to read and
+ * maintain, as well as making it more error prone.
+ * 
+ * Eventually, the goal is to find an alternative to using
+ * so many maps everywhere.
+ * 
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values
+ */
 public abstract class LazyMap<K, V> implements Map<K, V> {
 
 	private Map<K, V> initialized = null;

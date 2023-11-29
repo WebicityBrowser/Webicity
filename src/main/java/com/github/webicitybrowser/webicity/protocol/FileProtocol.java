@@ -13,6 +13,10 @@ import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.net.Protocol;
 import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 
+/**
+ * A protocol that allows loading file: URLs. This allows users
+ * to load local files from their computer.
+ */
 public class FileProtocol implements Protocol {
 
 	@Override
