@@ -15,8 +15,8 @@ public final class SOSChunkParser {
 		int length = JPEGUtil.readTwoByte(chunkSection) - 2;
 		if (length < 6) throw new MalformedJPEGException("SOS chunk length mismatch");
 
-		SOSComponentInfo[] componentInfos = new SOSComponentInfo[4];
 		int componentCount = JPEGUtil.read(chunkSection);
+		SOSComponentInfo[] componentInfos = new SOSComponentInfo[componentCount];
 
 		for (int i = 0; i < componentCount; i++) {
 			int componentId = JPEGUtil.read(chunkSection);

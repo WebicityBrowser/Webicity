@@ -10,11 +10,15 @@ import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser.DHTBinaryT
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkInfo;
+import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkInfo.SOFComponentInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkParser;
+import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkInfo;
+import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkInfo.SOSComponentInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkParser;
 import com.github.webicitybrowser.codec.jpeg.exception.InvalidJPEGSignatureException;
 import com.github.webicitybrowser.codec.jpeg.exception.MalformedJPEGException;
 import com.github.webicitybrowser.codec.jpeg.scan.EntropyDecoder;
+import com.github.webicitybrowser.codec.jpeg.scan.ScanComponent;
 import com.github.webicitybrowser.codec.jpeg.scan.ScanParser;
 import com.github.webicitybrowser.codec.jpeg.scan.huffman.HuffmanEntropyDecoder;
 import com.github.webicitybrowser.codec.jpeg.stage.DCTDecoder;
@@ -112,12 +116,34 @@ public class JPEGReader {
 	}
 
 	private int[] startScan(PushbackInputStream dataStream) throws IOException, MalformedJPEGException {
-		SOSChunkParser.read(dataStream);
-		// TODO: We don't know if we are even using huffman, much less which table to use
-		DHTBinaryTree dcHuffmanTable = dcHuffmanTables[0];
-		DHTBinaryTree acHuffmanTable = acHuffmanTables[0];
-		EntropyDecoder entropyDecoder = new HuffmanEntropyDecoder(dcHuffmanTable, acHuffmanTable);
-		return ScanParser.read(dataStream, entropyDecoder);
+		SOSChunkInfo sosChunkInfo = SOSChunkParser.read(dataStream);
+		SOSComponentInfo[] sosComponents = sosChunkInfo.components();
+		SOFComponentInfo[] sofComponents = sofChunkInfo.components();
+		ScanComponent[] scanComponents = new ScanComponent[sosComponents.length];
+		for (int i = 0; i < sosComponents.length; i++) {
+			SOSComponentInfo sosComponent = sosComponents[i];
+			int componentId = sosComponent.componentId();
+			SOFComponentInfo sofComponent = findSOFComponent(sofComponents, componentId);
+			// TODO: We don't know if we will actually use huffman
+			EntropyDecoder entropyDecoder = new HuffmanEntropyDecoder(
+				dcHuffmanTables[sosComponent.dcCodingTableSelector()],
+				acHuffmanTables[sosComponent.acCodingTableSelector()]);
+			scanComponents[i] = new ScanComponent(
+				componentId, entropyDecoder,
+				sofComponent.horizontalSamplingFactor(), sofComponent.verticalSamplingFactor());
+		}
+
+		return ScanParser.read(dataStream, scanComponents);
+	}
+
+	private SOFComponentInfo findSOFComponent(SOFComponentInfo[] sofComponents, int componentId) {
+		for (SOFComponentInfo sofComponent : sofComponents) {
+			if (sofComponent.componentId() == componentId) {
+				return sofComponent;
+			}
+		}
+		
+		throw new IllegalArgumentException("Could not find component with id: " + componentId);
 	}
 
 	private void decodeData(int[] scanData) {
@@ -137,7 +163,12 @@ public class JPEGReader {
 			int cell = decoded[i];
 			int cellX = i % 8;
 			int cellY = i / 8;
-			int pixelOffset = (x + cellX) * 4 + (y + cellY) * sofChunkInfo.width() * 4;
+			int imgX = x + cellX;
+			int imgY = y + cellY;
+			if (imgX >= sofChunkInfo.width() || imgY >= sofChunkInfo.height()) {
+				continue;
+			}
+			int pixelOffset = imgX * 4 + imgY * sofChunkInfo.width() * 4;
 			
 			cell += 128;
 			cell = Math.max(0, Math.min(255, cell));
