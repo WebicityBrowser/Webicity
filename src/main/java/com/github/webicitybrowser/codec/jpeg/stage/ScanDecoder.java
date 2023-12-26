@@ -23,8 +23,7 @@ public final class ScanDecoder {
 
 	public static byte[] decodeScan(JPEGState jpegState) throws IOException, MalformedJPEGException {
 		ScanComponentResult[] scanData = startScan(jpegState);
-		int[] scanData1 = scanData[0].data();
-		return decodeData(scanData1, jpegState);
+		return decodeData(scanData, jpegState);
 	}
 	
 	private static ScanComponentResult[] startScan(JPEGState jpegState) throws IOException, MalformedJPEGException {
@@ -43,6 +42,7 @@ public final class ScanDecoder {
 				jpegState.getACHuffmanTable(sosComponent.acCodingTableSelector()));
 			scanComponents[i] = new ScanComponent(
 				componentId, entropyDecoder,
+				sofComponent.quantizationTableSelector(),
 				sofComponent.horizontalSamplingFactor(), sofComponent.verticalSamplingFactor());
 		}
 
@@ -59,27 +59,50 @@ public final class ScanDecoder {
 		throw new IllegalArgumentException("Could not find component with id: " + componentId);
 	}
 
-	private static byte[] decodeData(int[] scanData, JPEGState jpegState) {
+	private static ScanComponentResult findScanComponentResult(ScanComponentResult[] scanData, int componentId) {
+		for (ScanComponentResult scanComponentResult : scanData) {
+			if (scanComponentResult.componentId() == componentId) {
+				return scanComponentResult;
+			}
+		}
+		
+		throw new IllegalArgumentException("Could not find component with id: " + componentId);
+	}
+
+	private static byte[] decodeData(ScanComponentResult[] scanData, JPEGState jpegState) {
+		ScanComponentResult[] adjustedScanData = adjustScanData(scanData);
+
 		SOFChunkInfo sofChunkInfo = jpegState.sofChunkInfo();
 		byte[] completedImage = new byte[sofChunkInfo.width() * sofChunkInfo.height() * 4];
 		for (int x = 0; x < sofChunkInfo.width(); x += 8) {
 			for (int y = 0; y < sofChunkInfo.height(); y += 8) {
-				decodeDataBlock(scanData, jpegState, completedImage, x, y);
+				decodeDataBlock(adjustedScanData, jpegState, completedImage, x, y);
 			}
 		}
 
 		return completedImage;
 	}
 
-	private static void decodeDataBlock(int[] scanData, JPEGState jpegState, byte[] completedImage, int x, int y) {
+	private static ScanComponentResult[] adjustScanData(ScanComponentResult[] scanData) {
+		return scanData.length == 1 ?
+			new ScanComponentResult[] { findScanComponentResult(scanData, 1) } :
+			new ScanComponentResult[] {
+				findScanComponentResult(scanData, 1),
+				findScanComponentResult(scanData, 2),
+				findScanComponentResult(scanData, 3)
+			};
+	}
+
+	private static void decodeDataBlock(ScanComponentResult[] scanData, JPEGState jpegState, byte[] completedImage, int x, int y) {
 		SOFChunkInfo sofChunkInfo = jpegState.sofChunkInfo();
-		DQTChunkInfo dqtChunkInfo = jpegState.dqtChunkInfo();
-		int[] quantizationTable = ZigZagDecoder.decode(dqtChunkInfo.tables()[0], 0);
 		int blockOffset = x * 8 + y * sofChunkInfo.width();
-		int[] cells = ZigZagDecoder.decode(scanData, blockOffset);
-		int[] decoded = DCTDecoder.decodeDCT(cells, quantizationTable);
+
+		int[][] componentBlocks = new int[scanData.length][];
+		for (int i = 0; i < 3; i++) {
+			componentBlocks[i] = decodeComponentBlock(scanData[i], jpegState, blockOffset);
+		}
+
 		for (int i = 0; i < 64; i++) {
-			int cell = decoded[i];
 			int cellX = i % 8;
 			int cellY = i / 8;
 			int imgX = x + cellX;
@@ -89,13 +112,36 @@ public final class ScanDecoder {
 			}
 			int pixelOffset = imgX * 4 + imgY * sofChunkInfo.width() * 4;
 			
-			cell += 128;
-			cell = Math.max(0, Math.min(255, cell));
-			completedImage[pixelOffset] = (byte) cell;
-			completedImage[pixelOffset + 1] = (byte) cell;
-			completedImage[pixelOffset + 2] = (byte) cell;
-			completedImage[pixelOffset + 3] = (byte) 255;
+			placePixel(componentBlocks, completedImage, pixelOffset, i);
 		}
+	}
+
+	private static void placePixel(int[][] componentBlocks, byte[] completedImage, int pixelOffset, int blockOffset) {
+		completedImage[pixelOffset + 3] = (byte) 255;
+		int Y = componentBlocks[0][blockOffset] + 128;
+		if (componentBlocks.length == 1) {
+			for (int i = 0; i < 3; i++) {
+				completedImage[pixelOffset + i] = clampToByte(Y);
+			}
+		} else {
+			int Cb = componentBlocks[1][blockOffset] + 128;
+			int Cr = componentBlocks[2][blockOffset] + 128;
+			completedImage[pixelOffset + 0] = clampToByte(Y + 1.402 * (Cr - 128));
+			completedImage[pixelOffset + 1] = clampToByte(Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128));
+			completedImage[pixelOffset + 2] = clampToByte(Y + 1.772 * (Cb - 128));
+		}
+	}
+
+	private static int[] decodeComponentBlock(ScanComponentResult scanComponentResult, JPEGState jpegState, int blockOffset) {
+		DQTChunkInfo dqtChunkInfo = jpegState.dqtChunkInfo();
+		int[] quantizationTable = ZigZagDecoder.decode(
+			dqtChunkInfo.tables()[scanComponentResult.quantizationTableId()], 0);
+		int[] cells = ZigZagDecoder.decode(scanComponentResult.data(), blockOffset);
+		return DCTDecoder.decodeDCT(cells, quantizationTable);
+	}
+
+	private static byte clampToByte(double value) {
+		return (byte) Math.max(0, Math.min(255, value));
 	}
 
 }

@@ -187,7 +187,7 @@ public class JPEGReaderTest {
 
 		EntropyDecoder entropyDecoder = Mockito.mock(EntropyDecoder.class);
 		Mockito.when(entropyDecoder.readBlock(Mockito.any())).thenReturn(new int[0]);
-		ScanComponent scanComponent = new ScanComponent(1, entropyDecoder, 1, 1);
+		ScanComponent scanComponent = new ScanComponent(1, entropyDecoder, 0, 1, 1);
 		ScanComponentResult[] results = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, new ScanComponent[] { scanComponent }));
 		int[] output = results[0].data();
 		Assertions.assertEquals(0, output.length);
@@ -214,7 +214,7 @@ public class JPEGReaderTest {
 			return new int[] { 5, -1, 6 };
 		}).when(entropyDecoder).readBlock(Mockito.any());
 
-		ScanComponent scanComponent = new ScanComponent(1, entropyDecoder, 1, 1);
+		ScanComponent scanComponent = new ScanComponent(1, entropyDecoder, 0, 1, 1);
 		ScanComponentResult[] results = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, new ScanComponent[] { scanComponent }));
 		int[] output = results[0].data();
 
@@ -244,7 +244,7 @@ public class JPEGReaderTest {
 			return new int[] { 5, -1, 6 };
 		}).when(entropyDecoder).readBlock(Mockito.any());
 
-		ScanComponent scanComponent = new ScanComponent(1, entropyDecoder, 1, 1);
+		ScanComponent scanComponent = new ScanComponent(1, entropyDecoder, 0, 1, 1);
 		Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, new ScanComponent[] { scanComponent }));
 
 		Assertions.assertEquals(0xFF, Assertions.assertDoesNotThrow(() -> chunkSection.read()));

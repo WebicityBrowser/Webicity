@@ -51,6 +51,9 @@ public final class ScanParser {
 			EntropyDecoder entropyDecoder = scanComponentsOrder[i].entropyDecoder();
 			int[] result = entropyDecoder.readBlock(bitStream);
 			scanComponentOutOrder[i].add(result);
+			if (scanComponentsOrder[i].componentId() != 1) {
+				scanComponentOutOrder[i].add(result);
+			}
 			i = (i + 1) % scanComponentsOrder.length;
 		}
 	}
@@ -111,7 +114,9 @@ public final class ScanParser {
 	private static ScanComponentResult[] createScanComponentResults(ScanComponent[] scanComponents, IntArray[] scanComponentOut) {
 		ScanComponentResult[] scanComponentResults = new ScanComponentResult[scanComponents.length];
 		for (int i = 0; i < scanComponents.length; i++) {
-			scanComponentResults[i] = new ScanComponentResult(scanComponents[i].componentId(), scanComponentOut[i].toArray());
+			scanComponentResults[i] = new ScanComponentResult(
+				scanComponents[i].componentId(), scanComponentOut[i].toArray(), scanComponents[i].quantizationTableId()
+			);
 		}
 
 		return scanComponentResults;
