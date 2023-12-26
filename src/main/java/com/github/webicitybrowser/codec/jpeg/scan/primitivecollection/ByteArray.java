@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.codec.jpeg.scan.huffman;
+package com.github.webicitybrowser.codec.jpeg.scan.primitivecollection;
 
 public class ByteArray {
 	
@@ -18,6 +18,10 @@ public class ByteArray {
 		byte[] result = new byte[size];
 		System.arraycopy(data, 0, result, 0, size);
 		return result;
+	}
+
+	public void clear() {
+		size = 0;
 	}
 
 }

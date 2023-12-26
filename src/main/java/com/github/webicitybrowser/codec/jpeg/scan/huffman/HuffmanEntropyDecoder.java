@@ -2,16 +2,18 @@ package com.github.webicitybrowser.codec.jpeg.scan.huffman;
 
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser.DHTBinaryTree;
 import com.github.webicitybrowser.codec.jpeg.scan.EntropyDecoder;
+import com.github.webicitybrowser.codec.jpeg.scan.primitivecollection.BitStream;
 
+/**
+ * The huffman entropy decoder is a {@link EntropyDecoder} that uses
+ * a mixture of huffman decoding and run-length decoding paired with a
+ * special following-bits decoding to decode the huffman entropy encoded data.
+ */
 public class HuffmanEntropyDecoder implements EntropyDecoder {
 
 
-	private final IntArray decodedBytes = new IntArray();
-
 	private final DHTBinaryTree dcBinaryTree;
 	private final DHTBinaryTree acBinaryTree;
-
-	private ByteArray initialBytes = new ByteArray();
 
 	private int lastDCValue = 0;
 
@@ -21,32 +23,7 @@ public class HuffmanEntropyDecoder implements EntropyDecoder {
 	}
 
 	@Override
-	public void next(byte value) {
-		initialBytes.add(value);
-	}
-
-	@Override
-	public void done() {
-		BitStream bitStream = new BitStream(initialBytes.toArray());
-		while (!onlyOnes(bitStream)) {
-			readBlock(bitStream);
-		}
-		initialBytes = new ByteArray();
-	}
-
-	@Override
-	public int[] getDecoded() {
-		return decodedBytes.toArray();
-	}
-
-	@Override
-	public void restart() {
-		done();
-		initialBytes = new ByteArray();
-		lastDCValue = 0;
-	}
-
-	private void readBlock(BitStream bitStream) {
+	public int[] readBlock(BitStream bitStream) {
 		int[] decodedBytes = new int[64];
 		int bitCount = decodeHuffmanValue(bitStream, dcBinaryTree);
 		decodedBytes[0] = readNumber(bitStream, bitCount) + lastDCValue;
@@ -64,7 +41,12 @@ public class HuffmanEntropyDecoder implements EntropyDecoder {
 			decodedBytes[i++] = (zeroCount == 0xF && bitCount == 0) ? 0 : readNumber(bitStream, bitCount);
 		}
 
-		this.decodedBytes.add(decodedBytes);
+		return decodedBytes;
+	}
+
+	@Override
+	public void restart() {
+		lastDCValue = 0;
 	}
 
 	private int decodeHuffmanValue(BitStream bitStream, DHTBinaryTree binaryTree) {
@@ -90,14 +72,6 @@ public class HuffmanEntropyDecoder implements EntropyDecoder {
 		value *= isNegative ? -1 : 1;
 
 		return value;
-	}
-
-	private boolean onlyOnes(BitStream bitStream) {
-		for (int i = 0; i < bitStream.remaining(); i++) {
-			if (bitStream.peek(i) != 1) return false;
-		}
-
-		return true;
 	}
 	
 }

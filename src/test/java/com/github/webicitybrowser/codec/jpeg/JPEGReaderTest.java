@@ -23,6 +23,7 @@ import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkParser;
 import com.github.webicitybrowser.codec.jpeg.scan.EntropyDecoder;
 import com.github.webicitybrowser.codec.jpeg.scan.ScanParser;
 import com.github.webicitybrowser.codec.jpeg.scan.huffman.HuffmanEntropyDecoder;
+import com.github.webicitybrowser.codec.jpeg.scan.primitivecollection.BitStream;
 import com.github.webicitybrowser.codec.jpeg.stage.ZigZagDecoder;
 
 public class JPEGReaderTest {
@@ -181,7 +182,7 @@ public class JPEGReaderTest {
 		}), 2);
 
 		EntropyDecoder entropyDecoder = Mockito.mock(EntropyDecoder.class);
-		Mockito.when(entropyDecoder.getDecoded()).thenReturn(new int[0]);
+		Mockito.when(entropyDecoder.readBlock(Mockito.any())).thenReturn(new int[0]);
 		int[] output = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, entropyDecoder));
 		Assertions.assertEquals(0, output.length);
 
@@ -199,11 +200,13 @@ public class JPEGReaderTest {
 		EntropyDecoder entropyDecoder = Mockito.mock(EntropyDecoder.class);
 		
 		Mockito.doAnswer(invocation -> {
-			Assertions.assertEquals(1, (byte) invocation.getArgument(0));
-			return null;
-		}).when(entropyDecoder).next(Mockito.anyByte());
-
-		Mockito.when(entropyDecoder.getDecoded()).thenReturn(new int[] { 5, -1, 6 });
+			BitStream bitStream = invocation.getArgument(0);
+			for (int i = 0; i < 7; i++) {
+				Assertions.assertEquals(0, bitStream.readBit());
+			}
+			Assertions.assertEquals(1, bitStream.readBit());
+			return new int[] { 5, -1, 6 };
+		}).when(entropyDecoder).readBlock(Mockito.any());
 
 		int[] output = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, entropyDecoder));
 
@@ -217,15 +220,21 @@ public class JPEGReaderTest {
 	@DisplayName("Can parse scan with stuffed data")
 	public void canParseScanWithStuffedData() {
 		PushbackInputStream chunkSection = new PushbackInputStream(new ByteArrayInputStream(new byte[] {
-			(byte) 0xFF, 0x00, (byte) 0xFF, (byte) 0xD9
+			(byte) 0xFF, 0x00, 0x00, (byte) 0xFF, (byte) 0xD9
 		}), 2);
 
 		EntropyDecoder entropyDecoder = Mockito.mock(EntropyDecoder.class);
 		Mockito.doAnswer(invocation -> {
-			Assertions.assertEquals((byte) 255, (byte) invocation.getArgument(0));
-			return null;
-		}).when(entropyDecoder).next(Mockito.anyByte());
-		Mockito.when(entropyDecoder.getDecoded()).thenReturn(new int[] { 5, -1, 6 });
+			BitStream bitStream = invocation.getArgument(0);
+			for (int i = 0; i < 8; i++) {
+				Assertions.assertEquals(1, bitStream.readBit());
+			}
+			while (bitStream.remaining() > 0) {
+				Assertions.assertEquals(0, bitStream.readBit());
+			}
+
+			return new int[] { 5, -1, 6 };
+		}).when(entropyDecoder).readBlock(Mockito.any());
 
 		Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, entropyDecoder));
 
@@ -246,11 +255,8 @@ public class JPEGReaderTest {
 			new DHTBinaryTree(-1, null, new DHTBinaryTree(0, null, null)), null);
 
 		EntropyDecoder entropyDecoder = new HuffmanEntropyDecoder(dcBinaryTree, acBinaryTree);
-		for (int i = 0; i < chunkSection.length; i++) {
-			entropyDecoder.next(chunkSection[i]);
-		}
-		entropyDecoder.done();
-		int[] output = entropyDecoder.getDecoded();
+		BitStream bitStream = new BitStream(chunkSection);
+		int[] output = entropyDecoder.readBlock(bitStream);
 
 		Assertions.assertEquals(64, output.length);
 		Assertions.assertEquals(-3, output[0]);
@@ -274,11 +280,8 @@ public class JPEGReaderTest {
 		null);
 
 		EntropyDecoder entropyDecoder = new HuffmanEntropyDecoder(dcBinaryTree, acBinaryTree);
-		for (int i = 0; i < chunkSection.length; i++) {
-			entropyDecoder.next(chunkSection[i]);
-		}
-		entropyDecoder.done();
-		int[] output = entropyDecoder.getDecoded();
+		BitStream bitStream = new BitStream(chunkSection);
+		int[] output = entropyDecoder.readBlock(bitStream);
 
 		Assertions.assertArrayEquals(new int[] {
 			-3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -301,20 +304,17 @@ public class JPEGReaderTest {
 			new DHTBinaryTree(-1, null, new DHTBinaryTree(0, null, null)), null);
 
 		EntropyDecoder entropyDecoder = new HuffmanEntropyDecoder(dcBinaryTree, acBinaryTree);
-		for (int i = 0; i < chunkSection.length; i++) {
-			entropyDecoder.next(chunkSection[i]);
-		}
-		entropyDecoder.done();
-		int[] output = entropyDecoder.getDecoded();
+		BitStream bitStream = new BitStream(chunkSection);
+		int[] output1 = entropyDecoder.readBlock(bitStream);
+		int[] output2 = entropyDecoder.readBlock(bitStream);
 
-		Assertions.assertEquals(128, output.length);
-		Assertions.assertEquals(-3, output[0]);
-		Assertions.assertEquals(-6, output[64]);
+		Assertions.assertEquals(64, output1.length);
+		Assertions.assertEquals(64, output2.length);
+		Assertions.assertEquals(-3, output1[0]);
+		Assertions.assertEquals(-6, output2[0]);
 		for (int i = 1; i < 64; i++) {
-			Assertions.assertEquals(0, output[i]);
-		}
-		for (int i = 65; i < 128; i++) {
-			Assertions.assertEquals(0, output[i]);
+			Assertions.assertEquals(0, output1[i]);
+			Assertions.assertEquals(0, output2[i]);
 		}
 	}
 

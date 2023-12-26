@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.codec.jpeg.scan.huffman;
+package com.github.webicitybrowser.codec.jpeg.scan.primitivecollection;
 
 public class BitStream {
 
