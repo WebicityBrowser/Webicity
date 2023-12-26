@@ -23,6 +23,7 @@ import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkInfo.SOSComponent
 import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkParser;
 import com.github.webicitybrowser.codec.jpeg.scan.EntropyDecoder;
 import com.github.webicitybrowser.codec.jpeg.scan.ScanComponent;
+import com.github.webicitybrowser.codec.jpeg.scan.ScanComponentResult;
 import com.github.webicitybrowser.codec.jpeg.scan.ScanParser;
 import com.github.webicitybrowser.codec.jpeg.scan.huffman.HuffmanEntropyDecoder;
 import com.github.webicitybrowser.codec.jpeg.scan.primitivecollection.BitStream;
@@ -187,7 +188,8 @@ public class JPEGReaderTest {
 		EntropyDecoder entropyDecoder = Mockito.mock(EntropyDecoder.class);
 		Mockito.when(entropyDecoder.readBlock(Mockito.any())).thenReturn(new int[0]);
 		ScanComponent scanComponent = new ScanComponent(1, entropyDecoder, 1, 1);
-		int[] output = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, new ScanComponent[] { scanComponent }));
+		ScanComponentResult[] results = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, new ScanComponent[] { scanComponent }));
+		int[] output = results[0].data();
 		Assertions.assertEquals(0, output.length);
 
 		Assertions.assertEquals(0xFF, Assertions.assertDoesNotThrow(() -> chunkSection.read()));
@@ -213,7 +215,8 @@ public class JPEGReaderTest {
 		}).when(entropyDecoder).readBlock(Mockito.any());
 
 		ScanComponent scanComponent = new ScanComponent(1, entropyDecoder, 1, 1);
-		int[] output = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, new ScanComponent[] { scanComponent }));
+		ScanComponentResult[] results = Assertions.assertDoesNotThrow(() -> ScanParser.read(chunkSection, new ScanComponent[] { scanComponent }));
+		int[] output = results[0].data();
 
 		Assertions.assertArrayEquals(new int[] { 5, -1, 6 }, output);
 

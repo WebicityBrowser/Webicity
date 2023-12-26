@@ -13,16 +13,18 @@ public final class ScanParser {
 	
 	private ScanParser() {}
 
-	public static int[] read(PushbackInputStream inputStream, ScanComponent[] scanComponents) throws IOException, MalformedJPEGException {
+	public static ScanComponentResult[] read(PushbackInputStream inputStream, ScanComponent[] scanComponents) throws IOException, MalformedJPEGException {
 		ByteArray inputBytes = new ByteArray();
-		IntArray outputInts = new IntArray();
+		IntArray[] scanComponentOut = createScanComponentOut(scanComponents);
+		
 		ScanComponent[] scanComponentsOrder = orderScanComponents(scanComponents);
+		IntArray[] scanComponentOutOrder = orderScanComponentOut(scanComponents, scanComponentOut);
 
 		while(true) {
 			int nextByte = JPEGUtil.read(inputStream);
 			int byteAfter = nextByte == 0xFF ? JPEGUtil.read(inputStream) : 0;
 			if (byteAfter >= 0xD0 && byteAfter <= 0xD7) {
-				addBlocks(inputBytes, outputInts, scanComponentsOrder);
+				addBlocks(inputBytes, scanComponentsOrder, scanComponentOutOrder);
 				for (ScanComponent scanComponent: scanComponents) {
 					scanComponent.entropyDecoder().restart();
 				}
@@ -36,19 +38,19 @@ public final class ScanParser {
 			inputBytes.add((byte) nextByte);
 		}
 
-		addBlocks(inputBytes, outputInts, scanComponentsOrder);
+		addBlocks(inputBytes, scanComponentsOrder, scanComponentOutOrder);
 
-		return outputInts.toArray();
+		return createScanComponentResults(scanComponents, scanComponentOut);
 	}
 
-	private static void addBlocks(ByteArray inputBytes, IntArray outputInts, ScanComponent[] scanComponentsOrder) {
+	private static void addBlocks(ByteArray inputBytes, ScanComponent[] scanComponentsOrder, IntArray[] scanComponentOutOrder) {
 		BitStream bitStream = new BitStream(inputBytes.toArray());
 		inputBytes.clear();
 		int i = 0;
 		while (!onlyOnes(bitStream)) {
 			EntropyDecoder entropyDecoder = scanComponentsOrder[i].entropyDecoder();
 			int[] result = entropyDecoder.readBlock(bitStream);
-			if (scanComponentsOrder[i].componentId() == 1) outputInts.add(result);
+			scanComponentOutOrder[i].add(result);
 			i = (i + 1) % scanComponentsOrder.length;
 		}
 	}
@@ -76,6 +78,43 @@ public final class ScanParser {
 		}
 
 		return scanComponentsOrder;
+	}
+
+	private static IntArray[] createScanComponentOut(ScanComponent[] scanComponents) {
+		IntArray[] scanComponentOut = new IntArray[scanComponents.length];
+		for (int i = 0; i < scanComponents.length; i++) {
+			scanComponentOut[i] = new IntArray();
+		}
+
+		return scanComponentOut;
+	}
+
+	private static IntArray[] orderScanComponentOut(ScanComponent[] scanComponents, IntArray[] scanComponentOut) {
+		int totalItems = 0;
+		for (ScanComponent scanComponent: scanComponents) {
+			totalItems += scanComponent.hSample() * scanComponent.vSample();
+		}
+
+		IntArray[] scanComponentOutOrder = new IntArray[totalItems];
+		int index = 0;
+		int j = 0;
+		for (ScanComponent scanComponent: scanComponents) {
+			IntArray outArray = scanComponentOut[j++];
+			for (int i = 0; i < scanComponent.hSample() * scanComponent.vSample(); i++) {
+				scanComponentOutOrder[index++] = outArray;
+			}
+		}
+
+		return scanComponentOutOrder;
+	}
+
+	private static ScanComponentResult[] createScanComponentResults(ScanComponent[] scanComponents, IntArray[] scanComponentOut) {
+		ScanComponentResult[] scanComponentResults = new ScanComponentResult[scanComponents.length];
+		for (int i = 0; i < scanComponents.length; i++) {
+			scanComponentResults[i] = new ScanComponentResult(scanComponents[i].componentId(), scanComponentOut[i].toArray());
+		}
+
+		return scanComponentResults;
 	}
 
 }
