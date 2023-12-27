@@ -8,6 +8,7 @@ import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser.DHTBinaryTree;
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkParser;
+import com.github.webicitybrowser.codec.jpeg.chunk.jfif.JFIFChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkParser;
 import com.github.webicitybrowser.codec.jpeg.exception.InvalidJPEGSignatureException;
@@ -29,6 +30,9 @@ public class JPEGReader {
 	private boolean handleNextChunk(int chunkType, JPEGState jpegState) throws IOException, MalformedJPEGException {
 		PushbackInputStream dataStream = jpegState.dataStream();
 		switch (chunkType) {
+		case 0xFFE0:
+			JFIFChunkParser.read(dataStream);
+			break;
 		case 0xFFDB: // Data Quantization Table
 			jpegState.setDQTChunkInfo(DQTChunkParser.read(dataStream));
 			break;

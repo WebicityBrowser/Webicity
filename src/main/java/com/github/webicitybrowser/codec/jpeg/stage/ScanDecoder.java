@@ -23,7 +23,7 @@ public final class ScanDecoder {
 
 	public static byte[] decodeScan(JPEGState jpegState) throws IOException, MalformedJPEGException {
 		ScanComponentResult[] scanData = startScan(jpegState);
-		return decodeData(scanData, jpegState);
+		return decodeData(jpegState, scanData);
 	}
 	
 	private static ScanComponentResult[] startScan(JPEGState jpegState) throws IOException, MalformedJPEGException {
@@ -61,7 +61,7 @@ public final class ScanDecoder {
 
 	private static ScanComponentResult findScanComponentResult(ScanComponentResult[] scanData, int componentId) {
 		for (ScanComponentResult scanComponentResult : scanData) {
-			if (scanComponentResult.componentId() == componentId) {
+			if (scanComponentResult.component().componentId() == componentId) {
 				return scanComponentResult;
 			}
 		}
@@ -69,18 +69,40 @@ public final class ScanDecoder {
 		throw new IllegalArgumentException("Could not find component with id: " + componentId);
 	}
 
-	private static byte[] decodeData(ScanComponentResult[] scanData, JPEGState jpegState) {
-		ScanComponentResult[] adjustedScanData = adjustScanData(scanData);
+	private static byte[] decodeData(JPEGState jpegState, ScanComponentResult[] scanData) {
+		int maxHorizontalSamplingFactor = determineMaxHorizontalSamplingFactor(scanData);
+		int maxVerticalSamplingFactor = determineMaxVerticalSamplingFactor(scanData);
 
-		SOFChunkInfo sofChunkInfo = jpegState.sofChunkInfo();
-		byte[] completedImage = new byte[sofChunkInfo.width() * sofChunkInfo.height() * 4];
-		for (int x = 0; x < sofChunkInfo.width(); x += 8) {
-			for (int y = 0; y < sofChunkInfo.height(); y += 8) {
-				decodeDataBlock(adjustedScanData, jpegState, completedImage, x, y);
-			}
+		ScanComponentResult[] adjustedScanData = adjustScanData(scanData);
+		int[][] scanLayer = new int[adjustedScanData.length][];
+		for (int i = 0; i < adjustedScanData.length; i++) {
+			scanLayer[i] = readScanLayer(jpegState, adjustedScanData[i], maxHorizontalSamplingFactor, maxVerticalSamplingFactor);
 		}
 
+		SOFChunkInfo sofChunkInfo = jpegState.sofChunkInfo();
+		byte[] completedImage = adjustedScanData.length == 1 ?
+			mergeGrayScale(scanLayer[0], sofChunkInfo.width(), sofChunkInfo.height()) :
+			mergeColor(scanLayer, sofChunkInfo.width(), sofChunkInfo.height());
+
 		return completedImage;
+	}
+
+	private static int determineMaxHorizontalSamplingFactor(ScanComponentResult[] scanData) {
+		int maxHorizontalSamplingFactor = 0;
+		for (ScanComponentResult scanComponentResult : scanData) {
+			maxHorizontalSamplingFactor = Math.max(maxHorizontalSamplingFactor, scanComponentResult.component().hSample());
+		}
+
+		return maxHorizontalSamplingFactor;
+	}
+
+	private static int determineMaxVerticalSamplingFactor(ScanComponentResult[] scanData) {
+		int maxVerticalSamplingFactor = 0;
+		for (ScanComponentResult scanComponentResult : scanData) {
+			maxVerticalSamplingFactor = Math.max(maxVerticalSamplingFactor, scanComponentResult.component().vSample());
+		}
+
+		return maxVerticalSamplingFactor;
 	}
 
 	private static ScanComponentResult[] adjustScanData(ScanComponentResult[] scanData) {
@@ -92,52 +114,93 @@ public final class ScanDecoder {
 				findScanComponentResult(scanData, 3)
 			};
 	}
-
-	private static void decodeDataBlock(ScanComponentResult[] scanData, JPEGState jpegState, byte[] completedImage, int x, int y) {
+	
+	private static int[] readScanLayer(
+		JPEGState jpegState, ScanComponentResult scanComponentResult, int maxHorizontalSamplingFactor, int maxVerticalSamplingFactor
+	) {	
 		SOFChunkInfo sofChunkInfo = jpegState.sofChunkInfo();
-		int blockOffset = x * 8 + y * sofChunkInfo.width();
-
-		int[][] componentBlocks = new int[scanData.length][];
-		for (int i = 0; i < 3; i++) {
-			componentBlocks[i] = decodeComponentBlock(scanData[i], jpegState, blockOffset);
+		int[] scanLayer = new int[sofChunkInfo.width() * sofChunkInfo.height()];
+		ScanComponent scanComponent = scanComponentResult.component();
+		int horizontalScaling = maxHorizontalSamplingFactor / scanComponent.hSample();
+		int verticalScaling = maxVerticalSamplingFactor / scanComponent.vSample();
+		for (int x = 0; x < sofChunkInfo.width() / (8 * horizontalScaling); x++) {
+			for (int y = 0; y < sofChunkInfo.height() / (8 * verticalScaling); y++) {
+				decodeDataBlock(jpegState, scanComponentResult, scanLayer, x, y, horizontalScaling, verticalScaling);
+			}
 		}
+
+		return scanLayer;
+	}
+
+	private static void decodeDataBlock(
+		JPEGState jpegState, ScanComponentResult scanComponentResult, int[] scanLayer, int x, int y, int horizontalScaling, int verticalScaling
+	) {
+		SOFChunkInfo sofChunkInfo = jpegState.sofChunkInfo();
+		int blockOffset = x * 64 + y * 8 * (sofChunkInfo.width() / horizontalScaling);
+		int[] componentBlock = decodeComponentBlock(jpegState, scanComponentResult, blockOffset);
 
 		for (int i = 0; i < 64; i++) {
-			int cellX = i % 8;
-			int cellY = i / 8;
-			int imgX = x + cellX;
-			int imgY = y + cellY;
-			if (imgX >= sofChunkInfo.width() || imgY >= sofChunkInfo.height()) {
-				continue;
-			}
-			int pixelOffset = imgX * 4 + imgY * sofChunkInfo.width() * 4;
-			
-			placePixel(componentBlocks, completedImage, pixelOffset, i);
+			copyCellToImage(jpegState, componentBlock, scanLayer, i, x, y, horizontalScaling, verticalScaling);
 		}
 	}
 
-	private static void placePixel(int[][] componentBlocks, byte[] completedImage, int pixelOffset, int blockOffset) {
-		completedImage[pixelOffset + 3] = (byte) 255;
-		int Y = componentBlocks[0][blockOffset] + 128;
-		if (componentBlocks.length == 1) {
-			for (int i = 0; i < 3; i++) {
-				completedImage[pixelOffset + i] = clampToByte(Y);
-			}
-		} else {
-			int Cb = componentBlocks[1][blockOffset] + 128;
-			int Cr = componentBlocks[2][blockOffset] + 128;
-			completedImage[pixelOffset + 0] = clampToByte(Y + 1.402 * (Cr - 128));
-			completedImage[pixelOffset + 1] = clampToByte(Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128));
-			completedImage[pixelOffset + 2] = clampToByte(Y + 1.772 * (Cb - 128));
-		}
-	}
-
-	private static int[] decodeComponentBlock(ScanComponentResult scanComponentResult, JPEGState jpegState, int blockOffset) {
+	private static int[] decodeComponentBlock(JPEGState jpegState, ScanComponentResult scanComponentResult, int blockOffset) {
 		DQTChunkInfo dqtChunkInfo = jpegState.dqtChunkInfo();
 		int[] quantizationTable = ZigZagDecoder.decode(
-			dqtChunkInfo.tables()[scanComponentResult.quantizationTableId()], 0);
+			dqtChunkInfo.tables()[scanComponentResult.component().quantizationTableId()], 0);
 		int[] cells = ZigZagDecoder.decode(scanComponentResult.data(), blockOffset);
 		return DCTDecoder.decodeDCT(cells, quantizationTable);
+	}
+
+	private static void copyCellToImage(
+		JPEGState jpegState, int[] componentBlock, int[] scanLayer, int i, int x, int y, int horizontalScaling, int verticalScaling
+	) {
+		int layerWidth = jpegState.sofChunkInfo().width();
+		int layerHeight = jpegState.sofChunkInfo().height();
+
+		int cell = componentBlock[i];
+		int cellX = i % 8;
+		int cellY = i / 8;
+		int imgX = (x * 8 + cellX) * horizontalScaling;
+		int imgY = (y * 8 + cellY) * verticalScaling;
+
+		for (int j = 0; j < horizontalScaling; j++) {
+			for (int k = 0; k < verticalScaling; k++) {
+				int destX = imgX + j;
+				int destY = imgY + k;
+				if (destX >= layerWidth || destY >= layerHeight) continue;
+				int destPixelOffset = destX + destY * layerWidth;
+				scanLayer[destPixelOffset] = cell;
+			}
+		}
+	}
+
+	private static byte[] mergeGrayScale(int[] scanLayer, int width, int height) {
+		byte[] completedImage = new byte[width * height * 4];
+		for (int i = 0; i < scanLayer.length; i++) {
+			for (int j = 0; j < 3; j++) {
+				completedImage[i * 4 + j] = clampToByte(scanLayer[i] + 128);
+			}
+			completedImage[i * 4 + 3] = (byte) 255;
+		}
+
+		return completedImage;
+	}
+
+	private static byte[] mergeColor(int[][] scanLayer, int width, int height) {
+		byte[] completedImage = new byte[width * height * 4];
+		for (int i = 0; i < scanLayer[0].length; i++) {
+			int Y = scanLayer[0][i] + 128;
+			int Cb = scanLayer[1][i] + 128;
+			int Cr = scanLayer[2][i] + 128;
+			int pixelOffset = i * 4;
+			completedImage[pixelOffset] = clampToByte(Y + 1.402 * (Cr - 128));
+			completedImage[pixelOffset + 1] = clampToByte(Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128));
+			completedImage[pixelOffset + 2] = clampToByte(Y + 1.772 * (Cb - 128));
+			completedImage[pixelOffset + 3] = (byte) 255;
+		}
+
+		return completedImage;
 	}
 
 	private static byte clampToByte(double value) {

@@ -1,5 +1,5 @@
 package com.github.webicitybrowser.codec.jpeg.scan;
 
-public record ScanComponentResult(int componentId, int[] data, int quantizationTableId) {
+public record ScanComponentResult(ScanComponent component, int[] data) {
 	
 }
