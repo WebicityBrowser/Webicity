@@ -106,7 +106,7 @@ public final class ScanDecoder {
 
 	private static ScanComponentResult[] adjustScanData(ScanComponentResult[] scanData) {
 		return scanData.length == 1 ?
-			new ScanComponentResult[] { findScanComponentResult(scanData, 1) } :
+			new ScanComponentResult[] { findScanComponentResult(scanData, 3) } :
 			new ScanComponentResult[] {
 				findScanComponentResult(scanData, 1),
 				findScanComponentResult(scanData, 2),
@@ -124,8 +124,9 @@ public final class ScanDecoder {
 		int verticalScaling = maxVerticalSamplingFactor / scanComponent.vSample();
 
 		int blockOffset = 0;
-		for (int y = 0; y < sofChunkInfo.height() / (8 * verticalScaling); y += scanComponent.vSample()) {
-			for (int x = 0; x < sofChunkInfo.width() / (8 * horizontalScaling); x += scanComponent.hSample()) {
+		// The floating point is necessary to prevent a rounding error
+		for (int y = 0; y < sofChunkInfo.height() / (8. * verticalScaling); y += scanComponent.vSample()) {
+			for (int x = 0; x < sofChunkInfo.width() / (8. * horizontalScaling); x += scanComponent.hSample()) {
 				blockOffset = decodeNextSamples(
 					jpegState, scanComponentResult, scanLayer, blockOffset,
 					x, y, horizontalScaling, verticalScaling);
