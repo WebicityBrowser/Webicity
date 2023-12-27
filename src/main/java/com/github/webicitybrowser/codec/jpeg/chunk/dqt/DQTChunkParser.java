@@ -12,7 +12,7 @@ public class DQTChunkParser {
 
 	public static DQTChunkInfo read(InputStream chunkSection) throws IOException, MalformedJPEGException {
 		int remainingLength = JPEGUtil.readTwoByte(chunkSection) - 2;
-		int[][] tables = new int[4][64];
+		int[][] tables = new int[4][];
 		while (remainingLength > 0) {
 			remainingLength -= readTable(chunkSection, tables);
 		}
@@ -29,7 +29,8 @@ public class DQTChunkParser {
 		if (tableId < 0 || tableId > 3) throw new MalformedJPEGException("Invalid DQT table id");
 		int byteSize = (tableInfo >>> 4) + 1;
 		if (byteSize != 1 && byteSize != 2) throw new MalformedJPEGException("Invalid DQT table byte size");
-		int[] table = tables[tableId];
+		int[] table = new int[64];
+		tables[tableId] = table;
 
 		for (int i = 0; i < 64; i++) {
 			table[i] = readDQTValue(chunkSection, byteSize);

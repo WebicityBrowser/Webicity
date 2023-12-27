@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PushbackInputStream;
 
 import com.github.webicitybrowser.codec.jpeg.JPEGState;
-import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkInfo.SOFComponentInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sos.SOSChunkInfo;
@@ -123,20 +122,38 @@ public final class ScanDecoder {
 		ScanComponent scanComponent = scanComponentResult.component();
 		int horizontalScaling = maxHorizontalSamplingFactor / scanComponent.hSample();
 		int verticalScaling = maxVerticalSamplingFactor / scanComponent.vSample();
-		for (int x = 0; x < sofChunkInfo.width() / (8 * horizontalScaling); x++) {
-			for (int y = 0; y < sofChunkInfo.height() / (8 * verticalScaling); y++) {
-				decodeDataBlock(jpegState, scanComponentResult, scanLayer, x, y, horizontalScaling, verticalScaling);
+
+		int blockOffset = 0;
+		for (int y = 0; y < sofChunkInfo.height() / (8 * verticalScaling); y += scanComponent.vSample()) {
+			for (int x = 0; x < sofChunkInfo.width() / (8 * horizontalScaling); x += scanComponent.hSample()) {
+				blockOffset = decodeNextSamples(
+					jpegState, scanComponentResult, scanLayer, blockOffset,
+					x, y, horizontalScaling, verticalScaling);
 			}
 		}
 
 		return scanLayer;
 	}
 
-	private static void decodeDataBlock(
-		JPEGState jpegState, ScanComponentResult scanComponentResult, int[] scanLayer, int x, int y, int horizontalScaling, int verticalScaling
+	private static int decodeNextSamples(
+		JPEGState jpegState, ScanComponentResult scanComponentResult, int[] scanLayer,
+		int blockOffset, int x, int y, int horizontalScaling, int verticalScaling
 	) {
-		SOFChunkInfo sofChunkInfo = jpegState.sofChunkInfo();
-		int blockOffset = x * 64 + y * 8 * (sofChunkInfo.width() / horizontalScaling);
+		ScanComponent scanComponent = scanComponentResult.component();
+		for (int yInner = 0; yInner < scanComponent.vSample(); yInner++) {
+			for (int xInner = 0; xInner < scanComponent.hSample(); xInner++) {
+				decodeDataBlock(jpegState, scanComponentResult, scanLayer, blockOffset, x + xInner, y + yInner, horizontalScaling, verticalScaling);
+				blockOffset += 64;
+			}
+		}
+
+		return blockOffset;
+	}
+
+	private static void decodeDataBlock(
+		JPEGState jpegState, ScanComponentResult scanComponentResult, int[] scanLayer, int blockOffset,
+		int x, int y, int horizontalScaling, int verticalScaling
+	) {
 		int[] componentBlock = decodeComponentBlock(jpegState, scanComponentResult, blockOffset);
 
 		for (int i = 0; i < 64; i++) {
@@ -145,9 +162,8 @@ public final class ScanDecoder {
 	}
 
 	private static int[] decodeComponentBlock(JPEGState jpegState, ScanComponentResult scanComponentResult, int blockOffset) {
-		DQTChunkInfo dqtChunkInfo = jpegState.dqtChunkInfo();
 		int[] quantizationTable = ZigZagDecoder.decode(
-			dqtChunkInfo.tables()[scanComponentResult.component().quantizationTableId()], 0);
+			jpegState.getQuantizationTable(scanComponentResult.component().quantizationTableId()), 0);
 		int[] cells = ZigZagDecoder.decode(scanComponentResult.data(), blockOffset);
 		return DCTDecoder.decodeDCT(cells, quantizationTable);
 	}

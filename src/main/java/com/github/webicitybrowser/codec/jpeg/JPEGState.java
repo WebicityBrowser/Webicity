@@ -3,7 +3,6 @@ package com.github.webicitybrowser.codec.jpeg;
 import java.io.PushbackInputStream;
 
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser.DHTBinaryTree;
-import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkInfo;
 
 public class JPEGState {
@@ -12,7 +11,7 @@ public class JPEGState {
 
 	private DHTBinaryTree[] dcHuffmanTables = new DHTBinaryTree[4];
 	private DHTBinaryTree[] acHuffmanTables = new DHTBinaryTree[4];
-	private DQTChunkInfo dqtChunkInfo;
+	private int[][] dqtTables = new int[4][];
 	private SOFChunkInfo sofChunkInfo;
 	private byte[] completedImage;
 
@@ -28,12 +27,12 @@ public class JPEGState {
 		acHuffmanTables[tableId] = tree;
 	}
 
-	public void setSOFChunkInfo(SOFChunkInfo sofChunkInfo) {
-		this.sofChunkInfo = sofChunkInfo;
+	public void installQuantizationTable(int id, int[] table) {
+		dqtTables[id] = table;
 	}
 
-	public void setDQTChunkInfo(DQTChunkInfo dqtChunkInfo) {
-		this.dqtChunkInfo = dqtChunkInfo;
+	public void setSOFChunkInfo(SOFChunkInfo sofChunkInfo) {
+		this.sofChunkInfo = sofChunkInfo;
 	}
 
 	public void setCompletedImage(byte[] completedImage) {
@@ -52,12 +51,12 @@ public class JPEGState {
 		return this.acHuffmanTables[id];
 	}
 
-	public SOFChunkInfo sofChunkInfo() {
-		return this.sofChunkInfo;
+	public int[] getQuantizationTable(int id) {
+		return this.dqtTables[id];
 	}
 
-	public DQTChunkInfo dqtChunkInfo() {
-		return this.dqtChunkInfo;
+	public SOFChunkInfo sofChunkInfo() {
+		return this.sofChunkInfo;
 	}
 
 	public byte[] completedImage() {

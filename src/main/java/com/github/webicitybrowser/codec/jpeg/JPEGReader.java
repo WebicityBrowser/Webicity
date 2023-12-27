@@ -7,6 +7,7 @@ import java.io.PushbackInputStream;
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.dht.DHTChunkParser.DHTBinaryTree;
+import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkInfo;
 import com.github.webicitybrowser.codec.jpeg.chunk.dqt.DQTChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.jfif.JFIFChunkParser;
 import com.github.webicitybrowser.codec.jpeg.chunk.sof.SOFChunkInfo;
@@ -34,10 +35,10 @@ public class JPEGReader {
 			JFIFChunkParser.read(dataStream);
 			break;
 		case 0xFFDB: // Data Quantization Table
-			jpegState.setDQTChunkInfo(DQTChunkParser.read(dataStream));
+			readQuantizationTables(jpegState);
 			break;
 		case 0xFFC0: // Baseline DCT
-		case 0xFFC2: // Progressive DCT
+		//case 0xFFC2: // Progressive DCT
 			jpegState.setSOFChunkInfo(SOFChunkParser.read(dataStream));
 			break;
 		case 0xFFC4: // Huffman Table
@@ -83,6 +84,17 @@ public class JPEGReader {
 		SOFChunkInfo sofChunkInfo = jpegState.sofChunkInfo();
 		byte[] completedImage = jpegState.completedImage();
 		return new JPEGResult(sofChunkInfo.width(), sofChunkInfo.height(), completedImage);
+	}
+
+	private void readQuantizationTables(JPEGState jpegState) throws IOException, MalformedJPEGException {
+		PushbackInputStream dataStream = jpegState.dataStream();
+		DQTChunkInfo chunkInfo = DQTChunkParser.read(dataStream);
+		int[][] tables = chunkInfo.tables();
+		for (int i = 0; i < 4; i++) {
+			if (tables[i] != null) {
+				jpegState.installQuantizationTable(i, tables[i]);
+			}
+		}
 	}
 
 	private void readHuffmanTables(JPEGState jpegState) throws IOException, MalformedJPEGException {
