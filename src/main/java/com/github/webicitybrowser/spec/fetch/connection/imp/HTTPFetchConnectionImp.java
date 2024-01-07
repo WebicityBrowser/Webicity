@@ -3,7 +3,8 @@ package com.github.webicitybrowser.spec.fetch.connection.imp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.webicitybrowser.spec.fetch.Body;
+import com.github.webicitybrowser.spec.fetch.FetchBody;
+import com.github.webicitybrowser.spec.fetch.FetchHeaderList;
 import com.github.webicitybrowser.spec.fetch.FetchRequest;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
@@ -48,7 +49,10 @@ public class HTTPFetchConnectionImp implements FetchConnection {
 	@SuppressWarnings("resource")
 	private FetchResponse convertHTTPResponseToFetchResponse(HTTPResponse response) {
 		if (response instanceof HTTPSuccessResponse successResponse) {
-			return new FetchResponseImp(Body.createBody(successResponse.getInputStream(), null));
+			FetchBody fetchBody = FetchBody.createBody(successResponse.getInputStream(), null);
+			FetchHeaderList fetchHeaderList = HTTPFetchHeaderListImp.create(successResponse.getHeaders());
+			
+			return new FetchResponseImp(fetchBody, fetchHeaderList);
 		} else {
 			logger.error("Unhandled HTTP response object: " + response);
 			return FetchResponse.createNetworkError();

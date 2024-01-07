@@ -12,14 +12,21 @@ public final class DHTChunkParser {
 
 	public static DHTChunkInfo read(InputStream inputStream) throws IOException, MalformedJPEGException {
 		int remainingLength = JPEGUtil.readTwoByte(inputStream) - 2;
-		DHTBinaryTree[] huffmanTables = new DHTBinaryTree[4];
+		DHTBinaryTree[] dcHuffmanTables = new DHTBinaryTree[4];
+		DHTBinaryTree[] acHuffmanTables = new DHTBinaryTree[4];
 		while (remainingLength > 0) {
 			TableResult tableResult = readTable(inputStream);
-			huffmanTables[tableResult.destination()] = createHuffmanTable(tableResult);
+			DHTBinaryTree table = createHuffmanTable(tableResult);
+			if (tableResult.isLossless()) {
+				dcHuffmanTables[tableResult.destination()] = table;
+			} else {
+				acHuffmanTables[tableResult.destination()] = table;
+			}
 			remainingLength -= tableResult.numValues();
 			remainingLength -= 17;
 		}
-		return new DHTChunkInfo(huffmanTables);
+
+		return new DHTChunkInfo(dcHuffmanTables, acHuffmanTables);
 	}
 
 	private static TableResult readTable(InputStream inputStream) throws IOException, MalformedJPEGException {
@@ -90,7 +97,6 @@ public final class DHTChunkParser {
 		return huffmanCodes;
 	}
 
-	public static record HuffmanTable(boolean isLossless, DHTBinaryTree root) {}
 	public static record DHTBinaryTree(int value, DHTBinaryTree left, DHTBinaryTree right) {}
 	private static record TableResult(int numValues, boolean isLossless, int destination, int[] lengths, int[] values) {}
 }

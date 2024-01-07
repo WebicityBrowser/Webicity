@@ -4,8 +4,9 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import com.github.webicitybrowser.spec.fetch.Body;
+import com.github.webicitybrowser.spec.fetch.FetchBody;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
+import com.github.webicitybrowser.spec.fetch.FetchHeaderList;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchParams;
 import com.github.webicitybrowser.spec.fetch.FetchProtocolRegistry;
@@ -55,7 +56,7 @@ public class FetchEngineImp implements FetchEngine {
 		case "data":
 			Optional<DataURLStruct> struct = DataURLProcessor.processDataURL(url);
 			if (struct.isEmpty()) return FetchResponse.createNetworkError();
-			return new FetchResponseImp(Body.createBody(null, struct.get().body()));
+			return new FetchResponseImp(FetchBody.createBody(null, struct.get().body()), FetchHeaderList.empty());
 		default:
 			break;
 		}
@@ -64,7 +65,7 @@ public class FetchEngineImp implements FetchEngine {
 			Optional<InputStream> streamReader = fetchProtocolRegistry.openConnection(url);
 			if (streamReader.isEmpty()) return FetchResponse.createNetworkError();
 
-			return new FetchResponseImp(Body.createBody(streamReader.get(), null));
+			return new FetchResponseImp(FetchBody.createBody(streamReader.get(), null), FetchHeaderList.empty());
 		} catch (Exception e) {
 			return FetchResponse.createNetworkError();
 		}
@@ -96,7 +97,7 @@ public class FetchEngineImp implements FetchEngine {
 		params.taskDestination().enqueue(fetchTask);
 	}
 
-	private void fullyReadBody(Body body, Consumer<byte[]> processBody, TaskDestination taskDestination) {
+	private void fullyReadBody(FetchBody body, Consumer<byte[]> processBody, TaskDestination taskDestination) {
 		try {
 			final byte[] allBytes = body.source() != null ?
 				body.source() :

@@ -2,12 +2,12 @@ package com.github.webicitybrowser.spec.fetch;
 
 import java.io.ByteArrayInputStream;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
-import com.github.webicitybrowser.spec.fetch.builder.FetchResponseBuilder;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
@@ -46,7 +46,15 @@ public class FetchEngineTest {
 	public void testFetchWithMockData() {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
 		FetchProtocolRegistry registry = Mockito.mock(FetchProtocolRegistry.class);
-		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
+
+		Mockito.doAnswer(invocation -> {
+			FetchResponse response = invocation.getArgument(1);
+			FetchBody body = response.body();
+			byte[] bodyBytes = body.readableStream().readAllBytes();
+			Assertions.assertArrayEquals(DUMMY_BODY, bodyBytes);
+
+			return null;
+		}).when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
 		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool(), registry, t -> t.run());
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
@@ -57,10 +65,7 @@ public class FetchEngineTest {
 		FetchParameters parameters = parametersBuilder.build();
 		fetchEngine.fetch(parameters);
 
-
-		Mockito.verify(consumeBodyAction, Mockito.times(1))
-			.execute(Mockito.eq(mockFetchResponse()), Mockito.anyBoolean(), Mockito.any());
-
+		Mockito.verify(consumeBodyAction, Mockito.times(1)).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 	}
 	
 
@@ -89,24 +94,17 @@ public class FetchEngineTest {
 					return mockFetchResponse();
 				}
 
-				return FetchResponseBuilder.createNetworkError();
+				return FetchResponse.createNetworkError();
 			}
 		};
 	}
 
 	private FetchResponse mockFetchResponse() {
-		return new FetchResponse() {
-			@Override
-			public Body body() {
-				return Body.createBody(new ByteArrayInputStream(new byte[] { 1, 2, 3, 4 }), DUMMY_BODY);
-			}
-
-			@Override
-			public boolean equals(Object o) {
-				FetchResponse otherFetchResponse = (FetchResponse) o;
-				return otherFetchResponse.body().source()[0] == this.body().source()[0];
-			}
-		};
+		FetchResponse response = Mockito.mock(FetchResponse.class);
+		FetchBody mockBody = FetchBody.createBody(new ByteArrayInputStream(DUMMY_BODY), null);
+		Mockito.when(response.body()).thenReturn(mockBody);
+		
+		return response;
 	}
 
 }
