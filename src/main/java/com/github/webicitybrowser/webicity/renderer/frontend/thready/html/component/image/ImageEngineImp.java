@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.component.image;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +62,21 @@ public class ImageEngineImp implements ImageEngine {
 		String imageType = response.headerList().getHeaderValue("Content-Type");
 		ImageCodecRegistry imageLoaderRegistry = htmlRendererContext.rendererContext().getRenderingEngine().getImageLoaderRegistry();
 		ImageCodec imageLoader = imageLoaderRegistry.getImageLoaderForType(imageType);
-		PossibleImage possibleImageData = imageLoader.loadImage(body, _1 -> {});
+
+		if (imageLoader != null) {
+			handleSupportedImageLoadComplete(imageState, request, body, imageLoader);
+		} else {
+			handleUnsupportedImageLoadComplete(imageState, request);
+		}
+	}
+
+	private void handleSupportedImageLoadComplete(ImageState imageState, ImageRequest request, byte[] body, ImageCodec imageLoader) {
+		PossibleImage possibleImageData;
+		try {
+			possibleImageData = imageLoader.loadImage(body, _1 -> {});
+		} catch (Exception e) {
+			possibleImageData = new PossibleImage(Optional.empty(), Optional.of(e));
+		}
 
 		possibleImageData.imageData().ifPresent(imageData -> {
 			request.setState(ImageRequestState.COMPLETELY_AVAILABLE);
@@ -68,9 +84,22 @@ public class ImageEngineImp implements ImageEngine {
 		});
 		possibleImageData.exception().ifPresent(exception -> {
 			LOGGER.error("Failed to load image", exception);
-			request.setState(ImageRequestState.UNAVAILABLE);
 		});
 	}
+
+	private void handleUnsupportedImageLoadComplete(ImageState imageState, ImageRequest imageRequest) {
+		// TODO: Abort requests
+		imageState.getCurrentRequest().setState(ImageRequestState.BROKEN);
+		if (imageState.getPendingRequest() != null) {
+			imageState.getPendingRequest().setState(ImageRequestState.BROKEN);
+		}
+
+		if (imageRequest == imageState.getPendingRequest()) {
+			imageState.setCurrentRequest(null);
+			imageState.setPendingRequest(null);
+		}
+	}
+
 
 	private String selectImageSource(Element element) {
 		return element.hasAttribute("src") ?
