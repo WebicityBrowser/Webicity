@@ -8,6 +8,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective.LineBreak;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.LineBox.LineMarkerEntry;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.layout.flow.context.inline.contexts.LineContext;
@@ -39,7 +40,8 @@ public final class FlowInlineTextRenderer {
 		SizeCalculationContext context = LayoutSizeUtils.createSizeCalculationContext(
 			state.flowContext().layoutManagerContext(), font.getMetrics(), true);
 		float letterSpacing = WebTextDirectiveUtil.getLetterSpacing(textBox.styleDirectives(), context);
-		TextSplitter splitter = new TextSplitter(adjustedText, font, letterSpacing);
+		LineBreak lineBreak = WebTextDirectiveUtil.getLineBreak(textBox.styleDirectives());
+		TextSplitter splitter = new TextSplitter(adjustedText, font, lineBreak, letterSpacing);
 		while (!splitter.completed()) {
 			// TODO: If no text fits between floats, then jump to after the floats.
 			String text = getNextSplit(state, splitter);

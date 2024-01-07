@@ -1,9 +1,7 @@
 package com.github.webicitybrowser.webicity.protocol;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 
 import com.github.webicitybrowser.spec.http.HTTPRedirectHandler;
 import com.github.webicitybrowser.spec.http.HTTPRequest;
@@ -51,8 +49,8 @@ public class HTTPProtocol implements Protocol {
 			}
 			
 			@Override
-			public Reader getInputReader() {
-				return new InputStreamReader(response.getInputStream(), StandardCharsets.UTF_8);
+			public InputStream getInputStream() {
+				return response.getInputStream();
 			}
 			
 			@Override

@@ -1,12 +1,12 @@
 package com.github.webicitybrowser.webicity.core.net;
 
-import java.io.Reader;
+import java.io.InputStream;
 
 import com.github.webicitybrowser.spec.url.URL;
 
 public interface Connection {
 
-	Reader getInputReader();
+	InputStream getInputStream();
 	
 	String getContentType();
 

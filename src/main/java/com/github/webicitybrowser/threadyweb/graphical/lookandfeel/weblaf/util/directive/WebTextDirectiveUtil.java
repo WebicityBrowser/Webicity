@@ -8,6 +8,8 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.text.FontFamily
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.FontSizeDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.FontWeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpacingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective.LineBreak;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDefaults;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
@@ -53,6 +55,13 @@ public final class WebTextDirectiveUtil {
 			.map(directive -> directive.getLetterSpacing())
 			.map(letterSpacing -> letterSpacing.calculate(context))
 			.orElse(0f);
+	}
+
+	public static LineBreak getLineBreak(DirectivePool styleDirectives) {
+		return styleDirectives
+			.getDirectiveOrEmpty(LineBreakDirective.class)
+			.map(directive -> directive.getLineBreak())
+			.orElse(LineBreak.NORMAL);
 	}
 
 }

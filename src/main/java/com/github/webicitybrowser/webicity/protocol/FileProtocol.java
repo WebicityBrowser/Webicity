@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.Connection;
@@ -24,12 +22,11 @@ public class FileProtocol implements Protocol {
 	public Connection openConnection(URL url, ProtocolContext context) throws IOException {
 		InputStream inputStream = new FileInputStream(new File(url.getPath()));
 		BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
-		Reader reader = new InputStreamReader(bufferedStream);
 		
 		return new Connection() {
 			@Override
-			public Reader getInputReader() {
-				return reader;
+			public InputStream getInputStream() {
+				return bufferedStream;
 			}
 
 			@Override

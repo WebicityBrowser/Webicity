@@ -25,9 +25,10 @@ public class FetchEngineTest {
 	@DisplayName("Can reach process response consume body")
 	public void canReachProcessResponseConsumeBody() {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
+		FetchProtocolRegistry registry = Mockito.mock(FetchProtocolRegistry.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool(), task -> task.run());
+		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool(), registry, task -> task.run());
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
@@ -53,7 +54,8 @@ public class FetchEngineTest {
 			return null;
 		}).when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool(), task -> task.run());
+		FetchProtocolRegistry registry = Mockito.mock(FetchProtocolRegistry.class);
+		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool(), registry, task -> task.run());
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);

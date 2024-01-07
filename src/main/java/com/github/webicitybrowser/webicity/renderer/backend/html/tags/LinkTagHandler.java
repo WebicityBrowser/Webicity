@@ -6,7 +6,7 @@ import com.github.webicitybrowser.spec.fetch.FetchRequest;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
 import com.github.webicitybrowser.spec.fetch.builder.imp.FetchParametersBuilderImp;
-import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
+import com.github.webicitybrowser.spec.fetch.imp.FetchNetworkError;
 import com.github.webicitybrowser.spec.htmlbrowsers.tasks.EventLoop;
 import com.github.webicitybrowser.spec.htmlbrowsers.tasks.TaskQueue;
 import com.github.webicitybrowser.spec.url.InvalidURLException;
@@ -35,6 +35,7 @@ public class LinkTagHandler implements TagAction {
 		if(!element.hasAttribute("href") && !element.hasAttribute("imagesrcset")) {
 			return;
 		}
+
 		defaultFetchAndProcessLinkResource(element);
 	}
 
@@ -59,10 +60,7 @@ public class LinkTagHandler implements TagAction {
 		parametersBuilder.setRequest(request);
 		parametersBuilder.setTaskDestination(new TaskQueueTaskDestination(networkQueue));
 		parametersBuilder.setConsumeBodyAction((response, success, body) -> {
-			success = true;
-			if(body == null || !(response instanceof FetchResponseImp)) {
-				success = false;
-			}
+			success = body != null && !(response instanceof FetchNetworkError);
 			processTheLinkedResource(element, success, response, body);
 		});
 
@@ -75,14 +73,17 @@ public class LinkTagHandler implements TagAction {
 	}
 
 	private void processTheLinkedResource(Element el, boolean success, FetchResponse response, byte[] bodyBytes) {
-		if (!success || !el.hasAttribute("rel")) return;
-		LinkAction stylesheetAction = switch (el.getAttribute("rel")) {
-			case "stylesheet" -> new StylesheetAction();
-			default -> new NoLinkAction();
-		};
+		if(!success || !el.hasAttribute("rel")) return;
+		String rel = el.getAttribute("rel");
 
-		// TODO: Make sure stylesheets are synchronous
-		stylesheetAction.processThisTypeOfLinkedResource(el, success, response, bodyBytes);
+		for (String relValue : rel.split(" ")) {
+			LinkAction stylesheetAction = switch (relValue) {
+				case "stylesheet" -> new StylesheetAction();
+				default -> new NoLinkAction();
+			};
+
+			stylesheetAction.processThisTypeOfLinkedResource(el, success, response, bodyBytes);	
+		}
 	}
 
 }

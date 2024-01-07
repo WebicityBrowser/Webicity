@@ -16,7 +16,7 @@ import com.github.webicitybrowser.spec.http.response.HTTPResponse;
 import com.github.webicitybrowser.spec.http.response.HTTPSuccessResponse;
 
 public class HTTPFetchConnectionImp implements FetchConnection {
-
+	
 	private final static Logger logger = LoggerFactory.getLogger(HTTPFetchConnectionImp.class);
 
 	private final FetchConnectionInfo info;

@@ -1,7 +1,9 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -58,7 +60,7 @@ public class HTMLRendererBackend implements RendererBackend {
 	
 	private void parseAndTimeDocument(Connection connection) throws IOException {
 		long time = System.currentTimeMillis();
-		parseDocument(connection.getInputReader());
+		parseDocument(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
 		long millisToParse = System.currentTimeMillis()-time;
 		int secondsToParse = (int) (millisToParse/1000 + .5);
 		logger.info("Page (" + connection.getURL() + ") parsed in " + (millisToParse) + " millis (" + secondsToParse +" seconds).");
