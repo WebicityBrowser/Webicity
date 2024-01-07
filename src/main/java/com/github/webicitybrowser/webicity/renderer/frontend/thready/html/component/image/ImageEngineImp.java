@@ -55,7 +55,9 @@ public class ImageEngineImp implements ImageEngine {
 	}
 
 	private void onImageLoadComplete(ImageState imageState, ImageRequest request, FetchResponse response, boolean success, byte[] body) {
-		String imageType = "image/jpeg"; // TODO: Get from response
+		// TODO: We need to properly parse the mime type - sometimes it has a charset or something
+		// There is a section in the mime sniff spec that tells us how to do so, but I don't know if we directly call it or what
+		String imageType = response.headerList().getHeaderValue("Content-Type");
 		ImageCodecRegistry imageLoaderRegistry = htmlRendererContext.rendererContext().getRenderingEngine().getImageLoaderRegistry();
 		ImageCodec imageLoader = imageLoaderRegistry.getImageLoaderForType(imageType);
 		PossibleImage possibleImageData = imageLoader.loadImage(body, _1 -> {});

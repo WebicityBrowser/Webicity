@@ -2,7 +2,7 @@ package com.github.webicitybrowser.spec.fetch.imp;
 
 import java.util.function.Consumer;
 
-import com.github.webicitybrowser.spec.fetch.Body;
+import com.github.webicitybrowser.spec.fetch.FetchBody;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchParams;
@@ -65,7 +65,7 @@ public class FetchEngineImp implements FetchEngine {
 		params.taskDestination().enqueue(fetchTask);
 	}
 
-	private void fullyReadBody(Body body, Consumer<byte[]> processBody, TaskDestination taskDestination) {
+	private void fullyReadBody(FetchBody body, Consumer<byte[]> processBody, TaskDestination taskDestination) {
 		try {
 			final byte[] allBytes = ByteStreamReader.readAllBytes(body.readableStream());
 			Consumer<byte[]> successSteps = bytes -> taskDestination.enqueue(() -> processBody.accept(bytes));
