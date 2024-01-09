@@ -7,19 +7,21 @@ import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
 import com.github.webicitybrowser.spec.fetch.builder.imp.FetchParametersBuilderImp;
 import com.github.webicitybrowser.spec.fetch.imp.FetchNetworkError;
-import com.github.webicitybrowser.spec.fetch.taskdestination.ParallelQueue;
+import com.github.webicitybrowser.spec.htmlbrowsers.tasks.EventLoop;
+import com.github.webicitybrowser.spec.htmlbrowsers.tasks.TaskQueue;
 import com.github.webicitybrowser.spec.url.InvalidURLException;
 import com.github.webicitybrowser.spec.url.URL;
-import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
+import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.LinkAction;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.NoLinkAction;
 import com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetactions.StylesheetAction;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tasks.TaskQueueTaskDestination;
 
 public class LinkTagHandler implements TagAction {
 
-	private final RendererContext context;
+	private final HTMLRendererContext context;
 
-	public LinkTagHandler(RendererContext context) {
+	public LinkTagHandler(HTMLRendererContext context) {
 		this.context = context;
 	}
 
@@ -40,7 +42,10 @@ public class LinkTagHandler implements TagAction {
 	private void defaultFetchAndProcessLinkResource(Element element) {
 		FetchRequest request = null;
 		try {
-			request = FetchRequest.createRequest("GET", URL.of(context.getCurrentDocumentURL(), element.getAttribute("href")));
+			URL url = URL.of(
+				context.rendererContext().getCurrentDocumentURL(),
+				element.getAttribute("href"));
+			request = FetchRequest.createRequest("GET", url);
 		} catch (InvalidURLException e) {
 			throw new RuntimeException(e);
 		}
@@ -50,15 +55,17 @@ public class LinkTagHandler implements TagAction {
 		}
 
 		FetchParametersBuilder parametersBuilder = new FetchParametersBuilderImp();
+		TaskQueue networkQueue = context.eventLoop().getTaskQueue(EventLoop.NETWORK_TASK_QUEUE);
+
 		parametersBuilder.setRequest(request);
-		parametersBuilder.setTaskDestination(new ParallelQueue());
+		parametersBuilder.setTaskDestination(new TaskQueueTaskDestination(networkQueue));
 		parametersBuilder.setConsumeBodyAction((response, success, body) -> {
-			success = success && response.body() != null && !(response instanceof FetchNetworkError);
+			success = body != null && !(response instanceof FetchNetworkError);
 			processTheLinkedResource(element, success, response, body);
 		});
-		FetchEngine fetchEngine = context.getFetchEngine();
-		fetchEngine.fetch(parametersBuilder.build());
 
+		FetchEngine fetchEngine = context.rendererContext().getRenderingEngine().getFetchEngine();
+		fetchEngine.fetch(parametersBuilder.build());
 	}
 
 	private boolean linkedResourceFetchSetupSteps(Element element, FetchRequest request) {
@@ -66,7 +73,7 @@ public class LinkTagHandler implements TagAction {
 	}
 
 	private void processTheLinkedResource(Element el, boolean success, FetchResponse response, byte[] bodyBytes) {
-		if(!el.hasAttribute("rel")) return;
+		if(!success || !el.hasAttribute("rel")) return;
 		String rel = el.getAttribute("rel");
 
 		for (String relValue : rel.split(" ")) {

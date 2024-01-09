@@ -1,5 +1,8 @@
 package com.github.webicitybrowser.webicity.core.renderer.imp;
 
+import java.lang.ref.SoftReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
@@ -10,6 +13,8 @@ import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
 import com.github.webicitybrowser.webicity.core.RenderingEngine;
+import com.github.webicitybrowser.webicity.core.image.ImageCodecRegistry;
+import com.github.webicitybrowser.webicity.core.image.imp.ImageLoaderRegistryImp;
 import com.github.webicitybrowser.webicity.core.imp.RendererHandleImp;
 import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.net.Protocol;
@@ -33,17 +38,23 @@ public class RenderingEngineImp implements RenderingEngine {
 	private final FetchEngine fetchEngine;
 	
 	private final ProtocolRegistry protocolRegistry = new ProtocolRegistryImp();
+	private final ImageCodecRegistry imageLoaderRegistry = new ImageLoaderRegistryImp();
 	private final RendererBackendRegistry rendererBackendRegistry = new RendererBackendRegistryImp();
+	private final List<SoftReference<Frame>> frames = new ArrayList<>();
 
 	public RenderingEngineImp(AssetLoader assetLoader, HTTPService httpService) {
 		this.assetLoader = assetLoader;
+		
 		FetchProtocolRegistry fetchProtocolRegistry = new FetchProtocolRegistryImp(protocolRegistry);
-		this.fetchEngine = new FetchEngineImp(new HTTPFetchConnectionPool(httpService), fetchProtocolRegistry);
+		this.fetchEngine = new FetchEngineImp(new HTTPFetchConnectionPool(httpService), fetchProtocolRegistry, new ParallelContextImp());
 	}
 
 	@Override
 	public Frame createFrame() {
-		return new FrameImp(this);
+		Frame frame = new FrameImp(this);
+		frames.add(new SoftReference<>(frame));
+
+		return frame;
 	}
 	
 	@Override
@@ -86,8 +97,28 @@ public class RenderingEngineImp implements RenderingEngine {
 	}
 
 	@Override
+	public ImageCodecRegistry getImageLoaderRegistry() {
+		return this.imageLoaderRegistry;
+	}
+
+	@Override
 	public RendererBackendRegistry getBackendRendererRegistry() {
 		return this.rendererBackendRegistry;
+	}
+
+	@Override
+	public void tick() {
+		for (int i = 0; i < frames.size(); i++) {
+			SoftReference<Frame> frameReference = frames.get(i);
+			Frame frame = frameReference.get();
+			if (frame == null) {
+				frames.remove(i);
+				i--;
+				continue;
+			}
+			
+			frame.tick();
+		}
 	}
 	
 	private RendererHandle openRenderer(Connection connection) {
@@ -108,6 +139,6 @@ public class RenderingEngineImp implements RenderingEngine {
 	}
 
 	private RendererContext createRendererContext(URL url) {
-		return new RendererContextImp(assetLoader, fetchEngine, url);
+		return new RendererContextImp(this, url);
 	}
 }

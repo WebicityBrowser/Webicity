@@ -2,12 +2,15 @@ package com.github.webicitybrowser.webicitybrowser.engine;
 
 import java.io.InputStream;
 
+import com.github.webicitybrowser.codec.jpeg.JPEGCodec;
+import com.github.webicitybrowser.codec.png.PNGCodec;
 import com.github.webicitybrowser.spec.html.parse.CharacterReferenceLookup;
 import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.http.encoding.chunked.ChunkedEncoding;
 import com.github.webicitybrowser.spec.http.version.http11.HTTP11Version;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
 import com.github.webicitybrowser.webicity.core.RenderingEngine;
+import com.github.webicitybrowser.webicity.core.image.ImageCodecRegistry;
 import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
 import com.github.webicitybrowser.webicity.protocol.AboutProtocol;
 import com.github.webicitybrowser.webicity.protocol.FileProtocol;
@@ -27,6 +30,7 @@ public final class RenderingEngineCreator {
 		
 		registerProtocols(renderingEngine);
 		registerBackendRenderers(renderingEngine);
+		registerImageLoaders(renderingEngine);
 		
 		return renderingEngine;
 	}
@@ -46,6 +50,12 @@ public final class RenderingEngineCreator {
 		
 		renderingEngine.getBackendRendererRegistry()
 			.registerBackendFactory("text/html", (r, c) -> new HTMLRendererBackend(r, c, characterReferenceLookup));
+	}
+
+	private static void registerImageLoaders(RenderingEngine renderingEngine) {
+		ImageCodecRegistry imageLoaderRegistry = renderingEngine.getImageLoaderRegistry();
+		imageLoaderRegistry.registerImageLoader(new PNGCodec());
+		imageLoaderRegistry.registerImageLoader(new JPEGCodec());
 	}
 
 	private static HTTPService createHTTPService() {

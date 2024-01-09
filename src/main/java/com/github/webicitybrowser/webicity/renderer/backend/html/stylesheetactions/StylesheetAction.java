@@ -2,7 +2,6 @@ package com.github.webicitybrowser.webicity.renderer.backend.html.stylesheetacti
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
 import com.github.webicitybrowser.spec.dom.node.Element;
@@ -13,8 +12,8 @@ public class StylesheetAction implements LinkAction {
 
 	@Override
 	public void processThisTypeOfLinkedResource(Element el, boolean success, FetchResponse response, byte[] bodyBytes) {
-		Reader childContextReader = new InputStreamReader(new ByteArrayInputStream(bodyBytes));
-		CSSRuleList ruleList = CSSRulesUtils.createRuleList(childContextReader);
+		InputStreamReader reader = new InputStreamReader(new ByteArrayInputStream(bodyBytes));
+		CSSRuleList ruleList = CSSRulesUtils.createRuleList(reader);
 		CSSRulesUtils.addStylesheet(ruleList, el);
 	}
 

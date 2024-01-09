@@ -14,6 +14,10 @@ button {
     display: inline-block;
 }
 
+img {
+    display: inline;
+}
+
 /* For content after this line, see licenses/WHATWG.txt for license information. */
 article, aside, h1, h2, h3, h4, h5, h6, hgroup, nav, section {
     display: block;

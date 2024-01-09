@@ -11,6 +11,8 @@ public interface StyleSheetList {
 	// TODO: Not a spec method
 	void add(CSSStyleSheet styleSheet);
 
+	void addUpdateListener(Runnable listener);
+
 	static StyleSheetList create() {
 		return new StyleSheetListImp();
 	}

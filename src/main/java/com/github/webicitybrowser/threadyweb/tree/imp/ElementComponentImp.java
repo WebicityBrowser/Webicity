@@ -7,6 +7,7 @@ import com.github.webicitybrowser.spec.dom.node.support.NodeList;
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
 import com.github.webicitybrowser.thready.gui.graphical.cache.imp.MappingCacheImp;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.threadyweb.context.WebComponentContext;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebComponentFactory;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 import com.github.webicitybrowser.threadyweb.tree.WebComponent;
@@ -14,11 +15,13 @@ import com.github.webicitybrowser.threadyweb.tree.WebComponent;
 public class ElementComponentImp extends BaseWebComponent implements ElementComponent {
 
 	private final Element element;
+	private final WebComponentContext componentContext;
 	
 	private final MappingCache<Node, WebComponent> componentCache = new MappingCacheImp<>(WebComponent[]::new, component -> component.getNode());
 
-	public ElementComponentImp(Element element) {
+	public ElementComponentImp(Element element, WebComponentContext componentContext) {
 		this.element = element;
+		this.componentContext = componentContext;
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class ElementComponentImp extends BaseWebComponent implements ElementComp
 	@Override
 	public WebComponent[] getChildren() {
 		Node[] children = filterChildren(element.getChildNodes());
-		componentCache.recompute(children, WebComponentFactory::createWebComponent);
+		componentCache.recompute(children, child -> WebComponentFactory.createWebComponent(child, componentContext));
 		return componentCache.getComputedMappings();
 	}
 

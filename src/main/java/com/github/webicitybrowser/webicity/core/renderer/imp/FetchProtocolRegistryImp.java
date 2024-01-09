@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.webicity.core.renderer.imp;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
 import java.util.Optional;
 
 import com.github.webicitybrowser.spec.fetch.FetchProtocolRegistry;
@@ -19,12 +19,12 @@ public class FetchProtocolRegistryImp implements FetchProtocolRegistry {
 	}
 
 	@Override
-	public Optional<Reader> openConnection(URL url) throws IOException {
+	public Optional<InputStream> openConnection(URL url) throws IOException {
 		Optional<Protocol> protocol = protocolRegistry.getProtocolForURL(url);
 		if (protocol.isEmpty()) return Optional.empty();
 		return Optional.of(protocol.get()
 			.openConnection(url, new ProtocolContext("GET", redirect -> true))
-			.getInputReader());
+			.getInputStream());
 	}
 
 }

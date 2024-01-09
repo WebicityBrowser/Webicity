@@ -1,8 +1,8 @@
 package com.github.webicitybrowser.webicity.protocol;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.InputStream;
 
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.Connection;
@@ -25,8 +25,8 @@ public class AboutProtocol implements Protocol {
 			}
 			
 			@Override
-			public Reader getInputReader() {
-				return new StringReader("");
+			public InputStream getInputStream() {
+				return new ByteArrayInputStream(new byte[0]);
 			}
 			
 			@Override

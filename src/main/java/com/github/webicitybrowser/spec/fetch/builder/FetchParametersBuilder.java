@@ -8,11 +8,11 @@ import com.github.webicitybrowser.spec.fetch.builder.imp.FetchParametersBuilderI
 
 public interface FetchParametersBuilder {
 	
-	void setRequest(FetchRequest request);
+	FetchParametersBuilder setRequest(FetchRequest request);
 
-	void setConsumeBodyAction(FetchConsumeBodyAction consumeBodyAction);
+	FetchParametersBuilder setConsumeBodyAction(FetchConsumeBodyAction consumeBodyAction);
 
-	void setTaskDestination(TaskDestination taskDestination);
+	FetchParametersBuilder setTaskDestination(TaskDestination taskDestination);
 
 	FetchParameters build();
 

@@ -81,6 +81,11 @@ public class FrameImp implements Frame {
 	}
 
 	@Override
+	public void tick() {
+		currentRenderer.tick();
+	}
+
+	@Override
 	public void addEventListener(FrameEventListener listener, boolean sync) {
 		eventDispatcher.addListener(listener);
 		if (sync) {

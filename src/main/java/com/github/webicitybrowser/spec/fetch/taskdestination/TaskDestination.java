@@ -5,6 +5,4 @@ public interface TaskDestination {
 
 	void enqueue(Runnable task);
 
-	void dequeueAll();
-
 }

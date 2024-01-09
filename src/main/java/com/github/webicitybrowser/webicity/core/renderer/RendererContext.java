@@ -1,14 +1,11 @@
 package com.github.webicitybrowser.webicity.core.renderer;
 
-import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.url.URL;
-import com.github.webicitybrowser.webicity.core.AssetLoader;
+import com.github.webicitybrowser.webicity.core.RenderingEngine;
 
 public interface RendererContext {
 
-	AssetLoader getAssetLoader();
-
-	FetchEngine getFetchEngine();
+	RenderingEngine getRenderingEngine();
 
 	URL getCurrentDocumentURL();
 	

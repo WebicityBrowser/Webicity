@@ -9,6 +9,7 @@ import com.github.webicitybrowser.spec.css.stylesheet.StyleSheetList;
 public class StyleSheetListImp implements StyleSheetList {
 
 	private List<CSSStyleSheet> styleSheets = new ArrayList<>();
+	private List<Runnable> updateListeners = new ArrayList<>();
 	
 	@Override
 	public CSSStyleSheet getItem(int index) {
@@ -23,6 +24,12 @@ public class StyleSheetListImp implements StyleSheetList {
 	@Override
 	public void add(CSSStyleSheet styleSheet) {
 		styleSheets.add(styleSheet);
+		updateListeners.forEach(Runnable::run);
+	}
+
+	@Override
+	public void addUpdateListener(Runnable listener) {
+		updateListeners.add(listener);
 	}
 
 }

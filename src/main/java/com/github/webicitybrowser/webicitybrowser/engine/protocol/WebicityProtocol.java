@@ -3,8 +3,6 @@ package com.github.webicitybrowser.webicitybrowser.engine.protocol;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.net.Connection;
@@ -31,12 +29,11 @@ public class WebicityProtocol implements Protocol {
 			fullPath.toString()
 		);
 		BufferedInputStream bufferedStream = new BufferedInputStream(inputStream);
-		Reader reader = new InputStreamReader(bufferedStream);
 
 		return new Connection() {
 			@Override
-			public Reader getInputReader() {
-				return reader;
+			public InputStream getInputStream() {
+				return bufferedStream;
 			}
 
 			@Override

@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.drawing.core.image.BytesImageSource;
+import com.github.webicitybrowser.thready.drawing.core.image.EncodedBytesImageSource;
 import com.github.webicitybrowser.thready.drawing.core.image.ImageSource;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaGraphicsSystem;
 import com.github.webicitybrowser.thready.windowing.skija.SkijaScreen;
@@ -55,7 +55,7 @@ public class SkijaWindowImp implements SkijaWindow {
 	public void setIcons(ImageSource[] icons) {
 		GLFWImage.Buffer iconsBuffer = GLFWImage.create(icons.length);
 		for (int i = 0; i < icons.length; i++) {
-			if (icons[i] instanceof BytesImageSource bytesImageSource) {
+			if (icons[i] instanceof EncodedBytesImageSource bytesImageSource) {
 				GLFWImage image = loadImage(bytesImageSource);
 				iconsBuffer.put(i, image);
 			} else {
@@ -147,8 +147,8 @@ public class SkijaWindowImp implements SkijaWindow {
 		return GLFW.glfwGetWindowAttrib(windowId, GLFW.GLFW_MAXIMIZED) == GLFW.GLFW_TRUE;
 	}
 
-	private GLFWImage loadImage(BytesImageSource bytesImageSource) {
-		byte[] bytes = bytesImageSource.getBytes();
+	private GLFWImage loadImage(EncodedBytesImageSource bytesImageSource) {
+		byte[] bytes = bytesImageSource.bytes();
 		Image skijaImage = Image.makeDeferredFromEncodedBytes(bytes);
 		Bitmap buffer = Bitmap.makeFromImage(skijaImage);
 		// Make an ImageInfo that uses RGBA
