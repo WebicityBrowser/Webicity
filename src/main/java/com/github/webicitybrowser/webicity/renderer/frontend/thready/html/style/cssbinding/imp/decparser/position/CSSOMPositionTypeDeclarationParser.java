@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.position;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.position.PositionTypeValueParser;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
@@ -30,6 +32,11 @@ public class CSSOMPositionTypeDeclarationParser implements CSSOMNamedDeclaration
 		return new Directive[] {
 			PositionTypeDirective.of(positionType)
 		};
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(PositionTypeDirective.class);
 	}
 	
 }

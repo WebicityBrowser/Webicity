@@ -16,7 +16,6 @@ import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
 import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.drawing.core.text.source.NamedFontSource;
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGeneratorRoot;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent.GUIContentConfiguration;
@@ -34,6 +33,7 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBac
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMRuleMap;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGenerator;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGeneratorRoot;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleSheetSet;
@@ -93,8 +93,8 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private CSSOMTree<DocumentStyleGenerator, DirectivePool>[] createCSSOMTrees(DocumentStyleSheetSet styleSheetSet) {
-		List<CSSOMTree<DocumentStyleGenerator, DirectivePool>> cssomTrees = new ArrayList<>();
+	private CSSOMTree<DocumentStyleGenerator, CSSOMRuleMap>[] createCSSOMTrees(DocumentStyleSheetSet styleSheetSet) {
+		List<CSSOMTree<DocumentStyleGenerator, CSSOMRuleMap>> cssomTrees = new ArrayList<>();
 		CSSOMBinder binder = CSSOMBinder.create();
 		for (CSSRuleList rules: styleSheetSet.getRuleLists()) {
 			cssomTrees.add(binder.createCSSOMFor(rules));

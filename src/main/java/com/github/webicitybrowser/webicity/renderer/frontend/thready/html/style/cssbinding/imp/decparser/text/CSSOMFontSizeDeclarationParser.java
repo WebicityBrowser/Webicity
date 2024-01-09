@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.text;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.text.FontSizeValueParser;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
@@ -22,6 +24,11 @@ public class CSSOMFontSizeDeclarationParser implements CSSOMNamedDeclarationPars
 		return new Directive[] {
 			FontSizeDirective.of(SizeParser.parseWithFontPercents(value))
 		};
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(FontSizeDirective.class);
 	}
 	
 }

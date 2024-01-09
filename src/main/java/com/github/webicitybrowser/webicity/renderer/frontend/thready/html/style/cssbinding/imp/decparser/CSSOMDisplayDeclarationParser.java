@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.display.DisplayPropertyValueParser;
 import com.github.webicitybrowser.spec.css.property.display.DisplayValue;
@@ -27,6 +29,11 @@ public class CSSOMDisplayDeclarationParser implements CSSOMNamedDeclarationParse
 			OuterDisplayDirective.of(convertOuterDisplayType(value.outerDisplayType())),
 			InnerDisplayDirective.of(convertInnerDisplayType(value.innerDisplayType()))
 		};
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(OuterDisplayDirective.class, InnerDisplayDirective.class);
 	}
 
 	private OuterDisplay convertOuterDisplayType(OuterDisplayType outerDisplayType) {

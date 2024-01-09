@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.border;
 
+import java.util.List;
 import java.util.function.Function;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
@@ -10,13 +11,15 @@ import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.componentparser.ColorParser;
 
-public class CSSOMLonghandBorderColorParser implements CSSOMNamedDeclarationParser<ColorValue> {
+public class CSSOMLonghandBorderColorParser<T extends Directive> implements CSSOMNamedDeclarationParser<ColorValue> {
 
 	private final PropertyValueParser<ColorValue> longhandBorderColorValueParser = new BorderColorLonghandValueParser();
-	private final Function<ColorFormat, Directive> directiveFactory;
+	private final Function<ColorFormat, T> directiveFactory;
+	private final Class<T> directiveClass;
 
-	public CSSOMLonghandBorderColorParser(Function<ColorFormat, Directive> directiveFactory) {
+	public CSSOMLonghandBorderColorParser(Function<ColorFormat, T> directiveFactory, Class<T> directiveClass) {
 		this.directiveFactory = directiveFactory;
+		this.directiveClass = directiveClass;
 	}
 
 	@Override
@@ -30,6 +33,11 @@ public class CSSOMLonghandBorderColorParser implements CSSOMNamedDeclarationPars
 		return new Directive[] {
 			directiveFactory.apply(color)
 		};
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(directiveClass);
 	}
 	
 }

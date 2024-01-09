@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.flex.FlexDirectionValueParser;
 import com.github.webicitybrowser.spec.css.property.flexbox.FlexDirectionValue;
@@ -21,6 +23,11 @@ public class CSSOMFlexDirectionDeclarationParser implements CSSOMNamedDeclaratio
 	public Directive[] translatePropertyValue(FlexDirectionValue value) {
 		FlexDirection flexDirection = convertFlexDirection(value);
 		return new Directive[] { FlexDirectionDirective.of(flexDirection) };
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(FlexDirectionDirective.class);
 	}
 
 	private FlexDirection convertFlexDirection(FlexDirectionValue value) {

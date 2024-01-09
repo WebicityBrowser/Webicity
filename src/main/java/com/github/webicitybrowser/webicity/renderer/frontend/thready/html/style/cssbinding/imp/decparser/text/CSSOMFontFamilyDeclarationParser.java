@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.text;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.text.FontFamilyValueParser;
 import com.github.webicitybrowser.spec.css.property.fontfamily.FontFamilyValue;
@@ -28,6 +30,11 @@ public class CSSOMFontFamilyDeclarationParser implements CSSOMNamedDeclarationPa
 		}
 
 		return new Directive[] { FontFamilyDirective.of(fontSources) };
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(FontFamilyDirective.class);
 	}
 
 	private FontSource translateFontFamilyEntry(FontFamilyEntry fontFamilyEntry) {

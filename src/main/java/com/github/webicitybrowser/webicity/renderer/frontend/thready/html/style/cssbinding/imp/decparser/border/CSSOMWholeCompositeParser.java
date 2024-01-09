@@ -9,7 +9,15 @@ import com.github.webicitybrowser.spec.css.property.border.BorderCompositeValue;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderColorDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderColorDirective.BottomBorderColorDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderColorDirective.LeftBorderColorDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderColorDirective.RightBorderColorDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderColorDirective.TopBorderColorDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.BottomBorderWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.LeftBorderWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.RightBorderWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.TopBorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.componentparser.ColorParser;
@@ -44,6 +52,15 @@ public class CSSOMWholeCompositeParser implements CSSOMNamedDeclarationParser<Bo
 		}
 
 		return directives.toArray(Directive[]::new);
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(
+			LeftBorderColorDirective.class, RightBorderColorDirective.class,
+			TopBorderColorDirective.class, BottomBorderColorDirective.class,
+			LeftBorderWidthDirective.class, RightBorderWidthDirective.class,
+			TopBorderWidthDirective.class, BottomBorderWidthDirective.class);
 	}
 	
 }

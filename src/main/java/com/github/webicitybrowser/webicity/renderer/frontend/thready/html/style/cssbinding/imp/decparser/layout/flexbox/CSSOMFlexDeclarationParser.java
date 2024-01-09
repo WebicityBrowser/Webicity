@@ -35,5 +35,10 @@ public class CSSOMFlexDeclarationParser implements CSSOMNamedDeclarationParser<F
 		
 		return directives.toArray(Directive[]::new);
 	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(FlexGrowDirective.class, FlexShrinkDirective.class);
+	}
 	
 }

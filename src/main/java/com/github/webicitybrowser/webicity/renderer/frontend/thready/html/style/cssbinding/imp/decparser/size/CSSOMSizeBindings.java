@@ -15,13 +15,19 @@ public class CSSOMSizeBindings {
 	private CSSOMSizeBindings() {}
 
 	public static void installTo(Map<String, CSSOMNamedDeclarationParser<?>> namedDeclarationParsers) {
-			namedDeclarationParsers.put("box-sizing", new CSSOMBoxSizingDeclarationParser());
-		namedDeclarationParsers.put("width", new CSSOMDimensionDeclarationParser(WidthDirective::of));
-		namedDeclarationParsers.put("min-width", new CSSOMDimensionDeclarationParser(MinWidthDirective::of));
-		namedDeclarationParsers.put("max-width", new CSSOMDimensionDeclarationParser(MaxWidthDirective::of));
-		namedDeclarationParsers.put("height", new CSSOMDimensionDeclarationParser(HeightDirective::of));
-		namedDeclarationParsers.put("min-height", new CSSOMDimensionDeclarationParser(MinHeightDirective::of));
-		namedDeclarationParsers.put("max-height", new CSSOMDimensionDeclarationParser(MaxHeightDirective::of));
+		namedDeclarationParsers.put("box-sizing", new CSSOMBoxSizingDeclarationParser());
+		namedDeclarationParsers.put("width",
+			new CSSOMDimensionDeclarationParser<>(WidthDirective::of, WidthDirective.class));
+		namedDeclarationParsers.put("min-width",
+			new CSSOMDimensionDeclarationParser<>(MinWidthDirective::of, MinWidthDirective.class));
+		namedDeclarationParsers.put("max-width",
+			new CSSOMDimensionDeclarationParser<>(MaxWidthDirective::of, MaxWidthDirective.class));
+		namedDeclarationParsers.put("height",
+			new CSSOMDimensionDeclarationParser<>(HeightDirective::of, HeightDirective.class));
+		namedDeclarationParsers.put("min-height",
+			new CSSOMDimensionDeclarationParser<>(MinHeightDirective::of, MinHeightDirective.class));
+		namedDeclarationParsers.put("max-height",
+			new CSSOMDimensionDeclarationParser<>(MaxHeightDirective::of, MaxHeightDirective.class));
 	}
 
 }

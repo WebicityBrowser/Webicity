@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.flex.FlexWrapValueParser;
 import com.github.webicitybrowser.spec.css.property.flexbox.FlexWrapValue;
@@ -21,6 +23,11 @@ public class CSSOMFlexWrapDeclarationParser implements CSSOMNamedDeclarationPars
 	public Directive[] translatePropertyValue(FlexWrapValue value) {
 		FlexWrap flexWrap = convertFlexWrap(value);
 		return new Directive[] { FlexWrapDirective.of(flexWrap) };
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(FlexWrapDirective.class);
 	}
 
 	private FlexWrap convertFlexWrap(FlexWrapValue value) {

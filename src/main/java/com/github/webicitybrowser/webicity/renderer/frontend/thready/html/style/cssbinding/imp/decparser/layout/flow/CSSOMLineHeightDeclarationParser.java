@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flow;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.flow.LineHeightValueParser;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
@@ -34,6 +36,11 @@ public class CSSOMLineHeightDeclarationParser implements CSSOMNamedDeclarationPa
 		return new Directive[] {
 			LineHeightDirective.of(sizeCalculation)
 		};
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(LineHeightDirective.class);
 	}
 
 }

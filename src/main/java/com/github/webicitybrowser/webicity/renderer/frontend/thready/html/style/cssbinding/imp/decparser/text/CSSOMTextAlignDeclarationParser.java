@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.text;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.text.TextAlignValueParser;
 import com.github.webicitybrowser.spec.css.property.text.TextAlignValue;
@@ -33,6 +35,11 @@ public class CSSOMTextAlignDeclarationParser  implements CSSOMNamedDeclarationPa
 		return new Directive[] {
 			TextAlignDirective.of(textAlign)
 		};
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(TextAlignDirective.class);
 	}
 	
 }

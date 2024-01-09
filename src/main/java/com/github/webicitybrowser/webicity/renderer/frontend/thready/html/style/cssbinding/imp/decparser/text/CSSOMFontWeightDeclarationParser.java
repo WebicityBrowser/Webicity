@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.text;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.text.FontWeightValueParser;
 import com.github.webicitybrowser.spec.css.property.fontweight.FontWeightValue;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
@@ -20,6 +22,11 @@ public class CSSOMFontWeightDeclarationParser implements CSSOMNamedDeclarationPa
 		return new Directive[] {
 			FontWeightDirective.of(parentWeight -> value.getWeight(parentWeight))
 		};
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(FontWeightDirective.class);
 	}
 	
 }

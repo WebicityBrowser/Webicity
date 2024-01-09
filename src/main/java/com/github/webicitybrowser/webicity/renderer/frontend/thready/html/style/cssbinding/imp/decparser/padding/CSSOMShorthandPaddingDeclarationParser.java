@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.padding;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.padding.PaddingShorthandValueParser;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
@@ -7,11 +9,15 @@ import com.github.webicitybrowser.spec.css.property.padding.PaddingValue;
 import com.github.webicitybrowser.spec.css.property.shared.basic.AutoValue;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective.BottomPaddingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective.LeftPaddingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective.RightPaddingDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.PaddingDirective.TopPaddingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.componentparser.SizeParser;
 
-public class CSSOMShorthandPaddingParser implements CSSOMNamedDeclarationParser<PaddingValue> {
+public class CSSOMShorthandPaddingDeclarationParser implements CSSOMNamedDeclarationParser<PaddingValue> {
 
 	private final PaddingShorthandValueParser shorthandParser = new PaddingShorthandValueParser();
 
@@ -34,6 +40,13 @@ public class CSSOMShorthandPaddingParser implements CSSOMNamedDeclarationParser<
 		return value instanceof AutoValue ?
 			SizeCalculation.SIZE_AUTO :
 			SizeParser.parseWithBoxPercents(value);
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(
+			LeftPaddingDirective.class, RightPaddingDirective.class,
+			TopPaddingDirective.class, BottomPaddingDirective.class);
 	}
 	
 }

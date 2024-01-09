@@ -1,5 +1,6 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.border;
 
+import java.util.List;
 import java.util.function.Function;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
@@ -10,13 +11,15 @@ import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.componentparser.SizeParser;
 
-public class CSSOMLonghandBorderWidthParser implements CSSOMNamedDeclarationParser<CSSValue> {
+public class CSSOMLonghandBorderWidthParser<T extends Directive> implements CSSOMNamedDeclarationParser<CSSValue> {
 
 	private final PropertyValueParser<CSSValue> longhandBorderWidthValueParser = new BorderWidthLonghandValueParser();
-	private final Function<SizeCalculation, Directive> directiveFactory;
+	private final Function<SizeCalculation, T> directiveFactory;
+	private final Class<T> directiveClass;
 
-	public CSSOMLonghandBorderWidthParser(Function<SizeCalculation, Directive> directiveFactory) {
+	public CSSOMLonghandBorderWidthParser(Function<SizeCalculation, T> directiveFactory, Class<T> directiveClass) {
 		this.directiveFactory = directiveFactory;
+		this.directiveClass = directiveClass;
 	}
 
 	@Override
@@ -30,6 +33,11 @@ public class CSSOMLonghandBorderWidthParser implements CSSOMNamedDeclarationPars
 		return new Directive[] {
 			directiveFactory.apply(sizeCalculation)
 		};
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(directiveClass);
 	}
 	
 }

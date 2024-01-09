@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.color.ColorValueParser;
 import com.github.webicitybrowser.spec.css.property.color.ColorValue;
@@ -22,6 +24,11 @@ public class CSSOMColorDeclarationParser implements CSSOMNamedDeclarationParser<
 		return new Directive[] {
 			ForegroundColorDirective.of(ColorParser.parseColor(value))
 		};
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(ForegroundColorDirective.class);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.layout.flexbox;
 
+import java.util.List;
+
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.flex.FlexJustifyContentValueParser;
 import com.github.webicitybrowser.spec.css.property.flexbox.FlexJustifyContentValue;
@@ -29,6 +31,11 @@ public class CSSOMFlexJustifyContentDeclarationParser implements CSSOMNamedDecla
 		};
 
 		return new Directive[] { FlexJustifyContentDirective.of(justifyContent) };
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(FlexJustifyContentDirective.class);
 	}
 	
 }

@@ -14,19 +14,25 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.componentparser.ColorParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.componentparser.SizeParser;
 
-public class CSSOMComponentCompositeParser implements CSSOMNamedDeclarationParser<BorderCompositeValue> {
+public class CSSOMComponentCompositeParser<T extends Directive, V extends Directive> implements CSSOMNamedDeclarationParser<BorderCompositeValue> {
 
 	private final PropertyValueParser<BorderCompositeValue> longhandBorderColorValueParser = new BorderCompositeValueParser();
 
-	private final Function<ColorFormat, Directive> colorDirectiveFactory;
-	private final Function<SizeCalculation, Directive> sizeDirectiveFactory;
+	private final Function<ColorFormat, T> colorDirectiveFactory;
+	private final Class<T> colorDirectiveClass;
+	private final Function<SizeCalculation, V> sizeDirectiveFactory;
+	private final Class<V> sizeDirectiveClass;
 
 	public CSSOMComponentCompositeParser(
-		Function<ColorFormat, Directive> colorDirectiveFactory,
-		Function<SizeCalculation, Directive> sizeDirectiveFactory
+		Function<ColorFormat, T> colorDirectiveFactory,
+		Class<T> colorDirectiveClass,
+		Function<SizeCalculation, V> sizeDirectiveFactory,
+		Class<V> sizeDirectiveClass
 	) {
 		this.colorDirectiveFactory = colorDirectiveFactory;
+		this.colorDirectiveClass = colorDirectiveClass;
 		this.sizeDirectiveFactory = sizeDirectiveFactory;
+		this.sizeDirectiveClass = sizeDirectiveClass;
 	}
 
 	@Override
@@ -45,6 +51,11 @@ public class CSSOMComponentCompositeParser implements CSSOMNamedDeclarationParse
 		}
 
 		return directives.toArray(Directive[]::new);
+	}
+
+	@Override
+	public List<Class<? extends Directive>> getResultantDirectiveClasses() {
+		return List.of(colorDirectiveClass, sizeDirectiveClass);
 	}
 	
 }
