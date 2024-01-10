@@ -7,7 +7,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 
 public interface CSSOMBinder {
 
-	CSSOMTree<DocumentStyleGenerator, CSSOMRuleMap> createCSSOMFor(CSSRuleList ruleList);
+	CSSOMTree<DocumentStyleGenerator, CSSRuleList> createCSSOMFor(CSSRuleList ruleList);
 	
 	public static CSSOMBinder create() {
 		return new CSSOMBinderImp();

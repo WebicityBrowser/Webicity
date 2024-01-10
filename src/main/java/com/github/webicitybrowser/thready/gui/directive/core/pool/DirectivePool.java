@@ -8,7 +8,7 @@ import com.github.webicitybrowser.thready.gui.directive.core.Directive;
  * A directive pool allows storing styling information in
  * the form of directives.
  */
-public interface DirectivePool extends Iterable<Directive> {
+public interface DirectivePool {
 
 	/**
 	 * Add a directive to this pool.
@@ -59,8 +59,6 @@ public interface DirectivePool extends Iterable<Directive> {
 			.map(d -> (T) d);
 	}
 
-	Directive[] getCurrentDirectives();
-	
 	Directive getUnresolvedDirective(Class<? extends Directive> directiveClass);
 	
 	void addEventListener(DirectivePoolListener listener);

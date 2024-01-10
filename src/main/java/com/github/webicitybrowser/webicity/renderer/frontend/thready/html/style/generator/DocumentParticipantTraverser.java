@@ -2,11 +2,11 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 
 import java.util.Collection;
 
+import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMParticipantTraverser;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMRuleMap;
 
-public class DocumentParticipantTraverser implements CSSOMParticipantTraverser<DocumentStyleGenerator, CSSOMRuleMap> {
+public class DocumentParticipantTraverser implements CSSOMParticipantTraverser<DocumentStyleGenerator, CSSRuleList> {
 
 	@Override
 	public DocumentStyleGenerator[] getChildren(DocumentStyleGenerator participant) {
@@ -19,12 +19,12 @@ public class DocumentParticipantTraverser implements CSSOMParticipantTraverser<D
 	}
 
 	@Override
-	public Collection<CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap>> getMatchingNodes(DocumentStyleGenerator participant) {
+	public Collection<CSSOMNode<DocumentStyleGenerator, CSSRuleList>> getMatchingNodes(DocumentStyleGenerator participant) {
 		return participant.getMatchingCSSOMNodes();
 	}
 
 	@Override
-	public void addMatchingNode(DocumentStyleGenerator participant, CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> baseNode) {
+	public void addMatchingNode(DocumentStyleGenerator participant, CSSOMNode<DocumentStyleGenerator, CSSRuleList> baseNode) {
 		participant.addMatchingNode(baseNode);
 	}
 

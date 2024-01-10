@@ -3,6 +3,7 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 import java.util.function.Function;
 
 import com.github.webicitybrowser.spec.css.QualifiedName;
+import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
 import com.github.webicitybrowser.spec.css.selectors.combinator.ChildCombinator;
 import com.github.webicitybrowser.spec.css.selectors.combinator.DescendantCombinator;
@@ -23,7 +24,6 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.at
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.id.IDFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.filter.type.TypeFilter;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMFilterCreator;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMRuleMap;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGenerator;
 
 public class CSSOMFilterCreatorImp implements CSSOMFilterCreator {
@@ -31,7 +31,7 @@ public class CSSOMFilterCreatorImp implements CSSOMFilterCreator {
 	private static final Function<DocumentStyleGenerator, Node> NODE_GETTER = item -> item.getDOMNode();
 
 	@Override
-	public CSSOMFilter<DocumentStyleGenerator, CSSOMRuleMap> createFilterFor(ComplexSelectorPart complexSelectorPart) {
+	public CSSOMFilter<DocumentStyleGenerator, CSSRuleList> createFilterFor(ComplexSelectorPart complexSelectorPart) {
 		if (complexSelectorPart instanceof TypeSelector typeSelector) {
 			QualifiedName name = typeSelector.getQualifiedName();
 			return new TypeFilter<>(name.getNamespace(), name.getName(), NODE_GETTER);

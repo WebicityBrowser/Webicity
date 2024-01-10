@@ -12,5 +12,9 @@ public interface CSSRuleList {
 	static CSSRuleList create(CSSRule[] rules) {
 		return new CSSRuleListImp(rules);
 	}
+
+	static CSSRuleList createEmpty() {
+		return new CSSRuleListImp(new CSSRule[0]);
+	}
 	
 }

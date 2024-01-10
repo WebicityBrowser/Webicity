@@ -17,7 +17,6 @@ import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMFilterCreator;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMRuleMap;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGenerator;
 
 public class CSSOMBinderImp implements CSSOMBinder {
@@ -25,42 +24,42 @@ public class CSSOMBinderImp implements CSSOMBinder {
 	private final CSSOMFilterCreator filterCreator = new CSSOMFilterCreatorImp();
 	
 	@Override
-	public CSSOMTree<DocumentStyleGenerator, CSSOMRuleMap> createCSSOMFor(CSSRuleList ruleList) {
-		CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> rootNode = CSSOMNode.create(null, null);
+	public CSSOMTree<DocumentStyleGenerator, CSSRuleList> createCSSOMFor(CSSRuleList ruleList) {
+		CSSOMNode<DocumentStyleGenerator, CSSRuleList> rootNode = CSSOMNode.create(null, null);
 		addRuleListToCSSOMNode(rootNode, ruleList);
 		
 		return CSSOMTree.create(rootNode);
 	}
 
-	private void addRuleListToCSSOMNode(CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> rootNode, CSSRuleList ruleList) {
+	private void addRuleListToCSSOMNode(CSSOMNode<DocumentStyleGenerator, CSSRuleList> rootNode, CSSRuleList ruleList) {
 		for (int i = 0; i < ruleList.getLength(); i++) {
 			CSSRule rule = ruleList.getItem(i);
 			addCSSRuleToCSSOMNode(rootNode, rule, i);
 		}
 	}
 
-	private void addCSSRuleToCSSOMNode(CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> rootNode, CSSRule rule, int order) {
+	private void addCSSRuleToCSSOMNode(CSSOMNode<DocumentStyleGenerator, CSSRuleList> rootNode, CSSRule rule, int order) {
 		if (rule instanceof QualifiedRule qualifiedRule) {
 			addQualifiedRuleToCSSOMNode(rootNode, qualifiedRule, order);
 		}
 	}
 
-	private void addQualifiedRuleToCSSOMNode(CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> rootNode, QualifiedRule rule, int order) {
+	private void addQualifiedRuleToCSSOMNode(CSSOMNode<DocumentStyleGenerator, CSSRuleList> rootNode, QualifiedRule rule, int order) {
 		TokenLike[] prelude = rule.getPrelude();
 		ComplexSelector[] selectors = new ComplexSelectorParser().parseMany(prelude, order);
 		for (ComplexSelector selector: selectors) {
-			CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> targetNode = getSelectedCSSOMNode(rootNode, selector);
-			CSSOMRuleMap properties = createCSSOMRuleMap(rule.getValue());
+			CSSOMNode<DocumentStyleGenerator, CSSRuleList> targetNode = getSelectedCSSOMNode(rootNode, selector);
+			CSSRuleList properties = createCSSRuleList(rule.getValue());
 			targetNode.addNodeProperties(properties);
 		}
 	}
 
-	private CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> getSelectedCSSOMNode(
-		CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> rootNode, ComplexSelector selector
+	private CSSOMNode<DocumentStyleGenerator, CSSRuleList> getSelectedCSSOMNode(
+		CSSOMNode<DocumentStyleGenerator, CSSRuleList> rootNode, ComplexSelector selector
 	) {
-		CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> current = rootNode;
+		CSSOMNode<DocumentStyleGenerator, CSSRuleList> current = rootNode;
 		for (ComplexSelectorPart complexSelectorPart: selector.getParts()) {
-			CSSOMFilter<DocumentStyleGenerator, CSSOMRuleMap> filter = filterCreator.createFilterFor(complexSelectorPart);
+			CSSOMFilter<DocumentStyleGenerator, CSSRuleList> filter = filterCreator.createFilterFor(complexSelectorPart);
 			current = current.createChild(filter, 0);
 		}
 		current.setSpecificity(selector.getSpecificity());
@@ -68,13 +67,13 @@ public class CSSOMBinderImp implements CSSOMBinder {
 		return current;
 	}
 	
-	private CSSOMRuleMap createCSSOMRuleMap(SimpleBlock value) {
+	private CSSRuleList createCSSRuleList(SimpleBlock value) {
 		CSSRule[] rules = parseDeclarations(value);
 		Declaration[] declarations = Arrays.stream(rules)
 			.filter(rule -> rule instanceof Declaration)
 			.map(rule -> (Declaration) rule)
 			.toArray(Declaration[]::new);
-		return CSSOMRuleMap.create(declarations);
+		return CSSRuleList.create(declarations);
 	}
 
 	private CSSRule[] parseDeclarations(SimpleBlock value) {

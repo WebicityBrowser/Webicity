@@ -31,6 +31,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CSSOMDeclarationParserImp.class);
+	private static final Directive[] EMPTY_DIRECTIVE_ARRAY = new Directive[0];
 	
 	private final Map<String, CSSOMNamedDeclarationParser<?>> namedDeclarationParsers = new HashMap<>();
 	
@@ -58,10 +59,15 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		CSSOMNamedDeclarationParser<?> namedParser = namedDeclarationParsers.get(rule.getName());
 		if (namedParser == null) {
 			logger.warn("Unrecognized declaration name: " + rule.getName());
-			return null;
+			return EMPTY_DIRECTIVE_ARRAY;
 		}
 		
 		return invokeParser(namedParser, rule);
+	}
+
+	@Override
+	public CSSOMNamedDeclarationParser<?> getNamedDeclarationParser(String propertyName) {
+		return namedDeclarationParsers.get(propertyName);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -70,7 +76,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		Optional<T> result = getResult(rule, castedParser.getPropertyValueParser());
 		return result
 			.map(value -> castedParser.translatePropertyValue(value))
-			.orElse(null);
+			.orElse(EMPTY_DIRECTIVE_ARRAY);
 	}
 
 	private <T extends CSSValue> Optional<T> getResult(Declaration rule, PropertyValueParser<T> parser) {

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
@@ -14,14 +15,13 @@ import com.github.webicitybrowser.threadyweb.tree.WebComponent;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMPropertyResolver;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMRuleMap;
 
 public class DocumentStyleGenerator implements StyleGenerator {
 	
-	private static final NodeComparator<CSSOMRuleMap> NODE_COMPARATOR = new NodeComparator<>();
+	private static final NodeComparator<CSSRuleList> NODE_COMPARATOR = new NodeComparator<>();
 
 	private final Node node;
-	private final List<CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap>> matchingCSSOMNodes = new ArrayList<>(1);
+	private final List<CSSOMNode<DocumentStyleGenerator, CSSRuleList>> matchingCSSOMNodes = new ArrayList<>(1);
 	private final DocumentStyleGenerator parent;
 	private final List<DocumentStyleGenerator> children = new ArrayList<>(1);
 	private final CSSOMDeclarationParser declarationParser;
@@ -53,7 +53,7 @@ public class DocumentStyleGenerator implements StyleGenerator {
 			}
 			childGenerators[i] = childGenerator;
 			// TODO: Use actual component rule map
-			childGenerator.generateStyleDirectives(this.propertyResolver, CSSOMRuleMap.createEmpty());
+			childGenerator.generateStyleDirectives(this.propertyResolver, CSSRuleList.createEmpty());
 			i++;
 		}
 
@@ -79,27 +79,29 @@ public class DocumentStyleGenerator implements StyleGenerator {
 		return node;
 	}
 
-	public void generateStyleDirectives(CSSOMPropertyResolver parentPropertyResolver, CSSOMRuleMap componentRules) {
+	public void generateStyleDirectives(CSSOMPropertyResolver parentPropertyResolver, CSSRuleList componentRules) {
 		Collections.sort(matchingCSSOMNodes, NODE_COMPARATOR);
 
-		List<CSSOMRuleMap> matchingRules = new ArrayList<>(matchingCSSOMNodes.size());
+		List<CSSRuleList> matchingRules = new ArrayList<>(matchingCSSOMNodes.size());
 		matchingRules.add(componentRules);
-		for (CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> cssomNode: matchingCSSOMNodes) {
+		for (CSSOMNode<DocumentStyleGenerator, CSSRuleList> cssomNode: matchingCSSOMNodes) {
 			matchingRules.addAll(cssomNode.getNodeProperties());
 		}
 
 		CSSOMPropertyResolver propertyResolver = CSSOMPropertyResolver.create(
-			parentPropertyResolver, matchingRules.toArray(CSSOMRuleMap[]::new));
+			parentPropertyResolver, matchingRules.toArray(CSSRuleList[]::new));
 		
 		this.propertyResolver = propertyResolver;
-		this.styleDirectives = new DocumentDirectivePool(propertyResolver, null);
+		this.styleDirectives = new DocumentDirectivePool(
+			parent == null ? null : parent.getStyleDirectives(),
+			propertyResolver, declarationParser);
 	}
 
-	public Collection<CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap>> getMatchingCSSOMNodes() {
+	public Collection<CSSOMNode<DocumentStyleGenerator, CSSRuleList>> getMatchingCSSOMNodes() {
 		return this.matchingCSSOMNodes;
 	}
 
-	public void addMatchingNode(CSSOMNode<DocumentStyleGenerator, CSSOMRuleMap> baseNode) {
+	public void addMatchingNode(CSSOMNode<DocumentStyleGenerator, CSSRuleList> baseNode) {
 		this.matchingCSSOMNodes.add(baseNode);
 	}
 

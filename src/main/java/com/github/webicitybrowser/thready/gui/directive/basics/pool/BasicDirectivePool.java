@@ -2,7 +2,6 @@ package com.github.webicitybrowser.thready.gui.directive.basics.pool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,11 +19,6 @@ public class BasicDirectivePool implements DirectivePool {
 
 	private final Map<Class<? extends Directive>, Directive> directives = new LazyNormalHashMap<>();
 	private final List<DirectivePoolListener> listeners = new ArrayList<>(1);
-	
-	@Override
-	public Iterator<Directive> iterator() {
-		return directives.values().iterator();
-	}
 
 	@Override
 	public DirectivePool directive(Directive directive) {
@@ -48,11 +42,6 @@ public class BasicDirectivePool implements DirectivePool {
 	@Override
 	public Directive getUnresolvedDirective(Class<? extends Directive> directiveClass) {
 		return directives.get(directiveClass);
-	}
-
-	@Override
-	public Directive[] getCurrentDirectives() {
-		return directives.values().toArray(new Directive[0]);
 	}
 
 	@Override

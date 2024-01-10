@@ -1,12 +1,8 @@
 package com.github.webicitybrowser.thready.gui.directive.basics.pool;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -60,16 +56,6 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 	}
 
 	@Override
-	public Directive[] getCurrentDirectives() {
-		return getAllValues().toArray(new Directive[0]);
-	}
-
-	@Override
-	public Iterator<Directive> iterator() {
-		return getAllValues().iterator();
-	}
-
-	@Override
 	public void addDirectivePool(DirectivePool pool) {
 		DirectivePoolListener listener = new SubpoolListener();
 		pool.addEventListener(listener);
@@ -117,17 +103,6 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 		}
 		
 		return null;
-	}
-	
-	private Collection<Directive> getAllValues() {
-		Map<Class<? extends Directive>, Directive> resolved = new HashMap<>();
-		for (DirectivePool pool: subpools) {
-			for (Directive directive: pool) {
-				resolved.putIfAbsent(directive.getClass(), directive);
-			}
-		}
-		
-		return resolved.values();
 	}
 	
 	private Optional<Directive> inherit(Directive directive, Class<? extends Directive> directiveClass) {
