@@ -46,4 +46,9 @@ public class TokenStreamImp implements TokenStream {
 		return position;
 	}
 
+	@Override
+	public boolean isEmpty() {
+		return position >= tokens.length;
+	}
+
 }

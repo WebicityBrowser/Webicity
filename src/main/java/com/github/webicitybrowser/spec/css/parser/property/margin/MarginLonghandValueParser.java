@@ -27,7 +27,7 @@ public class MarginLonghandValueParser implements PropertyValueParser<CSSValue> 
 	}
 
 	private boolean checkSelectorFormat(TokenLike[] tokens, int offset, int length) {
-		return length > 0;
+		return length > 0 && offset < tokens.length;
 	}
 	
 }

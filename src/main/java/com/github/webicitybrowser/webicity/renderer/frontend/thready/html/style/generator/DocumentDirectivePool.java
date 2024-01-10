@@ -5,11 +5,14 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.github.webicitybrowser.performance.LazyMap;
+import com.github.webicitybrowser.spec.css.parser.TokenLike;
+import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePoolListener;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMPropertyResolver;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMPropertyResolver.CSSOMPropertyResolverFilter;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 
 public class DocumentDirectivePool implements DirectivePool {
@@ -67,13 +70,26 @@ public class DocumentDirectivePool implements DirectivePool {
 	}
 
 	private Optional<Directive> resolveDirective(Class<? extends Directive> directiveClass) {
-		return propertyResolver.resolveProperty(value -> {
-			CSSOMNamedDeclarationParser<?> namedParser = declarationParser.getNamedDeclarationParser(value.getName());
-			if (namedParser == null || !namedParser.getResultantDirectiveClasses().contains(directiveClass)) {
-				return Optional.empty();
-			}
+		return propertyResolver.resolveProperty(new DocumentPropertyResolverFilter(directiveClass));
+	}
 
-			Directive[] results = declarationParser.parseDeclaration(value);
+	private class DocumentPropertyResolverFilter implements CSSOMPropertyResolverFilter<Directive> {
+
+		private final Class<? extends Directive> directiveClass;
+
+		public DocumentPropertyResolverFilter(Class<? extends Directive> directiveClass) {
+			this.directiveClass = directiveClass;
+		}
+
+		@Override
+		public boolean isApplicable(Declaration propertyValue) {
+			CSSOMNamedDeclarationParser<?> namedParser = declarationParser.getNamedDeclarationParser(propertyValue.getName());
+			return namedParser != null && namedParser.getResultantDirectiveClasses().contains(directiveClass);
+		}
+
+		@Override
+		public Optional<Directive> filter(String name, TokenLike[] tokens) {
+			Directive[] results = declarationParser.parseDeclaration(name, tokens);
 			for (Directive result: results) {
 				if (directiveClass.isInstance(result)) {
 					return Optional.of(result);
@@ -81,7 +97,8 @@ public class DocumentDirectivePool implements DirectivePool {
 			}
 
 			return Optional.empty();
-		});
+		}
+		
 	}
 
 	private static class LazyNormalHashMap<K, V> extends LazyMap<K, V> {

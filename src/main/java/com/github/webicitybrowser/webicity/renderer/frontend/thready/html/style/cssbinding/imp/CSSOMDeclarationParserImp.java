@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
-import com.github.webicitybrowser.spec.css.parser.util.TokenUtils;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
-import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.decparser.CSSOMBackgroundColorDeclarationParser;
@@ -55,14 +53,14 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	}
 	
 	@Override
-	public Directive[] parseDeclaration(Declaration rule) {
-		CSSOMNamedDeclarationParser<?> namedParser = namedDeclarationParsers.get(rule.getName());
+	public Directive[] parseDeclaration(String name, TokenLike[] tokens) {
+		CSSOMNamedDeclarationParser<?> namedParser = namedDeclarationParsers.get(name);
 		if (namedParser == null) {
-			logger.warn("Unrecognized declaration name: " + rule.getName());
+			logger.warn("Unrecognized declaration name: " + name);
 			return EMPTY_DIRECTIVE_ARRAY;
 		}
 		
-		return invokeParser(namedParser, rule);
+		return invokeParser(namedParser, tokens);
 	}
 
 	@Override
@@ -71,16 +69,15 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends CSSValue> Directive[] invokeParser(CSSOMNamedDeclarationParser<?> namedParser, Declaration rule) {
+	private <T extends CSSValue> Directive[] invokeParser(CSSOMNamedDeclarationParser<?> namedParser, TokenLike[] tokens) {
 		CSSOMNamedDeclarationParser<T> castedParser = (CSSOMNamedDeclarationParser<T>) namedParser;
-		Optional<T> result = getResult(rule, castedParser.getPropertyValueParser());
+		Optional<T> result = getResult(tokens, castedParser.getPropertyValueParser());
 		return result
 			.map(value -> castedParser.translatePropertyValue(value))
 			.orElse(EMPTY_DIRECTIVE_ARRAY);
 	}
 
-	private <T extends CSSValue> Optional<T> getResult(Declaration rule, PropertyValueParser<T> parser) {
-		TokenLike[] tokens = TokenUtils.stripWhitespace(rule.getValue());
+	private <T extends CSSValue> Optional<T> getResult(TokenLike[] tokens, PropertyValueParser<T> parser) {
 		PropertyValueParseResult<T> result = parser.parse(tokens, 0, tokens.length);
 		return result.getResult();
 	}

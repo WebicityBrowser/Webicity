@@ -11,7 +11,7 @@ public class PercentageValueParser implements PropertyValueParser<PercentageValu
 
 	@Override
 	public PropertyValueParseResult<PercentageValue> parse(TokenLike[] tokens, int offset, int length) {
-		if (length == 1 && tokens[offset] instanceof PercentageToken percentageToken) {
+		if (length == 1 && offset < tokens.length && tokens[offset] instanceof PercentageToken percentageToken) {
 			return PropertyValueParseResultImp.of(() -> percentageToken.getValue().floatValue(), 1);
 		}
 		return PropertyValueParseResultImp.empty();

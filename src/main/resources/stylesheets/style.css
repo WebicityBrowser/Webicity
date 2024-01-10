@@ -1,5 +1,6 @@
 body {
     font-family: "Open Sans", "Roboto", "Helvetica Neue", "Arial", sans-serif;
+    --text-color: #00b298;
 }
 .vpsize {
     width: 100vw;
@@ -9,7 +10,7 @@ body {
     margin: auto;
 }
 .webicity-name {
-    color: #00b298;
+    color: var(--text-color);
     font-size: 3em;
 }
 .valign {
