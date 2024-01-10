@@ -17,7 +17,7 @@ public record FontSettings(FontSource[] fontSources, float fontSize, int fontWei
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(fontSources, fontSize, fontWeight);
+		return Objects.hash(fontSize, fontWeight);
 	}
 	
 	@Override
@@ -28,10 +28,24 @@ public record FontSettings(FontSource[] fontSources, float fontSize, int fontWei
 		
 		FontSettings other = (FontSettings) o;
 		return
-			other.fontSources().equals(fontSources) &&
+			arrayEquals(fontSources, other.fontSources) &&
 			other.fontSize() == fontSize &&
 			other.fontWeight() == fontWeight &&
 			Arrays.compare(other.fontDecorations(), fontDecorations) == 0;
+	}
+
+	private boolean arrayEquals(Object[] array1 , Object[] array2) {
+		if (array1.length != array2.length) {
+			return false;
+		}
+
+		for (int i = 0; i < array1.length; i++) {
+			if (!array1[i].equals(array2[i])) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 	
 }

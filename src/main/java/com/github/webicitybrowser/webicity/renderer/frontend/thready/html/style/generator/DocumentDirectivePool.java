@@ -1,7 +1,10 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import com.github.webicitybrowser.performance.LazyMap;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePoolListener;
@@ -15,6 +18,8 @@ public class DocumentDirectivePool implements DirectivePool {
 	private final CSSOMPropertyResolver propertyResolver;
 	private final CSSOMDeclarationParser declarationParser;
 
+	private final Map<Class<? extends Directive>, Optional<Directive>> directiveCache = new LazyNormalHashMap<>();
+
 	public DocumentDirectivePool(DirectivePool parentPool, CSSOMPropertyResolver propertyResolver, CSSOMDeclarationParser declarationParser) {
 		this.parentPool = parentPool;
 		this.propertyResolver = propertyResolver;
@@ -23,29 +28,14 @@ public class DocumentDirectivePool implements DirectivePool {
 
 	@Override
 	public DirectivePool directive(Directive directive) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'directive'");
+		directiveCache.put(directive.getClass(), Optional.of(directive));
+
+		return this;
 	}
 
 	@Override
 	public Optional<Directive> getUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass) {
-		Optional<Directive> r = propertyResolver.resolveProperty(value -> {
-			CSSOMNamedDeclarationParser<?> namedParser = declarationParser.getNamedDeclarationParser(value.getName());
-			if (namedParser == null || !namedParser.getResultantDirectiveClasses().contains(directiveClass)) {
-				return Optional.empty();
-			}
-
-			Directive[] results = declarationParser.parseDeclaration(value);
-			for (Directive result: results) {
-				if (directiveClass.isInstance(result)) {
-					return Optional.of(result);
-				}
-			}
-
-			return Optional.empty();
-		});
-
-		return r;
+		return directiveCache.computeIfAbsent(directiveClass, this::resolveDirective);
 	}
 
 	@Override
@@ -60,8 +50,8 @@ public class DocumentDirectivePool implements DirectivePool {
 
 	@Override
 	public Directive getUnresolvedDirective(Class<? extends Directive> directiveClass) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getUnresolvedDirective'");
+		// TODO: Should this method just be removed?
+		return getUncastedDirectiveOrEmpty(directiveClass).orElseThrow();
 	}
 
 	@Override
@@ -74,6 +64,31 @@ public class DocumentDirectivePool implements DirectivePool {
 	public void removeEventListener(DirectivePoolListener listener) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'removeEventListener'");
+	}
+
+	private Optional<Directive> resolveDirective(Class<? extends Directive> directiveClass) {
+		return propertyResolver.resolveProperty(value -> {
+			CSSOMNamedDeclarationParser<?> namedParser = declarationParser.getNamedDeclarationParser(value.getName());
+			if (namedParser == null || !namedParser.getResultantDirectiveClasses().contains(directiveClass)) {
+				return Optional.empty();
+			}
+
+			Directive[] results = declarationParser.parseDeclaration(value);
+			for (Directive result: results) {
+				if (directiveClass.isInstance(result)) {
+					return Optional.of(result);
+				}
+			}
+
+			return Optional.empty();
+		});
+	}
+
+	private static class LazyNormalHashMap<K, V> extends LazyMap<K, V> {
+		@Override
+		protected Map<K, V> initialize() {
+			return new HashMap<>(1);
+		}
 	}
 	
 }
