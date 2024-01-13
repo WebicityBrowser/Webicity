@@ -30,9 +30,10 @@ import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
 import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilterCreator;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTreeGenerator;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMBinder;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGenerator;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleGeneratorRoot;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator.DocumentStyleSheetSet;
@@ -94,7 +95,7 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 	@SuppressWarnings("unchecked")
 	private CSSOMTree<DocumentStyleGenerator, CSSRuleList>[] createCSSOMTrees(DocumentStyleSheetSet styleSheetSet) {
 		List<CSSOMTree<DocumentStyleGenerator, CSSRuleList>> cssomTrees = new ArrayList<>();
-		CSSOMBinder binder = CSSOMBinder.create();
+		CSSOMTreeGenerator<DocumentStyleGenerator> binder = CSSOMTreeGenerator.create(CSSOMFilterCreator.create(node -> node.getDOMNode()));
 		for (CSSRuleList rules: styleSheetSet.getRuleLists()) {
 			cssomTrees.add(binder.createCSSOMFor(rules));
 		}

@@ -2,8 +2,6 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMDeclarationParserImp;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.imp.CSSOMNamedDeclarationParser;
 
 public interface CSSOMDeclarationParser {
 
