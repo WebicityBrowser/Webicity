@@ -8,13 +8,13 @@ public class ConsolidatedCollapsibleTextViewImp implements ConsolidatedCollapsib
 	
 	// TODO: Special handling for empty backingStrings
 	
-	private final List<String> backingStrings;
+	private final List<StringBuilder> backingStrings;
 	
 	private int firstNonEmptyLineIndex = 0;
 	private int lineCursor = 0;
 	private int textCursor = 0;
 
-	public ConsolidatedCollapsibleTextViewImp(List<String> backingStrings) {
+	public ConsolidatedCollapsibleTextViewImp(List<StringBuilder> backingStrings) {
 		this.backingStrings = backingStrings;
 		updateFirstNonEmptyLine();
 	}
@@ -22,7 +22,7 @@ public class ConsolidatedCollapsibleTextViewImp implements ConsolidatedCollapsib
 	@Override
 	public boolean atEnd() {
 		if (backingStrings.isEmpty()) return true;
-		String lastString = backingStrings.get(backingStrings.size() - 1);
+		StringBuilder lastString = backingStrings.get(backingStrings.size() - 1);
 		return textCursor == lastString.length() && lineCursor == backingStrings.size() - 1;
 	}
 
@@ -53,18 +53,16 @@ public class ConsolidatedCollapsibleTextViewImp implements ConsolidatedCollapsib
 
 	@Override
 	public void delete() {
-		String currentString = backingStrings.get(lineCursor);
-		String replaced = currentString.substring(0, textCursor) + currentString.substring(textCursor + 1);
-		backingStrings.set(lineCursor, replaced);
+		StringBuilder currentString = backingStrings.get(lineCursor);
+		currentString.deleteCharAt(textCursor);
 		advanceIfStringEnd();
 		updateFirstNonEmptyLine();
 	}
 
 	@Override
 	public void replace(char ch) {
-		String currentString = backingStrings.get(lineCursor);
-		String replaced = currentString.substring(0, textCursor) + ch + currentString.substring(textCursor + 1);
-		backingStrings.set(lineCursor, replaced);
+		StringBuilder currentString = backingStrings.get(lineCursor);
+		currentString.setCharAt(textCursor, ch);
 		textCursor++;
 		advanceIfStringEnd();
 	}
@@ -78,8 +76,8 @@ public class ConsolidatedCollapsibleTextViewImp implements ConsolidatedCollapsib
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		for (String string : backingStrings) {
-			builder.append(string);
+		for (StringBuilder string : backingStrings) {
+			builder.append(string.toString());
 		}
 		return builder.toString();
 	}

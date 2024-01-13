@@ -22,7 +22,7 @@ public interface ConsolidatedCollapsibleTextView {
 
 	void restart();
 	
-	public static ConsolidatedCollapsibleTextView create(List<String> backingStrings) {
+	public static ConsolidatedCollapsibleTextView create(List<StringBuilder> backingStrings) {
 		return new ConsolidatedCollapsibleTextViewImp(backingStrings);
 	}
 	

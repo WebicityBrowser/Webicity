@@ -13,14 +13,14 @@ public class TextConsolidationImp implements TextConsolidation {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TextConsolidationImp.class);
 
-	private final List<String> textLines = new ArrayList<>();
+	private final List<StringBuilder> textLines = new ArrayList<>();
 	private final List<Object> textOwners = new ArrayList<>();
 	
 	private int readCursor = 0;
 	
 	@Override
 	public void addText(Object textOwner, String text) {
-		textLines.add(text);
+		textLines.add(new StringBuilder(text));
 		textOwners.add(textOwner);
 	}
 
@@ -33,7 +33,7 @@ public class TextConsolidationImp implements TextConsolidation {
 	public String readNextText(Object textOwner) {
 		ensureReadOrderConsistent(textOwner);
 		
-		String text = textLines.get(readCursor);
+		String text = textLines.get(readCursor).toString();
 		readCursor++;
 		
 		return text;
