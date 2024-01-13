@@ -29,19 +29,16 @@ public class BasicDirectivePool implements DirectivePool {
 	}
 
 	@Override
-	public Optional<Directive> getUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass) {
-		Directive directive = directives.get(directiveClass);
+	@SuppressWarnings("unchecked")
+	public <T extends Directive> Optional<T> getDirectiveOrEmpty(Class<T> directiveClass) {
+		T directive = (T) directives.get(directiveClass);
+		
 		return Optional.ofNullable(directive);
-	}
-	
-	@Override
-	public Optional<Directive> inheritUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass) {
-		return getUncastedDirectiveOrEmpty(directiveClass);
 	}
 
 	@Override
-	public Directive getUnresolvedDirective(Class<? extends Directive> directiveClass) {
-		return directives.get(directiveClass);
+	public <T extends Directive> Optional<T> inheritDirectiveOrEmpty(Class<T> directiveClass) {
+		return getDirectiveOrEmpty(directiveClass);
 	}
 
 	@Override

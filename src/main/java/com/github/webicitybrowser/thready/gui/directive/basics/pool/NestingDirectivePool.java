@@ -35,25 +35,22 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 		
 		return this;
 	}
-	
+
 	@Override
-	public Optional<Directive> getUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass) {
-		Directive directive = searchForDirective(directiveClass);
+	@SuppressWarnings("unchecked")
+	public <T extends Directive> Optional<T> getDirectiveOrEmpty(Class<T> directiveClass) {
+		T directive = (T) searchForDirective(directiveClass);
 		
 		return Optional.ofNullable(directive);
 	}
 
 	@Override
-	public Optional<Directive> inheritUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass) {
-		Directive directive = searchForDirective(directiveClass);
+	@SuppressWarnings("unchecked")
+	public <T extends Directive> Optional<T> inheritDirectiveOrEmpty(Class<T> directiveClass) {
+		T directive = (T) searchForDirective(directiveClass);
 		
 		return inherit(directive, directiveClass);
-	}
-
-	@Override
-	public Directive getUnresolvedDirective(Class<? extends Directive> directiveClass) {
-		return searchForDirective(directiveClass);
-	}
+	};
 
 	@Override
 	public void addDirectivePool(DirectivePool pool) {
@@ -96,7 +93,7 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 	
 	private Directive searchForDirective(Class<? extends Directive> directiveClass) {
 		for (DirectivePool pool: subpools) {
-			Directive directive = pool.getUnresolvedDirective(directiveClass);
+			Directive directive = pool.getDirectiveOrEmpty(directiveClass).orElse(null);
 			if (directive != null) {
 				return directive;
 			}
@@ -105,8 +102,8 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 		return null;
 	}
 	
-	private Optional<Directive> inherit(Directive directive, Class<? extends Directive> directiveClass) {
-		Optional<Directive> optOrEmpty = Optional.ofNullable(directive);
+	private <T extends Directive> Optional<T> inherit(T directive, Class<T> directiveClass) {
+		Optional<T> optOrEmpty = Optional.ofNullable(directive);
 		if (parent == null) {
 			return optOrEmpty;
 		} else {
@@ -137,6 +134,6 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 		public void onDirective(Directive directive) {
 			fireChangeListeners(directive);
 		}
-	};
+	}
 
 }

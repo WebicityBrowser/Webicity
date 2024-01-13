@@ -34,24 +34,18 @@ public class DocumentDirectivePool implements DirectivePool {
 	}
 
 	@Override
-	public Optional<Directive> getUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass) {
-		return directiveCache.computeIfAbsent(directiveClass, this::resolveDirective);
+	public <T extends Directive> Optional<T> getDirectiveOrEmpty(Class<T> directiveClass) {
+		return (Optional<T>) directiveCache.computeIfAbsent(directiveClass, this::resolveDirective);
 	}
 
 	@Override
-	public Optional<Directive> inheritUncastedDirectiveOrEmpty(Class<? extends Directive> directiveClass) {
-		Optional<Directive> result = getUncastedDirectiveOrEmpty(directiveClass);
+	public <T extends Directive> Optional<T> inheritDirectiveOrEmpty(Class<T> directiveClass) {
+		Optional<T> result = getDirectiveOrEmpty(directiveClass);
 		if (result.isEmpty() && parentPool != null) {
-			return parentPool.inheritUncastedDirectiveOrEmpty(directiveClass);
+			return parentPool.inheritDirectiveOrEmpty(directiveClass);
 		}
 
 		return result;
-	}
-
-	@Override
-	public Directive getUnresolvedDirective(Class<? extends Directive> directiveClass) {
-		// TODO: Should this method just be removed?
-		return getUncastedDirectiveOrEmpty(directiveClass).orElseThrow();
 	}
 
 	@Override
@@ -66,11 +60,11 @@ public class DocumentDirectivePool implements DirectivePool {
 		throw new UnsupportedOperationException("Unimplemented method 'removeEventListener'");
 	}
 
-	private Optional<Directive> resolveDirective(Class<? extends Directive> directiveClass) {
-		return propertyResolver.resolveProperty(new DocumentPropertyResolverFilter(directiveClass));
+	private <T extends Directive> Optional<T> resolveDirective(Class<T> directiveClass) {
+		return propertyResolver.resolveProperty(new DocumentPropertyResolverFilter<>(directiveClass));
 	}
 
-	private class DocumentPropertyResolverFilter implements CSSOMPropertyResolverFilter<Directive> {
+	private class DocumentPropertyResolverFilter<T> implements CSSOMPropertyResolverFilter<T> {
 
 		private final Class<? extends Directive> directiveClass;
 
@@ -85,11 +79,12 @@ public class DocumentDirectivePool implements DirectivePool {
 		}
 
 		@Override
-		public Optional<Directive> filter(String name, TokenLike[] tokens) {
+		@SuppressWarnings("unchecked")
+		public Optional<T> filter(String name, TokenLike[] tokens) {
 			Directive[] results = declarationParser.parseDeclaration(name, tokens);
 			for (Directive result: results) {
 				if (directiveClass.isInstance(result)) {
-					return Optional.of(result);
+					return Optional.of((T) result);
 				}
 			}
 

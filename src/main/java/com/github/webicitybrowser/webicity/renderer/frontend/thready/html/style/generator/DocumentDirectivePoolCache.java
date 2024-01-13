@@ -14,7 +14,7 @@ public class DocumentDirectivePoolCache {
 	private List<Class<? extends Directive>> nullKeys;
 	private Map<Class<? extends Directive>, Directive> valueMappings;
 
-	public void put(Class<? extends Directive> key, Optional<Directive> value) {
+	public void put(Class<? extends Directive> key, Optional<? extends Directive> value) {
 		if (valueMappings == null && value.isPresent()) {
 			valueMappings = new HashMap<>(1);
 		} else if (nullKeys == null && value.isEmpty()) {
@@ -24,10 +24,10 @@ public class DocumentDirectivePoolCache {
 		addValueToMap(key, value);
 	}
 
-	public Optional<Directive> computeIfAbsent(
-		Class<? extends Directive> directiveClass, Function<Class<? extends Directive>, Optional<Directive>> value
+	public <T extends Directive> Optional<T> computeIfAbsent(
+		Class<T> directiveClass, Function<Class<T>, Optional<T>> value
 	) {
-		Optional<Directive> result = get(directiveClass);
+		Optional<T> result = get(directiveClass);
 		if (result != null) {
 			return result;
 		}
@@ -37,19 +37,20 @@ public class DocumentDirectivePoolCache {
 		return result;
 	}
 
-	private Optional<Directive> get(Class<? extends Directive> directiveClass) {
+	@SuppressWarnings("unchecked")
+	private <T extends Directive> Optional<T> get(Class<T> directiveClass) {
 		if (nullKeys != null && nullKeys.contains(directiveClass)) {
 			return Optional.empty();
 		} else if (valueMappings != null) {
 			Directive directive = valueMappings.get(directiveClass);
 			if (directive == null) return null;
-			return Optional.of(directive);
+			return Optional.of((T) directive);
 		} else {
 			return null;
 		}
 	}
 
-	private void addValueToMap(Class<? extends Directive> key, Optional<Directive> value) {
+	private void addValueToMap(Class<? extends Directive> key, Optional<? extends Directive> value) {
 		if (value.isPresent()) {
 			if (nullKeys != null) nullKeys.remove(key);
 			valueMappings.put(key, value.get());
