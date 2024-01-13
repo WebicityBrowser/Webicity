@@ -1,10 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
-import com.github.webicitybrowser.performance.LazyMap;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
@@ -21,7 +18,7 @@ public class DocumentDirectivePool implements DirectivePool {
 	private final CSSOMPropertyResolver propertyResolver;
 	private final CSSOMDeclarationParser declarationParser;
 
-	private final Map<Class<? extends Directive>, Optional<Directive>> directiveCache = new LazyNormalHashMap<>();
+	private final DocumentDirectivePoolCache directiveCache = new DocumentDirectivePoolCache();
 
 	public DocumentDirectivePool(DirectivePool parentPool, CSSOMPropertyResolver propertyResolver, CSSOMDeclarationParser declarationParser) {
 		this.parentPool = parentPool;
@@ -99,13 +96,6 @@ public class DocumentDirectivePool implements DirectivePool {
 			return Optional.empty();
 		}
 		
-	}
-
-	private static class LazyNormalHashMap<K, V> extends LazyMap<K, V> {
-		@Override
-		protected Map<K, V> initialize() {
-			return new HashMap<>(1);
-		}
 	}
 	
 }

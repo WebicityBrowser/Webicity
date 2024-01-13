@@ -34,7 +34,7 @@ public final class ContentPainter {
 		Canvas2D rootCanvas = createRootCanvas(redrawContext);
 
 		Stack<LayerData> layerDataStack = new Stack<>();
-		layerDataStack.push(new LayerData(new AbsolutePosition(0, 0), new AbsolutePosition(0, 0), rootCanvas));
+		layerDataStack.push(new LayerData(AbsolutePosition.ZERO_POSITION, AbsolutePosition.ZERO_POSITION, rootCanvas));
 
 		for (CompositeLayer layer : compositeLayers) {
 			pushLayerData(layerDataStack, layer);
@@ -70,7 +70,7 @@ public final class ContentPainter {
 		AbsolutePosition position = getLayerPosition(layerDataStack, layer);
 		Canvas2D canvas = getLayerCanvas(layerDataStack, position, layer);
 
-		layerDataStack.push(new LayerData(position, new AbsolutePosition(0, 0), canvas));
+		layerDataStack.push(new LayerData(position, AbsolutePosition.ZERO_POSITION, canvas));
 	}
 
 	private static AbsolutePosition getLayerPosition(Stack<LayerData> layerDataStack, CompositeLayer layer) {

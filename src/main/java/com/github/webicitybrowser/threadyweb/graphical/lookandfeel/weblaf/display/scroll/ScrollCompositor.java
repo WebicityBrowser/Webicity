@@ -26,7 +26,7 @@ public final class ScrollCompositor {
 
 	private static void compositeChild(ScrollUnit unit, GlobalCompositeContext compositeContext) {
 		Rectangle childDocumentRect = new Rectangle(
-			new AbsolutePosition(0, 0),
+			AbsolutePosition.ZERO_POSITION,
 			unit.innerUnitSize());
 		LocalCompositeContext childLocalCompositeContext = new LocalCompositeContext(childDocumentRect);
 		

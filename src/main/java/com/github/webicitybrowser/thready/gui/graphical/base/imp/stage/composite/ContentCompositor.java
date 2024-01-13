@@ -20,11 +20,11 @@ public final class ContentCompositor {
 	@SuppressWarnings("unchecked")
 	public static <V extends RenderedUnit> List<CompositeLayer> performCompositeCycle(ScreenContentRedrawContext redrawContext, V rootUnit) {
 		AbsoluteSize contentSize = redrawContext.contentSize();
-		Rectangle rootBounds = new Rectangle(new AbsolutePosition(0, 0), contentSize);
+		Rectangle rootBounds = new Rectangle(AbsolutePosition.ZERO_POSITION, contentSize);
 		GlobalCompositeContextImp compositeContext = new GlobalCompositeContextImp();
 		LocalCompositeContext localCompositeContext = new LocalCompositeContext(rootBounds);
 		UIDisplay<?, ?, V> rootDisplay = (UIDisplay<?, ?, V>) rootUnit.display();
-		CompositeParameters parameters = new CompositeParameters(CompositeReference.VIEWPORT, () -> new AbsolutePosition(0, 0));
+		CompositeParameters parameters = new CompositeParameters(CompositeReference.VIEWPORT, () -> AbsolutePosition.ZERO_POSITION);
 		compositeContext.enterChildContext(rootBounds, parameters);
 		rootDisplay.composite((V) rootUnit, compositeContext, localCompositeContext);
 		compositeContext.exitChildContext();

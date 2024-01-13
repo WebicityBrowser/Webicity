@@ -20,7 +20,7 @@ public interface ScreenContent {
 		Canvas2D canvas, AbsoluteSize contentSize, ResourceLoader resourceLoader, InvalidationScheduler invalidationScheduler
 	) {
 		public Rectangle rootDocumentRect() {
-			return new Rectangle(new AbsolutePosition(0, 0), contentSize);
+			return new Rectangle(AbsolutePosition.ZERO_POSITION, contentSize);
 		}
 	}
 	

@@ -11,7 +11,7 @@ public class ScrollContext implements Context {
 	private final ComponentUI componentUI;
 	private final Context innerContext;
 
-	private AbsolutePosition scrollPosition = new AbsolutePosition(0, 0);
+	private AbsolutePosition scrollPosition = AbsolutePosition.ZERO_POSITION;
 
 	public ScrollContext(UIDisplay<?, ?, ?> display, ComponentUI componentUI, Context innerContext) {
 		this.display = display;

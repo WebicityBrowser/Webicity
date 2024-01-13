@@ -15,7 +15,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.
 
 public class LineSubsectionBuilder implements LineSectionBuilder {
 
-	private final List<ChildEntry> childEntries = new ArrayList<>();
+	private final List<ChildEntry> childEntries = new ArrayList<>(4);
 	private final BuildableRenderedUnit unit;
 	private final LineDimension startPosition;
 

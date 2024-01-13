@@ -48,7 +48,7 @@ public class FlowInnerDisplayLayout implements SolidLayoutManager {
 			}
 		}
 
-		AbsolutePosition predictedPosition = new AbsolutePosition(0, 0);
+		AbsolutePosition predictedPosition = AbsolutePosition.ZERO_POSITION;
 		FloatContextImp floatContext = new FloatContextImp(new FloatTrackerImp());
 		return new FlowRootContextSwitch(predictedPosition, floatContext);
 	}

@@ -35,7 +35,7 @@ public class SkijaRootCanvas2DImp extends SkijaCanvas2DImp implements SkijaRootC
 	}
 	
 	private static SkijaCanvasSettings createCanvasSettings() {
-		return new SkijaCanvasSettings(new AbsolutePosition(0, 0), null, new AbsolutePosition(0, 0));
+		return new SkijaCanvasSettings(AbsolutePosition.ZERO_POSITION, null, AbsolutePosition.ZERO_POSITION);
 	}
 
 	public static SkijaRootCanvas2D create(DirectContext directContext, AbsoluteSize size) {

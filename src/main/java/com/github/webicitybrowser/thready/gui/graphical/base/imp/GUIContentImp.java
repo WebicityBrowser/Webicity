@@ -75,7 +75,7 @@ public class GUIContentImp implements GUIContent {
 
 	@Override
 	public void handleEvent(ScreenEvent e, AbsoluteSize contentSize) {
-		Rectangle rootDocumentRect = new Rectangle(new AbsolutePosition(0, 0), contentSize);
+		Rectangle rootDocumentRect = new Rectangle(AbsolutePosition.ZERO_POSITION, contentSize);
 		messageHandler.handleEvent(e, rootUnit, rootDocumentRect);
 	}
 

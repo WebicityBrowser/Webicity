@@ -37,7 +37,7 @@ public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends Re
 	@Override
 	public List<SimpleWrapperBox<U>> generateBoxes(SimpleWrapperContext<T> displayContext, BoxContext boxContext, StyleGenerator styleGenerator) {
 		List<U> originalBoxes = childDisplay.generateBoxes(displayContext.childContext(), boxContext, styleGenerator);
-		List<SimpleWrapperBox<U>> wrappedBoxes = new ArrayList<>();
+		List<SimpleWrapperBox<U>> wrappedBoxes = new ArrayList<>(originalBoxes.size());
 		Component component = displayContext.componentUI().getComponent();
 		DirectivePool directives = styleGenerator.getStyleDirectives();
 		for (U originalBox: originalBoxes) {

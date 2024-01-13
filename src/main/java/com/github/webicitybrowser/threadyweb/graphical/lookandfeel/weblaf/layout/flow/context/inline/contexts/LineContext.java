@@ -61,7 +61,7 @@ public class LineContext {
 
 	private AbsolutePosition determineNextLinePosition() {
 		if (currentLine == null) {
-			return new AbsolutePosition(0, 0);
+			return AbsolutePosition.ZERO_POSITION;
 		}
 
 		LineDimension prevLinePosition = LineDimensionConverter.convertToLineDimension(currentLine.getEstimatedPosition(), lineDirection);
@@ -69,7 +69,7 @@ public class LineContext {
 		LineDimension nextLinePosition = new LineDimension(0, prevLinePosition.depth() + prevLineBlockSize, lineDirection);
 
 		return LineDimensionConverter.convertToAbsolutePosition(
-			nextLinePosition, new AbsoluteSize(0, 0), new AbsoluteSize(0, 0));
+			nextLinePosition, AbsoluteSize.ZERO_SIZE, AbsoluteSize.ZERO_SIZE);
 	}
 
 	private void copyUnresolvedMarkers(LineBox newLine) {

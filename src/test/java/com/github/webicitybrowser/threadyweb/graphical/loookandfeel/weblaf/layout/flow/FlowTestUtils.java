@@ -57,7 +57,7 @@ public class FlowTestUtils {
 
 	public static FlowRenderContext createRenderContext(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		FlowRootContextSwitch flowRootContextSwitch = new FlowRootContextSwitch(
-			new AbsolutePosition(0, 0),
+			AbsolutePosition.ZERO_POSITION,
 			new FloatContextImp(new FloatTrackerImp()));
 		for (ContextSwitch contextSwitch : localRenderContext.getContextSwitches()) {
 			if (contextSwitch instanceof FlowRootContextSwitch) {

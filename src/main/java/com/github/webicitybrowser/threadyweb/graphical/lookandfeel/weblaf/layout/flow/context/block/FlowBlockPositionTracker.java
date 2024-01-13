@@ -5,7 +5,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 
 public class FlowBlockPositionTracker {
 	
-	private AbsolutePosition position = new AbsolutePosition(0, 0);
+	private AbsolutePosition position = AbsolutePosition.ZERO_POSITION;
 	private float yMargin = 0;
 	private float fitWidth = 0;
 

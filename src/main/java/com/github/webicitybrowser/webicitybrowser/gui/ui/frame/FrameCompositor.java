@@ -13,8 +13,8 @@ public final class FrameCompositor {
 
 	public static void composite(FrameUnit unit, GlobalCompositeContext globalCompositeContext, LocalCompositeContext localCompositeContext) {
 		Rectangle documentRect = localCompositeContext.documentRect();
-		CompositeParameters parameters = new CompositeParameters(CompositeReference.PARENT, () -> new AbsolutePosition(0, 0));
-		LocalCompositeContext childCompositeContext = new LocalCompositeContext(new Rectangle(new AbsolutePosition(0, 0), documentRect.size()));
+		CompositeParameters parameters = new CompositeParameters(CompositeReference.PARENT, () -> AbsolutePosition.ZERO_POSITION);
+		LocalCompositeContext childCompositeContext = new LocalCompositeContext(new Rectangle(AbsolutePosition.ZERO_POSITION, documentRect.size()));
 		globalCompositeContext.enterChildContext(documentRect, parameters);
 		globalCompositeContext.addPaintUnit(unit, childCompositeContext);
 		globalCompositeContext.exitChildContext();

@@ -66,7 +66,7 @@ public class TabGUI {
 	private void decorateTabPane() {
 		float decorHeight = Styling.BUTTON_WIDTH + Styling.ELEMENT_PADDING * 1.5f;
 		Component tabControls = createTabControls()
-			.directive(PositionDirective.of(new AbsolutePosition(0, 0)))
+			.directive(PositionDirective.of(AbsolutePosition.ZERO_POSITION))
 			.directive(SizeDirective.of(new RelativeSize(1, 0, 0, decorHeight)));
 		
 		tabPane

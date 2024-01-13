@@ -32,8 +32,8 @@ public class AdjustedLayoutManager implements SolidLayoutManager {
 			isHorizontal -> LayoutSizeUtils.createSizeCalculationContext(layoutManagerContext, false);
 
 		List<Box> children = layoutManagerContext.children();
-		List<Box> childrenForInnerLayout = new ArrayList<>();
-		List<Box> outOfFlowChildren = new ArrayList<>();
+		List<Box> childrenForInnerLayout = new ArrayList<>(children.size());
+		List<Box> outOfFlowChildren = new ArrayList<>(0);
 		getChildrenForInnerLayout(children, childrenForInnerLayout, outOfFlowChildren);
 
 		LayoutResult innerLayoutResult = renderInnerLayout(layoutManagerContext, childrenForInnerLayout);

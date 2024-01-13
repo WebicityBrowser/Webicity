@@ -34,7 +34,7 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 	public LayoutResult render(LayoutManagerContext layoutManagerContext) {
 		int numChildren = layoutManagerContext.children().size();
 		if (numChildren == 0) {
-			return LayoutResult.create(new ChildLayoutResult[0], new AbsoluteSize(0, 0));
+			return LayoutResult.create(new ChildLayoutResult[0], AbsoluteSize.ZERO_SIZE);
 		}
 
 		DirectivePool layoutDirectives = layoutManagerContext.layoutDirectives();

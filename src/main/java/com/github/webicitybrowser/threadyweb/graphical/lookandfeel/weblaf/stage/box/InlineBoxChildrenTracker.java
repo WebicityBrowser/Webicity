@@ -10,7 +10,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 public class InlineBoxChildrenTracker implements BoxChildrenTracker {
 
 	private final CloneBox parentBox;
-	private final List<Box> children = new ArrayList<>();
+	private final List<Box> children = new ArrayList<>(2);
 
 	private boolean containsSolids = false;
 
