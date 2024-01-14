@@ -43,7 +43,7 @@ public class GUIContentImp implements GUIContent {
 	private ComponentUI rootUI;
 	private GUIContentConfiguration configuration;
 	
-	private boolean redrawRequested = false;
+	private Runnable redrawRequestHandler;
 	private AbsoluteSize oldContentSize;
 	private Object rootContext;
 	private Box rootBox;
@@ -52,25 +52,28 @@ public class GUIContentImp implements GUIContent {
 
 	@Override
 	public void setRoot(GUIContentConfiguration configuration) {
-		this.redrawRequested = true;
 		this.rootUI = createRootUI(configuration.component(), configuration.lookAndFeel());
 		this.rootContext = rootUI.getRootDisplay().createContext(rootUI);
 		this.configuration = configuration;
 		this.invalidationLevel = InvalidationLevel.BOX;
-	}
 
-	@Override
-	public boolean redrawRequested() {
-		return this.redrawRequested;
+		if (redrawRequestHandler != null) {
+			redrawRequestHandler.run();
+		}
 	}
 
 	@Override
 	public void redraw(ScreenContentRedrawContext redrawContext) {
-		this.redrawRequested = false;
 		if (rootUI != null && configuration.lookAndFeel() != null) {
 			detectPipelineInvalidations(redrawContext);
 			performRenderPipeline(redrawContext);
 		}
+	}
+
+	@Override
+	public void onRedrawRequest(Runnable handle) {
+		this.redrawRequestHandler = handle;
+		handle.run();
 	}
 
 	@Override
@@ -85,7 +88,9 @@ public class GUIContentImp implements GUIContent {
 			public void invalidate(InvalidationLevel level) {
 				if (level.compareTo(invalidationLevel) > 0) {
 					invalidationLevel = level;
-					redrawRequested = true;
+					if (redrawRequestHandler != null) {
+						redrawRequestHandler.run();
+					}
 				}
 			}
 
@@ -156,6 +161,7 @@ public class GUIContentImp implements GUIContent {
 			contentSize, baseFont.getMetrics(), new ContextSwitch[0]);
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();
 		this.rootUnit = rootDisplay.renderBox((U) rootBox, globalRenderContext, localRenderContext);
+		this.oldContentSize = contentSize;
 	}
 	
 	private void detectPipelineInvalidations(ScreenContentRedrawContext redrawContext) {
@@ -164,7 +170,5 @@ public class GUIContentImp implements GUIContent {
 			this.invalidationLevel = InvalidationLevel.RENDER;
 		}
 	}
-	
-	
 	
 }

@@ -10,7 +10,7 @@ import com.github.webicitybrowser.thready.windowing.core.event.ScreenEvent;
 
 public interface ScreenContent {
 
-	boolean redrawRequested();
+	void onRedrawRequest(Runnable handle);
 	
 	void redraw(ScreenContentRedrawContext redrawContext);
 	

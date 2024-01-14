@@ -172,7 +172,7 @@ public class SkijaWindowImp implements SkijaWindow {
 		GLFW.glfwMakeContextCurrent(windowId);
 		GL.createCapabilities();
 		GLFW.glfwSetWindowPos(windowId, 200, 100);
-		GLFW.glfwSwapInterval(1);
+		GLFW.glfwSwapInterval(0);
 		
 		SkijaWindow window = new SkijaWindowImp(windowId, graphicsSystem);
 		

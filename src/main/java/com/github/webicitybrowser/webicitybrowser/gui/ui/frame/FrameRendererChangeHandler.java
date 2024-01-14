@@ -33,8 +33,11 @@ public class FrameRendererChangeHandler {
 	}
 	
 	private static void updateCurrentRenderer(RendererHandle rendererHandle, ComponentUI componentUI, Consumer<ScreenContent> screenContentChangeListener) {
-		screenContentChangeListener.accept(bindRenderer(rendererHandle));
-		componentUI.invalidate(InvalidationLevel.BOX); // TODO: Detect screen invalidation level
+		ScreenContent content = bindRenderer(rendererHandle);
+		if (content == null) return;
+		content.onRedrawRequest(() -> componentUI.invalidate(InvalidationLevel.PAINT));
+		screenContentChangeListener.accept(content);
+		componentUI.invalidate(InvalidationLevel.BOX);
 	}
 	
 	private static ScreenContent bindRenderer(RendererHandle rendererHandle) {
