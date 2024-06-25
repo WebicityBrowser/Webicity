@@ -3,7 +3,9 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.bloc
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxHeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxWidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MinHeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MinWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.SizeCalculationDirective;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
@@ -20,7 +22,7 @@ public final class FlowBlockSizeCalculations {
 		AbsoluteSize outerSize = LayoutSizeUtils.addPadding(contentSize, paddings);
 		AbsoluteSize clippedOuterSize = new AbsoluteSize(
 			clipSize(childStyles, outerSize.width(), layoutSizingContext, MinWidthDirective.class, MaxWidthDirective.class),
-			clipSize(childStyles, outerSize.height(), layoutSizingContext, MinWidthDirective.class, MaxWidthDirective.class)
+			clipSize(childStyles, outerSize.height(), layoutSizingContext, MinHeightDirective.class, MaxHeightDirective.class)
 		);
 		AbsoluteSize clippedContentSize = LayoutSizeUtils.subtractPadding(clippedOuterSize, paddings);
 
