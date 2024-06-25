@@ -1,0 +1,9 @@
+plugins {
+	id 'java-library'
+}
+
+dependencies {
+	implementation project(':ThreadyWeb')
+	implementation project(':SpiderHTML')
+	api project(':Spec')
+}

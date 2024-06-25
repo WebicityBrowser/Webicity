@@ -1,0 +1,9 @@
+plugins {
+	id 'java-library'
+}
+
+dependencies {
+	api project(':Thready')
+	implementation project(':Spec')
+	api project(':Codecs')
+}

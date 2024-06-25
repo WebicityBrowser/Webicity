@@ -1,0 +1,24 @@
+plugins {
+	id 'application'
+}
+
+dependencies {
+	implementation project(':Webicity')
+	implementation project(':Thready')
+	implementation project(':GetOpts')
+	implementation project(':Codecs')
+	
+	implementation 'com.github.marianobarrios:tls-channel:0.9.0'
+	implementation 'com.google.code.gson:gson:2.11.0'
+}
+
+mainClassName = "com.github.webicitybrowser.webicitybrowser.Main"
+
+jar {
+	manifest {
+		attributes(
+			"Main-Class": mainClassName,
+			"Multi-Release": "true"
+		)
+	}
+}
