@@ -1,9 +1,9 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.tags;
 
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
+import com.github.webicitybrowser.spec.css.util.CSSRulesUtils;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.imp.util.DOMTextUtil;
-import com.github.webicitybrowser.webicity.renderer.backend.html.CSSRulesUtils;
 
 import java.io.StringReader;
 

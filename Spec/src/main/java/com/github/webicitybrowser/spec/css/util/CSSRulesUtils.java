@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.webicity.renderer.backend.html;
+package com.github.webicitybrowser.spec.css.util;
 
 
 import com.github.webicitybrowser.spec.css.parser.CSSParser;

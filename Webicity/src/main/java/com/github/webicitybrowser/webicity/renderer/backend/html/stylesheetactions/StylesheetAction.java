@@ -4,9 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
+import com.github.webicitybrowser.spec.css.util.CSSRulesUtils;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
-import com.github.webicitybrowser.webicity.renderer.backend.html.CSSRulesUtils;
 
 public class StylesheetAction implements LinkAction {
 

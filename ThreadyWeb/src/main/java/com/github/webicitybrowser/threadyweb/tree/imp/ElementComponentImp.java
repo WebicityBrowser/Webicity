@@ -1,8 +1,10 @@
 package com.github.webicitybrowser.threadyweb.tree.imp;
 
+import java.io.StringReader;
 import java.util.List;
 
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
+import com.github.webicitybrowser.spec.css.util.CSSRulesUtils;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.dom.node.Text;
@@ -52,7 +54,7 @@ public class ElementComponentImp extends BaseWebComponent implements ElementComp
 		}
 
 		// TODO: Spec says to do some fancy handling of invalid tokens
-		return CSSRuleList.createEmpty();//CSSRulesUtils.createDeclarationRuleList(new StringReader(cssText));
+		return CSSRulesUtils.createDeclarationRuleList(new StringReader(cssText));
 	}
 
 	private Node[] filterChildren(NodeList childNodes) {
