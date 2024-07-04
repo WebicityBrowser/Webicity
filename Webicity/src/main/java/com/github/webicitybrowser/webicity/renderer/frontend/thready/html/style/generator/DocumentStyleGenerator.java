@@ -5,9 +5,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
 import com.github.webicitybrowser.spec.dom.node.Node;
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.DirectiveDeriver;
+import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -26,14 +29,19 @@ public class DocumentStyleGenerator implements StyleGenerator {
 	private final DocumentStyleGenerator parent;
 	private final List<DocumentStyleGenerator> children = new ArrayList<>(1);
 	private final CSSOMDeclarationParser declarationParser;
+	private final Map<Class<? extends Directive>, DirectiveDeriver<? extends Directive>> derivers;
 
 	private CSSOMPropertyResolver propertyResolver;
 	private DirectivePool styleDirectives;
 
-	public DocumentStyleGenerator(Node node, DocumentStyleGenerator parent, CSSOMDeclarationParser declarationParser) {
+	public DocumentStyleGenerator(
+		Node node, DocumentStyleGenerator parent, CSSOMDeclarationParser declarationParser,
+		Map<Class<? extends Directive>, DirectiveDeriver<? extends Directive>> derivers
+	) {
 		this.node = node;
 		this.parent = parent;
 		this.declarationParser = declarationParser;
+		this.derivers = derivers;
 		generateChildren();
 	}
 
@@ -99,7 +107,7 @@ public class DocumentStyleGenerator implements StyleGenerator {
 		this.propertyResolver = propertyResolver;
 		this.styleDirectives = new DocumentDirectivePool(
 			parent == null ? null : parent.getStyleDirectives(),
-			propertyResolver, declarationParser);
+			propertyResolver, declarationParser, derivers);
 	}
 
 	public Collection<CSSOMNode<DocumentStyleGenerator, CSSRuleList>> getMatchingCSSOMNodes() {
@@ -112,7 +120,7 @@ public class DocumentStyleGenerator implements StyleGenerator {
 
 	private void generateChildren() {
 		for (Node child: node.getChildNodes()) {
-			children.add(new DocumentStyleGenerator(child, this, declarationParser));
+			children.add(new DocumentStyleGenerator(child, this, declarationParser, derivers));
 		}
 	}
 

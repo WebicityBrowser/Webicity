@@ -16,7 +16,6 @@ import com.github.webicitybrowser.thready.gui.graphical.base.imp.message.Content
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.composite.ContentCompositor;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.paint.ContentPainter;
 import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.render.RenderCacheImp;
-import com.github.webicitybrowser.thready.gui.graphical.base.imp.stage.render.RenderContextImp;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
@@ -110,7 +109,7 @@ public class GUIContentImp implements GUIContent {
 		
 		switch (invalidationLevel) {
 		case STYLE:
-			performStyleCycle();
+			performStyleCycle(redrawContext);
 		case BOX:
 			performBoxCycle();
 		case RENDER:
@@ -133,20 +132,24 @@ public class GUIContentImp implements GUIContent {
 		}
 	}
 
-	private void performStyleCycle() {
-		StyleGenerator styleGenerator = configuration.styleGeneratorRoot().generateChildStyleGenerator(rootUI);
-		recursiveStyleCycle(rootContext, styleGenerator);
+	private void performStyleCycle(ScreenContentRedrawContext redrawContext) {
+		AbsoluteSize contentSize = redrawContext.contentSize();
+		Font2D baseFont = redrawContext.resourceLoader().loadFont(configuration.fontSettings());
+		StyleContext styleContext = new StyleContext(
+			contentSize, redrawContext.resourceLoader(), baseFont.getMetrics(), configuration.lookAndFeel());
+		StyleGenerator styleGenerator = configuration.styleGeneratorRoot().generateChildStyleGenerator(rootUI, styleContext);
+		recursiveStyleCycle(rootContext, styleGenerator, styleContext);
 	}
 
-	private void recursiveStyleCycle(Context rootContext, StyleGenerator styleGenerator) {
-		rootContext.regenerateStyling(styleGenerator.getStyleDirectives(), new StyleContext(configuration.lookAndFeel()));
+	private void recursiveStyleCycle(Context rootContext, StyleGenerator styleGenerator, StyleContext styleContext) {
+		rootContext.regenerateStyling(styleGenerator.getStyleDirectives(), styleContext);
 		ComponentUI[] childUIs = rootContext.children()
 			.stream()
 			.map(child -> child.componentUI())
 			.toArray(ComponentUI[]::new);
 		StyleGenerator[] childStyleGenerators = styleGenerator.createChildStyleGenerators(childUIs);
 		for (int i = 0; i < rootContext.children().size(); i++) {
-			recursiveStyleCycle(rootContext.children().get(i), childStyleGenerators[i]);
+			recursiveStyleCycle(rootContext.children().get(i), childStyleGenerators[i], styleContext);
 		}
 	}
 
@@ -170,7 +173,7 @@ public class GUIContentImp implements GUIContent {
 	private <U extends Box> void performRenderCycle(ScreenContentRedrawContext redrawContext) {
 		AbsoluteSize contentSize = redrawContext.contentSize();
 		Font2D baseFont = redrawContext.resourceLoader().loadFont(configuration.fontSettings());
-		GlobalRenderContext globalRenderContext = new RenderContextImp(
+		GlobalRenderContext globalRenderContext = new GlobalRenderContext(
 			contentSize, redrawContext.resourceLoader(), baseFont.getMetrics(), new RenderCacheImp());
 		LocalRenderContext localRenderContext = LocalRenderContext.create(contentSize, new ContextSwitch[0]);
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();

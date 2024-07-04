@@ -25,6 +25,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAnd
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.SimpleLookAndFeel;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.ScreenContent;
+import com.github.webicitybrowser.threadyweb.graphical.directive.derived.FontDeriver;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.WebLookAndFeel;
 import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
@@ -79,7 +80,9 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 		DocumentStyleSheetSet styleSheetSet = new DocumentStyleSheetSet(document.getStyleSheets());
 		styleSheetSet.addUARules(loadUAStylesheet());
 		
-		return new DocumentStyleGeneratorRoot(backend.getDocument(), () -> createCSSOMTrees(styleSheetSet));
+		return new DocumentStyleGeneratorRoot(
+			backend.getDocument(), () -> createCSSOMTrees(styleSheetSet),
+			styleContext -> List.of(new FontDeriver(styleContext)));
 	}
 
 	private CSSRuleList loadUAStylesheet() {

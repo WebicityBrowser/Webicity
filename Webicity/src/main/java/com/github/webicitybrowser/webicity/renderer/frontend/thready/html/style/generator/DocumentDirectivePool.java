@@ -1,11 +1,12 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.generator;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.rule.Declaration;
+import com.github.webicitybrowser.thready.gui.directive.basics.pool.DirectiveDeriver;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePoolListener;
@@ -18,13 +19,18 @@ public class DocumentDirectivePool implements DirectivePool {
 	private final DirectivePool parentPool;
 	private final CSSOMPropertyResolver propertyResolver;
 	private final CSSOMDeclarationParser declarationParser;
+	private final Map<Class<? extends Directive>, DirectiveDeriver<? extends Directive>> derivers;
 
 	private final DocumentDirectivePoolCache directiveCache = new DocumentDirectivePoolCache();
 
-	public DocumentDirectivePool(DirectivePool parentPool, CSSOMPropertyResolver propertyResolver, CSSOMDeclarationParser declarationParser) {
+	public DocumentDirectivePool(
+		DirectivePool parentPool, CSSOMPropertyResolver propertyResolver,
+		CSSOMDeclarationParser declarationParser, Map<Class<? extends Directive>, DirectiveDeriver<? extends Directive>> derivers
+	) {
 		this.parentPool = parentPool;
 		this.propertyResolver = propertyResolver;
 		this.declarationParser = declarationParser;
+		this.derivers = derivers;
 	}
 
 	@Override
@@ -50,11 +56,6 @@ public class DocumentDirectivePool implements DirectivePool {
 	}
 
 	@Override
-	public <T extends Directive> T derive(Class<T> directiveClass, BiFunction<DirectivePool, DirectivePool, T> deriveFunction) {
-		return deriveFunction.apply(this, parentPool);
-	}
-
-	@Override
 	public void addEventListener(DirectivePoolListener listener) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'addEventListener'");
@@ -66,9 +67,21 @@ public class DocumentDirectivePool implements DirectivePool {
 		throw new UnsupportedOperationException("Unimplemented method 'removeEventListener'");
 	}
 
+	@SuppressWarnings("unchecked")
 	private <T extends Directive> Optional<T> resolveDirective(Class<T> directiveClass) {
+		// TODO: Invalidate derivations
+		if (derivers.containsKey(directiveClass)) {
+			DirectiveDeriver<T> deriver = (DirectiveDeriver<T>) derivers.get(directiveClass);
+			Optional<T> derived = deriver.derive(this, parentPool);
+			if (derived.isPresent()) {
+				directiveCache.put(directiveClass, derived);
+				return derived;
+			}
+		}
+
 		return propertyResolver.resolveProperty(new DocumentPropertyResolverFilter<>(directiveClass));
 	}
+	
 
 	private class DocumentPropertyResolverFilter<T> implements CSSOMPropertyResolverFilter<T> {
 

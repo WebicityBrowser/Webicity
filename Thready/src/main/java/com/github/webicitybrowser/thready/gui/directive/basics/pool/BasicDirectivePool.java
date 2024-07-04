@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
-import com.github.webicitybrowser.thready.performance.LazyMap;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePoolListener;
+import com.github.webicitybrowser.thready.performance.LazyMap;
 
 /**
  * A simple directive pool with no inheritance or other
@@ -40,11 +39,6 @@ public class BasicDirectivePool implements DirectivePool {
 	@Override
 	public <T extends Directive> Optional<T> inheritDirectiveOrEmpty(Class<T> directiveClass) {
 		return getDirectiveOrEmpty(directiveClass);
-	}
-
-	@Override
-	public <T extends Directive> T derive(Class<T> directiveClass, BiFunction<DirectivePool, DirectivePool, T> deriveFunction) {
-		return deriveFunction.apply(this, null);
 	}
 
 	@Override
