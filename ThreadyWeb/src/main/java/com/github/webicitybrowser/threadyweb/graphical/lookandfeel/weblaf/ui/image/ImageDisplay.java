@@ -5,6 +5,8 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.context.GenericContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -14,6 +16,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
+import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.alt.ImageAltPainter;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.alt.ImageAltRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.image.alt.ImageAltUnit;
@@ -23,17 +26,19 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.ima
 import com.github.webicitybrowser.threadyweb.tree.image.ImageComponent;
 import com.github.webicitybrowser.threadyweb.tree.image.ImageStatus;
 
-public class ImageDisplay implements UIDisplay<ImageContext, ImageBox, ImageUnit> {
+public class ImageDisplay implements UIDisplay<GenericContext, ImageBox, ImageUnit> {
+
+	private static final ImageDisplay INSTANCE = new ImageDisplay();
 
 	@Override
-	public ImageContext createContext(ComponentUI componentUI) {
+	public GenericContext createContext(ComponentUI componentUI) {
 		ImageComponent component = (ImageComponent) componentUI.getComponent();
 		component.onImageStatusUpdate(_1 -> componentUI.invalidate(InvalidationLevel.RENDER));
-		return new ImageContext(this, componentUI);
+		return new GenericContext(this, componentUI);
 	}
 
 	@Override
-	public List<ImageBox> generateBoxes(ImageContext displayContext, BoxContext boxContext) {
+	public List<ImageBox> generateBoxes(GenericContext displayContext, BoxContext boxContext) {
 		ImageComponent component = (ImageComponent) displayContext.componentUI().getComponent();
 		DirectivePool directives = displayContext.styleDirectives();
 		return List.of(new ImageBox(this, component, directives));
@@ -64,6 +69,10 @@ public class ImageDisplay implements UIDisplay<ImageContext, ImageBox, ImageUnit
 	@Override
 	public MessageHandler createMessageHandler(ImageUnit unit, Rectangle documentRect) {
 		return new NoopMessageHandler();
+	}
+
+	public static ComponentUI componentUI(Component component, ComponentUI parent) {
+		return new GenericComponentUI(component, parent, INSTANCE);
 	}
 
 }

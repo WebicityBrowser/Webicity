@@ -3,9 +3,11 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.do
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -18,7 +20,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
+import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowInnerDisplayLayout;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.scroll.ScrollDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementCompositor;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementPainter;
@@ -26,8 +30,11 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.ele
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.inline.ElementInlineDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnitDisplay;
+import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 
 public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, ElementUnit> {
+
+	private static ScrollDisplay WRAPPED_INSTANCE = new ScrollDisplay(new DocumentDisplay());
 
 	private final UIDisplay<?, ?, ?> ELEMENT_INLINE_DISPLAY = new ElementInlineDisplay();
 	private static final UIDisplay<?, ?, ?> ELEMENT_STYLED_DISPLAY = new StyledUnitDisplay();
@@ -68,6 +75,13 @@ public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, 
 	@Override
 	public MessageHandler createMessageHandler(ElementUnit unit, Rectangle documentRect) {
 		return new NoopMessageHandler();
+	}
+
+	public static ComponentUI componentUI(Component component, ComponentUI parent) {
+		ComponentUI componentUI = new GenericComponentUI(component, parent, WRAPPED_INSTANCE);
+		((DocumentComponent) componentUI.getComponent()).addStylesheetsChangedListener(() -> componentUI.invalidate(InvalidationLevel.STYLE));
+
+		return componentUI;
 	}
 
 }

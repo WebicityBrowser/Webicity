@@ -3,6 +3,8 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.br
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.context.GenericContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -11,16 +13,19 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
+import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
-public class BreakDisplay implements UIDisplay<BreakContext, BreakBox, BreakUnit> {
+public class BreakDisplay implements UIDisplay<GenericContext, BreakBox, BreakUnit> {
+
+	private static final BreakDisplay INSTANCE = new BreakDisplay();
 
 	@Override
-	public BreakContext createContext(ComponentUI componentUI) {
-		return new BreakContext(this, componentUI);
+	public GenericContext createContext(ComponentUI componentUI) {
+		return new GenericContext(this, componentUI);
 	}
 
 	@Override
-	public List<BreakBox> generateBoxes(BreakContext displayContext, BoxContext boxContext) {
+	public List<BreakBox> generateBoxes(GenericContext displayContext, BoxContext boxContext) {
 		return List.of(new BreakBox(
 			this, displayContext.componentUI().getComponent(), displayContext.styleDirectives()
 		));
@@ -42,6 +47,10 @@ public class BreakDisplay implements UIDisplay<BreakContext, BreakBox, BreakUnit
 	public MessageHandler createMessageHandler(BreakUnit unit, Rectangle documentRect) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'createMessageHandler'");
+	}
+
+	public static ComponentUI componentUI(Component component, ComponentUI parent) {
+		return new GenericComponentUI(component, parent, INSTANCE);
 	}
 
 }

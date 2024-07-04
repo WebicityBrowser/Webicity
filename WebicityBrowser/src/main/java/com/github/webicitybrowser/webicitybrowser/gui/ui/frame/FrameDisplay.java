@@ -3,6 +3,8 @@ package com.github.webicitybrowser.webicitybrowser.gui.ui.frame;
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.GenericBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -13,9 +15,12 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
+import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.webicity.core.component.FrameComponent;
 
-public class FrameDisplay implements UIDisplay<FrameContext, FrameBox, FrameUnit> {
+public class FrameDisplay implements UIDisplay<FrameContext, GenericBox<FrameComponent, FrameContext>, FrameUnit> {
+
+	private static final FrameDisplay INSTANCE = new FrameDisplay();
 
 	@Override
 	public FrameContext createContext(ComponentUI componentUI) {
@@ -23,18 +28,16 @@ public class FrameDisplay implements UIDisplay<FrameContext, FrameBox, FrameUnit
 	}
 
 	@Override
-	public List<FrameBox> generateBoxes(FrameContext displayContext, BoxContext boxContext) {
+	public List<GenericBox<FrameComponent, FrameContext>> generateBoxes(FrameContext displayContext, BoxContext boxContext) {
 		if (displayContext.screenContent() == null) {
 			return List.of();
 		}
 		
-		FrameComponent frameComponent = (FrameComponent) displayContext.componentUI().getComponent();
-		
-		return List.of(new FrameBox(frameComponent, this, displayContext));
+		return List.of(new GenericBox<>(displayContext));
 	}
 
 	@Override
-	public FrameUnit renderBox(FrameBox box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
+	public FrameUnit renderBox(GenericBox<FrameComponent, FrameContext> box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		return FrameRenderer.render(box, renderContext, localRenderContext);
 	}
 
@@ -51,6 +54,10 @@ public class FrameDisplay implements UIDisplay<FrameContext, FrameBox, FrameUnit
 	@Override
 	public MessageHandler createMessageHandler(FrameUnit unit, Rectangle documentRect) {
 		return new FrameMessageHandler(unit, documentRect);
+	}
+
+	public static ComponentUI componentUI(Component component, ComponentUI parent) {
+		return new GenericComponentUI(component, parent, INSTANCE);
 	}
 
 }

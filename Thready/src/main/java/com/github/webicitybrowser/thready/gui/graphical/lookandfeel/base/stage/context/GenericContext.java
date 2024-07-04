@@ -1,4 +1,5 @@
-package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.br;
+package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.context;
+
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -6,26 +7,26 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDispl
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.style.StyleContext;
 
-public class BreakContext implements Context {
-
+public class GenericContext implements Context {
+	
 	private final UIDisplay<?, ?, ?> display;
 	private final ComponentUI componentUI;
-
+	
 	private DirectivePool styleDirectives;
 
-	public BreakContext(UIDisplay<?, ?, ?> display, ComponentUI componentUI) {
+	public GenericContext(UIDisplay<?, ?, ?> display, ComponentUI componentUI) {
 		this.display = display;
 		this.componentUI = componentUI;
 	}
 
 	@Override
 	public UIDisplay<?, ?, ?> display() {
-		return display;
+		return this.display;
 	}
 
 	@Override
 	public ComponentUI componentUI() {
-		return componentUI;
+		return this.componentUI;
 	}
 
 	@Override
@@ -37,5 +38,5 @@ public class BreakContext implements Context {
 	public void regenerateStyling(DirectivePool styleDirectives, StyleContext styleContext) {
 		this.styleDirectives = styleDirectives;
 	}
-
+	
 }

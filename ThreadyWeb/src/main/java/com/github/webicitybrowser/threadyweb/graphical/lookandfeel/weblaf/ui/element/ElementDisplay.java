@@ -8,6 +8,7 @@ import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -20,6 +21,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
+import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.layout.adjusted.AdjustedLayoutManager;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
@@ -29,6 +31,8 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.ele
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnitDisplay;
 
 public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, ElementUnit> {
+
+	private static final ElementDisplay INSTANCE = new ElementDisplay();
 
 	private static final UIDisplay<?, ?, ?> ELEMENT_INLINE_DISPLAY = new ElementInlineDisplay();
 	private static final UIDisplay<?, ?, ?> ELEMENT_STYLED_DISPLAY = new StyledUnitDisplay();
@@ -76,6 +80,10 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, El
 	@Override
 	public MessageHandler createMessageHandler(ElementUnit unit, Rectangle documentRect) {
 		return new NoopMessageHandler();
+	}
+
+	public static ComponentUI componentUI(Component component, ComponentUI parent) {
+		return new GenericComponentUI(component, parent, INSTANCE);
 	}
 	
 }

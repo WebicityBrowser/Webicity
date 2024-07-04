@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
 import com.github.webicitybrowser.thready.gui.graphical.cache.imp.MappingCacheImp;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.context.GenericContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.LookAndFeel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
@@ -13,48 +14,27 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.s
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 
-public class ElementContext implements Context {
+public class ElementContext extends GenericContext {
 
 	private final MappingCache<Component, Context> childCache = new MappingCacheImp<>(context -> context.componentUI().getComponent());
 	
-	private final UIDisplay<?, ?, ElementUnit> display;
-	private final ComponentUI componentUI;
-
-	private DirectivePool styleDirectives;
-
 	public ElementContext(UIDisplay<?, ?, ElementUnit> display, ComponentUI componentUI) {
-		this.display = display;
-		this.componentUI = componentUI;
-	}
-
-	@Override
-	public UIDisplay<?, ?, ElementUnit> display() {
-		return this.display;
-	}
-	
-	@Override
-	public ComponentUI componentUI() {
-		return this.componentUI;
+		super(display, componentUI);
 	}
 
 	@Override
 	public List<Context> children() {
 		return childCache.getComputedMappings();
 	}
-	
-	@Override
-	public DirectivePool styleDirectives() {
-		return styleDirectives;
-	}
 
 	@Override
 	public void regenerateStyling(DirectivePool styleDirectives, StyleContext styleContext) {
-		this.styleDirectives = styleDirectives;
+		super.regenerateStyling(styleDirectives, styleContext);
 		updateChildMapping(styleContext.lookAndFeel());
 	}
 
 	public Component component() {
-		return componentUI.getComponent();
+		return componentUI().getComponent();
 	}
 
 	private void updateChildMapping(LookAndFeel lookAndFeel) {
@@ -68,7 +48,7 @@ public class ElementContext implements Context {
 	}
 
 	private Context createUIContext(Component component, LookAndFeel lookAndFeel) {
-		ComponentUI childUI = lookAndFeel.createUIFor(component, componentUI);
+		ComponentUI childUI = lookAndFeel.createUIFor(component, componentUI());
 		return childUI.getRootDisplay().createContext(childUI);
 	}
 	
