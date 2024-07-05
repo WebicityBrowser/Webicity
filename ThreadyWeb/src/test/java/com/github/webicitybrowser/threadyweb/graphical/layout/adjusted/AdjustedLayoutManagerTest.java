@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.base.flowing.FlowingLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
@@ -27,7 +26,7 @@ import com.github.webicitybrowser.threadyweb.graphical.value.PositionType;
 
 public class AdjustedLayoutManagerTest {
 
-	private final DirectivePool emptyDirectivePool = new BasicDirectivePool();
+	private final DirectivePool emptyDirectivePool = FlowTestUtils.createBasicDirectivePool();
 
 	private SolidLayoutManager layoutManager;
 
@@ -68,7 +67,7 @@ public class AdjustedLayoutManagerTest {
 	@DisplayName("Can render box with relative child box")
 	public void canRenderBoxWithRelativeChildBox() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool childDirectivePool = new BasicDirectivePool();
+		DirectivePool childDirectivePool = FlowTestUtils.createBasicDirectivePool();
 		childDirectivePool.directive(PositionTypeDirective.of(PositionType.RELATIVE));
 		childDirectivePool.directive(PositionOffsetDirective.ofLeft(_1 -> 5));
 		Box childBox = new TestStubContentBox(true, new AbsoluteSize(10, 10), childDirectivePool);

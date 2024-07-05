@@ -15,6 +15,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.threadyweb.graphical.directive.derived.DerivedFontDirective;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.imp.FloatContextImp;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.imp.FloatTrackerImp;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.imp.BuildableRenderedUnitImp;
@@ -26,7 +27,7 @@ import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestFon
 public class FlowTestUtils {
 
 	private static final Font2D testFont = createTestFont();
-	private static final DirectivePool emptyDirectivePool = new BasicDirectivePool();
+	private static final DirectivePool baseDirectivePool = createBasicDirectivePool();
 	
 	public static GlobalRenderContext mockGlobalRenderContext() {
 		ResourceLoader resourceLoader = Mockito.mock(ResourceLoader.class);
@@ -78,12 +79,17 @@ public class FlowTestUtils {
 	public static TextBox createTextBox(String text, DirectivePool directives) {
 		Font2D font = createTestFont();
 
-		if (directives == null) directives = emptyDirectivePool;
+		if (directives == null) directives = baseDirectivePool;
 		return new TextBox(new TextDisplay(), null, directives, text, font);
 	}
 
 	public static TextBox createTextBox(String text) {
 		return createTextBox(text, null);
+	}
+
+	public static DirectivePool createBasicDirectivePool() {
+		return new BasicDirectivePool()
+			.directive(DerivedFontDirective.of(testFont));
 	}
 
 	private static Font2D createTestFont() {

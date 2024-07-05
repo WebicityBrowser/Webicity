@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
@@ -29,14 +28,14 @@ import com.github.webicitybrowser.threadyweb.graphical.value.FloatDirection;
 
 public class FloatLayoutTest {
 
-	private final DirectivePool emptyDirectivePool = new BasicDirectivePool();
+	private final DirectivePool emptyDirectivePool = FlowTestUtils.createBasicDirectivePool();
 	private final UIDisplay<?, ?, ?> elementDisplay = new ElementDisplay();
 	
 	@Test
 	@DisplayName("Can render block context with left float before other content")
 	public void canRenderBlockContextWithLeftFloatBeforeOtherContent() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool floatDirectivePool = new BasicDirectivePool();
+		DirectivePool floatDirectivePool = FlowTestUtils.createBasicDirectivePool();
 		floatDirectivePool.directive(FloatDirective.of(FloatDirection.LEFT));
 		Box floatBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), floatDirectivePool);
 		box.getChildrenTracker().addChild(floatBox);
@@ -65,7 +64,7 @@ public class FloatLayoutTest {
 	@DisplayName("Can render block context with right float before other content")
 	public void canRenderBlockContextWithRightFloatBeforeOtherContent() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool floatDirectivePool = new BasicDirectivePool();
+		DirectivePool floatDirectivePool = FlowTestUtils.createBasicDirectivePool();
 		floatDirectivePool.directive(FloatDirective.of(FloatDirection.RIGHT));
 		Box floatBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), floatDirectivePool);
 		box.getChildrenTracker().addChild(floatBox);
@@ -99,7 +98,7 @@ public class FloatLayoutTest {
 		Box textBox = FlowTestUtils.createTextBox("Hello!", emptyDirectivePool);
 		inlineBox.getChildrenTracker().addChild(textBox);
 		box.getChildrenTracker().addChild(inlineBox);
-		DirectivePool floatDirectivePool = new BasicDirectivePool();
+		DirectivePool floatDirectivePool = FlowTestUtils.createBasicDirectivePool();
 		floatDirectivePool.directive(FloatDirective.of(FloatDirection.LEFT));
 		Box floatBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), floatDirectivePool);
 		box.getChildrenTracker().addChild(floatBox);

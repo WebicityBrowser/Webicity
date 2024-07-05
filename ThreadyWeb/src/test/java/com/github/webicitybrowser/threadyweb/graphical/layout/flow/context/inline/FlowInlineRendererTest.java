@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
@@ -41,7 +40,7 @@ import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStu
 
 public class FlowInlineRendererTest {
 
-	private final DirectivePool emptyDirectivePool = new BasicDirectivePool();
+	private final DirectivePool emptyDirectivePool = FlowTestUtils.createBasicDirectivePool();
 	
 	@Test
 	@DisplayName("Can render empty box")
@@ -212,7 +211,7 @@ public class FlowInlineRendererTest {
 	@DisplayName("Large text wraps")
 	public void largeTextWraps() {
 		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
-		DirectivePool textBoxDirectives = new BasicDirectivePool();
+		DirectivePool textBoxDirectives = FlowTestUtils.createBasicDirectivePool();
 		textBoxDirectives.directive(LineBreakDirective.of(LineBreakDirective.LineBreak.ANYWHERE));
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World", textBoxDirectives);
 		box.getChildrenTracker().addChild(textBox);
@@ -248,7 +247,7 @@ public class FlowInlineRendererTest {
 	@DisplayName("Absolute length values are respected")
 	public void absoluteLengthValuesAreRespected() {
 		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
-		DirectivePool directives = new BasicDirectivePool();
+		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(WidthDirective.of(_1 -> 40));
 		directives.directive(HeightDirective.of(_1 -> 30));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), directives);
@@ -267,7 +266,7 @@ public class FlowInlineRendererTest {
 	@DisplayName("Can add horizontal padding")
 	public void canAddHorizontalPadding() {
 		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
-		DirectivePool directives = new BasicDirectivePool();
+		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(PaddingDirective.ofLeft(_1 -> 15));
 		directives.directive(PaddingDirective.ofRight(_1 -> 15));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), directives);
@@ -288,7 +287,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Letter spacing is respected")
 	public void letterSpacingIsRespected() {
-		DirectivePool directives = new BasicDirectivePool();
+		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(LetterSpacingDirective.of(_1 -> 1));
 		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World", directives);
@@ -345,7 +344,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Line height is respected")
 	public void lineHeightIsRespected() {
-		DirectivePool directives = new BasicDirectivePool();
+		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(LineHeightDirective.of(_1 -> 13));
 		ChildrenBox box = new TestStubChildrenBox(directives);
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
@@ -363,7 +362,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can manually break line")
 	public void canBreakLine() {
-		DirectivePool directives = new BasicDirectivePool();
+		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		ChildrenBox box = new TestStubChildrenBox(directives);
 		TextBox textBox1 = FlowTestUtils.createTextBox("Hello");
 		box.getChildrenTracker().addChild(textBox1);
@@ -391,7 +390,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can align line right")
 	public void canAlignLineRight() {
-		DirectivePool directives = new BasicDirectivePool();
+		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(TextAlignDirective.of(TextAlign.RIGHT));
 		ChildrenBox box = new TestStubChildrenBox(directives);
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);

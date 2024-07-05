@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
@@ -30,12 +29,12 @@ import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 
 public class FlowBlockRendererTest {
 
-	private final DirectivePool emptyDirectivePool = new BasicDirectivePool();
+	private final DirectivePool baseDirectivePool = FlowTestUtils.createBasicDirectivePool();
 	
 	@Test
 	@DisplayName("Can render empty box")
 	public void canRenderEmptyBox() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
 		LayoutResult result = FlowBlockRenderer.render(FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext));
@@ -46,8 +45,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Can render box with child box")
 	public void canRenderBoxWithChildBox() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), null);
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
@@ -62,10 +61,10 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Can render box with two child boxes")
 	public void canRenderBoxWithTwoChildBoxes() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), null);
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 10), null);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
@@ -83,8 +82,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Can render box with child box that overflows")
 	public void canRenderBoxWithChildBoxThatOverflows() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		Box childBox = new TestStubContentBox(false, new AbsoluteSize(100, 10), null);
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(100, 10), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
@@ -99,8 +98,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Absolute length values are respected")
 	public void absoluteLengthValuesAreRespected() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = baseDirectivePool;
 		styleDirectives.directive(WidthDirective.of(_1 -> 40));
 		styleDirectives.directive(HeightDirective.of(_1 -> 30));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
@@ -118,8 +117,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Can set a left margin")
 	public void canSetALeftMargin() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = baseDirectivePool;
 		styleDirectives.directive(MarginDirective.ofLeft(_1 -> 10));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
@@ -136,8 +135,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Can set a right margin")
 	public void canSetARightMargin() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = baseDirectivePool;
 		styleDirectives.directive(MarginDirective.ofRight(_1 -> 10));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
@@ -154,8 +153,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Can center a box")
 	public void canCenterABox() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = baseDirectivePool;
 		styleDirectives.directive(WidthDirective.of(_1 -> 10));
 		styleDirectives.directive(MarginDirective.ofLeft(SizeCalculation.SIZE_AUTO));
 		styleDirectives.directive(MarginDirective.ofRight(SizeCalculation.SIZE_AUTO));
@@ -174,12 +173,12 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Top and bottom margins are collapsed")
 	public void topAndBottomMarginsAreCollapsed() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives1 = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives1 = FlowTestUtils.createBasicDirectivePool();
 		styleDirectives1.directive(MarginDirective.ofBottom(_1 -> 10));
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives1);
 		box.getChildrenTracker().addChild(childBox1);
-		DirectivePool styleDirectives2 = new BasicDirectivePool();
+		DirectivePool styleDirectives2 = FlowTestUtils.createBasicDirectivePool();
 		styleDirectives2.directive(MarginDirective.ofTop(_1 -> 15));
 		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives2);
 		box.getChildrenTracker().addChild(childBox2);
@@ -199,8 +198,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Padding creates styled unit around content")
 	public void paddingCreatesStyledUnitAroundContent() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = baseDirectivePool;
 		styleDirectives.directive(PaddingDirective.ofTop(_1 -> 10));
 		styleDirectives.directive(PaddingDirective.ofLeft(_1 -> 5));
 		styleDirectives.directive(PaddingDirective.ofBottom(_1 -> 15));
@@ -224,8 +223,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Box with padding and margin is properly positioned")
 	public void boxWithPaddingAndMarginIsProperlyPositioned() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = baseDirectivePool;
 		styleDirectives.directive(WidthDirective.of(_1 -> 10));
 		styleDirectives.directive(PaddingDirective.ofLeft(_1 -> 5));
 		styleDirectives.directive(PaddingDirective.ofRight(_1 -> 5));
@@ -250,8 +249,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Box with max-width does not exceed max-width")
 	public void boxWithMaxWidthDoesNotExceedMaxWidth() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = baseDirectivePool;
 		styleDirectives.directive(WidthDirective.of(_1 -> 10));
 		styleDirectives.directive(MaxWidthDirective.of(_1 -> 5));
 		TestStubContentBox childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
@@ -274,8 +273,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Box with min-width does not underflow min-width")
 	public void boxWithMinWidthDoesNotUnderflowMinWidth() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = baseDirectivePool;
 		styleDirectives.directive(WidthDirective.of(_1 -> 10));
 		styleDirectives.directive(MinWidthDirective.of(_1 -> 15));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
@@ -297,8 +296,8 @@ public class FlowBlockRendererTest {
 	@Test
 	@DisplayName("Border widths create styled unit around content")
 	public void borderWidthsCreateStyledUnitAroundContent() {
-		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool styleDirectives = new BasicDirectivePool();
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = baseDirectivePool;
 		styleDirectives.directive(BorderWidthDirective.ofTop(_1 -> 10));
 		styleDirectives.directive(BorderWidthDirective.ofLeft(_1 -> 5));
 		styleDirectives.directive(BorderWidthDirective.ofBottom(_1 -> 15));

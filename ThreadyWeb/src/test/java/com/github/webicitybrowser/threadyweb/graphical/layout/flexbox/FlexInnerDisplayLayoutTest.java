@@ -24,6 +24,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
+import com.github.webicitybrowser.threadyweb.graphical.directive.derived.DerivedFontDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
@@ -41,9 +42,9 @@ import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStu
 
 public class FlexInnerDisplayLayoutTest {
 	
-	private static final DirectivePool emptyDirectivePool = new BasicDirectivePool();
-	private static final DirectivePool defaultChildDirectivePool = new BasicDirectivePool();
-	private final Font2D testFont = createTestFont();
+	private static final Font2D testFont = createTestFont();
+	private static final DirectivePool emptyDirectivePool = createBaseDirectivePool();
+	private static final DirectivePool defaultChildDirectivePool = createBaseDirectivePool();
 
 	private FlexInnerDisplayLayout flexInnerDisplayLayout;
 
@@ -106,7 +107,7 @@ public class FlexInnerDisplayLayoutTest {
 	@Test
 	@DisplayName("Can render box with two children in sized flex container with column flex direction")
 	public void canRenderBoxWithTwoChildrenInSizedFlexContainerWithColumnFlexDirection() {
-		DirectivePool directivePool = new BasicDirectivePool();
+		DirectivePool directivePool = createBaseDirectivePool();
 		directivePool.directive(FlexDirectionDirective.of(FlexDirection.COLUMN));
 		ChildrenBox box = new TestStubBlockBox(directivePool);
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
@@ -223,7 +224,7 @@ public class FlexInnerDisplayLayoutTest {
 	@Test
 	@DisplayName("Can render box with two children in wrapped sized flex container")
 	public void canRenderBoxWithTwoChildrenInWrappedSizedFlexContainer() {
-		DirectivePool directivePool = new BasicDirectivePool();
+		DirectivePool directivePool = createBaseDirectivePool();
 		directivePool.directive(FlexWrapDirective.of(FlexWrap.WRAP));
 		ChildrenBox box = new TestStubBlockBox(directivePool);
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
@@ -245,7 +246,7 @@ public class FlexInnerDisplayLayoutTest {
 	@Test
 	@DisplayName("Extra cross size is distributed to wrapped sized flex container")
 	public void extraCrossSizeIsDistributedToWrappedSizedFlexContainer() {
-		DirectivePool directivePool = new BasicDirectivePool();
+		DirectivePool directivePool = createBaseDirectivePool();
 		directivePool.directive(FlexWrapDirective.of(FlexWrap.WRAP));
 		ChildrenBox box = new TestStubBlockBox(directivePool);
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), defaultChildDirectivePool);
@@ -268,11 +269,11 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with two children with different flex grow in sized flex container")
 	public void canRenderBoxWithTwoChildrenWithDifferentFlexGrowInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool directivePool1 = new BasicDirectivePool();
+		DirectivePool directivePool1 = createBaseDirectivePool();
 		directivePool1.directive(FlexGrowDirective.of(1));
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool1);
 		box.getChildrenTracker().addChild(childBox1);
-		DirectivePool directivePool2 = new BasicDirectivePool();
+		DirectivePool directivePool2 = createBaseDirectivePool();
 		directivePool2.directive(FlexGrowDirective.of(2));
 		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool2);
 		box.getChildrenTracker().addChild(childBox2);
@@ -292,11 +293,11 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with two children with different flex shrink in sized flex container")
 	public void canRenderBoxWithTwoChildrenWithDifferentFlexShrinkInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool directivePool1 = new BasicDirectivePool();
+		DirectivePool directivePool1 = createBaseDirectivePool();
 		directivePool1.directive(FlexShrinkDirective.of(2));
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool1);
 		box.getChildrenTracker().addChild(childBox1);
-		DirectivePool directivePool2 = new BasicDirectivePool();
+		DirectivePool directivePool2 = createBaseDirectivePool();
 		directivePool2.directive(FlexShrinkDirective.of(3));
 		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(20, 50), directivePool2);
 		box.getChildrenTracker().addChild(childBox2);
@@ -315,7 +316,7 @@ public class FlexInnerDisplayLayoutTest {
 	@Test
 	@DisplayName("Can render box with one child in sized flex container with centered justify content")
 	public void canRenderBoxWithOneChildInSizedFlexContainerWithCenteredJustifyContent() {
-		DirectivePool directivePool = new BasicDirectivePool();
+		DirectivePool directivePool = createBaseDirectivePool();
 		directivePool.directive(FlexJustifyContentDirective.of(FlexJustifyContent.CENTER));
 		ChildrenBox box = new TestStubBlockBox(directivePool);
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), emptyDirectivePool);
@@ -333,7 +334,7 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with one child with margin in sized flex container")
 	public void canRenderBoxWithOneChildWithMarginInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool directivePool = new BasicDirectivePool();
+		DirectivePool directivePool = createBaseDirectivePool();
 		directivePool.directive(MarginDirective.ofLeft(_1 -> 5));
 		directivePool.directive(FlexGrowDirective.of(1));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
@@ -351,7 +352,7 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with one child with set width in sized flex container")
 	public void canRenderBoxWithOneChildWithSetWidthInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool directivePool = new BasicDirectivePool();
+		DirectivePool directivePool = createBaseDirectivePool();
 		directivePool.directive(WidthDirective.of(_1 -> 20));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
 		box.getChildrenTracker().addChild(childBox);
@@ -368,7 +369,7 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with one child with max size in sized flex container")
 	public void canRenderBoxWithOneChildWithMaxSizeInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool directivePool = new BasicDirectivePool();
+		DirectivePool directivePool = createBaseDirectivePool();
 		directivePool.directive(MaxWidthDirective.of(_1 -> 5));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
 		box.getChildrenTracker().addChild(childBox);
@@ -385,12 +386,12 @@ public class FlexInnerDisplayLayoutTest {
 	@DisplayName("Can render box with two children with flex grow and max size in sized flex container")
 	public void canRenderBoxWithTwoChildrenWithFlexGrowAndMaxSizeInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		DirectivePool directivePool1 = new BasicDirectivePool();
+		DirectivePool directivePool1 = createBaseDirectivePool();
 		directivePool1.directive(FlexGrowDirective.of(1));
 		directivePool1.directive(MaxWidthDirective.of(_1 -> 20));
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool1);
 		box.getChildrenTracker().addChild(childBox1);
-		DirectivePool directivePool2 = new BasicDirectivePool();
+		DirectivePool directivePool2 = createBaseDirectivePool();
 		directivePool2.directive(FlexGrowDirective.of(1));
 		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool2);
 		box.getChildrenTracker().addChild(childBox2);
@@ -438,11 +439,15 @@ public class FlexInnerDisplayLayoutTest {
 		return LocalRenderContext.create(sizeOverride, new ContextSwitch[0]);
 	}
 
-	private Font2D createTestFont() {
+	private static Font2D createTestFont() {
 		Font2D font = Mockito.mock(Font2D.class);
 		Mockito.when(font.getMetrics()).thenReturn(new TestFontMetrics());
 
 		return font;
+	}
+
+	private static DirectivePool createBaseDirectivePool() {
+		return new BasicDirectivePool().directive(DerivedFontDirective.of(testFont));
 	}
 
 }
