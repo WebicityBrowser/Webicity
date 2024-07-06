@@ -13,7 +13,7 @@ public record RelativeDimension(float relativeComponent, float absoluteComponent
 	 * Represents an unbounded dimension.
 	 */
 	// TODO: Make this positive infinity and fix resulting bugs
-	public static float UNBOUNDED = Integer.MIN_VALUE;
+	public static float UNBOUNDED = Float.MIN_VALUE;
 	
 	public float resolveAbsoluteDimensions(float parentDimension) {
 		if (relativeComponent == RelativeDimension.UNBOUNDED) {

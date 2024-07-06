@@ -28,6 +28,34 @@ public final class FlowBlockSizeCalculations {
 
 		return clippedContentSize;
 	}
+
+	public static AbsoluteSize clipHorizontalSize(DirectivePool childStyles, AbsoluteSize size, FlowBlockPrerenderSizingInfo sizingInfo) {
+		float[] paddings = sizingInfo.sizingContext().boxOffsetDimensions().totalPadding();
+		LayoutSizingContext layoutSizingContext = sizingInfo.sizingContext();
+
+		AbsoluteSize outerSize = LayoutSizeUtils.addPadding(size, paddings);
+		AbsoluteSize clippedOuterSize = new AbsoluteSize(
+			clipSize(childStyles, outerSize.width(), layoutSizingContext, MinWidthDirective.class, MaxWidthDirective.class),
+			outerSize.height()
+		);
+		AbsoluteSize clippedContentSize = LayoutSizeUtils.subtractPadding(clippedOuterSize, paddings);
+
+		return clippedContentSize;
+	}
+
+	public static AbsoluteSize clipVerticalSize(DirectivePool childStyles, AbsoluteSize size, FlowBlockPrerenderSizingInfo sizingInfo) {
+		float[] paddings = sizingInfo.sizingContext().boxOffsetDimensions().totalPadding();
+		LayoutSizingContext layoutSizingContext = sizingInfo.sizingContext();
+
+		AbsoluteSize outerSize = LayoutSizeUtils.addPadding(size, paddings);
+		AbsoluteSize clippedOuterSize = new AbsoluteSize(
+			outerSize.width(),
+			clipSize(childStyles, outerSize.height(), layoutSizingContext, MinHeightDirective.class, MaxHeightDirective.class)
+		);
+		AbsoluteSize clippedContentSize = LayoutSizeUtils.subtractPadding(clippedOuterSize, paddings);
+
+		return clippedContentSize;
+	}
 	
 	public static float clipSize(
 		DirectivePool childStyles, float size, LayoutSizingContext layoutSizingContext,

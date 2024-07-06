@@ -3,10 +3,12 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.bloc
 import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.FlowSizeUtils;
@@ -39,12 +41,25 @@ public final class FlowBlockUnitRenderer {
 		// If not, take the fit size and clip it to constraints
 		Box childBox = context.childBox();
 		AbsoluteSize precomputedSize = prerenderSizingInfo.preferredChildContentSize();
-		// TODO: clipContentSize is actually meant to be called on the fit-content size if the size is not determinate
-		// However, I need to make the proper infrastructure to allow determining the fit-content size
-		precomputedSize = FlowBlockSizeCalculations.clipContentSize(childBox.styleDirectives(), precomputedSize, prerenderSizingInfo);
+
+		precomputedSize = FlowBlockSizeCalculations.clipHorizontalSize(childBox.styleDirectives(), precomputedSize, prerenderSizingInfo);
 		FlowBlockPrerenderSizingInfo adjustedPrerenderSizingInfo = new FlowBlockPrerenderSizingInfo(
 			prerenderSizingInfo.forcedChildContentSize(), precomputedSize, prerenderSizingInfo.parentSize(), prerenderSizingInfo.sizingContext()
 		);
+
+		if (precomputedSize.height() == RelativeDimension.UNBOUNDED) {
+			AbsoluteSize fitSize = context.state().getGlobalRenderContext().renderCache().cachedRender(
+				childBox, context.state().getGlobalRenderContext(), new LocalRenderContext(precomputedSize, new ContextSwitch[0])
+			).fitSize();
+			precomputedSize = new AbsoluteSize(precomputedSize.width(), fitSize.height());
+		}
+		precomputedSize = FlowSizeUtils.enforcePreferredSize(precomputedSize, prerenderSizingInfo.forcedChildContentSize());
+		precomputedSize = FlowBlockSizeCalculations.clipContentSize(childBox.styleDirectives(), precomputedSize, prerenderSizingInfo);
+
+		adjustedPrerenderSizingInfo = new FlowBlockPrerenderSizingInfo(
+			prerenderSizingInfo.forcedChildContentSize(), precomputedSize, prerenderSizingInfo.parentSize(), prerenderSizingInfo.sizingContext()
+		);
+		
 		RenderedUnit childUnit = renderChildUnit(context, adjustedPrerenderSizingInfo);
 		AbsoluteSize adjustedSize = FlowSizeUtils.enforcePreferredSize(childUnit.fitSize(), prerenderSizingInfo.forcedChildContentSize());
 		AbsoluteSize clippedAdjustedSize = FlowBlockSizeCalculations.clipContentSize(childBox.styleDirectives(), adjustedSize, prerenderSizingInfo);
@@ -60,7 +75,7 @@ public final class FlowBlockUnitRenderer {
 		return LayoutSizeUtils.createLayoutSizingContext(
 			childBox.styleDirectives(), sizeCalculationContextGenerator, boxOffsetDimensions
 		);
-	}
+}
 
 	private static AbsoluteSize computePreferredSize(Box childBox, LayoutSizingContext layoutSizingContext) {
 		return LayoutSizeUtils.computePreferredSize(childBox.styleDirectives(), layoutSizingContext);

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
@@ -25,6 +26,7 @@ import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowTestUtils
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubBlockBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubContentBox;
+import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubSizeDependentBox;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 
 public class FlowBlockRendererTest {
@@ -316,6 +318,40 @@ public class FlowBlockRendererTest {
 		StyledUnit styledUnit = (StyledUnit) childLayoutResult.unit();
 		Assertions.assertEquals(new AbsoluteSize(25, 10), styledUnit.context().innerUnitSize());
 		Assertions.assertEquals(new AbsolutePosition(5, 10), styledUnit.context().innerUnitPosition());
+	}
+
+	@Test
+	@DisplayName("Can render with max-content width")
+	public void canRenderItemWithMaxContentWidth() {
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = FlowTestUtils.createBasicDirectivePool();
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox1);
+		DirectivePool styleDirectives2 = FlowTestUtils.createBasicDirectivePool();
+		Box childBox2 = new TestStubSizeDependentBox(false, styleDirectives2);
+		box.getChildrenTracker().addChild(childBox2);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		FlowRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext,
+			FlowTestUtils.createLocalRenderContext(new AbsoluteSize(RelativeDimension.UNBOUNDED, 0)));
+		LayoutResult result = FlowBlockRenderer.render(renderContext);
+		Assertions.assertEquals(new AbsoluteSize(50, 20), result.fitSize());
+	}
+
+	@Test
+	@DisplayName("Can render with min-content width")
+	public void canRenderItemWithMinContentWidth() {
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = FlowTestUtils.createBasicDirectivePool();
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox1);
+		DirectivePool styleDirectives2 = FlowTestUtils.createBasicDirectivePool();
+		Box childBox2 = new TestStubSizeDependentBox(false, styleDirectives2);
+		box.getChildrenTracker().addChild(childBox2);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		FlowRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext,
+			FlowTestUtils.createLocalRenderContext(new AbsoluteSize(0, RelativeDimension.UNBOUNDED)));
+		LayoutResult result = FlowBlockRenderer.render(renderContext);
+		Assertions.assertEquals(new AbsoluteSize(25, 20), result.fitSize());
 	}
 
 }

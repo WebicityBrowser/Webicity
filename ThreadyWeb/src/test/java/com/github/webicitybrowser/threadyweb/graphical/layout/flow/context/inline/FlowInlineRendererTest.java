@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
+import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
@@ -26,6 +27,7 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpac
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.TextAlignDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.TextAlignDirective.TextAlign;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowTestUtils;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatContext;
@@ -34,18 +36,20 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.br.BreakBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
+import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubBlockBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubChildrenBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubContentBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubInlineBox;
+import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubSizeDependentBox;
 
 public class FlowInlineRendererTest {
 
-	private final DirectivePool emptyDirectivePool = FlowTestUtils.createBasicDirectivePool();
+	private final DirectivePool baseDirectivePool = FlowTestUtils.createBasicDirectivePool();
 	
 	@Test
 	@DisplayName("Can render empty box")
 	public void canRenderEmptyBox() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 50));
 		LayoutResult result = FlowInlineRenderer.render(FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext));
@@ -56,8 +60,8 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can render box with child inline content box")
 	public void canRenderBoxWithChildSolidBox() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
-		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 50));
@@ -72,9 +76,9 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can render box with two child inline content boxes")
 	public void canRenderBoxWithTwoChildInlineContentBoxes() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(20, 20), emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(20, 20), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -93,9 +97,9 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can render box with two child inline content boxes that overflow")
 	public void canRenderBoxWithTwoChildInlineContentBoxesThatOverflow() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(50, 10), emptyDirectivePool);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(50, 20), emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(50, 10), baseDirectivePool);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(50, 20), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -114,8 +118,8 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can render box with very large child inline content box")
 	public void canRenderBoxWithVeryLargeChildInlineContentBox() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(100, 100), emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(100, 100), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox1);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 50));
@@ -130,12 +134,12 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can render box with child inline content boxes inside inline children box")
 	public void canRenderBoxWithChildInlineContentBoxesInsideInlineChildrenBox() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		ChildrenBox containerBox = new TestStubInlineBox();
 		box.getChildrenTracker().addChild(containerBox);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		containerBox.getChildrenTracker().addChild(childBox1);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		containerBox.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 50));
@@ -158,12 +162,12 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can split nested across lines")
 	public void canSplitNestedAcrossLines() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		ChildrenBox containerBox = new TestStubInlineBox();
 		box.getChildrenTracker().addChild(containerBox);
-		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		containerBox.getChildrenTracker().addChild(childBox1);
-		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(15, 10), emptyDirectivePool);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(15, 10), baseDirectivePool);
 		containerBox.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(10, 10));
@@ -181,7 +185,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Text spaces are collapsed (default settings)")
 	public void textSpacesAreCollapsed() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox("Hello  World");
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -196,7 +200,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Text spaces at start are removed (default settings)")
 	public void textSpacesAtStartAreRemoved() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox(" Hello World");
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -210,7 +214,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Large text wraps")
 	public void largeTextWraps() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		DirectivePool textBoxDirectives = FlowTestUtils.createBasicDirectivePool();
 		textBoxDirectives.directive(LineBreakDirective.of(LineBreakDirective.LineBreak.ANYWHERE));
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World", textBoxDirectives);
@@ -228,7 +232,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can render box with line breaks between words")
 	public void canRenderBoxWithLineBreaksBetweenWords() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World");
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -246,7 +250,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Absolute length values are respected")
 	public void absoluteLengthValuesAreRespected() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(WidthDirective.of(_1 -> 40));
 		directives.directive(HeightDirective.of(_1 -> 30));
@@ -265,7 +269,7 @@ public class FlowInlineRendererTest {
 	@Test
 	@DisplayName("Can add horizontal padding")
 	public void canAddHorizontalPadding() {
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(PaddingDirective.ofLeft(_1 -> 15));
 		directives.directive(PaddingDirective.ofRight(_1 -> 15));
@@ -289,7 +293,7 @@ public class FlowInlineRendererTest {
 	public void letterSpacingIsRespected() {
 		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(LetterSpacingDirective.of(_1 -> 1));
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World", directives);
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -308,7 +312,7 @@ public class FlowInlineRendererTest {
 		AbsolutePosition childPosition = new AbsolutePosition(0, 0);
 		FloatContext floatContext = FloatContext.create(floatTracker);
 		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(childPosition, floatContext);
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World");
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -328,7 +332,7 @@ public class FlowInlineRendererTest {
 		AbsolutePosition childPosition = new AbsolutePosition(0, 0);
 		FloatContext floatContext = FloatContext.create(floatTracker);
 		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(childPosition, floatContext);
-		ChildrenBox box = new TestStubChildrenBox(emptyDirectivePool);
+		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World");
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -347,7 +351,7 @@ public class FlowInlineRendererTest {
 		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(LineHeightDirective.of(_1 -> 13));
 		ChildrenBox box = new TestStubChildrenBox(directives);
-		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 50));
@@ -370,7 +374,7 @@ public class FlowInlineRendererTest {
 			BreakBox breakBox = Mockito.mock(BreakBox.class);
 			Mockito.when(breakBox.getAdjustedBoxTree()).thenReturn(List.of(breakBox));
 			Mockito.when(breakBox.isFluid()).thenReturn(true);
-			Mockito.when(breakBox.styleDirectives()).thenReturn(emptyDirectivePool);
+			Mockito.when(breakBox.styleDirectives()).thenReturn(baseDirectivePool);
 			box.getChildrenTracker().addChild(breakBox);
 		}
 		TextBox textBox2 = FlowTestUtils.createTextBox("World");
@@ -393,7 +397,7 @@ public class FlowInlineRendererTest {
 		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
 		directives.directive(TextAlignDirective.of(TextAlign.RIGHT));
 		ChildrenBox box = new TestStubChildrenBox(directives);
-		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(new AbsoluteSize(50, 50), new ContextSwitch[0]);
@@ -403,6 +407,40 @@ public class FlowInlineRendererTest {
 		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(40, 0), childLayoutResult.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(10, 10), childLayoutResult.relativeRect().size());
+	}
+
+	@Test
+	@DisplayName("Can render with max-content width")
+	public void canRenderItemWithMaxContentWidth() {
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = FlowTestUtils.createBasicDirectivePool();
+		Box childBox1 = new TestStubContentBox(true, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox1);
+		DirectivePool styleDirectives2 = FlowTestUtils.createBasicDirectivePool();
+		Box childBox2 = new TestStubSizeDependentBox(true, styleDirectives2);
+		box.getChildrenTracker().addChild(childBox2);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		FlowRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext,
+			FlowTestUtils.createLocalRenderContext(new AbsoluteSize(RelativeDimension.UNBOUNDED, 0)));
+		LayoutResult result = FlowInlineRenderer.render(renderContext);
+		Assertions.assertEquals(new AbsoluteSize(60, 10), result.fitSize());
+	}
+
+	@Test
+	@DisplayName("Can render with min-content width")
+	public void canRenderItemWithMinContentWidth() {
+		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
+		DirectivePool styleDirectives = FlowTestUtils.createBasicDirectivePool();
+		Box childBox1 = new TestStubContentBox(true, new AbsoluteSize(10, 10), styleDirectives);
+		box.getChildrenTracker().addChild(childBox1);
+		DirectivePool styleDirectives2 = FlowTestUtils.createBasicDirectivePool();
+		Box childBox2 = new TestStubSizeDependentBox(true, styleDirectives2);
+		box.getChildrenTracker().addChild(childBox2);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		FlowRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext,
+			FlowTestUtils.createLocalRenderContext(new AbsoluteSize(0, RelativeDimension.UNBOUNDED)));
+		LayoutResult result = FlowInlineRenderer.render(renderContext);
+		Assertions.assertEquals(new AbsoluteSize(25, 20), result.fitSize());
 	}
 
 }

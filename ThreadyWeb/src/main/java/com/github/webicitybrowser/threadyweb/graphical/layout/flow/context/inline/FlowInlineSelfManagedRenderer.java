@@ -27,18 +27,20 @@ public final class FlowInlineSelfManagedRenderer {
 			isHorizontal -> LayoutSizeUtils.createSizeCalculationContext(state.flowContext().layoutManagerContext(), childBox.styleDirectives(), isHorizontal);
 		SizeCalculationContext sizeCalculationContext = sizeCalculationContextGenerator.apply(true);
 		BoxOffsetDimensions boxOffsetDimensions = getBoxOffsetDimensions(childBox, sizeCalculationContext);
+		AbsoluteSize containerSize = state.flowContext().layoutManagerContext().localRenderContext().preferredSize();
 		AbsoluteSize preferredSize = computePreferredSize(sizeCalculationContextGenerator, childBox, boxOffsetDimensions);
-		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(preferredSize, boxOffsetDimensions.padding());
+		AbsoluteSize precomputedSize = FlowSizeUtils.enforcePreferredSize(containerSize, preferredSize);
+		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(precomputedSize, boxOffsetDimensions.padding());
 		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
 		AbsoluteSize rawChildSize = childUnit.fitSize();
-		AbsoluteSize adjustedChildSize = FlowSizeUtils.enforcePreferredSize(rawChildSize, contentSize);
-		AbsoluteSize adjustedSize = LayoutSizeUtils.addPadding(adjustedChildSize, boxOffsetDimensions.padding());
+		AbsoluteSize outerSize = LayoutSizeUtils.addPadding(rawChildSize, boxOffsetDimensions.padding());
+		AbsoluteSize adjustedOuterSize = FlowSizeUtils.enforcePreferredSize(outerSize, preferredSize);
 
-		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedSize, boxOffsetDimensions);
+		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedOuterSize, boxOffsetDimensions);
 		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 
-		FlowInlineRendererUtil.startNewLineIfNotFits(state, adjustedSize);
-		state.lineContext().currentLine().add(styledUnit, adjustedSize);
+		FlowInlineRendererUtil.startNewLineIfNotFits(state, adjustedOuterSize);
+		state.lineContext().currentLine().add(styledUnit, adjustedOuterSize);
 	}
 
 	private static BoxOffsetDimensions getBoxOffsetDimensions(Box childBox, SizeCalculationContext sizeCalculationContext) {

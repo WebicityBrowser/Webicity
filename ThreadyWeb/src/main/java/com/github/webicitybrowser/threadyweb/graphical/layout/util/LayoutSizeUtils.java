@@ -12,7 +12,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective.BoxSizing;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.HeightDirective;
-import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxHeightDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MinWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.SizeCalculationDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
@@ -47,7 +47,7 @@ public final class LayoutSizeUtils {
 		boolean isWidth =
 			directiveType == WidthDirective.class
 			|| directiveType == MinWidthDirective.class
-			|| directiveType == MaxHeightDirective.class;
+			|| directiveType == MaxWidthDirective.class;
 		return computeSize(widthSizeCalculation, layoutSizingContext, isWidth);
 	}
 

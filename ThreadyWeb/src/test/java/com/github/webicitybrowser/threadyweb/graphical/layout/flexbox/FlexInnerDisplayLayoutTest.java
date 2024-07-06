@@ -409,6 +409,34 @@ public class FlexInnerDisplayLayoutTest {
 		Assertions.assertEquals(50, childLayoutResult2.relativeRect().size().height(), 0.1f);
 	}
 
+	@Test
+	@DisplayName("Can render with max-content width and no-wrap")
+	public void canRenderWithMaxContentWidthAndNoWrap() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
+		box.getChildrenTracker().addChild(childBox1);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(20, 50), defaultChildDirectivePool);
+		box.getChildrenTracker().addChild(childBox2);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED));
+		LayoutResult result = render(box, localRenderContext);
+		Assertions.assertEquals(new AbsoluteSize(30, 50), result.fitSize());
+	}
+
+	@Test
+	@DisplayName("Can render with max-content width and wrap")
+	public void canRenderWithMaxContentWidthAndWrap() {
+		DirectivePool parentDirectivePool = createBaseDirectivePool()
+			.directive(FlexWrapDirective.of(FlexWrap.WRAP));
+		ChildrenBox box = new TestStubBlockBox(parentDirectivePool);
+		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), defaultChildDirectivePool);
+		box.getChildrenTracker().addChild(childBox1);
+		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(20, 50), defaultChildDirectivePool);
+		box.getChildrenTracker().addChild(childBox2);
+		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED));
+		LayoutResult result = render(box, localRenderContext);
+		Assertions.assertEquals(new AbsoluteSize(30, 50), result.fitSize());
+	}
+
 	private LayoutResult render(ChildrenBox box, LocalRenderContext localRenderContext) {
 		GlobalRenderContext globalRenderContext = mockGlobalRenderContext();
 		return flexInnerDisplayLayout.render(new LayoutManagerContext(
