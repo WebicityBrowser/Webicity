@@ -12,11 +12,11 @@ import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
 import com.github.webicitybrowser.threadyweb.tree.image.ImageComponent;
 import com.github.webicitybrowser.threadyweb.tree.image.ImageStatus;
 
-public record ImageBox(UIDisplay<?, ?, ?> display, ImageComponent owningComponent, DirectivePool styleDirectives) implements Box {
+public record ImageBox(ImageContext imageContext) implements Box {
 
 	@Override
 	public Optional<ReplacedInfo> replacedInfo() {
-		ImageStatus imageStatus = owningComponent.getImageStatus();
+		ImageStatus imageStatus = owningComponent().getImageStatus();
 		if (!imageStatus.canImageBeShown()) return Optional.empty();
 		ImageFrame firstImageFrame = imageStatus.imageData().frames()[0];
 		float intrinsicWidth = firstImageFrame.width();
@@ -27,7 +27,7 @@ public record ImageBox(UIDisplay<?, ?, ?> display, ImageComponent owningComponen
 
 	@Override
 	public boolean isFluid() {
-		OuterDisplay outerDisplay = styleDirectives
+		OuterDisplay outerDisplay = styleDirectives()
 			.getDirectiveOrEmpty(OuterDisplayDirective.class)
 			.map(OuterDisplayDirective::getOuterDisplay)
 			.orElse(OuterDisplay.INLINE);
@@ -37,6 +37,21 @@ public record ImageBox(UIDisplay<?, ?, ?> display, ImageComponent owningComponen
 	@Override
 	public boolean managesSelf() {
 		return true;
+	}
+
+	@Override
+	public UIDisplay<?, ?, ?> display() {
+		return imageContext.display();
+	}
+
+	@Override
+	public ImageComponent owningComponent() {
+		return (ImageComponent) imageContext.componentUI().getComponent();
+	}
+
+	@Override
+	public DirectivePool styleDirectives() {
+		return imageContext.styleDirectives();
 	}
 
 	private static record ImageReplacedInfo(float intrinsicWidth, float intrinsicHeight, float intrinsicRatio) implements ReplacedInfo {}

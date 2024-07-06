@@ -3,10 +3,8 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.im
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.context.GenericContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -26,22 +24,20 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.ima
 import com.github.webicitybrowser.threadyweb.tree.image.ImageComponent;
 import com.github.webicitybrowser.threadyweb.tree.image.ImageStatus;
 
-public class ImageDisplay implements UIDisplay<GenericContext, ImageBox, ImageUnit> {
+public class ImageDisplay implements UIDisplay<ImageContext, ImageBox, ImageUnit> {
 
 	private static final ImageDisplay INSTANCE = new ImageDisplay();
 
 	@Override
-	public GenericContext createContext(ComponentUI componentUI) {
+	public ImageContext createContext(ComponentUI componentUI) {
 		ImageComponent component = (ImageComponent) componentUI.getComponent();
 		component.onImageStatusUpdate(_1 -> componentUI.invalidate(InvalidationLevel.RENDER));
-		return new GenericContext(this, componentUI);
+		return new ImageContext(this, componentUI);
 	}
 
 	@Override
-	public List<ImageBox> generateBoxes(GenericContext displayContext, BoxContext boxContext) {
-		ImageComponent component = (ImageComponent) displayContext.componentUI().getComponent();
-		DirectivePool directives = displayContext.styleDirectives();
-		return List.of(new ImageBox(this, component, directives));
+	public List<ImageBox> generateBoxes(ImageContext displayContext, BoxContext boxContext) {
+		return List.of(new ImageBox(displayContext));
 	}
 
 	@Override
