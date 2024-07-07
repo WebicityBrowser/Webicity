@@ -13,24 +13,24 @@ public final class LayoutBorderWidthCalculations {
 
 	public static float[] computeBorderWidths(SizeCalculationContext sizeCalculationContext, Box box) {
 		float[] borderWidth = new float[4];
-		borderWidth[0] = computeBorderWidth(sizeCalculationContext, box, LeftBorderWidthDirective.class);
-		borderWidth[1] = computeBorderWidth(sizeCalculationContext, box, RightBorderWidthDirective.class);
-		borderWidth[2] = computeBorderWidth(sizeCalculationContext, box, TopBorderWidthDirective.class);
-		borderWidth[3] = computeBorderWidth(sizeCalculationContext, box, BottomBorderWidthDirective.class);
+		borderWidth[0] = computeBorderWidth(sizeCalculationContext, box, LeftBorderWidthDirective.class, true);
+		borderWidth[1] = computeBorderWidth(sizeCalculationContext, box, RightBorderWidthDirective.class, true);
+		borderWidth[2] = computeBorderWidth(sizeCalculationContext, box, TopBorderWidthDirective.class, false);
+		borderWidth[3] = computeBorderWidth(sizeCalculationContext, box, BottomBorderWidthDirective.class, false);
 
 		return borderWidth;
 	}
 
 	private static float computeBorderWidth(
-		SizeCalculationContext sizeCalculationContext, Box box, Class<?  extends BorderWidthDirective> directiveClass
+		SizeCalculationContext sizeCalculationContext, Box box, Class<?  extends BorderWidthDirective> directiveClass, boolean isHorizontal
 	) {
 		SizeCalculation sizeCalculation = box
 			.styleDirectives()
 			.getDirectiveOrEmpty(directiveClass)
 			.map(directive -> directive.getSizeCalculation())
-			.orElse(_1 -> 0);
+			.orElse(SizeCalculation.SIZE_ZERO);
 
-		return sizeCalculation.calculate(sizeCalculationContext);
+		return sizeCalculation.calculate(sizeCalculationContext, isHorizontal);
 	}
 	
 }

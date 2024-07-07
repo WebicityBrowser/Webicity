@@ -23,7 +23,7 @@ public final class WebTextDirectiveUtil {
 		return directives
 			.inheritDirectiveOrEmpty(LetterSpacingDirective.class)
 			.map(directive -> directive.getLetterSpacing())
-			.map(letterSpacing -> letterSpacing.calculate(context))
+			.map(letterSpacing -> letterSpacing.calculate(context, true))
 			.orElse(0f);
 	}
 

@@ -3,7 +3,6 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.bloc
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -13,16 +12,17 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.FloatDirective;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockChildRenderResult;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockPrerenderSizingInfo;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockRendererState;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockUnitRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockUnitRenderingContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.FloatDirection;
+import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public final class FlowBlockFloatRenderer {
 
@@ -75,10 +75,10 @@ public final class FlowBlockFloatRenderer {
 		AbsolutePosition trackerPositionOffset = flowRootContextSwitch.predictedPosition();
 		AbsoluteSize parentSize = state.getLocalRenderContext().preferredSize();
 		
-		float[] margins = FlowBlockMarginCalculations.computeMargins(state, childUnit.styleDirectives());
-		for (int i = 0; i < 4; i++) {
-			margins[i] = margins[i] == RelativeDimension.UNBOUNDED ? 0 : margins[i];
-		}
+		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
+			state.getGlobalRenderContext(), state.getLocalRenderContext(), childUnit.styleDirectives());
+		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, childUnit.styleDirectives());
+		margins = LayoutMarginCalculations.zeroAutoMargins(margins);
 
 		AbsoluteSize floatInnerSize = childUnit.fitSize();
 		AbsoluteSize floatMarginSize = LayoutSizeUtils.addPadding(floatInnerSize, margins);

@@ -13,24 +13,24 @@ public final class LayoutPaddingCalculations {
 
 	public static float[] computePaddings(SizeCalculationContext sizeCalculationContext, Box box) {
 		float[] padding = new float[4];
-		padding[0] = computePadding(sizeCalculationContext, box, LeftPaddingDirective.class);
-		padding[1] = computePadding(sizeCalculationContext, box, RightPaddingDirective.class);
-		padding[2] = computePadding(sizeCalculationContext, box, TopPaddingDirective.class);
-		padding[3] = computePadding(sizeCalculationContext, box, BottomPaddingDirective.class);
+		padding[0] = computePadding(sizeCalculationContext, box, LeftPaddingDirective.class, true);
+		padding[1] = computePadding(sizeCalculationContext, box, RightPaddingDirective.class, true);
+		padding[2] = computePadding(sizeCalculationContext, box, TopPaddingDirective.class, false);
+		padding[3] = computePadding(sizeCalculationContext, box, BottomPaddingDirective.class, false);
 
 		return padding;
 	}
 
 	private static float computePadding(
-		SizeCalculationContext sizeCalculationContext, Box box, Class<?  extends PaddingDirective> directiveClass
+		SizeCalculationContext sizeCalculationContext, Box box, Class<?  extends PaddingDirective> directiveClass, boolean isHorizontal
 	) {
 		SizeCalculation sizeCalculation = box
 			.styleDirectives()
 			.getDirectiveOrEmpty(directiveClass)
 			.map(directive -> directive.getSizeCalculation())
-			.orElse(_1 -> 0);
+			.orElse(SizeCalculation.SIZE_ZERO);
 
-		return sizeCalculation.calculate(sizeCalculationContext);
+		return sizeCalculation.calculate(sizeCalculationContext, isHorizontal);
 	}
 	
 }

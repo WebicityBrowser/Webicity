@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
@@ -115,7 +116,7 @@ public final class FlowInlineRenderer {
 			childLayoutResults.addAll(layoutFinalLine(line, linePosition, state));
 
 			LineDimension lineSize = LineDimensionConverter.convertToLineDimension(line.getSize(), lineDirection);
-			float finalLineDepth = lineDepth != -1 ? lineDepth : lineSize.depth();
+			float finalLineDepth = lineDepth != RelativeDimension.UNBOUNDED ? lineDepth : lineSize.depth();
 			linePosition = new LineDimension(0, linePosition.depth() + finalLineDepth, lineDirection);
 
 			totalSize = new LineDimension(Math.max(totalSize.run(), lineSize.run()), linePosition.depth(), lineDirection);

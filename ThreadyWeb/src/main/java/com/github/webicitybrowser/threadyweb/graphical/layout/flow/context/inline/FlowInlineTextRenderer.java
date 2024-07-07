@@ -39,7 +39,7 @@ public final class FlowInlineTextRenderer {
 		String adjustedText = textConsolidation.readNextText(textBox);
 		Font2D font = textBox.getFont(state.getGlobalRenderContext(), createLocalRenderContext(state));	
 		SizeCalculationContext context = LayoutSizeUtils.createSizeCalculationContext(
-			state.flowContext().layoutManagerContext(), textBox.styleDirectives(), true);
+			state.flowContext().layoutManagerContext(), textBox.styleDirectives());
 		float letterSpacing = WebTextDirectiveUtil.getLetterSpacing(textBox.styleDirectives(), context);
 		LineBreak lineBreak = WebTextDirectiveUtil.getLineBreak(textBox.styleDirectives());
 		TextSplitter splitter = new TextSplitter(adjustedText, font, lineBreak, letterSpacing);

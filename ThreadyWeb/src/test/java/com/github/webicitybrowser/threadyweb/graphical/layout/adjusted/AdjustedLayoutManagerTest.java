@@ -69,7 +69,7 @@ public class AdjustedLayoutManagerTest {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
 		DirectivePool childDirectivePool = FlowTestUtils.createBasicDirectivePool();
 		childDirectivePool.directive(PositionTypeDirective.of(PositionType.RELATIVE));
-		childDirectivePool.directive(PositionOffsetDirective.ofLeft(_1 -> 5));
+		childDirectivePool.directive(PositionOffsetDirective.ofLeft((_1, _2) -> 5));
 		Box childBox = new TestStubContentBox(true, new AbsoluteSize(10, 10), childDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();

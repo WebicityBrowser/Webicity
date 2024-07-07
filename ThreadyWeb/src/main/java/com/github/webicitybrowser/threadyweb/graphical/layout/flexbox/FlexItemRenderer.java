@@ -10,6 +10,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flexbox.item.FlexItem;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
 
 public final class FlexItemRenderer {
@@ -31,7 +32,7 @@ public final class FlexItemRenderer {
 			flexItem.getMainSize(), flexItem.getCrossSize(), flexItemRenderContext.flexDirection()
 		).toAbsoluteSize();
 		BoxOffsetDimensions boxOffsetDimensions = flexItem.getSizePreferences().getBoxOffsetDimensions();
-		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(boxOffsetDimensions.margins());
+		float[] zeroAutoMargins = LayoutMarginCalculations.zeroAutoMargins(boxOffsetDimensions.margins());
 		adjustedPreferredSize = LayoutSizeUtils.subtractPadding(adjustedPreferredSize, zeroAutoMargins);
 		adjustedPreferredSize = LayoutSizeUtils.subtractPadding(adjustedPreferredSize, boxOffsetDimensions.padding());
 		adjustedPreferredSize = LayoutSizeUtils.subtractPadding(adjustedPreferredSize, boxOffsetDimensions.borders());
@@ -43,7 +44,7 @@ public final class FlexItemRenderer {
 		fitSize = new AbsoluteSize(
 			adjustedPreferredSize.width() != RelativeDimension.UNBOUNDED ? adjustedPreferredSize.width() : fitSize.width(),
 			adjustedPreferredSize.height() != RelativeDimension.UNBOUNDED ? adjustedPreferredSize.height() : fitSize.height());
-		float[] zeroAutoMargins = FlexMarginCalculations.zeroAutoMargins(boxOffsetDimensions.margins());
+		float[] zeroAutoMargins = LayoutMarginCalculations.zeroAutoMargins(boxOffsetDimensions.margins());
 		fitSize = LayoutSizeUtils.addPadding(fitSize, zeroAutoMargins);
 		fitSize = LayoutSizeUtils.addPadding(fitSize, boxOffsetDimensions.padding());
 		fitSize = LayoutSizeUtils.addPadding(fitSize, boxOffsetDimensions.borders());

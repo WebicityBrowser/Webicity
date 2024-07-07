@@ -2,7 +2,6 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.adjusted;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
@@ -28,25 +27,20 @@ public class AdjustedLayoutManager implements SolidLayoutManager {
 
 	@Override
 	public LayoutResult render(LayoutManagerContext layoutManagerContext) {
-		BiFunction<DirectivePool, Boolean, SizeCalculationContext> sizeCalculationContextGenerator =
-			(directives, isHorizontal) -> LayoutSizeUtils.createSizeCalculationContext(layoutManagerContext, directives, isHorizontal);
-
 		List<Box> children = layoutManagerContext.children();
 		List<Box> childrenForInnerLayout = new ArrayList<>(children.size());
 		List<Box> outOfFlowChildren = new ArrayList<>(0);
 		getChildrenForInnerLayout(children, childrenForInnerLayout, outOfFlowChildren);
 
 		LayoutResult innerLayoutResult = renderInnerLayout(layoutManagerContext, childrenForInnerLayout);
-		ChildLayoutResult[] adjustedNormalChildLayoutResults =
-			adjustRelativeChildren(innerLayoutResult.childLayoutResults(), sizeCalculationContextGenerator);
+		ChildLayoutResult[] adjustedNormalChildLayoutResults = adjustRelativeChildren(layoutManagerContext, innerLayoutResult.childLayoutResults());
 
 		List<ChildLayoutResult> adjustedChildLayoutResults = new ArrayList<>();
 		for (ChildLayoutResult adjustedNormalChildLayoutResult : adjustedNormalChildLayoutResults) {
 			adjustedChildLayoutResults.add(adjustedNormalChildLayoutResult);
 		}
 
-		adjustedChildLayoutResults.addAll(
-			AdjustedLayoutRenderer.render(layoutManagerContext, outOfFlowChildren, sizeCalculationContextGenerator));
+		adjustedChildLayoutResults.addAll(AdjustedLayoutRenderer.render(layoutManagerContext, outOfFlowChildren));
 
 		// TODO: Make sure paint order of positioned elements is preserved
 
@@ -54,14 +48,15 @@ public class AdjustedLayoutManager implements SolidLayoutManager {
 	}
 
 	private ChildLayoutResult[] adjustRelativeChildren(
-		ChildLayoutResult[] originalChildLayoutResults, BiFunction<DirectivePool, Boolean, SizeCalculationContext> sizeCalculationContextGenerator
+		LayoutManagerContext layoutManagerContext, ChildLayoutResult[] originalChildLayoutResults
 	) {
 		ChildLayoutResult[] adjustedChildLayoutResults = new ChildLayoutResult[originalChildLayoutResults.length];
 		for (int i = 0; i < originalChildLayoutResults.length; i++) {
 			ChildLayoutResult originalLayoutResult = originalChildLayoutResults[i];
 			DirectivePool directives = originalLayoutResult.unit().styleDirectives();
 			if (PositionOffsetUtil.getPositionType(directives) == PositionType.RELATIVE) {
-				adjustedChildLayoutResults[i] = adjustRelativeChild(originalLayoutResult, sizeCalculationContextGenerator);
+				SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(layoutManagerContext, directives);
+				adjustedChildLayoutResults[i] = adjustRelativeChild(originalLayoutResult, sizeCalculationContext);
 			} else {
 				adjustedChildLayoutResults[i] = originalLayoutResult;
 			}
@@ -70,13 +65,9 @@ public class AdjustedLayoutManager implements SolidLayoutManager {
 		return adjustedChildLayoutResults;
 	}
 
-	private ChildLayoutResult adjustRelativeChild(
-		ChildLayoutResult originalLayoutResult, BiFunction<DirectivePool, Boolean, SizeCalculationContext> sizeCalculationContextGenerator
-	) {
+	private ChildLayoutResult adjustRelativeChild(ChildLayoutResult originalLayoutResult, SizeCalculationContext sizeCalculationContext) {
 		DirectivePool directives = originalLayoutResult.unit().styleDirectives();
-		AbsolutePosition positionOffset = PositionOffsetUtil.getRelativePositionOffset(
-			isHorizontal -> sizeCalculationContextGenerator.apply(directives, isHorizontal),
-			directives);
+		AbsolutePosition positionOffset = PositionOffsetUtil.getRelativePositionOffset(sizeCalculationContext, directives);
 		AbsolutePosition adjustedPosition = AbsoluteDimensionsMath.sum(
 			originalLayoutResult.relativeRect().position(), positionOffset, AbsolutePosition::new);
 		ChildLayoutResult adjustedChildLayoutResult = new ChildLayoutResult(

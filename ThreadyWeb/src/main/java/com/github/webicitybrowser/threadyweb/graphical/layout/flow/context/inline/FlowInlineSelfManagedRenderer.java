@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline;
 
-import java.util.function.Function;
-
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -23,12 +21,11 @@ public final class FlowInlineSelfManagedRenderer {
 	private FlowInlineSelfManagedRenderer() {}
 
 	public static void addSelfManagedBoxToLine(FlowInlineRendererState state, Box childBox) {
-		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator = 
-			isHorizontal -> LayoutSizeUtils.createSizeCalculationContext(state.flowContext().layoutManagerContext(), childBox.styleDirectives(), isHorizontal);
-		SizeCalculationContext sizeCalculationContext = sizeCalculationContextGenerator.apply(true);
+		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
+			state.flowContext().layoutManagerContext(), childBox.styleDirectives());
 		BoxOffsetDimensions boxOffsetDimensions = getBoxOffsetDimensions(childBox, sizeCalculationContext);
 		AbsoluteSize containerSize = state.flowContext().layoutManagerContext().localRenderContext().preferredSize();
-		AbsoluteSize preferredSize = computePreferredSize(sizeCalculationContextGenerator, childBox, boxOffsetDimensions);
+		AbsoluteSize preferredSize = computePreferredSize(sizeCalculationContext, childBox, boxOffsetDimensions);
 		AbsoluteSize precomputedSize = FlowSizeUtils.enforcePreferredSize(containerSize, preferredSize);
 		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(precomputedSize, boxOffsetDimensions.padding());
 		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
@@ -50,10 +47,10 @@ public final class FlowInlineSelfManagedRenderer {
 	}
 
 	private static AbsoluteSize computePreferredSize(
-		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator, Box childBox, BoxOffsetDimensions boxDimensions
+		SizeCalculationContext sizeCalculationContext, Box childBox, BoxOffsetDimensions boxDimensions
 	) {
 		LayoutSizingContext layoutSizingContext = LayoutSizeUtils.createLayoutSizingContext(
-			childBox.styleDirectives(), sizeCalculationContextGenerator, boxDimensions
+			childBox.styleDirectives(), sizeCalculationContext, boxDimensions
 		);
 		return LayoutSizeUtils.computePreferredSize(childBox.styleDirectives(), layoutSizingContext);
 	}

@@ -252,8 +252,8 @@ public class FlowInlineRendererTest {
 	public void absoluteLengthValuesAreRespected() {
 		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
-		directives.directive(WidthDirective.of(_1 -> 40));
-		directives.directive(HeightDirective.of(_1 -> 30));
+		directives.directive(WidthDirective.of((_1, _2) -> 40));
+		directives.directive(HeightDirective.of((_1, _2) -> 30));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), directives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -271,8 +271,8 @@ public class FlowInlineRendererTest {
 	public void canAddHorizontalPadding() {
 		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
-		directives.directive(PaddingDirective.ofLeft(_1 -> 15));
-		directives.directive(PaddingDirective.ofRight(_1 -> 15));
+		directives.directive(PaddingDirective.ofLeft((_1, _2) -> 15));
+		directives.directive(PaddingDirective.ofRight((_1, _2) -> 15));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), directives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -292,7 +292,7 @@ public class FlowInlineRendererTest {
 	@DisplayName("Letter spacing is respected")
 	public void letterSpacingIsRespected() {
 		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
-		directives.directive(LetterSpacingDirective.of(_1 -> 1));
+		directives.directive(LetterSpacingDirective.of((_1, _2) -> 1));
 		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World", directives);
 		box.getChildrenTracker().addChild(textBox);
@@ -349,7 +349,7 @@ public class FlowInlineRendererTest {
 	@DisplayName("Line height is respected")
 	public void lineHeightIsRespected() {
 		DirectivePool directives = FlowTestUtils.createBasicDirectivePool();
-		directives.directive(LineHeightDirective.of(_1 -> 13));
+		directives.directive(LineHeightDirective.of((_1, _2) -> 13));
 		ChildrenBox box = new TestStubChildrenBox(directives);
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), baseDirectivePool);
 		box.getChildrenTracker().addChild(childBox);

@@ -335,7 +335,7 @@ public class FlexInnerDisplayLayoutTest {
 	public void canRenderBoxWithOneChildWithMarginInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
 		DirectivePool directivePool = createBaseDirectivePool();
-		directivePool.directive(MarginDirective.ofLeft(_1 -> 5));
+		directivePool.directive(MarginDirective.ofLeft((_1, _2) -> 5));
 		directivePool.directive(FlexGrowDirective.of(1));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
 		box.getChildrenTracker().addChild(childBox);
@@ -353,7 +353,7 @@ public class FlexInnerDisplayLayoutTest {
 	public void canRenderBoxWithOneChildWithSetWidthInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
 		DirectivePool directivePool = createBaseDirectivePool();
-		directivePool.directive(WidthDirective.of(_1 -> 20));
+		directivePool.directive(WidthDirective.of((_1, _2) -> 20));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
 		box.getChildrenTracker().addChild(childBox);
 		LocalRenderContext localRenderContext = createLocalRenderContext();
@@ -370,7 +370,7 @@ public class FlexInnerDisplayLayoutTest {
 	public void canRenderBoxWithOneChildWithMaxSizeInSizedFlexContainer() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
 		DirectivePool directivePool = createBaseDirectivePool();
-		directivePool.directive(MaxWidthDirective.of(_1 -> 5));
+		directivePool.directive(MaxWidthDirective.of((_1, _2) -> 5));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
 		box.getChildrenTracker().addChild(childBox);
 		LocalRenderContext localRenderContext = createLocalRenderContext();
@@ -388,7 +388,7 @@ public class FlexInnerDisplayLayoutTest {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
 		DirectivePool directivePool1 = createBaseDirectivePool();
 		directivePool1.directive(FlexGrowDirective.of(1));
-		directivePool1.directive(MaxWidthDirective.of(_1 -> 20));
+		directivePool1.directive(MaxWidthDirective.of((_1, _2) -> 20));
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool1);
 		box.getChildrenTracker().addChild(childBox1);
 		DirectivePool directivePool2 = createBaseDirectivePool();

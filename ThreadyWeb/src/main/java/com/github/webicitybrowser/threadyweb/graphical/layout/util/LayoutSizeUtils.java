@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.util;
 
-import java.util.function.Function;
-
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
@@ -27,10 +25,10 @@ public final class LayoutSizeUtils {
 	private LayoutSizeUtils() {}
 
 	public static LayoutSizingContext createLayoutSizingContext(
-		DirectivePool styleDirectives, Function<Boolean, SizeCalculationContext> contextGenerator, BoxOffsetDimensions boxDimensions
+		DirectivePool styleDirectives, SizeCalculationContext sizeCalculationContext, BoxOffsetDimensions boxDimensions
 	) {
 		BoxSizing boxSizing = getBoxSizing(styleDirectives);
-		return new LayoutSizingContext(boxDimensions, boxSizing, contextGenerator);
+		return new LayoutSizingContext(boxDimensions, boxSizing, sizeCalculationContext);
 	}
 
 	public static AbsoluteSize computePreferredSize(
@@ -73,36 +71,35 @@ public final class LayoutSizeUtils {
 		return new AbsoluteSize(widthComponent, heightComponent);
 	}
 
-	public static SizeCalculationContext createSizeCalculationContext(LayoutManagerContext context, DirectivePool directives, boolean isHorizontal) {
-		return createSizeCalculationContext(context.globalRenderContext(), context.localRenderContext(), directives, isHorizontal);
+	public static SizeCalculationContext createSizeCalculationContext(LayoutManagerContext context, DirectivePool directives) {
+		return createSizeCalculationContext(context.globalRenderContext(), context.localRenderContext(), directives);
 	}
 
 	public static SizeCalculationContext createSizeCalculationContext(
-		GlobalRenderContext context, LocalRenderContext localRenderContext, DirectivePool parentDirectives, boolean isHorizontal
+		GlobalRenderContext context, LocalRenderContext localRenderContext, DirectivePool parentDirectives
 	) {
 		FontMetrics fontMetrics = WebFontUtil.getFont(parentDirectives, context).getMetrics();
-		return createSizeCalculationContext(context, localRenderContext, fontMetrics, isHorizontal);
+		return createSizeCalculationContext(context, localRenderContext, fontMetrics);
 	}
 
 	private static SizeCalculationContext createSizeCalculationContext(
-		GlobalRenderContext context, LocalRenderContext localRenderContext, FontMetrics fontMetrics, boolean isHorizontal
+		GlobalRenderContext context, LocalRenderContext localRenderContext, FontMetrics fontMetrics
 	) {
 		return new SizeCalculationContext(
 			localRenderContext.preferredSize(),
 			context.viewportSize(),
 			fontMetrics,
-			context.rootFontMetrics(),
-			isHorizontal);
+			context.rootFontMetrics());
 	}
 
 	private static float computeSize(
 		SizeCalculation sizeCalculation, LayoutSizingContext layoutSizingContext, boolean isWidth
 	) {
-		SizeCalculationContext sizeCalculationContext = layoutSizingContext.sizeCalculationContextGenerator().apply(isWidth);
+		SizeCalculationContext sizeCalculationContext = layoutSizingContext.sizeCalculationContext();
 		float[] padding = layoutSizingContext.boxOffsetDimensions().totalPadding();
 		float directionalPadding = isWidth ? padding[0] + padding[1] : padding[2] + padding[3];
 		
-		float calculatedSize = sizeCalculation.calculate(sizeCalculationContext);
+		float calculatedSize = sizeCalculation.calculate(sizeCalculationContext, isWidth);
 		if (
 			layoutSizingContext.boxSizing() == BoxSizing.CONTENT_BOX &&
 			calculatedSize != RelativeDimension.UNBOUNDED
@@ -121,7 +118,7 @@ public final class LayoutSizeUtils {
 	}
 
 	public static record LayoutSizingContext(
-		BoxOffsetDimensions boxOffsetDimensions, BoxSizing boxSizing, Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator
+		BoxOffsetDimensions boxOffsetDimensions, BoxSizing boxSizing, SizeCalculationContext sizeCalculationContext
 	) {};
 
 }

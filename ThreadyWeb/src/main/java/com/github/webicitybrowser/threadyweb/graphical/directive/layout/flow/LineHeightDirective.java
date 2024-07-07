@@ -5,7 +5,7 @@ import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 
 public interface LineHeightDirective extends Directive {
 
-	static final SizeCalculation NORMAL = _1 -> -1;
+	static final SizeCalculation NORMAL = SizeCalculation.SIZE_AUTO;
 	
 	SizeCalculation getLineHeightCalculation();
 

@@ -45,8 +45,7 @@ public final class WebFontUtil {
 		FontSource[] fontSources = getFontSources(fontFamilyDirective, parentSource);
 		float fontSize = getFontSize(fontSizeDirective, new SizeCalculationContext(
 			null, styleContext.viewportSize(),
-			parentMetrics, styleContext.rootFontMetrics(),
-			false));
+			parentMetrics, styleContext.rootFontMetrics()));
 		int fontWeight = getFontWeight(fontWeightDirective, parentMetrics);
 
 		return DerivedFontDirective.of(styleContext.resourceLoader().loadFont(
@@ -64,7 +63,7 @@ public final class WebFontUtil {
 	public static float getFontSize(Optional<FontSizeDirective> fontSizeDirective, SizeCalculationContext context) {
 		return fontSizeDirective
 			.map(directive -> directive.getSizeCalculation())
-			.map(calculation -> calculation.calculate(context))
+			.map(calculation -> calculation.calculate(context, true))
 			.orElse(context.relativeFont().getSize());
 	}
 

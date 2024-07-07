@@ -14,14 +14,14 @@ public final class SizeParser {
 	
 	public static SizeCalculation parseWithBoxPercents(CSSValue value) {
 		if (value instanceof PercentageValue percentageValue) {
-			return context -> translateBoxPercentageValue(context, percentageValue);
+			return (context, isHorizontal) -> translateBoxPercentageValue(context, percentageValue, isHorizontal);
 		}
 		return parseNonPercent(value);
 	}
 
 	public static SizeCalculation parseWithFontPercents(CSSValue value) {
 		if (value instanceof PercentageValue percentageValue) {
-			return context -> context.relativeFont().getSize() * percentageValue.getValue() / 100;
+			return (context, isHorizontal) -> context.relativeFont().getSize() * percentageValue.getValue() / 100;
 		}
 		return parseNonPercent(value);
 	}
@@ -29,7 +29,7 @@ public final class SizeParser {
 	public static SizeCalculation parseNonPercent(CSSValue value) {
 		if (value instanceof AbsoluteLengthValue lengthValue) {
 			float translatedValue = translateAbsoluteValue(lengthValue);
-			return _1 -> translatedValue;
+			return (_1, _2) -> translatedValue;
 		} else if (value instanceof RelativeLengthValue lengthValue) {
 			return translateRelativeValue(lengthValue);
 		}
@@ -62,41 +62,40 @@ public final class SizeParser {
 		float initialValue = lengthValue.getValue();
 		switch (lengthValue.getUnit()) {
 		case EM:
-			return context -> context.relativeFont().getSize() * initialValue;
+			return (context, isHorizontal) -> context.relativeFont().getSize() * initialValue;
 		case EX:
-			return context -> context.relativeFont().getSize() * initialValue / 2;
+			return (context, isHorizontal) -> context.relativeFont().getSize() * initialValue / 2;
 		case CAP:
-			return context -> context.relativeFont().getCapHeight() * initialValue;
+			return (context, isHorizontal) -> context.relativeFont().getCapHeight() * initialValue;
 		case CH:
-			return context -> getCharacterAdvance(context, '0', .5f) * initialValue;
+			return (context, isHorizontal) -> getCharacterAdvance(context, '0', .5f) * initialValue;
 		case IC:
-			return context -> getCharacterAdvance(context, '\u6C34', .5f) * initialValue;
+			return (context, isHorizontal) -> getCharacterAdvance(context, '\u6C34', .5f) * initialValue;
 		case REM:
-			return context -> context.rootFont().getSize() * initialValue;
+			return (context, isHorizontal) -> context.rootFont().getSize() * initialValue;
 		case LH:
 			throw new UnsupportedOperationException("LH (Line Height) is not supported yet");
 		case RLH:
 			throw new UnsupportedOperationException("RLH (Root-Relative Line Height) is not supported yet");
 		case VW:
-			return context -> context.viewportSize().width() * initialValue / 100;
+			return (context, isHorizontal) -> context.viewportSize().width() * initialValue / 100;
 		case VH:
-			return context -> context.viewportSize().height() * initialValue / 100;
+			return (context, isHorizontal) -> context.viewportSize().height() * initialValue / 100;
 		case VI:
 			throw new UnsupportedOperationException("VI (Viewport Inline Size) is not supported yet");
 		case VB:
 			throw new UnsupportedOperationException("VB (Viewport Block Size) is not supported yet");
 		case VMIN:
-			return context -> Math.min(context.viewportSize().width(), context.viewportSize().height()) * initialValue / 100;
+			return (context, isHorizontal) -> Math.min(context.viewportSize().width(), context.viewportSize().height()) * initialValue / 100;
 		case VMAX:
-			return context -> Math.max(context.viewportSize().width(), context.viewportSize().height()) * initialValue / 100;
+			return (context, isHorizontal) -> Math.max(context.viewportSize().width(), context.viewportSize().height()) * initialValue / 100;
 		default:
 			throw new UnsupportedOperationException("Unrecognized RelativeLengthUnit: " + lengthValue.getUnit());
 		}
 	}
 
-	private static float translateBoxPercentageValue(SizeCalculationContext context, PercentageValue percentageValue) {
-		// TODO: Actually, this isn't what the isHorizontal() method is for
-		float axisValue = context.isHorizontal() ?
+	private static float translateBoxPercentageValue(SizeCalculationContext context, PercentageValue percentageValue, boolean isHorizontal) {
+		float axisValue = isHorizontal ?
 			context.parentSize().width() :
 			context.parentSize().height();
 		if (axisValue == RelativeDimension.UNBOUNDED) return RelativeDimension.UNBOUNDED;

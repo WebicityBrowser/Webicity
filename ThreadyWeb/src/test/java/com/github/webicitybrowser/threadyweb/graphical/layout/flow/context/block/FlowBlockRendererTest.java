@@ -102,8 +102,8 @@ public class FlowBlockRendererTest {
 	public void absoluteLengthValuesAreRespected() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives = baseDirectivePool;
-		styleDirectives.directive(WidthDirective.of(_1 -> 40));
-		styleDirectives.directive(HeightDirective.of(_1 -> 30));
+		styleDirectives.directive(WidthDirective.of((_1, _2) -> 40));
+		styleDirectives.directive(HeightDirective.of((_1, _2) -> 30));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -121,7 +121,7 @@ public class FlowBlockRendererTest {
 	public void canSetALeftMargin() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives = baseDirectivePool;
-		styleDirectives.directive(MarginDirective.ofLeft(_1 -> 10));
+		styleDirectives.directive(MarginDirective.ofLeft((_1, _2) -> 10));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -139,7 +139,7 @@ public class FlowBlockRendererTest {
 	public void canSetARightMargin() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives = baseDirectivePool;
-		styleDirectives.directive(MarginDirective.ofRight(_1 -> 10));
+		styleDirectives.directive(MarginDirective.ofRight((_1, _2) -> 10));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -157,7 +157,7 @@ public class FlowBlockRendererTest {
 	public void canCenterABox() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives = baseDirectivePool;
-		styleDirectives.directive(WidthDirective.of(_1 -> 10));
+		styleDirectives.directive(WidthDirective.of((_1, _2) -> 10));
 		styleDirectives.directive(MarginDirective.ofLeft(SizeCalculation.SIZE_AUTO));
 		styleDirectives.directive(MarginDirective.ofRight(SizeCalculation.SIZE_AUTO));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
@@ -177,11 +177,11 @@ public class FlowBlockRendererTest {
 	public void topAndBottomMarginsAreCollapsed() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives1 = FlowTestUtils.createBasicDirectivePool();
-		styleDirectives1.directive(MarginDirective.ofBottom(_1 -> 10));
+		styleDirectives1.directive(MarginDirective.ofBottom((_1, _2) -> 10));
 		Box childBox1 = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives1);
 		box.getChildrenTracker().addChild(childBox1);
 		DirectivePool styleDirectives2 = FlowTestUtils.createBasicDirectivePool();
-		styleDirectives2.directive(MarginDirective.ofTop(_1 -> 15));
+		styleDirectives2.directive(MarginDirective.ofTop((_1, _2) -> 15));
 		Box childBox2 = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives2);
 		box.getChildrenTracker().addChild(childBox2);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -202,10 +202,10 @@ public class FlowBlockRendererTest {
 	public void paddingCreatesStyledUnitAroundContent() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives = baseDirectivePool;
-		styleDirectives.directive(PaddingDirective.ofTop(_1 -> 10));
-		styleDirectives.directive(PaddingDirective.ofLeft(_1 -> 5));
-		styleDirectives.directive(PaddingDirective.ofBottom(_1 -> 15));
-		styleDirectives.directive(PaddingDirective.ofRight(_1 -> 20));
+		styleDirectives.directive(PaddingDirective.ofTop((_1, _2) -> 10));
+		styleDirectives.directive(PaddingDirective.ofLeft((_1, _2) -> 5));
+		styleDirectives.directive(PaddingDirective.ofBottom((_1, _2) -> 15));
+		styleDirectives.directive(PaddingDirective.ofRight((_1, _2) -> 20));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -227,9 +227,9 @@ public class FlowBlockRendererTest {
 	public void boxWithPaddingAndMarginIsProperlyPositioned() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives = baseDirectivePool;
-		styleDirectives.directive(WidthDirective.of(_1 -> 10));
-		styleDirectives.directive(PaddingDirective.ofLeft(_1 -> 5));
-		styleDirectives.directive(PaddingDirective.ofRight(_1 -> 5));
+		styleDirectives.directive(WidthDirective.of((_1, _2) -> 10));
+		styleDirectives.directive(PaddingDirective.ofLeft((_1, _2) -> 5));
+		styleDirectives.directive(PaddingDirective.ofRight((_1, _2) -> 5));
 		styleDirectives.directive(MarginDirective.ofLeft(SizeCalculation.SIZE_AUTO));
 		styleDirectives.directive(MarginDirective.ofRight(SizeCalculation.SIZE_AUTO));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
@@ -253,8 +253,8 @@ public class FlowBlockRendererTest {
 	public void boxWithMaxWidthDoesNotExceedMaxWidth() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives = baseDirectivePool;
-		styleDirectives.directive(WidthDirective.of(_1 -> 10));
-		styleDirectives.directive(MaxWidthDirective.of(_1 -> 5));
+		styleDirectives.directive(WidthDirective.of((_1, _2) -> 10));
+		styleDirectives.directive(MaxWidthDirective.of((_1, _2) -> 5));
 		TestStubContentBox childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -277,8 +277,8 @@ public class FlowBlockRendererTest {
 	public void boxWithMinWidthDoesNotUnderflowMinWidth() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives = baseDirectivePool;
-		styleDirectives.directive(WidthDirective.of(_1 -> 10));
-		styleDirectives.directive(MinWidthDirective.of(_1 -> 15));
+		styleDirectives.directive(WidthDirective.of((_1, _2) -> 10));
+		styleDirectives.directive(MinWidthDirective.of((_1, _2) -> 15));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
@@ -300,10 +300,10 @@ public class FlowBlockRendererTest {
 	public void borderWidthsCreateStyledUnitAroundContent() {
 		ChildrenBox box = new TestStubBlockBox(baseDirectivePool);
 		DirectivePool styleDirectives = baseDirectivePool;
-		styleDirectives.directive(BorderWidthDirective.ofTop(_1 -> 10));
-		styleDirectives.directive(BorderWidthDirective.ofLeft(_1 -> 5));
-		styleDirectives.directive(BorderWidthDirective.ofBottom(_1 -> 15));
-		styleDirectives.directive(BorderWidthDirective.ofRight(_1 -> 20));
+		styleDirectives.directive(BorderWidthDirective.ofTop((_1, _2) -> 10));
+		styleDirectives.directive(BorderWidthDirective.ofLeft((_1, _2) -> 5));
+		styleDirectives.directive(BorderWidthDirective.ofBottom((_1, _2) -> 15));
+		styleDirectives.directive(BorderWidthDirective.ofRight((_1, _2) -> 20));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), styleDirectives);
 		box.getChildrenTracker().addChild(childBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();

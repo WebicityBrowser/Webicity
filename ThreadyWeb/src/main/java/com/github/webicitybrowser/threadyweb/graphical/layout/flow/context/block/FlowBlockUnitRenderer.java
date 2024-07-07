@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block;
 
-import java.util.function.Function;
-
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
@@ -68,12 +66,11 @@ public final class FlowBlockUnitRenderer {
 	}
 
 	private static LayoutSizingContext createLayoutSizingContext(FlowBlockRendererState state, Box childBox, BoxOffsetDimensions boxOffsetDimensions) {
-		Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator =
-			isHorizontal -> LayoutSizeUtils.createSizeCalculationContext(
-				state.flowContext().layoutManagerContext(), childBox.styleDirectives(), isHorizontal);
+		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
+			state.flowContext().layoutManagerContext(), childBox.styleDirectives());
 
 		return LayoutSizeUtils.createLayoutSizingContext(
-			childBox.styleDirectives(), sizeCalculationContextGenerator, boxOffsetDimensions
+			childBox.styleDirectives(), sizeCalculationContext, boxOffsetDimensions
 		);
 }
 

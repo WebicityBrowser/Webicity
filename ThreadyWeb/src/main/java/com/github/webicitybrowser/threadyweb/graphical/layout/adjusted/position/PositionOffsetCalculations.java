@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.adjusted.position;
 
-import java.util.function.Function;
-
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
@@ -19,32 +17,30 @@ public class PositionOffsetCalculations {
 
 	private PositionOffsetCalculations() {}
 
-	public static float[] calculateOffset(Function<Boolean, SizeCalculationContext> sizeCalculationContextGenerator, DirectivePool styleDirectives) {
+	public static float[] calculateOffset(SizeCalculationContext sizeCalculationContext, DirectivePool styleDirectives) {
 		float[] offsets = new float[4];
-		SizeCalculationContext horizontalSizeCalculationContext = sizeCalculationContextGenerator.apply(true);
-		SizeCalculationContext verticalSizeCalculationContext = sizeCalculationContextGenerator.apply(false);
-		offsets[0] = computePosition(horizontalSizeCalculationContext, styleDirectives, LeftPositionOffsetDirective.class, POSITION_AUTO);
-		offsets[1] = computePosition(horizontalSizeCalculationContext, styleDirectives, RightPositionOffsetDirective.class, POSITION_AUTO);
-		offsets[2] = computePosition(verticalSizeCalculationContext, styleDirectives, TopPositionOffsetDirective.class, POSITION_AUTO);
-		offsets[3] = computePosition(verticalSizeCalculationContext, styleDirectives, BottomPositionOffsetDirective.class, POSITION_AUTO);
+		offsets[0] = computePosition(sizeCalculationContext, styleDirectives, LeftPositionOffsetDirective.class, true);
+		offsets[1] = computePosition(sizeCalculationContext, styleDirectives, RightPositionOffsetDirective.class, true);
+		offsets[2] = computePosition(sizeCalculationContext, styleDirectives, TopPositionOffsetDirective.class, false);
+		offsets[3] = computePosition(sizeCalculationContext, styleDirectives, BottomPositionOffsetDirective.class, false);
 
 		return offsets;
 	}
 
 	private static float computePosition(
 		SizeCalculationContext sizeCalculationContext, DirectivePool styleDirectives,
-		Class<? extends PositionOffsetDirective> directiveClass, float defaultValue
+		Class<? extends PositionOffsetDirective> directiveClass, boolean isHorizontal
 	) {
 		SizeCalculation sizeCalculation = styleDirectives
 			.getDirectiveOrEmpty(directiveClass)
 			.map(directive -> directive.getSizeCalculation())
-			.orElse(_1 -> POSITION_AUTO);
+			.orElse(SizeCalculation.SIZE_AUTO);
 		
 		if (sizeCalculation == SizeCalculation.SIZE_AUTO) {
-			return defaultValue;
+			return POSITION_AUTO;
 		}
 
-		return sizeCalculation.calculate(sizeCalculationContext);
+		return sizeCalculation.calculate(sizeCalculationContext, isHorizontal);
 	}
 
 	public static AbsolutePosition calculateRelativePositionOffset(float[] positions) {
