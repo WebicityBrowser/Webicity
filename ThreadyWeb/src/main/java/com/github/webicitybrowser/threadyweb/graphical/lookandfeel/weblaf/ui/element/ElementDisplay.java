@@ -24,6 +24,7 @@ import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.layout.adjusted.AdjustedLayoutManager;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitGenerator;
@@ -42,9 +43,10 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, El
 		directives -> BuildableRenderedUnit.create(ELEMENT_INLINE_DISPLAY, directives);
 	private final StyledUnitGenerator styledUnitGenerator =
 		context -> new StyledUnit(ELEMENT_STYLED_DISPLAY, context);
-
-	private final ElementBoxGenerator elementBoxGenerator = new ElementBoxGenerator(innerUnitGenerator, styledUnitGenerator);
-	private final FlowInnerDisplayLayout defaultLayout = new FlowInnerDisplayLayout(innerUnitGenerator, styledUnitGenerator);
+	
+	private final FlowConfig flowConfig = new FlowConfig(innerUnitGenerator, styledUnitGenerator);
+	private final ElementBoxGenerator elementBoxGenerator = new ElementBoxGenerator(flowConfig);
+	private final FlowInnerDisplayLayout defaultLayout = new FlowInnerDisplayLayout(flowConfig);
 	
 	@Override
 	public ElementContext createContext(ComponentUI componentUI) {

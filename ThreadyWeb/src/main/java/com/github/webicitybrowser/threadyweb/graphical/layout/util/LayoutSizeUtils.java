@@ -49,6 +49,18 @@ public final class LayoutSizeUtils {
 		return computeSize(widthSizeCalculation, layoutSizingContext, isWidth);
 	}
 
+	public static AbsoluteSize enforceSize(AbsoluteSize rawChildSize, AbsoluteSize enforcedSize) {
+		float widthComponent = enforcedSize.width() != RelativeDimension.UNBOUNDED ?
+			enforcedSize.width() :
+			rawChildSize.width();
+
+		float heightComponent = enforcedSize.height() != RelativeDimension.UNBOUNDED ?
+			enforcedSize.height() :
+			rawChildSize.height();
+
+		return new AbsoluteSize(widthComponent, heightComponent);
+	}
+
 	public static AbsoluteSize subtractPadding(AbsoluteSize initialSize, float[] paddings) {
 		float widthComponent = initialSize.width() == RelativeDimension.UNBOUNDED ?
 			RelativeDimension.UNBOUNDED :

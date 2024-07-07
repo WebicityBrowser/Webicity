@@ -13,7 +13,7 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.FloatDirective;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockChildRenderResult;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockPrerenderSizingInfo;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockRendererState;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockUnitRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockUnitRenderingContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatTracker;
@@ -37,7 +37,7 @@ public final class FlowBlockFloatRenderer {
 	}
 
 	public static void addFloatBoxToLine(
-		FlowBlockRendererState state, RenderedUnit childUnit, DirectivePool styleDirectives, float blockPosition
+		FlowBlockRenderContext state, RenderedUnit childUnit, DirectivePool styleDirectives, float blockPosition
 	) {
 		FloatDirection floatDirection = styleDirectives
 			.getDirectiveOrEmpty(FloatDirective.class)
@@ -46,7 +46,7 @@ public final class FlowBlockFloatRenderer {
 		addFloat(state, childUnit, blockPosition, floatDirection);
 	}
 
-	public static RenderedUnit renderFloatBoxUnit(FlowBlockRendererState state, Box childBox) {
+	public static RenderedUnit renderFloatBoxUnit(FlowBlockRenderContext state, Box childBox) {
 		BoxOffsetDimensions renderParameters = BoxOffsetDimensions.create(state, childBox);
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
 			state, childBox, renderParameters,
@@ -62,14 +62,14 @@ public final class FlowBlockFloatRenderer {
 			childBox, childRenderResult.unit(), styledUnitSize,
 			prerenderSizingInfo.sizingContext().boxOffsetDimensions()
 		);
-		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
+		RenderedUnit styledUnit = state.flowConfig().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 		
 		// TODO: Clamp the float size
 
 		return styledUnit;
 	}
 
-	private static void addFloat(FlowBlockRendererState state, RenderedUnit childUnit, float blockPosition, FloatDirection floatDirection) {
+	private static void addFloat(FlowBlockRenderContext state, RenderedUnit childUnit, float blockPosition, FloatDirection floatDirection) {
 		FlowRootContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
 		FloatTracker floatTracker = flowRootContextSwitch.floatContext().getFloatTracker();
 		AbsolutePosition trackerPositionOffset = flowRootContextSwitch.predictedPosition();
@@ -106,11 +106,11 @@ public final class FlowBlockFloatRenderer {
 		// TODO: Simplify this method
 	}
 
-	private static AbsoluteSize computeFloatBoxPreferredSize(FlowBlockRendererState state, AbsoluteSize enforcedSize) {
+	private static AbsoluteSize computeFloatBoxPreferredSize(FlowBlockRenderContext state, AbsoluteSize enforcedSize) {
 		return enforcedSize;
 	}
 
-	private static LocalRenderContext createLocalRenderContext(FlowBlockRendererState state, AbsoluteSize preferredSize) {
+	private static LocalRenderContext createLocalRenderContext(FlowBlockRenderContext state, AbsoluteSize preferredSize) {
 		// We do not pass the flow root context switch, as the float establishes its own root context
 		return LocalRenderContext.create(preferredSize, new ContextSwitch[0]);
 	}

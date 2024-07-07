@@ -7,25 +7,26 @@ import java.util.function.Function;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.FlowInlineRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.LineBox;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.marker.LineMarker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension.LineDirection;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimensionConverter;
 
 public class LineContext {
 
+	private final FlowInlineRenderContext flowContext;
 	private final LineDirection lineDirection;
-	private final FlowRenderContext context;
+
 	private final List<LineBox> lines = new ArrayList<>();
 
 	private LineBox currentLine;
 
-	public LineContext(LineDirection lineDirection, FlowRenderContext context) {
+	public LineContext(FlowInlineRenderContext flowContext, LineDirection lineDirection) {
+		this.flowContext = flowContext;
 		this.lineDirection = lineDirection;
-		this.context = context;
 	}
 	
 	public LineBox currentLine() {
@@ -36,8 +37,8 @@ public class LineContext {
 		AbsolutePosition nextLinePosition = determineNextLinePosition();
 		LineDimension maxLineSize = maxLineSizeGenerator.apply(nextLinePosition);
 
-		DirectivePool lineStyles = context.layoutRenderContext().layoutDirectives();
-		LineBox newLine = new LineBox(maxLineSize, lineStyles, context.buildableUnitGenerator());
+		DirectivePool lineStyles = flowContext.getStyleDirectives();
+		LineBox newLine = new LineBox(maxLineSize, lineStyles, flowContext.flowConfig().buildableUnitGenerator());
 		newLine.setEstimatedPosition(nextLinePosition);
 		copyUnresolvedMarkers(newLine);
 		this.currentLine = newLine;

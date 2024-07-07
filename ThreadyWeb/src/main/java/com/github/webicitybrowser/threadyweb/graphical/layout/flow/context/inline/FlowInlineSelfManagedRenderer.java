@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
+import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
@@ -8,7 +9,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.BoxOffsetDimensions;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.FlowSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutPaddingCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
@@ -25,14 +25,21 @@ public final class FlowInlineSelfManagedRenderer {
 			state.flowContext().layoutRenderContext(), childBox.styleDirectives());
 		BoxOffsetDimensions boxOffsetDimensions = getBoxOffsetDimensions(childBox, sizeCalculationContext);
 		AbsoluteSize preferredSize = computePreferredSize(sizeCalculationContext, childBox, boxOffsetDimensions);
+		AbsoluteSize containerSize = new AbsoluteSize(state.getLocalRenderContext().preferredSize().width(), RelativeDimension.UNBOUNDED);
 		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(preferredSize, boxOffsetDimensions.padding());
 		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
+		if (childUnit.fitSize().width() > containerSize.width() && preferredSize.width() == RelativeDimension.UNBOUNDED) {
+			float[] padding = boxOffsetDimensions.padding();
+			AbsoluteSize adjustedContentSize = new AbsoluteSize(
+				containerSize.width() - padding[0] - padding[1], contentSize.height());
+			childUnit = renderChildUnit(state, childBox, adjustedContentSize);
+		}
 		AbsoluteSize rawChildSize = childUnit.fitSize();
 		AbsoluteSize outerSize = LayoutSizeUtils.addPadding(rawChildSize, boxOffsetDimensions.padding());
-		AbsoluteSize adjustedOuterSize = FlowSizeUtils.enforcePreferredSize(outerSize, preferredSize);
+		AbsoluteSize adjustedOuterSize = LayoutSizeUtils.enforceSize(outerSize, preferredSize);
 
 		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedOuterSize, boxOffsetDimensions);
-		RenderedUnit styledUnit = state.flowContext().styledUnitGenerator().generateStyledUnit(styledUnitContext);
+		RenderedUnit styledUnit = state.flowConfig().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 
 		FlowInlineRendererUtil.startNewLineIfNotFits(state, adjustedOuterSize);
 		state.lineContext().currentLine().add(styledUnit, adjustedOuterSize);

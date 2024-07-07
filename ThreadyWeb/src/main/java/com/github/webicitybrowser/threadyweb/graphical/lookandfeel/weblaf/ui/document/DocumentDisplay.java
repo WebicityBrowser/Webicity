@@ -22,6 +22,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.scroll.ScrollDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
@@ -40,9 +41,9 @@ public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, 
 	private final UIDisplay<?, ?, ?> ELEMENT_INLINE_DISPLAY = new ElementInlineDisplay();
 	private static final UIDisplay<?, ?, ?> ELEMENT_STYLED_DISPLAY = new StyledUnitDisplay();
 
-	private final SolidLayoutManager INNER_DISPLAY_LAYOUT = new FlowInnerDisplayLayout(
+	private final SolidLayoutManager INNER_DISPLAY_LAYOUT = new FlowInnerDisplayLayout(new FlowConfig(
 		directives -> BuildableRenderedUnit.create(ELEMENT_INLINE_DISPLAY, directives),
-		context -> new StyledUnit(ELEMENT_STYLED_DISPLAY, context));
+		context -> new StyledUnit(ELEMENT_STYLED_DISPLAY, context)));
 	
 	@Override
 	public DocumentContext createContext(ComponentUI componentUI) {

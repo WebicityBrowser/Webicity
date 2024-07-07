@@ -8,6 +8,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -15,9 +16,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.FloatDirective;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowTestUtils;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockRenderer;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.ElementUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
@@ -29,6 +30,7 @@ import com.github.webicitybrowser.threadyweb.graphical.value.FloatDirection;
 public class FloatLayoutTest {
 
 	private final DirectivePool emptyDirectivePool = FlowTestUtils.createBasicDirectivePool();
+	private final FlowConfig flowConfig = FlowTestUtils.createFlowConfig();
 	private final UIDisplay<?, ?, ?> elementDisplay = new ElementDisplay();
 	
 	@Test
@@ -45,8 +47,8 @@ public class FloatLayoutTest {
 		box.getChildrenTracker().addChild(inlineBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
-		FlowRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext);
-		LayoutResult result = FlowBlockRenderer.render(renderContext);
+		LayoutRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext);
+		LayoutResult result = new FlowBlockLayout(flowConfig).render(renderContext);
 		Assertions.assertEquals(2, result.childLayoutResults().length);
 		ChildLayoutResult floatResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsoluteSize(10, 10), floatResult.relativeRect().size());
@@ -74,8 +76,8 @@ public class FloatLayoutTest {
 		box.getChildrenTracker().addChild(inlineBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
-		FlowRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext);
-		LayoutResult result = FlowBlockRenderer.render(renderContext);
+		LayoutRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext);
+		LayoutResult result = new FlowBlockLayout(flowConfig).render(renderContext);
 		Assertions.assertEquals(2, result.childLayoutResults().length);
 		ChildLayoutResult floatResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsoluteSize(10, 10), floatResult.relativeRect().size());
@@ -104,8 +106,8 @@ public class FloatLayoutTest {
 		box.getChildrenTracker().addChild(floatBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
-		FlowRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext);
-		LayoutResult result = FlowBlockRenderer.render(renderContext);
+		LayoutRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext);
+		LayoutResult result = new FlowBlockLayout(flowConfig).render(renderContext);
 		Assertions.assertEquals(2, result.childLayoutResults().length);
 		ChildLayoutResult inlineResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsoluteSize(50, 14), inlineResult.relativeRect().size());

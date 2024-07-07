@@ -8,9 +8,9 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.BoxOffsetDimensions;
 
 public record FlowBlockUnitRenderingContext(
-	FlowBlockRendererState state, Box childBox, BoxOffsetDimensions renderParameters,
-	BiFunction<FlowBlockRendererState, AbsoluteSize, LocalRenderContext> localRenderContextGenerator,
-	BiFunction<FlowBlockRendererState, AbsoluteSize, AbsoluteSize> childSizeGenerator
+	FlowBlockRenderContext state, Box childBox, BoxOffsetDimensions renderParameters,
+	BiFunction<FlowBlockRenderContext, AbsoluteSize, LocalRenderContext> localRenderContextGenerator,
+	BiFunction<FlowBlockRenderContext, AbsoluteSize, AbsoluteSize> childSizeGenerator
 ) {
 	
 }

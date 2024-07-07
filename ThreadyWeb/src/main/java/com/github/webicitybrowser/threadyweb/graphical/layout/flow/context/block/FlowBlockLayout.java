@@ -2,25 +2,34 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.bloc
 
 import java.util.List;
 
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicAnonymousFluidBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.floatbox.FlowBlockFloatProcessor;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.floatbox.FlowBlockFloatRenderer;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.FlowUtils;
 
-public final class FlowBlockRenderer {
+public class FlowBlockLayout implements SolidLayoutManager {
 	
-	private FlowBlockRenderer() {}
+	private final FlowConfig flowConfig;
 
-	public static LayoutResult render(FlowRenderContext context) {
-		FlowBlockRendererState state = new FlowBlockRendererState(context);
-		renderChildren(state, context.layoutRenderContext().treeTracker().children());
+	public FlowBlockLayout(FlowConfig flowConfig) {
+		this.flowConfig = flowConfig;
+	}
+
+	public LayoutResult render(LayoutRenderContext layoutRenderContext) {
+		FlowRenderContext flowRenderContext = FlowUtils.createFlowRenderContext(layoutRenderContext);
+		FlowBlockRenderContext state = new FlowBlockRenderContext(flowConfig, flowRenderContext);
+		renderChildren(state, layoutRenderContext.treeTracker().children());
 
 		return LayoutResult.create(state.childLayoutResults(), state.positionTracker().fitSize());
 	}
 
-	private static void renderChildren(FlowBlockRendererState state, List<Box> children) {
+	private static void renderChildren(FlowBlockRenderContext state, List<Box> children) {
 		int nonFloatOffset = FlowBlockFloatProcessor.renderInitialFloats(state, children);
 		for (int i = nonFloatOffset; i < children.size(); i++) {
 			Box childBox = children.get(i);

@@ -2,7 +2,6 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.el
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
@@ -12,9 +11,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flexbox.FlexInnerDisplayLayout;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowInnerDisplayLayout;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitGenerator;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebBoxGeneratorUtil;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.InnerDisplay;
@@ -22,15 +20,10 @@ import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
 
 public class ElementBoxGenerator {
 
-	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator;
-	private final StyledUnitGenerator styledUnitGenerator;
+	private final FlowConfig flowConfig;
 
-	public ElementBoxGenerator(
-		Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator,
-		StyledUnitGenerator styledUnitGenerator
-	) {
-		this.innerUnitGenerator = innerUnitGenerator;
-		this.styledUnitGenerator = styledUnitGenerator;
+	public ElementBoxGenerator(FlowConfig flowConfig) {
+		this.flowConfig = flowConfig;
 	}
 	
 	public List<ChildrenBox> generateBoxes(ElementContext elementContext, BoxContext boxContext) {
@@ -59,8 +52,8 @@ public class ElementBoxGenerator {
 	private SolidLayoutManager getLayout(ElementContext elementContext, DirectivePool directives) {
 		InnerDisplay innerDisplay = WebDirectiveUtil.getInnerDisplay(directives);
 		return switch (innerDisplay) {
-			case FLEX -> new FlexInnerDisplayLayout(styledUnitGenerator);
-			default -> new FlowInnerDisplayLayout(innerUnitGenerator, styledUnitGenerator);
+			case FLEX -> new FlexInnerDisplayLayout(flowConfig.styledUnitGenerator());
+			default -> new FlowInnerDisplayLayout(flowConfig);
 		};
 	}
 	

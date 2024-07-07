@@ -8,16 +8,18 @@ import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.marker.UnitExitMarker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension.LineDirection;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimensionConverter;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.FlowUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.br.BreakBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
@@ -27,22 +29,26 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.tex
  * form an inline context. For more info on inline contexts, see
  * the specification at https://www.w3.org/TR/CSS22/visuren.html#inline-formatting
  */
-public final class FlowInlineRenderer {
+public class FlowInlineLayout implements SolidLayoutManager {
 	
-	private FlowInlineRenderer() {}
+	private final FlowConfig flowConfig;
 
-	public static LayoutResult render(FlowRenderContext context) {
+	public FlowInlineLayout(FlowConfig flowConfig) {
+		this.flowConfig = flowConfig;
+	}
+
+	public LayoutResult render(LayoutRenderContext layoutRenderContext) {
 		LineDirection lineDirection = LineDirection.LTR;
-		FlowInlineRenderContext state = new FlowInlineRenderContext(lineDirection, context);
+		FlowRenderContext flowRenderContext = FlowUtils.createFlowRenderContext(layoutRenderContext);
+		FlowInlineRenderContext state = new FlowInlineRenderContext(flowConfig, flowRenderContext, lineDirection);
 
 		prepareTextRendering(state);
 
-		for (Box childBox: context.layoutRenderContext().treeTracker().children()) {
+		for (Box childBox: layoutRenderContext.treeTracker().children()) {
 			addBoxToLine(state, childBox);
 		}
 
-		LayoutRenderContext layoutManagerContext = context.layoutRenderContext();
-		float lineDepth = FlowUtils.getLineHeight(layoutManagerContext, layoutManagerContext.layoutDirectives());
+		float lineDepth = FlowUtils.getLineHeight(layoutRenderContext, layoutRenderContext.layoutDirectives());
 		return createInnerDisplayUnit(state, lineDepth);
 	}
 

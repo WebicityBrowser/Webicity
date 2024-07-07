@@ -9,7 +9,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.BoxOffsetDimensions;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.FlowSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils.LayoutSizingContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
@@ -19,7 +18,7 @@ public final class FlowBlockUnitRenderer {
 	private FlowBlockUnitRenderer() {}
 
 	public static FlowBlockPrerenderSizingInfo prerenderChild(FlowBlockUnitRenderingContext context) {
-		FlowBlockRendererState state = context.state();
+		FlowBlockRenderContext state = context.state();
 		AbsoluteSize parentSize = state.getLocalRenderContext().preferredSize();
 		Box childBox = context.childBox();
 		BoxOffsetDimensions renderParameters = context.renderParameters();
@@ -51,7 +50,7 @@ public final class FlowBlockUnitRenderer {
 			).fitSize();
 			precomputedSize = new AbsoluteSize(precomputedSize.width(), fitSize.height());
 		}
-		precomputedSize = FlowSizeUtils.enforcePreferredSize(precomputedSize, prerenderSizingInfo.forcedChildContentSize());
+		precomputedSize = LayoutSizeUtils.enforceSize(precomputedSize, prerenderSizingInfo.forcedChildContentSize());
 		precomputedSize = FlowBlockSizeCalculations.clipContentSize(childBox.styleDirectives(), precomputedSize, prerenderSizingInfo);
 
 		adjustedPrerenderSizingInfo = new FlowBlockPrerenderSizingInfo(
@@ -59,13 +58,13 @@ public final class FlowBlockUnitRenderer {
 		);
 		
 		RenderedUnit childUnit = renderChildUnit(context, adjustedPrerenderSizingInfo);
-		AbsoluteSize adjustedSize = FlowSizeUtils.enforcePreferredSize(childUnit.fitSize(), prerenderSizingInfo.forcedChildContentSize());
+		AbsoluteSize adjustedSize = LayoutSizeUtils.enforceSize(childUnit.fitSize(), prerenderSizingInfo.forcedChildContentSize());
 		AbsoluteSize clippedAdjustedSize = FlowBlockSizeCalculations.clipContentSize(childBox.styleDirectives(), adjustedSize, prerenderSizingInfo);
 
 		return new FlowBlockChildRenderResult(childUnit, clippedAdjustedSize);
 	}
 
-	private static LayoutSizingContext createLayoutSizingContext(FlowBlockRendererState state, Box childBox, BoxOffsetDimensions boxOffsetDimensions) {
+	private static LayoutSizingContext createLayoutSizingContext(FlowBlockRenderContext state, Box childBox, BoxOffsetDimensions boxOffsetDimensions) {
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
 			state.flowContext().layoutRenderContext(), childBox.styleDirectives());
 
@@ -79,7 +78,7 @@ public final class FlowBlockUnitRenderer {
 	}
 
 	private static RenderedUnit renderChildUnit(FlowBlockUnitRenderingContext context, FlowBlockPrerenderSizingInfo prerenderSizingInfo) {
-		FlowBlockRendererState state = context.state();
+		FlowBlockRenderContext state = context.state();
 		Box childBox = context.childBox();
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
 		LocalRenderContext childLocalRenderContext = context.localRenderContextGenerator().apply(

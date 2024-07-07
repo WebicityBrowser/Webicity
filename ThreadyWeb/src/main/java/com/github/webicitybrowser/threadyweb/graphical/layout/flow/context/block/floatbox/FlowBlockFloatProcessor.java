@@ -6,7 +6,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockRendererState;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatContext.FloatEntry;
 
@@ -14,7 +14,7 @@ public final class FlowBlockFloatProcessor {
 	
 	private FlowBlockFloatProcessor() {}
 
-	public static int renderInitialFloats(FlowBlockRendererState state, List<Box> children) {
+	public static int renderInitialFloats(FlowBlockRenderContext state, List<Box> children) {
 		int floats = 0;
 		for (int i = 0; i < children.size(); i++) {
 			Box childBox = children.get(i);
@@ -28,7 +28,7 @@ public final class FlowBlockFloatProcessor {
 		return floats;
 	}
 
-	public static void collectPostFloats(FlowBlockRendererState state, List<Box> children, int index) {
+	public static void collectPostFloats(FlowBlockRenderContext state, List<Box> children, int index) {
 		FlowRenderContext flowContext = state.flowContext();
 		FlowRootContextSwitch flowRootContextSwitch = flowContext.flowRootContextSwitch();
 		FloatContext floatContext = flowRootContextSwitch.floatContext();
@@ -41,7 +41,7 @@ public final class FlowBlockFloatProcessor {
 		}
 	}
 
-	public static void addRemainingFloats(FlowBlockRendererState state) {
+	public static void addRemainingFloats(FlowBlockRenderContext state) {
 		FlowRenderContext flowContext = state.flowContext();
 		FlowRootContextSwitch flowRootContextSwitch = flowContext.flowRootContextSwitch();
 		FloatContext floatContext = flowRootContextSwitch.floatContext();

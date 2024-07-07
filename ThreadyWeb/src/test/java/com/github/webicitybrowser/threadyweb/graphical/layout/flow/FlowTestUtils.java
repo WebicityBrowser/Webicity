@@ -2,7 +2,6 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.flow;
 
 import org.mockito.Mockito;
 
-import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.drawing.core.ResourceLoader;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
@@ -17,8 +16,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.directive.derived.DerivedFontDirective;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.imp.FloatContextImp;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.imp.FloatTrackerImp;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.imp.BuildableRenderedUnitImp;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
@@ -56,25 +53,17 @@ public class FlowTestUtils {
 		return LocalRenderContext.create(size, switches);
 	}
 
-	public static FlowRenderContext createRenderContext(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		FlowRootContextSwitch flowRootContextSwitch = new FlowRootContextSwitch(
-			AbsolutePosition.ZERO_POSITION,
-			new FloatContextImp(new FloatTrackerImp()));
-		for (ContextSwitch contextSwitch : localRenderContext.contextSwitches()) {
-			if (contextSwitch instanceof FlowRootContextSwitch) {
-				flowRootContextSwitch = (FlowRootContextSwitch) contextSwitch;
-			}
-		}
+	public static FlowConfig createFlowConfig() {
+		return new FlowConfig(
+			directives -> new BuildableRenderedUnitImp(null, directives),
+			context -> new StyledUnit(null, context)
+		);
+	}
 
-		LayoutRenderContext layoutManagerContext = new LayoutRenderContext(
+	public static LayoutRenderContext createRenderContext(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
+		return new LayoutRenderContext(
 			globalRenderContext, localRenderContext,
 			new StaticTreeTracker(box, box.getChildrenTracker().getChildren()));
-		
-		return new FlowRenderContext(
-			layoutManagerContext,
-			directives -> new BuildableRenderedUnitImp(null, directives),
-			context -> new StyledUnit(null, context),
-			flowRootContextSwitch);
 	}
 
 	public static TextBox createTextBox(String text, DirectivePool directives) {

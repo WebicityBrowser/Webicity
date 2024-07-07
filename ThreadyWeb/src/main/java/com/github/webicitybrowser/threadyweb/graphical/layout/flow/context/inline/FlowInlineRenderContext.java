@@ -3,6 +3,7 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inli
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension.LineDirection;
@@ -10,35 +11,41 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.T
 
 public class FlowInlineRenderContext {
 
-	private final FlowRenderContext context;
+	private final FlowConfig flowConfig;
+	private final FlowRenderContext renderContext;
 	private final LineContext lineContext;
 
 	private final TextConsolidation textConsolidation = TextConsolidation.create();
 
-	public FlowInlineRenderContext(LineDirection lineDirection, FlowRenderContext context) {
-		this.lineContext = new LineContext(lineDirection, context);
-		this.context = context;
+	public FlowInlineRenderContext(FlowConfig flowConfig, FlowRenderContext renderContext, LineDirection lineDirection) {
+		this.flowConfig = flowConfig;
+		this.renderContext = renderContext;
+		this.lineContext = new LineContext(this, lineDirection);
 		FlowInlineRendererUtil.startNewLine(this);
+	}
+
+	public FlowConfig flowConfig() {
+		return flowConfig;
+	}
+
+	public FlowRenderContext flowContext() {
+		return renderContext;
 	}
 
 	public LineContext lineContext() {
 		return lineContext;
 	}
 
-	public FlowRenderContext flowContext() {
-		return context;
-	}
-
 	public GlobalRenderContext getGlobalRenderContext() {
-		return context.globalRenderContext();
+		return renderContext.globalRenderContext();
 	}
 
 	public LocalRenderContext getLocalRenderContext() {
-		return context.localRenderContext();
+		return renderContext.localRenderContext();
 	}
 
 	public DirectivePool getStyleDirectives() {
-		return context.layoutRenderContext().layoutDirectives();
+		return renderContext.layoutRenderContext().layoutDirectives();
 	}
 
 	public TextConsolidation getTextConsolidation() {

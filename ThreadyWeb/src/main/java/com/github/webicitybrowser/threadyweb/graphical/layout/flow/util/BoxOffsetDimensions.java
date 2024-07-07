@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.flow.util;
 
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockRendererState;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutPaddingCalculations;
@@ -18,7 +18,7 @@ public record BoxOffsetDimensions(float[] margins, float[] padding, float[] bord
 		return totalPadding;
 	}
 
-	public static BoxOffsetDimensions create(FlowBlockRendererState state, Box childBox) {
+	public static BoxOffsetDimensions create(FlowBlockRenderContext state, Box childBox) {
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
 			state.flowContext().layoutRenderContext(), childBox.styleDirectives());
 		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, childBox.styleDirectives());

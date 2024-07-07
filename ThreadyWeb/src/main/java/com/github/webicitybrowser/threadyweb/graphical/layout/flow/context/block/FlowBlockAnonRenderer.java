@@ -18,7 +18,7 @@ public final class FlowBlockAnonRenderer {
 	
 	private FlowBlockAnonRenderer() {}
 
-	public static void renderAnonBox(FlowBlockRendererState state, Box anonBox) {
+	public static void renderAnonBox(FlowBlockRenderContext state, Box anonBox) {
 		AbsoluteSize preferredSize = new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED);
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
 		LocalRenderContext localRenderContext = state.getLocalRenderContext();
@@ -32,7 +32,7 @@ public final class FlowBlockAnonRenderer {
 		state.addChildLayoutResult(new ChildLayoutResult(childUnit, childRect));
 	}
 
-	private static ContextSwitch createChildFlowRootContextSwitch(FlowBlockRendererState state, Box anonBox) {
+	private static ContextSwitch createChildFlowRootContextSwitch(FlowBlockRenderContext state, Box anonBox) {
 		FlowRootContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
 		AbsolutePosition predictedChildPosition = AbsoluteDimensionsMath.sum(
 			state.positionTracker().getPosition(),
@@ -42,7 +42,7 @@ public final class FlowBlockAnonRenderer {
 	}
 
 	private static AbsoluteSize adjustAnonSize(
-		FlowBlockRendererState state, AbsoluteSize preferredSize, AbsoluteSize fitSize
+		FlowBlockRenderContext state, AbsoluteSize preferredSize, AbsoluteSize fitSize
 	) {
 		AbsoluteSize parentSize = state.getLocalRenderContext().preferredSize();
 		
