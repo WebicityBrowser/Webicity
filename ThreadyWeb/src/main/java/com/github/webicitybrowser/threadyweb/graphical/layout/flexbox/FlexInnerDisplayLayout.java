@@ -7,7 +7,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.BasicAnonymousFluidBox;
@@ -31,8 +31,8 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 	}
 
 	@Override
-	public LayoutResult render(LayoutManagerContext layoutManagerContext) {
-		int numChildren = layoutManagerContext.children().size();
+	public LayoutResult render(LayoutRenderContext layoutManagerContext) {
+		int numChildren = layoutManagerContext.treeTracker().children().size();
 		if (numChildren == 0) {
 			return LayoutResult.create(new ChildLayoutResult[0], AbsoluteSize.ZERO_SIZE);
 		}
@@ -65,14 +65,14 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 			lineDimensions.toAbsoluteSize());
 	}
 
-	private List<FlexItem> createFlexItems(LayoutManagerContext layoutManagerContext) {
-		List<FlexItem> flexItems = new ArrayList<>(layoutManagerContext.children().size());
-		addFlexItems(layoutManagerContext, flexItems, layoutManagerContext.children());
+	private List<FlexItem> createFlexItems(LayoutRenderContext layoutManagerContext) {
+		List<FlexItem> flexItems = new ArrayList<>(layoutManagerContext.treeTracker().children().size());
+		addFlexItems(layoutManagerContext, flexItems, layoutManagerContext.treeTracker().children());
 
 		return flexItems;
 	}
 
-	private void addFlexItems(LayoutManagerContext layoutManagerContext, List<FlexItem> flexItems, List<Box> children) {
+	private void addFlexItems(LayoutRenderContext layoutManagerContext, List<FlexItem> flexItems, List<Box> children) {
 		for (Box child: children) {
 			if (child instanceof TextBox textBox && textBox.text().isBlank()) continue;
 			if (child instanceof BasicAnonymousFluidBox anonBox) {

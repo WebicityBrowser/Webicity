@@ -5,7 +5,8 @@ import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.base.layout.StaticTreeTracker;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
@@ -59,9 +60,9 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, El
 	public ElementUnit renderBox(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		SolidLayoutManager layoutManager = box instanceof ElementBlockBox elementBox ? elementBox.layout() : defaultLayout;
 		SolidLayoutManager adjustedLayoutManager = new AdjustedLayoutManager(layoutManager);
-		LayoutManagerContext layoutManagerContext = new LayoutManagerContext(
-			box, box.getChildrenTracker().getChildren(),
-			globalRenderContext, localRenderContext);
+		LayoutRenderContext layoutManagerContext = new LayoutRenderContext(
+			globalRenderContext, localRenderContext,
+			new StaticTreeTracker(box, box.getChildrenTracker().getChildren()));
 		LayoutResult layoutResult = adjustedLayoutManager.render(layoutManagerContext);
 		
 		return new ElementUnit(this, box.styleDirectives(), layoutResult);

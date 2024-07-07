@@ -12,7 +12,7 @@ public final class FlowRenderer {
 	private FlowRenderer() {}
 
 	public static LayoutResult render(FlowRenderContext context) {
-		List<Box> children = context.layoutManagerContext().children();
+		List<Box> children = context.layoutRenderContext().treeTracker().children();
 		if (children.size() > 0 && !(children.get(0).isFluid())) {
 			return FlowBlockRenderer.render(context);
 		} else {

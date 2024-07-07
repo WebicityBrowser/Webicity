@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexWrapDirective.FlexWrap;
@@ -14,7 +14,7 @@ public final class FlexCrossSizeDetermination {
 	
 	private FlexCrossSizeDetermination() {}
 
-	public static void determineLineCrossSizes(LayoutManagerContext layoutManagerContext, List<FlexLine> flexLines) {
+	public static void determineLineCrossSizes(LayoutRenderContext layoutManagerContext, List<FlexLine> flexLines) {
 		for (FlexLine flexLine: flexLines) {
 			determineItemCrossSizes(layoutManagerContext, flexLine);
 		}
@@ -35,7 +35,7 @@ public final class FlexCrossSizeDetermination {
 		}
     }
 
-	private static void distributeExtraSpace(LayoutManagerContext layoutManagerContext, List<FlexLine> flexLines) {
+	private static void distributeExtraSpace(LayoutRenderContext layoutManagerContext, List<FlexLine> flexLines) {
 		float preferredCrossSize = FlexDimension
 			.createFrom(
 				layoutManagerContext.localRenderContext().preferredSize(),
@@ -53,7 +53,7 @@ public final class FlexCrossSizeDetermination {
 		}
 	}
 
-	private static boolean determineNoWrapLineCrossSize(LayoutManagerContext layoutManagerContext, FlexLine flexLine) {
+	private static boolean determineNoWrapLineCrossSize(LayoutRenderContext layoutManagerContext, FlexLine flexLine) {
 		float parentSize = FlexDimension
 			.createFrom(layoutManagerContext.localRenderContext().preferredSize(), flexLine.getFlexDirection())
 			.cross();
@@ -65,7 +65,7 @@ public final class FlexCrossSizeDetermination {
 		return false;
 	}
 
-	private static void determineFlexLineCrossSize(LayoutManagerContext layoutManagerContext, FlexLine flexLine) {
+	private static void determineFlexLineCrossSize(LayoutRenderContext layoutManagerContext, FlexLine flexLine) {
 		float crossSize = flexLine.getFlexItems().stream()
 			.map(FlexItem::getCrossSize)
 			.max(Float::compare)
@@ -73,20 +73,20 @@ public final class FlexCrossSizeDetermination {
 		flexLine.setCrossSize(crossSize);
 	}
 
-	public static void determineItemCrossSizes(LayoutManagerContext layoutManagerContext, FlexLine flexLine) {
+	public static void determineItemCrossSizes(LayoutRenderContext layoutManagerContext, FlexLine flexLine) {
 		FlexDirection flexDirection = flexLine.getFlexDirection();
 		for (FlexItem flexItem: flexLine.getFlexItems()) {
 			determineInitialItemCrossSize(layoutManagerContext, flexItem, flexDirection);
 		}
 	}
 
-	private static void determineUsedItemCrossSizes(LayoutManagerContext layoutManagerContext, FlexLine flexLine) {
+	private static void determineUsedItemCrossSizes(LayoutRenderContext layoutManagerContext, FlexLine flexLine) {
 		for (FlexItem flexItem: flexLine.getFlexItems()) {
 			determineUsedItemCrossSize(layoutManagerContext, flexLine, flexItem);
 		}
 	}
 
-	private static void determineUsedItemCrossSize(LayoutManagerContext layoutManagerContext, FlexLine flexLine, FlexItem flexItem) {
+	private static void determineUsedItemCrossSize(LayoutRenderContext layoutManagerContext, FlexLine flexLine, FlexItem flexItem) {
 		FlexDirection flexDirection = flexLine.getFlexDirection();
 		flexItem.setCrossSize(flexLine.getCrossSize());
 		GlobalRenderContext globalRenderContext = layoutManagerContext.globalRenderContext();
@@ -96,12 +96,12 @@ public final class FlexCrossSizeDetermination {
 		FlexItemRenderer.render(flexItem, flexItemRenderContext);
 	}
 
-	private static void determineInitialItemCrossSize(LayoutManagerContext layoutManagerContext, FlexItem flexItem, FlexDirection flexDirection) {
+	private static void determineInitialItemCrossSize(LayoutRenderContext layoutManagerContext, FlexItem flexItem, FlexDirection flexDirection) {
 		determineBaselineCrossSize(layoutManagerContext, flexItem, flexDirection);
 	}
 
 	private static void determineBaselineCrossSize(
-		LayoutManagerContext layoutManagerContext, FlexItem flexItem, FlexDirection flexDirection
+		LayoutRenderContext layoutManagerContext, FlexItem flexItem, FlexDirection flexDirection
 	) {
 		GlobalRenderContext globalRenderContext = layoutManagerContext.globalRenderContext();
 		FlexItemRenderer.FlexItemRenderContext flexItemRenderContext = new FlexItemRenderer.FlexItemRenderContext(

@@ -7,8 +7,9 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.base.layout.StaticTreeTracker;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -26,8 +27,8 @@ public class AdjustedLayoutManager implements SolidLayoutManager {
 	}
 
 	@Override
-	public LayoutResult render(LayoutManagerContext layoutManagerContext) {
-		List<Box> children = layoutManagerContext.children();
+	public LayoutResult render(LayoutRenderContext layoutManagerContext) {
+		List<Box> children = layoutManagerContext.treeTracker().children();
 		List<Box> childrenForInnerLayout = new ArrayList<>(children.size());
 		List<Box> outOfFlowChildren = new ArrayList<>(0);
 		getChildrenForInnerLayout(children, childrenForInnerLayout, outOfFlowChildren);
@@ -48,7 +49,7 @@ public class AdjustedLayoutManager implements SolidLayoutManager {
 	}
 
 	private ChildLayoutResult[] adjustRelativeChildren(
-		LayoutManagerContext layoutManagerContext, ChildLayoutResult[] originalChildLayoutResults
+		LayoutRenderContext layoutManagerContext, ChildLayoutResult[] originalChildLayoutResults
 	) {
 		ChildLayoutResult[] adjustedChildLayoutResults = new ChildLayoutResult[originalChildLayoutResults.length];
 		for (int i = 0; i < originalChildLayoutResults.length; i++) {
@@ -78,12 +79,13 @@ public class AdjustedLayoutManager implements SolidLayoutManager {
 		return adjustedChildLayoutResult;
 	}
 
-	private LayoutResult renderInnerLayout(LayoutManagerContext layoutManagerContext, List<Box> childrenForInnerLayout) {
-		LayoutManagerContext innerLayoutManagerContext = new LayoutManagerContext(
-			layoutManagerContext.parentBox(),
-			childrenForInnerLayout,
+	private LayoutResult renderInnerLayout(LayoutRenderContext layoutManagerContext, List<Box> childrenForInnerLayout) {
+		LayoutRenderContext innerLayoutManagerContext = new LayoutRenderContext(
 			layoutManagerContext.globalRenderContext(),
-			layoutManagerContext.localRenderContext()
+			layoutManagerContext.localRenderContext(),
+			new StaticTreeTracker(
+				layoutManagerContext.treeTracker().parentBox(),
+				childrenForInnerLayout)
 		);
 
 		return innerLayoutManager.render(innerLayoutManagerContext);

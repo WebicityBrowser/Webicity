@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.base.layout.StaticTreeTracker;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
@@ -55,9 +56,9 @@ public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, 
 
 	@Override
 	public ElementUnit renderBox(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		LayoutManagerContext layoutManagerContext = new LayoutManagerContext(
-			box, box.getChildrenTracker().getChildren(),
-			globalRenderContext, localRenderContext);
+		LayoutRenderContext layoutManagerContext = new LayoutRenderContext(
+			globalRenderContext, localRenderContext,
+			new StaticTreeTracker(box, box.getChildrenTracker().getChildren()));
 		LayoutResult layoutResult = INNER_DISPLAY_LAYOUT.render(layoutManagerContext);
 		return new ElementUnit(this, box.styleDirectives(), layoutResult);
 	}

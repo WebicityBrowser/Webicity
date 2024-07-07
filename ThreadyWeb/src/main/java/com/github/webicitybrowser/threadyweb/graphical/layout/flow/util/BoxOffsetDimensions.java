@@ -20,7 +20,7 @@ public record BoxOffsetDimensions(float[] margins, float[] padding, float[] bord
 
 	public static BoxOffsetDimensions create(FlowBlockRendererState state, Box childBox) {
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
-			state.flowContext().layoutManagerContext(), childBox.styleDirectives());
+			state.flowContext().layoutRenderContext(), childBox.styleDirectives());
 		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, childBox.styleDirectives());
 		float[] paddings = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, childBox);
 		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, childBox);

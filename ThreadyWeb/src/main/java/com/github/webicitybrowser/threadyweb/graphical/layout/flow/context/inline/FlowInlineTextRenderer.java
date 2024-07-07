@@ -28,18 +28,18 @@ public final class FlowInlineTextRenderer {
 	
 	private FlowInlineTextRenderer() {}
 
-	public static void preadjustTextBoxes(FlowInlineRendererState state, List<Box> children) {
+	public static void preadjustTextBoxes(FlowInlineRenderContext state, List<Box> children) {
 		collectPreadjustTextBoxes(state, children);
 		ConsolidatedCollapsibleTextView textView = state.getTextConsolidation().getTextView();
 		ConsolidatedTextCollapser.collapse(textView, WhiteSpaceCollapse.COLLAPSE);
 	}
 
-	public static void addTextBoxToLine(FlowInlineRendererState state, TextBox textBox) {
+	public static void addTextBoxToLine(FlowInlineRenderContext state, TextBox textBox) {
 		TextConsolidation textConsolidation = state.getTextConsolidation();
 		String adjustedText = textConsolidation.readNextText(textBox);
 		Font2D font = textBox.getFont(state.getGlobalRenderContext(), createLocalRenderContext(state));	
 		SizeCalculationContext context = LayoutSizeUtils.createSizeCalculationContext(
-			state.flowContext().layoutManagerContext(), textBox.styleDirectives());
+			state.flowContext().layoutRenderContext(), textBox.styleDirectives());
 		float letterSpacing = WebTextDirectiveUtil.getLetterSpacing(textBox.styleDirectives(), context);
 		LineBreak lineBreak = WebTextDirectiveUtil.getLineBreak(textBox.styleDirectives());
 		TextSplitter splitter = new TextSplitter(adjustedText, font, lineBreak, letterSpacing);
@@ -50,7 +50,7 @@ public final class FlowInlineTextRenderer {
 		}
 	}
 
-	private static String getNextSplit(FlowInlineRendererState state, TextSplitter splitter) {
+	private static String getNextSplit(FlowInlineRenderContext state, TextSplitter splitter) {
 		// TODO: Don't force fit if floats are present.
 		LineContext lineContext = state.lineContext();
 		boolean forceFit = lineContext.currentLine().isEmpty();
@@ -67,7 +67,7 @@ public final class FlowInlineTextRenderer {
 	}
 
 	private static void addTextToCurrentLine(
-		FlowInlineRendererState state, String text, TextBox textBox, Font2D font, float letterSpacing
+		FlowInlineRenderContext state, String text, TextBox textBox, Font2D font, float letterSpacing
 	) {
 		if (text.isEmpty()) return;
 
@@ -82,7 +82,7 @@ public final class FlowInlineTextRenderer {
 		currentLine.add(new TextUnit(fitSize, textBox, text, font, letterSpacing), fitSize);
 	}
 
-	private static String trimTextIfLineStart(FlowInlineRendererState state, String text) {
+	private static String trimTextIfLineStart(FlowInlineRenderContext state, String text) {
 		if (!text.startsWith(" ") || !isLineStart(state)) {
 			return text;
 		}
@@ -90,7 +90,7 @@ public final class FlowInlineTextRenderer {
 		return text.substring(1);
 	}
 
-	private static boolean isLineStart(FlowInlineRendererState state) {
+	private static boolean isLineStart(FlowInlineRenderContext state) {
 		LineContext lineContext = state.lineContext();
 		if (lineContext.currentLine().isEmpty()) {
 			return true;
@@ -111,7 +111,7 @@ public final class FlowInlineTextRenderer {
 		return true;
 	}
 
-	private static void collectPreadjustTextBoxes(FlowInlineRendererState state, List<Box> children) {
+	private static void collectPreadjustTextBoxes(FlowInlineRenderContext state, List<Box> children) {
 		for (Box childBox: children) {
 			if (childBox instanceof TextBox textBox) {
 				state.getTextConsolidation().addText(textBox, textBox.text());
@@ -122,7 +122,7 @@ public final class FlowInlineTextRenderer {
 		}
 	}
 
-	private static LocalRenderContext createLocalRenderContext(FlowInlineRendererState state) {
+	private static LocalRenderContext createLocalRenderContext(FlowInlineRenderContext state) {
 		AbsoluteSize preferredSize = state.getLocalRenderContext().preferredSize();
 		return LocalRenderContext.create(preferredSize, new ContextSwitch[0]);
 	}

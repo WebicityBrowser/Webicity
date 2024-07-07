@@ -6,7 +6,7 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
@@ -33,23 +33,23 @@ public final class FlowInlineRenderer {
 
 	public static LayoutResult render(FlowRenderContext context) {
 		LineDirection lineDirection = LineDirection.LTR;
-		FlowInlineRendererState state = new FlowInlineRendererState(lineDirection, context);
+		FlowInlineRenderContext state = new FlowInlineRenderContext(lineDirection, context);
 
 		prepareTextRendering(state);
 
-		for (Box childBox: context.layoutManagerContext().children()) {
+		for (Box childBox: context.layoutRenderContext().treeTracker().children()) {
 			addBoxToLine(state, childBox);
 		}
 
-		LayoutManagerContext layoutManagerContext = context.layoutManagerContext();
+		LayoutRenderContext layoutManagerContext = context.layoutRenderContext();
 		float lineDepth = FlowUtils.getLineHeight(layoutManagerContext, layoutManagerContext.layoutDirectives());
 		return createInnerDisplayUnit(state, lineDepth);
 	}
 
-	private static void prepareTextRendering(FlowInlineRendererState state) {
+	private static void prepareTextRendering(FlowInlineRenderContext state) {
 		FlowRenderContext context = state.flowContext();
-		LayoutManagerContext layoutManagerContext = context.layoutManagerContext();
-		FlowInlineTextRenderer.preadjustTextBoxes(state, layoutManagerContext.children());
+		LayoutRenderContext layoutManagerContext = context.layoutRenderContext();
+		FlowInlineTextRenderer.preadjustTextBoxes(state, layoutManagerContext.treeTracker().children());
 	}
 
 	/**
@@ -58,7 +58,7 @@ public final class FlowInlineRenderer {
 	 * @param state The inline context state
 	 * @param childBox The box to add to the line
 	 */
-	private static void addBoxToLine(FlowInlineRendererState state, Box childBox) {
+	private static void addBoxToLine(FlowInlineRenderContext state, Box childBox) {
 		if (childBox instanceof TextBox textBox) {
 			FlowInlineTextRenderer.addTextBoxToLine(state, textBox);
 		} else if (childBox instanceof BreakBox) {
@@ -71,7 +71,7 @@ public final class FlowInlineRenderer {
 		}
 	}
 
-	private static void addInlineBoxToLine(FlowInlineRendererState state, ChildrenBox childBox) {
+	private static void addInlineBoxToLine(FlowInlineRenderContext state, ChildrenBox childBox) {
 		pushFormattingInfo(state, childBox);
 
 		for (Box inlineChildBox: childBox.getChildrenTracker().getChildren()) {
@@ -81,7 +81,7 @@ public final class FlowInlineRenderer {
 		popFormattingInfo(state, childBox);
 	}
 
-	private static void pushFormattingInfo(FlowInlineRendererState state, Box childBox) {
+	private static void pushFormattingInfo(FlowInlineRenderContext state, Box childBox) {
 		LineContext lineContext = state.lineContext();
 		
 		UnitEnterMarker unitEnterMarker = new UnitEnterMarker(true, childBox.styleDirectives());
@@ -89,7 +89,7 @@ public final class FlowInlineRenderer {
 		lineContext.currentLine().addMarker(unitEnterMarker);
 	}
 
-	private static void popFormattingInfo(FlowInlineRendererState state, Box childBox) {
+	private static void popFormattingInfo(FlowInlineRenderContext state, Box childBox) {
 		LineContext lineContext = state.lineContext();
 
 		UnitExitMarker unitExitMarker = new UnitExitMarker(childBox.styleDirectives());
@@ -105,7 +105,7 @@ public final class FlowInlineRenderer {
 		return new AbsoluteSize(marker.rightEdgeSize(), marker.bottomEdgeSize());
 	}
 
-	private static LayoutResult createInnerDisplayUnit(FlowInlineRendererState state, float lineDepth) {
+	private static LayoutResult createInnerDisplayUnit(FlowInlineRenderContext state, float lineDepth) {
 		List<ChildLayoutResult> childLayoutResults = new ArrayList<>();
 		LineDirection lineDirection = state.lineContext().lineDirection();
 
@@ -127,7 +127,7 @@ public final class FlowInlineRenderer {
 	}
 
 	private static List<ChildLayoutResult> layoutFinalLine(
-		LineBox line, LineDimension linePosition, FlowInlineRendererState state
+		LineBox line, LineDimension linePosition, FlowInlineRenderContext state
 	) {
 		FlowRootContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
 		LineDimension actualLinePosition = LineOffsetCalculator.offsetLinePosition(linePosition, line, flowRootContextSwitch);

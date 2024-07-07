@@ -6,7 +6,7 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexWrapDirective.FlexWrap;
@@ -16,7 +16,7 @@ public final class FlexMainSizeDetermination {
 
 	private FlexMainSizeDetermination() {}
 
-	public static List<FlexLine> determineLinesWithMainSizes(LayoutManagerContext layoutManagerContext, List<FlexItem> flexItems) {
+	public static List<FlexLine> determineLinesWithMainSizes(LayoutRenderContext layoutManagerContext, List<FlexItem> flexItems) {
 		FlexWrap flexWrap = FlexUtils.getFlexWrap(layoutManagerContext.layoutDirectives());
 		switch (flexWrap) {
 		case NOWRAP:
@@ -29,7 +29,7 @@ public final class FlexMainSizeDetermination {
 		}
 	}
 
-	private static List<FlexLine> determineLinesWithMainSizesNoWrap(LayoutManagerContext layoutManagerContext, List<FlexItem> flexItems) {
+	private static List<FlexLine> determineLinesWithMainSizesNoWrap(LayoutRenderContext layoutManagerContext, List<FlexItem> flexItems) {
 		FlexDirection flexDirection = FlexUtils.getFlexDirection(layoutManagerContext.layoutDirectives());
 		FlexLine flexLine = new FlexLine(flexDirection);
 		setLineInitialMainSize(layoutManagerContext, flexLine, flexDirection);
@@ -41,7 +41,7 @@ public final class FlexMainSizeDetermination {
 		return List.of(flexLine);
 	}
 
-	private static List<FlexLine> determineLinesWithMainSizesWrap(LayoutManagerContext layoutManagerContext, List<FlexItem> flexItems) {
+	private static List<FlexLine> determineLinesWithMainSizesWrap(LayoutRenderContext layoutManagerContext, List<FlexItem> flexItems) {
 		DirectivePool layoutDirectives = layoutManagerContext.layoutDirectives();
 		FlexDirection flexDirection = FlexUtils.getFlexDirection(layoutDirectives);
 		AbsoluteSize preferredSize = layoutManagerContext.localRenderContext().preferredSize();
@@ -73,7 +73,7 @@ public final class FlexMainSizeDetermination {
 		return flexLines;
 	}
 
-	private static void setLineInitialMainSize(LayoutManagerContext layoutManagerContext, FlexLine flexLine, FlexDirection flexDirection) {
+	private static void setLineInitialMainSize(LayoutRenderContext layoutManagerContext, FlexLine flexLine, FlexDirection flexDirection) {
 		AbsoluteSize preferredSize = layoutManagerContext.localRenderContext().preferredSize();
 		float mainSize = FlexDimension.createFrom(preferredSize, flexDirection).main();
 		if (mainSize != RelativeDimension.UNBOUNDED) {
@@ -82,7 +82,7 @@ public final class FlexMainSizeDetermination {
 	}
 
 	private static void determineMainSize(
-		LayoutManagerContext layoutManagerContext, FlexItem flexItem, FlexDirection flexDirection
+		LayoutRenderContext layoutManagerContext, FlexItem flexItem, FlexDirection flexDirection
 	) {
 		// TODO: Check flex basis
 		float preferredWidth = flexItem.getSizePreferences().getMainSize(flexDirection);

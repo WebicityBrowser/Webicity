@@ -20,14 +20,12 @@ public final class FlowInlineSelfManagedRenderer {
 	
 	private FlowInlineSelfManagedRenderer() {}
 
-	public static void addSelfManagedBoxToLine(FlowInlineRendererState state, Box childBox) {
+	public static void addSelfManagedBoxToLine(FlowInlineRenderContext state, Box childBox) {
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
-			state.flowContext().layoutManagerContext(), childBox.styleDirectives());
+			state.flowContext().layoutRenderContext(), childBox.styleDirectives());
 		BoxOffsetDimensions boxOffsetDimensions = getBoxOffsetDimensions(childBox, sizeCalculationContext);
-		AbsoluteSize containerSize = state.flowContext().layoutManagerContext().localRenderContext().preferredSize();
 		AbsoluteSize preferredSize = computePreferredSize(sizeCalculationContext, childBox, boxOffsetDimensions);
-		AbsoluteSize precomputedSize = FlowSizeUtils.enforcePreferredSize(containerSize, preferredSize);
-		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(precomputedSize, boxOffsetDimensions.padding());
+		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(preferredSize, boxOffsetDimensions.padding());
 		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
 		AbsoluteSize rawChildSize = childUnit.fitSize();
 		AbsoluteSize outerSize = LayoutSizeUtils.addPadding(rawChildSize, boxOffsetDimensions.padding());
@@ -55,7 +53,7 @@ public final class FlowInlineSelfManagedRenderer {
 		return LayoutSizeUtils.computePreferredSize(childBox.styleDirectives(), layoutSizingContext);
 	}
 
-	private static RenderedUnit renderChildUnit(FlowInlineRendererState state, Box childBox, AbsoluteSize contentSize) {
+	private static RenderedUnit renderChildUnit(FlowInlineRenderContext state, Box childBox, AbsoluteSize contentSize) {
 		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
 		LocalRenderContext childLocalRenderContext = new LocalRenderContext(contentSize, new ContextSwitch[0]);
 		return UIPipeline.render(childBox, globalRenderContext, childLocalRenderContext);

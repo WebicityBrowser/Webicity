@@ -15,7 +15,7 @@ public final class FlowBlockRenderer {
 
 	public static LayoutResult render(FlowRenderContext context) {
 		FlowBlockRendererState state = new FlowBlockRendererState(context);
-		renderChildren(state, context.layoutManagerContext().children());
+		renderChildren(state, context.layoutRenderContext().treeTracker().children());
 
 		return LayoutResult.create(state.childLayoutResults(), state.positionTracker().fitSize());
 	}

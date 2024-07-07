@@ -13,7 +13,7 @@ public final class FlowInlineRendererUtil {
 	
 	private FlowInlineRendererUtil() {}
 
-	public static void startNewLineIfNotFits(FlowInlineRendererState state, AbsoluteSize preferredSize) {
+	public static void startNewLineIfNotFits(FlowInlineRenderContext state, AbsoluteSize preferredSize) {
 		LineContext lineContext = state.lineContext();
 		LineBox currentLine = lineContext.currentLine();
 		if (!currentLine.canFit(preferredSize)) {
@@ -21,19 +21,19 @@ public final class FlowInlineRendererUtil {
 		}
 	}
 
-	public static void startNewLine(FlowInlineRendererState state) {
+	public static void startNewLine(FlowInlineRenderContext state) {
 		LineContext lineContext = state.lineContext();
 		lineContext.startNewLine(position -> calculateMaxLineSize(state, position));
 	}
 
-	private static LineDimension calculateMaxLineSize(FlowInlineRendererState state, AbsolutePosition position) {
+	private static LineDimension calculateMaxLineSize(FlowInlineRenderContext state, AbsolutePosition position) {
 		return new LineDimension(
 			calculateRemainingLineWidth(state, position),
 			RelativeDimension.UNBOUNDED,
 			state.lineContext().lineDirection());
 	}
 
-	private static float calculateRemainingLineWidth(FlowInlineRendererState state, AbsolutePosition currentPositionOffset) {
+	private static float calculateRemainingLineWidth(FlowInlineRenderContext state, AbsolutePosition currentPositionOffset) {
 		// TODO: Non-LTR line direction
 		FlowRootContextSwitch contextSwitch = state.flowContext().flowRootContextSwitch();
 		float parentWidth = state.getLocalRenderContext().preferredSize().width();

@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -28,11 +28,11 @@ public class FlowInnerDisplayLayout implements SolidLayoutManager {
 	}
 
 	@Override
-	public LayoutResult render(LayoutManagerContext layoutManagerContext) {
+	public LayoutResult render(LayoutRenderContext layoutManagerContext) {
 		return FlowRenderer.render(createFlowRenderContext(layoutManagerContext));
 	}
 
-	private FlowRenderContext createFlowRenderContext(LayoutManagerContext layoutManagerContext) {
+	private FlowRenderContext createFlowRenderContext(LayoutRenderContext layoutManagerContext) {
 		LocalRenderContext localRenderContext = layoutManagerContext.localRenderContext();
 		FlowRootContextSwitch flowRootContextSwitch = getFlowRootContextSwitch(localRenderContext);
 

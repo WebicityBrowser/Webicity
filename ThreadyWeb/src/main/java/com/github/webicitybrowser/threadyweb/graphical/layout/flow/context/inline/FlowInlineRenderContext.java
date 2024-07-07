@@ -8,14 +8,14 @@ import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inlin
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension.LineDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
 
-public class FlowInlineRendererState {
+public class FlowInlineRenderContext {
 
 	private final FlowRenderContext context;
 	private final LineContext lineContext;
 
 	private final TextConsolidation textConsolidation = TextConsolidation.create();
 
-	public FlowInlineRendererState(LineDirection lineDirection, FlowRenderContext context) {
+	public FlowInlineRenderContext(LineDirection lineDirection, FlowRenderContext context) {
 		this.lineContext = new LineContext(lineDirection, context);
 		this.context = context;
 		FlowInlineRendererUtil.startNewLine(this);
@@ -38,7 +38,7 @@ public class FlowInlineRendererState {
 	}
 
 	public DirectivePool getStyleDirectives() {
-		return context.layoutManagerContext().layoutDirectives();
+		return context.layoutRenderContext().layoutDirectives();
 	}
 
 	public TextConsolidation getTextConsolidation() {

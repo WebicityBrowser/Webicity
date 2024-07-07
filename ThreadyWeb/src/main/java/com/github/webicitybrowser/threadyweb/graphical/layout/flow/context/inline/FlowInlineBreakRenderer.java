@@ -17,7 +17,7 @@ public class FlowInlineBreakRenderer {
 	 * Adds an explicit break to the line.
 	 * @param state The inline context state
 	 */
-	public static void addBreakBoxToLine(FlowInlineRendererState state, DirectivePool directives) {
+	public static void addBreakBoxToLine(FlowInlineRenderContext state, DirectivePool directives) {
 		Font2D font = WebFontUtil.getFont(directives, state.getGlobalRenderContext());
 		float fontHeight = font.getMetrics().getCapHeight() + font.getMetrics().getDescent();
 

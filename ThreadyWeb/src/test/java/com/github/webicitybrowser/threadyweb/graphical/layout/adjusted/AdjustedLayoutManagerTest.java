@@ -8,9 +8,10 @@ import org.junit.jupiter.api.Test;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.base.layout.StaticTreeTracker;
 import com.github.webicitybrowser.thready.gui.graphical.layout.base.flowing.FlowingLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -39,10 +40,7 @@ public class AdjustedLayoutManagerTest {
 	@DisplayName("Can render empty box")
 	public void canRenderEmptyBox() {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
-		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
-		LayoutResult result = layoutManager.render(new LayoutManagerContext(
-			box, box.getChildrenTracker().getChildren(), globalRenderContext, localRenderContext));
+		LayoutResult result = layoutManager.render(createLayoutRenderContext(box));
 		Assertions.assertEquals(new AbsoluteSize(0, 0), result.fitSize());
 		Assertions.assertEquals(0, result.childLayoutResults().length);
 	}
@@ -53,10 +51,7 @@ public class AdjustedLayoutManagerTest {
 		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), emptyDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
-		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
-		LayoutResult result = layoutManager.render(new LayoutManagerContext(
-			box, box.getChildrenTracker().getChildren(), globalRenderContext, localRenderContext));
+		LayoutResult result = layoutManager.render(createLayoutRenderContext(box));
 		Assertions.assertEquals(new AbsoluteSize(50, 10), result.fitSize());
 		Assertions.assertEquals(1, result.childLayoutResults().length);
 		ChildLayoutResult childResult = result.childLayoutResults()[0];
@@ -72,14 +67,19 @@ public class AdjustedLayoutManagerTest {
 		childDirectivePool.directive(PositionOffsetDirective.ofLeft((_1, _2) -> 5));
 		Box childBox = new TestStubContentBox(true, new AbsoluteSize(10, 10), childDirectivePool);
 		box.getChildrenTracker().addChild(childBox);
-		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
-		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
-		LayoutResult result = layoutManager.render(new LayoutManagerContext(
-			box, box.getChildrenTracker().getChildren(), globalRenderContext, localRenderContext));
+		LayoutResult result = layoutManager.render(createLayoutRenderContext(box));
 		Assertions.assertEquals(new AbsoluteSize(50, 10), result.fitSize());
 		Assertions.assertEquals(1, result.childLayoutResults().length);
 		ChildLayoutResult childResult = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(5, 0), childResult.relativeRect().position());
+	}
+
+	private LayoutRenderContext createLayoutRenderContext(ChildrenBox box) {
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
+		return new LayoutRenderContext(
+			globalRenderContext, localRenderContext,
+			new StaticTreeTracker(box, box.getChildrenTracker().getChildren()));
 	}
 
 }

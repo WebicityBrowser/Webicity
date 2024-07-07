@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.flexbox.item;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutManagerContext;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -25,7 +25,7 @@ public class FlexItemSizePreferences {
 	private final DirectivePool styleDirectives;
 	private final LayoutSizingContext sizingContext;
 
-	public FlexItemSizePreferences(LayoutManagerContext layoutManagerContext, Box box) {
+	public FlexItemSizePreferences(LayoutRenderContext layoutManagerContext, Box box) {
 		GlobalRenderContext globalRenderContext = layoutManagerContext.globalRenderContext();
 		LocalRenderContext localRenderContext = layoutManagerContext.localRenderContext();
 		this.styleDirectives = box.styleDirectives();

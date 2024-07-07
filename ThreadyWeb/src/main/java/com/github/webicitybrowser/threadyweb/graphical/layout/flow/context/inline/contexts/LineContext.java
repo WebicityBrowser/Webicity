@@ -36,7 +36,7 @@ public class LineContext {
 		AbsolutePosition nextLinePosition = determineNextLinePosition();
 		LineDimension maxLineSize = maxLineSizeGenerator.apply(nextLinePosition);
 
-		DirectivePool lineStyles = context.layoutManagerContext().layoutDirectives();
+		DirectivePool lineStyles = context.layoutRenderContext().layoutDirectives();
 		LineBox newLine = new LineBox(maxLineSize, lineStyles, context.buildableUnitGenerator());
 		newLine.setEstimatedPosition(nextLinePosition);
 		copyUnresolvedMarkers(newLine);
