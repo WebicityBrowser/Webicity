@@ -44,7 +44,10 @@ public final class FlowBlockUnitRenderer {
 			prerenderSizingInfo.forcedChildContentSize(), precomputedSize, prerenderSizingInfo.parentSize(), prerenderSizingInfo.sizingContext()
 		);
 
-		if (precomputedSize.height() == RelativeDimension.UNBOUNDED) {
+		if (
+			precomputedSize.height() == RelativeDimension.UNBOUNDED
+			&& FlowBlockSizeCalculations.wouldClipHeight(childBox.styleDirectives(), adjustedPrerenderSizingInfo.sizingContext())
+		) {
 			AbsoluteSize fitSize = context.state().getGlobalRenderContext().renderCache().cachedRender(
 				childBox, context.state().getGlobalRenderContext(), new LocalRenderContext(precomputedSize, new ContextSwitch[0])
 			).fitSize();

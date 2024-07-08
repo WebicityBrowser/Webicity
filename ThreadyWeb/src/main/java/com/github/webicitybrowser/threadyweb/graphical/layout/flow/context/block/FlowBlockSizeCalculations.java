@@ -15,6 +15,13 @@ public final class FlowBlockSizeCalculations {
 	
 	private FlowBlockSizeCalculations() {}
 
+	public static boolean wouldClipHeight(DirectivePool childStyles, LayoutSizingContext layoutSizingContext) {
+		float minHeight = LayoutSizeUtils.computeSize(childStyles, MinHeightDirective.class, layoutSizingContext);
+		float maxHeight = LayoutSizeUtils.computeSize(childStyles, MaxHeightDirective.class, layoutSizingContext);
+
+		return minHeight != RelativeDimension.UNBOUNDED || maxHeight != RelativeDimension.UNBOUNDED;
+	}
+
 	public static AbsoluteSize clipContentSize(DirectivePool childStyles, AbsoluteSize contentSize, FlowBlockPrerenderSizingInfo sizingInfo) {
 		float[] paddings = sizingInfo.sizingContext().boxOffsetDimensions().totalPadding();
 		LayoutSizingContext layoutSizingContext = sizingInfo.sizingContext();
