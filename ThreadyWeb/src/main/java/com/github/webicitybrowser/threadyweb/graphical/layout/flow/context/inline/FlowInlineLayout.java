@@ -14,7 +14,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.marker.UnitExitMarker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension;
@@ -88,7 +87,7 @@ public class FlowInlineLayout implements SolidLayoutManager {
 	}
 
 	private static void pushFormattingInfo(FlowInlineRenderContext state, Box childBox) {
-		LineContext lineContext = state.lineContext();
+		LineBoxContainer lineContext = state.lineContext();
 		
 		UnitEnterMarker unitEnterMarker = new UnitEnterMarker(true, childBox.styleDirectives());
 		FlowInlineRendererUtil.startNewLineIfNotFits(state, createSizeFromUnitEnterMarker(unitEnterMarker));
@@ -96,7 +95,7 @@ public class FlowInlineLayout implements SolidLayoutManager {
 	}
 
 	private static void popFormattingInfo(FlowInlineRenderContext state, Box childBox) {
-		LineContext lineContext = state.lineContext();
+		LineBoxContainer lineContext = state.lineContext();
 
 		UnitExitMarker unitExitMarker = new UnitExitMarker(childBox.styleDirectives());
 		FlowInlineRendererUtil.startNewLineIfNotFits(state, createSizeFromUnitExitMarker(unitExitMarker));

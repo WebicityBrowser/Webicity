@@ -12,7 +12,7 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.s
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MinWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.layout.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutPaddingCalculations;

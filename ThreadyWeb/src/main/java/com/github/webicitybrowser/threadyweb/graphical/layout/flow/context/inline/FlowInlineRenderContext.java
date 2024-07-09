@@ -5,7 +5,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension.LineDirection;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.TextConsolidation;
 
@@ -13,14 +12,14 @@ public class FlowInlineRenderContext {
 
 	private final FlowConfig flowConfig;
 	private final FlowRenderContext renderContext;
-	private final LineContext lineContext;
+	private final LineBoxContainer lineContext;
 
 	private final TextConsolidation textConsolidation = TextConsolidation.create();
 
 	public FlowInlineRenderContext(FlowConfig flowConfig, FlowRenderContext renderContext, LineDirection lineDirection) {
 		this.flowConfig = flowConfig;
 		this.renderContext = renderContext;
-		this.lineContext = new LineContext(this, lineDirection);
+		this.lineContext = new LineBoxContainer(this, lineDirection);
 		FlowInlineRendererUtil.startNewLine(this);
 	}
 
@@ -32,7 +31,7 @@ public class FlowInlineRenderContext {
 		return renderContext;
 	}
 
-	public LineContext lineContext() {
+	public LineBoxContainer lineContext() {
 		return lineContext;
 	}
 

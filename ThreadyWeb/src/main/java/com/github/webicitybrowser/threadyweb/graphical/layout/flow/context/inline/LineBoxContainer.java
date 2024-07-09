@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.contexts;
+package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,15 +7,13 @@ import java.util.function.Function;
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.FlowInlineRenderContext;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.LineBox;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.marker.LineMarker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension.LineDirection;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimensionConverter;
 
-public class LineContext {
+public class LineBoxContainer {
 
 	private final FlowInlineRenderContext flowContext;
 	private final LineDirection lineDirection;
@@ -24,7 +22,7 @@ public class LineContext {
 
 	private LineBox currentLine;
 
-	public LineContext(FlowInlineRenderContext flowContext, LineDirection lineDirection) {
+	public LineBoxContainer(FlowInlineRenderContext flowContext, LineDirection lineDirection) {
 		this.flowContext = flowContext;
 		this.lineDirection = lineDirection;
 	}

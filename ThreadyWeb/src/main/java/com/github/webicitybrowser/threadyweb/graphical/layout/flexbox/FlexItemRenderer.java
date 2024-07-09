@@ -9,7 +9,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flexbox.item.FlexItem;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.layout.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
 

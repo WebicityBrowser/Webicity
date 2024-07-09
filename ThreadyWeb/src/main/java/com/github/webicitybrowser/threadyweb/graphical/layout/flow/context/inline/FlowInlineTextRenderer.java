@@ -12,7 +12,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective.LineBreak;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.LineBox.LineEntry;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.LineBox.LineMarkerEntry;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.marker.UnitEnterMarker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.text.ConsolidatedCollapsibleTextView;
@@ -52,7 +51,7 @@ public final class FlowInlineTextRenderer {
 
 	private static String getNextSplit(FlowInlineRenderContext state, TextSplitter splitter) {
 		// TODO: Don't force fit if floats are present.
-		LineContext lineContext = state.lineContext();
+		LineBoxContainer lineContext = state.lineContext();
 		boolean forceFit = lineContext.currentLine().isEmpty();
 		LineBox currentLine = lineContext.currentLine();
 		float maxRun = currentLine.getMaxLineSize().run();
@@ -91,7 +90,7 @@ public final class FlowInlineTextRenderer {
 	}
 
 	private static boolean isLineStart(FlowInlineRenderContext state) {
-		LineContext lineContext = state.lineContext();
+		LineBoxContainer lineContext = state.lineContext();
 		if (lineContext.currentLine().isEmpty()) {
 			return true;
 		}

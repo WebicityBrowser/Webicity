@@ -5,7 +5,6 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.contexts.LineContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatTracker;
 
@@ -14,7 +13,7 @@ public final class FlowInlineRendererUtil {
 	private FlowInlineRendererUtil() {}
 
 	public static void startNewLineIfNotFits(FlowInlineRenderContext state, AbsoluteSize preferredSize) {
-		LineContext lineContext = state.lineContext();
+		LineBoxContainer lineContext = state.lineContext();
 		LineBox currentLine = lineContext.currentLine();
 		if (!currentLine.canFit(preferredSize)) {
 			startNewLine(state);
@@ -22,7 +21,7 @@ public final class FlowInlineRendererUtil {
 	}
 
 	public static void startNewLine(FlowInlineRenderContext state) {
-		LineContext lineContext = state.lineContext();
+		LineBoxContainer lineContext = state.lineContext();
 		lineContext.startNewLine(position -> calculateMaxLineSize(state, position));
 	}
 

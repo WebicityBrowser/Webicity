@@ -17,7 +17,7 @@ import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockUnitRenderer;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockUnitRenderingContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatTracker;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.BoxOffsetDimensions;
+import com.github.webicitybrowser.threadyweb.graphical.layout.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutMarginCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitContext;
