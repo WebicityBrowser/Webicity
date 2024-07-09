@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.util;
 
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockRenderContext;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public record BoxOffsetDimensions(float[] margins, float[] padding, float[] borders) {
@@ -14,12 +14,12 @@ public record BoxOffsetDimensions(float[] margins, float[] padding, float[] bord
 		return totalPadding;
 	}
 
-	public static BoxOffsetDimensions create(FlowBlockRenderContext state, Box childBox) {
+	public static BoxOffsetDimensions create(LayoutRenderContext layoutRenderContext, DirectivePool styleDirectives) {
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
-			state.flowContext().layoutRenderContext(), childBox.styleDirectives());
-		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, childBox.styleDirectives());
-		float[] paddings = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, childBox);
-		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, childBox);
+			layoutRenderContext, styleDirectives);
+		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, styleDirectives);
+		float[] paddings = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, styleDirectives);
+		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, styleDirectives);
 
 		return new BoxOffsetDimensions(margins, paddings, borders);
 	}

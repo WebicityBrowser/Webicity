@@ -20,7 +20,7 @@ public final class FlowBlockBlockRenderer {
 	private FlowBlockBlockRenderer() {}
 
 	public static void renderChild(FlowBlockRenderContext state, Box childBox) {
-		BoxOffsetDimensions boxDimensions = BoxOffsetDimensions.create(state, childBox);
+		BoxOffsetDimensions boxDimensions = BoxOffsetDimensions.create(state.flowContext().layoutRenderContext(), childBox.styleDirectives());
 		AbsoluteSize parentSize = state.getLocalRenderContext().preferredSize();
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
 			state, childBox, boxDimensions,
@@ -42,7 +42,7 @@ public final class FlowBlockBlockRenderer {
 	private static void addChildToLayout(
 		FlowBlockRenderContext state, Box childBox, RenderedUnit childUnit, Rectangle childRect, BoxOffsetDimensions boxDimensions
 	) {
-		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, childRect.size(), boxDimensions);
+		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox.styleDirectives(), childUnit, childRect.size(), boxDimensions);
 		RenderedUnit styledUnit = state.flowConfig().styledUnitGenerator().generateStyledUnit(styledUnitContext);
 		state.addChildLayoutResult(new ChildLayoutResult(styledUnit, childRect));
 	}

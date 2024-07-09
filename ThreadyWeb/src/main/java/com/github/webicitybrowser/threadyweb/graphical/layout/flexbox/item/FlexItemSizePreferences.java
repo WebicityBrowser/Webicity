@@ -31,9 +31,9 @@ public class FlexItemSizePreferences {
 		this.styleDirectives = box.styleDirectives();
 
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(globalRenderContext, localRenderContext, styleDirectives);
-		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, box.styleDirectives());
-		float[] padding = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, box);
-		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, box);
+		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, styleDirectives);
+		float[] padding = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, styleDirectives);
+		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, styleDirectives);
 		BoxOffsetDimensions boxOffsetDimensions = new BoxOffsetDimensions(margins, padding, borders);
 		this.sizingContext = LayoutSizeUtils.createLayoutSizingContext(styleDirectives, sizeCalculationContext, boxOffsetDimensions);
 	}

@@ -2,12 +2,15 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inli
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIPipeline;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutBorderWidthCalculations;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutPaddingCalculations;
@@ -16,38 +19,43 @@ import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUti
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
-public final class FlowInlineSelfManagedRenderer {
+public final class SelfManagedRenderer {
 	
-	private FlowInlineSelfManagedRenderer() {}
+	private SelfManagedRenderer() {}
 
-	public static void addSelfManagedBoxToLine(FlowInlineRenderContext state, Box childBox) {
+	public static RenderedUnit renderSelfManaged(
+		FlowConfig flowConfig, LayoutRenderContext layoutRenderContext, Box childBox
+	) {
+		LocalRenderContext localRenderContext = layoutRenderContext.localRenderContext();
+		GlobalRenderContext globalRenderContext = layoutRenderContext.globalRenderContext();
+
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
-			state.flowContext().layoutRenderContext(), childBox.styleDirectives());
-		BoxOffsetDimensions boxOffsetDimensions = getBoxOffsetDimensions(childBox, sizeCalculationContext);
+			layoutRenderContext, childBox.styleDirectives());
+		BoxOffsetDimensions boxOffsetDimensions = getBoxOffsetDimensions(childBox.styleDirectives(), sizeCalculationContext);
 		AbsoluteSize preferredSize = computePreferredSize(sizeCalculationContext, childBox, boxOffsetDimensions);
-		AbsoluteSize containerSize = new AbsoluteSize(state.getLocalRenderContext().preferredSize().width(), RelativeDimension.UNBOUNDED);
+		AbsoluteSize containerSize = new AbsoluteSize(localRenderContext.preferredSize().width(), RelativeDimension.UNBOUNDED);
 		AbsoluteSize contentSize = LayoutSizeUtils.subtractPadding(preferredSize, boxOffsetDimensions.padding());
-		RenderedUnit childUnit = renderChildUnit(state, childBox, contentSize);
+		RenderedUnit childUnit = renderChildUnit(globalRenderContext, childBox, contentSize);
 		if (childUnit.fitSize().width() > containerSize.width() && preferredSize.width() == RelativeDimension.UNBOUNDED) {
 			float[] padding = boxOffsetDimensions.padding();
 			AbsoluteSize adjustedContentSize = new AbsoluteSize(
 				containerSize.width() - padding[0] - padding[1], contentSize.height());
-			childUnit = renderChildUnit(state, childBox, adjustedContentSize);
+			childUnit = renderChildUnit(globalRenderContext, childBox, adjustedContentSize);
 		}
 		AbsoluteSize rawChildSize = childUnit.fitSize();
 		AbsoluteSize outerSize = LayoutSizeUtils.addPadding(rawChildSize, boxOffsetDimensions.padding());
 		AbsoluteSize adjustedOuterSize = LayoutSizeUtils.enforceSize(outerSize, preferredSize);
 
-		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox, childUnit, adjustedOuterSize, boxOffsetDimensions);
-		RenderedUnit styledUnit = state.flowConfig().styledUnitGenerator().generateStyledUnit(styledUnitContext);
+		StyledUnitContext styledUnitContext = new StyledUnitContext(
+			childBox.styleDirectives(), childUnit, adjustedOuterSize, boxOffsetDimensions);
+		RenderedUnit styledUnit = flowConfig.styledUnitGenerator().generateStyledUnit(styledUnitContext);
 
-		FlowInlineRendererUtil.startNewLineIfNotFits(state, adjustedOuterSize);
-		state.lineContext().currentLine().add(styledUnit, adjustedOuterSize);
+		return styledUnit;
 	}
 
-	private static BoxOffsetDimensions getBoxOffsetDimensions(Box childBox, SizeCalculationContext sizeCalculationContext) {
-		float[] padding = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, childBox);
-		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, childBox);
+	private static BoxOffsetDimensions getBoxOffsetDimensions(DirectivePool styleDirectives, SizeCalculationContext sizeCalculationContext) {
+		float[] padding = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, styleDirectives);
+		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, styleDirectives);
 		return new BoxOffsetDimensions(new float[4], padding, borders);
 	}
 
@@ -60,8 +68,7 @@ public final class FlowInlineSelfManagedRenderer {
 		return LayoutSizeUtils.computePreferredSize(childBox.styleDirectives(), layoutSizingContext);
 	}
 
-	private static RenderedUnit renderChildUnit(FlowInlineRenderContext state, Box childBox, AbsoluteSize contentSize) {
-		GlobalRenderContext globalRenderContext = state.getGlobalRenderContext();
+	private static RenderedUnit renderChildUnit(GlobalRenderContext globalRenderContext, Box childBox, AbsoluteSize contentSize) {
 		LocalRenderContext childLocalRenderContext = new LocalRenderContext(contentSize, new ContextSwitch[0]);
 		return UIPipeline.render(childBox, globalRenderContext, childLocalRenderContext);
 	}

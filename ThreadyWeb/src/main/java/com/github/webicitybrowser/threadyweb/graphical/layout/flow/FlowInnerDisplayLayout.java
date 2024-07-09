@@ -8,6 +8,7 @@ import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutM
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.block.FlowBlockLayout;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.FlowInlineLayout;
+
 public class FlowInnerDisplayLayout implements SolidLayoutManager {
 
 	private final FlowConfig flowConfig;

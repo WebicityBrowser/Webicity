@@ -47,7 +47,7 @@ public final class FlowBlockFloatRenderer {
 	}
 
 	public static RenderedUnit renderFloatBoxUnit(FlowBlockRenderContext state, Box childBox) {
-		BoxOffsetDimensions renderParameters = BoxOffsetDimensions.create(state, childBox);
+		BoxOffsetDimensions renderParameters = BoxOffsetDimensions.create(state.flowContext().layoutRenderContext(), childBox.styleDirectives());
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
 			state, childBox, renderParameters,
 			FlowBlockFloatRenderer::createLocalRenderContext,
@@ -59,7 +59,7 @@ public final class FlowBlockFloatRenderer {
 		AbsoluteSize styledUnitSize = LayoutSizeUtils.addPadding(childRenderResult.adjustedSize(), renderParameters.totalPadding());
 
 		StyledUnitContext styledUnitContext = new StyledUnitContext(
-			childBox, childRenderResult.unit(), styledUnitSize,
+			childBox.styleDirectives(), childRenderResult.unit(), styledUnitSize,
 			prerenderSizingInfo.sizingContext().boxOffsetDimensions()
 		);
 		RenderedUnit styledUnit = state.flowConfig().styledUnitGenerator().generateStyledUnit(styledUnitContext);

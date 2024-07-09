@@ -151,7 +151,7 @@ public class FlowInlineRendererTest {
 		ChildLayoutResult childLayoutResult1 = result.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult1.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(20, 10), childLayoutResult1.relativeRect().size());
-		BuildableRenderedUnit buildableUnit = (BuildableRenderedUnit) childLayoutResult1.unit();
+		BuildableRenderedUnit buildableUnit = (BuildableRenderedUnit) ((StyledUnit) childLayoutResult1.unit()).context().innerUnit();
 		Assertions.assertEquals(2, buildableUnit.childLayoutResults().length);
 		ChildLayoutResult childUnitEntry1 = buildableUnit.childLayoutResults()[0];
 		Assertions.assertEquals(new AbsolutePosition(0, 0), childUnitEntry1.relativeRect().position());
@@ -214,8 +214,8 @@ public class FlowInlineRendererTest {
 	}
 
 	@Test
-	@DisplayName("Large text wraps")
-	public void largeTextWraps() {
+	@DisplayName("Large text wraps with anywhere")
+	public void largeTextWrapsWithAnywhere() {
 		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		DirectivePool textBoxDirectives = FlowTestUtils.createBasicDirectivePool();
 		textBoxDirectives.directive(LineBreakDirective.of(LineBreakDirective.LineBreak.ANYWHERE));
@@ -227,7 +227,7 @@ public class FlowInlineRendererTest {
 		Assertions.assertEquals(2, result.childLayoutResults().length);
 		ChildLayoutResult child1 = result.childLayoutResults()[0];
 		ChildLayoutResult child2 = result.childLayoutResults()[1];
-		Assertions.assertEquals(8 * 6, child1.unit().fitSize().width());
+		Assertions.assertEquals(8 * 5, child1.unit().fitSize().width());
 		Assertions.assertEquals(8 * 5, child2.unit().fitSize().width());
 	}
 
@@ -307,8 +307,8 @@ public class FlowInlineRendererTest {
 	}
 
 	@Test
-	@DisplayName("Preceding left padding is respected")
-	public void precedingLeftPaddingIsRespected() {
+	@DisplayName("Preceding left float reflows content")
+	public void precedingLeftFloatReflowsContent() {
 		FloatTracker floatTracker = FloatTracker.create();
 		floatTracker.addLeftFloat(new Rectangle(new AbsolutePosition(0, 0), new AbsoluteSize(10, 10)));
 		AbsolutePosition childPosition = new AbsolutePosition(0, 0);
@@ -327,8 +327,8 @@ public class FlowInlineRendererTest {
 	}
 
 	@Test
-	@DisplayName("Preceding right padding is respected")
-	public void precedingRightPaddingIsRespected() {
+	@DisplayName("Preceding right float reflows content")
+	public void precedingRightFloatReflowsContent() {
 		FloatTracker floatTracker = FloatTracker.create();
 		floatTracker.addRightFloat(new Rectangle(new AbsolutePosition(48, 0), new AbsoluteSize(10, 1)));
 		AbsolutePosition childPosition = new AbsolutePosition(0, 0);

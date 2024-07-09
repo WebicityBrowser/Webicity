@@ -1,10 +1,10 @@
-package com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor;
+package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension.LineDirection;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.LineDimension.LineDirection;
 
-public class LineCursorTracker implements CursorTracker {
+public class LineCursorTracker {
 	
 	private final LineDirection lineDirection;
 	
@@ -16,8 +16,11 @@ public class LineCursorTracker implements CursorTracker {
 		this.currentSize = new LineDimension(0, 0, lineDirection);
 		this.currentPointer = new LineDimension(0, 0, lineDirection);
 	}
+
+	public LineDirection direction() {
+		return this.lineDirection;
+	}
 	
-	@Override
 	public void add(AbsoluteSize unitSize) {
 		LineDimension unitLineSize = LineDimensionConverter.convertToLineDimension(unitSize, lineDirection);
 		this.currentSize = lineSizeCoveredAfterAdd(unitLineSize);
@@ -25,26 +28,27 @@ public class LineCursorTracker implements CursorTracker {
 		this.currentPointer = new LineDimension(newPointerX, currentPointer.depth(), lineDirection);
 	}
 
-	@Override
-	public boolean addWillOverflowLine(AbsoluteSize unitSize, LineDimension lineSize) {
+	public boolean addWillOverflowLine(AbsoluteSize unitSize, float inlineSize) {
 		LineDimension unitLineSize = LineDimensionConverter.convertToLineDimension(unitSize, lineDirection);
-		if (lineSize.run() == RelativeDimension.UNBOUNDED) {
-			return false;
-		}
-		return lineSizeCoveredAfterAdd(unitLineSize).run() > lineSize.run();
+		if (inlineSize == RelativeDimension.UNBOUNDED) return false;
+		if (unitLineSize.run() == 0) return false;
+		
+		return lineSizeCoveredAfterAdd(unitLineSize).run() > inlineSize;
 	}
 	
-	@Override
+	public void reset() {
+		this.currentSize = new LineDimension(0, 0, lineDirection);
+		this.currentPointer = new LineDimension(0, 0, lineDirection);
+	}
+
 	public void nextLine() {
 		this.currentPointer = new LineDimension(0, currentSize.depth(), lineDirection);
 	}
 
-	@Override
 	public AbsoluteSize getSizeCovered() {
 		return LineDimensionConverter.convertToAbsoluteSize(currentSize);
 	}
 
-	@Override
 	public LineDimension getNextPosition() {
 		return currentPointer;
 	}

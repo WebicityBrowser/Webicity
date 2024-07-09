@@ -1,6 +1,6 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.util;
 
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.BottomBorderWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.border.BorderWidthDirective.LeftBorderWidthDirective;
@@ -11,21 +11,20 @@ import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.Siz
 
 public final class LayoutBorderWidthCalculations {
 
-	public static float[] computeBorderWidths(SizeCalculationContext sizeCalculationContext, Box box) {
+	public static float[] computeBorderWidths(SizeCalculationContext sizeCalculationContext, DirectivePool styleDirectives) {
 		float[] borderWidth = new float[4];
-		borderWidth[0] = computeBorderWidth(sizeCalculationContext, box, LeftBorderWidthDirective.class, true);
-		borderWidth[1] = computeBorderWidth(sizeCalculationContext, box, RightBorderWidthDirective.class, true);
-		borderWidth[2] = computeBorderWidth(sizeCalculationContext, box, TopBorderWidthDirective.class, false);
-		borderWidth[3] = computeBorderWidth(sizeCalculationContext, box, BottomBorderWidthDirective.class, false);
+		borderWidth[0] = computeBorderWidth(sizeCalculationContext, styleDirectives, LeftBorderWidthDirective.class, true);
+		borderWidth[1] = computeBorderWidth(sizeCalculationContext, styleDirectives, RightBorderWidthDirective.class, true);
+		borderWidth[2] = computeBorderWidth(sizeCalculationContext, styleDirectives, TopBorderWidthDirective.class, false);
+		borderWidth[3] = computeBorderWidth(sizeCalculationContext, styleDirectives, BottomBorderWidthDirective.class, false);
 
 		return borderWidth;
 	}
 
 	private static float computeBorderWidth(
-		SizeCalculationContext sizeCalculationContext, Box box, Class<?  extends BorderWidthDirective> directiveClass, boolean isHorizontal
+		SizeCalculationContext sizeCalculationContext, DirectivePool styleDirectives, Class<?  extends BorderWidthDirective> directiveClass, boolean isHorizontal
 	) {
-		SizeCalculation sizeCalculation = box
-			.styleDirectives()
+		SizeCalculation sizeCalculation = styleDirectives
 			.getDirectiveOrEmpty(directiveClass)
 			.map(directive -> directive.getSizeCalculation())
 			.orElse(SizeCalculation.SIZE_ZERO);

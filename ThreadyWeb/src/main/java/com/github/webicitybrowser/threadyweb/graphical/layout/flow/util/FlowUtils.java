@@ -21,7 +21,7 @@ public final class FlowUtils {
 	public static float getLineHeight(LayoutRenderContext context, DirectivePool directives) {
 		SizeCalculationContext sizeContext = LayoutSizeUtils.createSizeCalculationContext(context, directives);
 		SizeCalculation lineHeightSizeCalculation = directives
-			.getDirectiveOrEmpty(LineHeightDirective.class)
+			.inheritDirectiveOrEmpty(LineHeightDirective.class)
 			.map(LineHeightDirective::getLineHeightCalculation)
 			.orElse(LineHeightDirective.NORMAL);
 		return lineHeightSizeCalculation.calculate(sizeContext, true);

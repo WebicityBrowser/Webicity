@@ -82,7 +82,7 @@ public class FlowTestUtils {
 			.directive(DerivedFontDirective.of(testFont));
 	}
 
-	private static Font2D createTestFont() {
+	public static Font2D createTestFont() {
 		Font2D font = Mockito.mock(Font2D.class);
 		Mockito.when(font.getMetrics()).thenReturn(new TestFontMetrics());
 

@@ -113,7 +113,9 @@ public class GUIContentImp implements GUIContent {
 		case BOX:
 			performBoxCycle();
 		case RENDER:
+			long start = System.currentTimeMillis();
 			performRenderCycle(redrawContext);
+			logger.info("Render cycle took: " + (System.currentTimeMillis() - start) + "ms");
 			System.gc();
 		case COMPOSITE:
 			this.compositeLayers = ContentCompositor.performCompositeCycle(redrawContext, rootUnit);

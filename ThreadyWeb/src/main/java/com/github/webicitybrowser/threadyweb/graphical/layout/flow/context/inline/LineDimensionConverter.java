@@ -1,8 +1,8 @@
-package com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor;
+package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor.LineDimension.LineDirection;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.LineDimension.LineDirection;
 
 public final class LineDimensionConverter {
 	

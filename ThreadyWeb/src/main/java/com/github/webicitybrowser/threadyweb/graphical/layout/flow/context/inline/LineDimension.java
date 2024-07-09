@@ -1,4 +1,4 @@
-package com.github.webicitybrowser.threadyweb.graphical.layout.flow.cursor;
+package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteDimensions;
 
