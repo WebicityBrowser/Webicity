@@ -24,6 +24,7 @@ import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
 import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity;
+import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity.Source;
 
 public class ComplexSelectorParser {
 
@@ -35,14 +36,14 @@ public class ComplexSelectorParser {
 	
 	private final CombinatorParser combinatorParser = new CombinatorParser();
 	
-	public ComplexSelector[] parseMany(TokenLike[] prelude, int order) {
+	public ComplexSelector[] parseMany(TokenLike[] prelude, int order, Source source) {
 		TokenStream stream = new TokenStreamImp(prelude);
 		List<ComplexSelector> selectors = new ArrayList<>();
 		
 		while (!(stream.peek() instanceof EOFToken)) {
 			ComplexSelector complexSelector;
 			try {
-				complexSelector = consumeComplexSelector(stream, order);
+				complexSelector = consumeComplexSelector(stream, order, source);
 				if (complexSelector != null) {
 					selectors.add(complexSelector);
 				} else {
@@ -56,7 +57,7 @@ public class ComplexSelectorParser {
 		return selectors.toArray(ComplexSelector[]::new);
 	}
 
-	private ComplexSelector consumeComplexSelector(TokenStream stream, int order) throws ParseFormatException {
+	private ComplexSelector consumeComplexSelector(TokenStream stream, int order, Source source) throws ParseFormatException {
 		List<ComplexSelectorPart> selectorParts = new ArrayList<>();
 		
 		consumeWhitespace(stream);
@@ -76,7 +77,7 @@ public class ComplexSelectorParser {
 		
 		stream.read();
 		
-		return createComplexSelectorFromParts(selectorParts, order);
+		return createComplexSelectorFromParts(selectorParts, order, source);
 	}
 
 	private void consumeSimpleSelectors(TokenStream stream, List<ComplexSelectorPart> selectorParts) throws ParseFormatException {
@@ -126,9 +127,9 @@ public class ComplexSelectorParser {
 		while (!isSeperatingToken(stream.read()));
 	}
 
-	private ComplexSelector createComplexSelectorFromParts(List<ComplexSelectorPart> selectorParts, int order) {
+	private ComplexSelector createComplexSelectorFromParts(List<ComplexSelectorPart> selectorParts, int order, Source source) {
 		ComplexSelectorPart[] parts = selectorParts.toArray(ComplexSelectorPart[]::new);
-		SelectorSpecificity selectorSpecificity = SelectorSpecificityCalculator.calculateSpecificity(parts, order);
+		SelectorSpecificity selectorSpecificity = SelectorSpecificityCalculator.calculateSpecificity(parts, order, source);
 		
 		return new ComplexSelector() {	
 			@Override

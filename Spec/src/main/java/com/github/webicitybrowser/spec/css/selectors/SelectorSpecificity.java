@@ -1,10 +1,12 @@
 package com.github.webicitybrowser.spec.css.selectors;
 
-public record SelectorSpecificity(int idSelectors, int attributeSelectors, int typeSelectors, int order) implements Comparable<SelectorSpecificity> {
+public record SelectorSpecificity(Source source, int idSelectors, int attributeSelectors, int typeSelectors, int order) implements Comparable<SelectorSpecificity> {
 
 	@Override
 	public int compareTo(SelectorSpecificity specificity) {
-		if (idSelectors != specificity.idSelectors()) {
+		if (source != specificity.source()) {
+			return source.ordinal() > specificity.source().ordinal() ? 1 : -1;
+		} else if (idSelectors != specificity.idSelectors()) {
 			return idSelectors > specificity.idSelectors() ? 1 : -1;
 		} else if (attributeSelectors != specificity.attributeSelectors()) {
 			return attributeSelectors > specificity.attributeSelectors() ? 1 : -1;
@@ -15,6 +17,10 @@ public record SelectorSpecificity(int idSelectors, int attributeSelectors, int t
 		} else {
 			return 0;
 		}
+	}
+
+	public static enum Source {
+		UA, USER, AUTHOR
 	}
 
 }
