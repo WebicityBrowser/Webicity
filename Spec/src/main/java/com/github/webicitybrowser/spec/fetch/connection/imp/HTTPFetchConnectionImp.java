@@ -46,7 +46,6 @@ public class HTTPFetchConnectionImp implements FetchConnection {
 		return convertHTTPResponseToFetchResponse(response);
 	}
 
-	@SuppressWarnings("resource")
 	private FetchResponse convertHTTPResponseToFetchResponse(HTTPResponse response) {
 		if (response instanceof HTTPSuccessResponse successResponse) {
 			FetchBody fetchBody = FetchBody.createBody(successResponse.getInputStream(), null);

@@ -1,26 +1,20 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.tasks;
 
 import com.github.webicitybrowser.spec.htmlbrowsers.tasks.EventLoop;
-import com.github.webicitybrowser.spec.htmlbrowsers.tasks.TaskQueue;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tasks.runners.NetworkTaskRunner;
 
 public class EventSchedulerImp implements EventScheduler {
 
-	private static final int ALLOWED_TIME = 8;
-
-	private final EventLoop eventLoop;
+	private final TaskRunner networkTaskRunner;
 
 	public EventSchedulerImp(EventLoop eventLoop) {
-		this.eventLoop = eventLoop;
+		this.networkTaskRunner = new NetworkTaskRunner(
+			eventLoop.getTaskQueue(EventLoop.NETWORK_TASK_QUEUE));
 	}
 
 	@Override
 	public void tick() {
-		TaskQueue networkTaskQueue = eventLoop.getTaskQueue(EventLoop.NETWORK_TASK_QUEUE);
-
-		long time = System.currentTimeMillis();
-		while (System.currentTimeMillis() - time < ALLOWED_TIME) {
-			networkTaskQueue.poll().ifPresent(Runnable::run);
-		}
+		networkTaskRunner.tick();
 	}
 	
 }
