@@ -34,8 +34,7 @@ public final class FlowBlockAnonRenderer {
 	private static ContextSwitch createChildFlowRootContextSwitch(FlowBlockRenderContext state, Box anonBox) {
 		FlowRootContextSwitch flowRootContextSwitch = state.flowContext().flowRootContextSwitch();
 		return new FlowRootContextSwitch(
-			flowRootContextSwitch.floatContext().offset(
-				state.positionTracker().getPosition().y()));
+			flowRootContextSwitch.floatContext().offset(state.positionTracker().getPosition()));
 	}
 
 	private static AbsoluteSize adjustAnonSize(

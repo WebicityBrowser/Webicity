@@ -23,5 +23,17 @@ public record BoxOffsetDimensions(float[] margins, float[] padding, float[] bord
 
 		return new BoxOffsetDimensions(margins, paddings, borders);
 	}
+
+	@Override
+	public String toString() {
+		String marginsFormatted = String.format("[%f, %f, %f, %f]", margins[0], margins[1], margins[2], margins[3]);
+		String paddingsFormatted = String.format("[%f, %f, %f, %f]", padding[0], padding[1], padding[2], padding[3]);
+		String bordersFormatted = String.format("[%f, %f, %f, %f]", borders[0], borders[1], borders[2], borders[3]);
+		return "BoxOffsetDimensions[" +
+			"margins=" + marginsFormatted +
+			", padding=" + paddingsFormatted +
+			", borders=" + bordersFormatted +
+			']';
+	}
 	
 }

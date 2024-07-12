@@ -15,6 +15,7 @@ import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderCon
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.FlowUtils;
+import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebFontUtil;
 
 public final class LinePositioner {
 
@@ -80,7 +81,7 @@ public final class LinePositioner {
 		float rightFloat = floatTracker.getRightInlineOffset(currentHeight, linePositionContext.containerSize().width());
 
 		float boxWidth = determineBoxWidth(lineBox);
-		float boxHeight = determineBoxHeight(lineBox);
+		float boxHeight = determineBoxHeight(lineBox, linePositionContext);
 
 		float availableWidth = containerWidth - leftFloat - rightFloat;
 		float topPosition = offsetPosition.y();
@@ -124,9 +125,14 @@ public final class LinePositioner {
 		return width;
 	}
 
-	private static float determineBoxHeight(LineBox lineBox) {
+	private static float determineBoxHeight(LineBox lineBox, LinePositionContext linePositionContext) {
 		if (isEmptyBox(lineBox)) {
-			return 14;
+			return WebFontUtil
+				.getFont(
+					linePositionContext.styleDirectives(),
+					linePositionContext.layoutRenderContext().globalRenderContext())
+				.getMetrics()
+				.getSize();
 		};
 
 		// TODO: Better
@@ -139,6 +145,7 @@ public final class LinePositioner {
 	}
 
 	private static float offsetLine(float inlineWidth, float inlineAvailable, TextAlign textAlign) {
+		if (inlineAvailable == RelativeDimension.UNBOUNDED) return 0;
 		// TODO: Text direction, justify
 		return switch (textAlign) {
 			case START, LEFT -> 0;

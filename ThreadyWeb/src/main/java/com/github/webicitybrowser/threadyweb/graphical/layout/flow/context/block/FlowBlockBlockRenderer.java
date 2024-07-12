@@ -4,6 +4,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -113,15 +114,20 @@ public final class FlowBlockBlockRenderer {
 	private static LocalRenderContext createChildLocalRenderContext(FlowBlockRenderContext state, AbsoluteSize childSize, BoxOffsetDimensions boxDimensions) {
 		FlowRootContextSwitch parentSwitch = state.flowContext().flowRootContextSwitch();
 		AbsolutePosition cursorPosition = state.positionTracker().getPosition();
-		float extraY =
-			zeroUnbounded(boxDimensions.margins()[2]) +
-			zeroUnbounded(boxDimensions.borders()[2]) +
-			zeroUnbounded(boxDimensions.padding()[2]);
+		float extraX = sumAllSide(boxDimensions, 0);
+		float extraY = sumAllSide(boxDimensions, 2);
 		FlowRootContextSwitch childSwitch = new FlowRootContextSwitch(
 			parentSwitch.floatContext().offset(
-				cursorPosition.y() + extraY));
+				AbsoluteDimensionsMath.sum(cursorPosition, new AbsolutePosition(extraX, extraY), AbsolutePosition::new)));
 
 		return LocalRenderContext.create(childSize, new ContextSwitch[] { childSwitch });
+	}
+
+	private static float sumAllSide(BoxOffsetDimensions boxDimensions, int side) {
+		return
+			zeroUnbounded(boxDimensions.margins()[side]) +
+			zeroUnbounded(boxDimensions.borders()[side]) +
+			zeroUnbounded(boxDimensions.padding()[side]);
 	}
 
 	private static float zeroUnbounded(float dimension) {

@@ -97,7 +97,9 @@ public final class FlowBlockFloatRenderer {
 		} else {
 			floatTracker.addRightFloat(new Rectangle(floatMarginPosition, floatMarginSize));
 		}
-		state.addChildLayoutResult(new ChildLayoutResult(childUnit, new Rectangle(floatPosition, floatInnerSize)));
+
+		Rectangle boundsBox = new Rectangle(floatPosition, floatInnerSize);
+		state.addChildLayoutResult(new ChildLayoutResult(childUnit, boundsBox));
 
 		// TODO: Handle overflow and left/right collisions
 		// TODO: Simplify this method

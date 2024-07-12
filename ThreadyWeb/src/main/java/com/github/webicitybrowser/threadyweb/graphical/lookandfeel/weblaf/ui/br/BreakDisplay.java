@@ -2,6 +2,7 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.br
 
 import java.util.List;
 
+import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.context.GenericContext;
@@ -13,6 +14,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
+import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class BreakDisplay implements UIDisplay<GenericContext, BreakBox, BreakUnit> {
@@ -33,20 +35,17 @@ public class BreakDisplay implements UIDisplay<GenericContext, BreakBox, BreakUn
 
 	@Override
 	public BreakUnit renderBox(BreakBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'renderBox'");
+		return new BreakUnit(INSTANCE, new AbsoluteSize(0, 0), box.styleDirectives());
 	}
 
 	@Override
 	public void paint(BreakUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'paint'");
+		// Do nothing
 	}
 
 	@Override
 	public MessageHandler createMessageHandler(BreakUnit unit, Rectangle documentRect) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'createMessageHandler'");
+		return new NoopMessageHandler();
 	}
 
 	public static ComponentUI componentUI(Component component, ComponentUI parent) {

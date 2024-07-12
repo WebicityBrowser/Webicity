@@ -3,6 +3,7 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.imp
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatContext;
@@ -39,7 +40,7 @@ public class FloatContextImp implements FloatContext {
 	}
 
 	@Override
-	public FloatContext offset(float offset) {
+	public FloatContext offset(AbsolutePosition offset) {
 		return new FloatContextImp(
 			OffsetFloatTrackerImp.offset(floatTracker, offset),
 			endFloats);

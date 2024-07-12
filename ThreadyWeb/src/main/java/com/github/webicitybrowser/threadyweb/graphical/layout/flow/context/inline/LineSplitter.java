@@ -39,12 +39,14 @@ public class LineSplitter {
 
 	public void splitFits(float inlineSize) {
 		boolean isFirst = true;
+		boolean isFirstText = true;
 		while ((!remainingEntries.isEmpty() || textSplitter != null)) {
 			setupTextSplitter();
 			if (textSplitter != null) {
-				TextResponse response = addTextFromSplitter(inlineSize, isFirst);
+				TextResponse response = addTextFromSplitter(inlineSize, isFirst, isFirstText);
 				if (response == TextResponse.TEXT_DOES_NOT_FIT) break;
 				isFirst = isFirst && response == TextResponse.TEXT_EMPTY;
+				isFirstText = isFirstText && response == TextResponse.TEXT_EMPTY;
 			} else if (
 				!remainingEntries.isEmpty()
 				&& (!cursorTracker.addWillOverflowLine(remainingEntries.get(0).getSize(), inlineSize)
@@ -59,8 +61,9 @@ public class LineSplitter {
 	}
 
 	private void renderNext() {
-		renderedEntries.add(remainingEntries.get(0));
-		cursorTracker.add(remainingEntries.remove(0).getSize());
+		LineEntry entry = remainingEntries.remove(0);
+		renderedEntries.add(entry);
+		cursorTracker.add(entry.getSize());
 	}
 
 
@@ -81,17 +84,17 @@ public class LineSplitter {
 	}
 
 	// TODO: We assume spaces cannot have repeat occurences - in the future, that may not be the case
-	private TextResponse addTextFromSplitter(float inlineSize, boolean forceFit) {
+	private TextResponse addTextFromSplitter(float inlineSize, boolean forceFit, boolean isFirstText) {
 		float remainingInlineSize = inlineSize == RelativeDimension.UNBOUNDED ?
 			RelativeDimension.UNBOUNDED :
 			inlineSize - cursorTracker.getNextPosition().run();
 		TextUnit textUnit = textSplitter.getFittingText(remainingInlineSize, forceFit);
 
 		// TODO: Would isBlank() work here?
-		if (forceFit && textUnit.text().replace(" ", "").isEmpty()) return TextResponse.TEXT_EMPTY;
 		if (textUnit == null) return TextResponse.TEXT_DOES_NOT_FIT;
+		if (isFirstText && textUnit.text().replace(" ", "").isEmpty()) return TextResponse.TEXT_EMPTY;
 
-		if (forceFit && textUnit.text().startsWith(" ")) {
+		if (isFirstText && textUnit.text().startsWith(" ")) {
 			textUnit = InlineTextRenderer.renderNewText(textUnit, textUnit.text().substring(1));
 		}
 		cursorTracker.add(textUnit.fitSize());

@@ -40,6 +40,7 @@ public final class SelfManagedRenderer {
 			float[] padding = boxOffsetDimensions.padding();
 			AbsoluteSize adjustedContentSize = new AbsoluteSize(
 				containerSize.width() - padding[0] - padding[1], contentSize.height());
+			// TODO: This handles floats incorrectly
 			childUnit = renderChildUnit(globalRenderContext, childBox, adjustedContentSize);
 		}
 		AbsoluteSize rawChildSize = childUnit.fitSize();

@@ -387,7 +387,7 @@ public class FlowInlineRendererTest {
 		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult1.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(8 * 5, 14), childLayoutResult1.relativeRect().size());
 		ChildLayoutResult childLayoutResult2 = result.childLayoutResults()[1];
-		Assertions.assertEquals(new AbsolutePosition(0, 28), childLayoutResult2.relativeRect().position());
+		Assertions.assertEquals(new AbsolutePosition(0, 26), childLayoutResult2.relativeRect().position());
 		Assertions.assertEquals(new AbsoluteSize(8 * 5, 14), childLayoutResult2.relativeRect().size());
 	}
 
