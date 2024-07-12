@@ -15,6 +15,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.threadyweb.graphical.directive.ClearDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.FloatDirective;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowTestUtils;
@@ -25,6 +26,7 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.ele
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubBlockBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubChildrenBox;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestStubContentBox;
+import com.github.webicitybrowser.threadyweb.graphical.value.ClearDirection;
 import com.github.webicitybrowser.threadyweb.graphical.value.FloatDirection;
 
 public class FloatLayoutTest {
@@ -119,6 +121,30 @@ public class FloatLayoutTest {
 		ChildLayoutResult floatResult = result.childLayoutResults()[1];
 		Assertions.assertEquals(new AbsoluteSize(10, 10), floatResult.relativeRect().size());
 		Assertions.assertEquals(new AbsolutePosition(0, 14), floatResult.relativeRect().position());
+	}
+
+	@Test
+	@DisplayName("Can render block context with left float and clear directive")
+	public void canRenderBlockContextWithLeftFloatAndClearDirective() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool floatDirectivePool = FlowTestUtils.createBasicDirectivePool();
+		floatDirectivePool.directive(FloatDirective.of(FloatDirection.LEFT));
+		Box floatBox = new TestStubContentBox(false, new AbsoluteSize(10, 10), floatDirectivePool);
+		box.getChildrenTracker().addChild(floatBox);
+		DirectivePool clearDirectivePool = FlowTestUtils.createBasicDirectivePool();
+		clearDirectivePool.directive(ClearDirective.of(ClearDirection.LEFT));
+		Box clearBox = new TestStubContentBox(false, new AbsoluteSize(0, 0), clearDirectivePool);
+		box.getChildrenTracker().addChild(clearBox);
+		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
+		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext();
+		LayoutRenderContext renderContext = FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext);
+		LayoutResult result = new FlowBlockLayout(flowConfig).render(renderContext);
+		Assertions.assertEquals(2, result.childLayoutResults().length);
+		ChildLayoutResult floatResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsoluteSize(10, 10), floatResult.relativeRect().size());
+		ChildLayoutResult blockResult = result.childLayoutResults()[1];
+		Assertions.assertEquals(new AbsoluteSize(50, 0), blockResult.relativeRect().size());
+		Assertions.assertEquals(new AbsolutePosition(0, 10), blockResult.relativeRect().position());
 	}
 
 }

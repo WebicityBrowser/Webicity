@@ -17,8 +17,9 @@ import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.CSSOMBackgroundColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.CSSOMColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.CSSOMDisplayDeclarationParser;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.CSSOMFloatDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.border.CSSOMBorderBindings;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.floatbox.CSSOMClearDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.floatbox.CSSOMFloatDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.layout.flexbox.CSSOMFlexBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.layout.flow.CSSOMFlowBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.margin.CSSOMMarginBindings;
@@ -43,6 +44,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("background", new CSSOMBackgroundColorDeclarationParser()); // TODO
 
 		namedDeclarationParsers.put("float", new CSSOMFloatDeclarationParser());
+		namedDeclarationParsers.put("clear", new CSSOMClearDeclarationParser());
 
 		CSSOMBorderBindings.installTo(namedDeclarationParsers);
 		CSSOMTextBindings.installTo(namedDeclarationParsers);

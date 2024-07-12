@@ -27,7 +27,7 @@ public final class FlowBlockAnonRenderer {
 			new ContextSwitch[] { createChildFlowRootContextSwitch(state, anonBox) });
 		RenderedUnit childUnit = UIPipeline.render(anonBox, globalRenderContext, childLocalRenderContext);
 		AbsoluteSize adjustedSize = adjustAnonSize(state, preferredSize, childUnit.fitSize());
-		AbsolutePosition childPosition = state.positionTracker().addBox(adjustedSize, new float[4]);
+		AbsolutePosition childPosition = state.positionTracker().nextBoxPosition(adjustedSize, new float[4]);
 		Rectangle childRect = new Rectangle(childPosition, adjustedSize);
 		state.addChildLayoutResult(new ChildLayoutResult(childUnit, childRect));
 	}

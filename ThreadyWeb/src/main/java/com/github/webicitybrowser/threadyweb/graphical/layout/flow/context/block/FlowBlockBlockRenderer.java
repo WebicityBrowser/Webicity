@@ -10,16 +10,21 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.directive.ClearDirective;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
+import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitContext;
+import com.github.webicitybrowser.threadyweb.graphical.value.ClearDirection;
 
 public final class FlowBlockBlockRenderer {
 
 	private FlowBlockBlockRenderer() {}
 
 	public static void renderChild(FlowBlockRenderContext state, Box childBox) {
+		setupClearedPosition(state, childBox);
+		
 		BoxOffsetDimensions boxDimensions = BoxOffsetDimensions.create(state.flowContext().layoutRenderContext(), childBox.styleDirectives());
 		AbsoluteSize parentSize = state.getLocalRenderContext().preferredSize();
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
@@ -33,7 +38,7 @@ public final class FlowBlockBlockRenderer {
 		AbsoluteSize finalChildSize = computeFinalChildSize(prerenderSizingInfo, childRenderResult);
 		float[] finalMargins = computeFinalMargins(prerenderSizingInfo, finalChildSize);
 
-		AbsolutePosition childPosition = state.positionTracker().addBox(finalChildSize, finalMargins);
+		AbsolutePosition childPosition = state.positionTracker().nextBoxPosition(finalChildSize, finalMargins);
 		Rectangle childRect = new Rectangle(childPosition, finalChildSize);
 		
 		addChildToLayout(state, childBox, childRenderResult.unit(), childRect, boxDimensions);
@@ -61,6 +66,19 @@ public final class FlowBlockBlockRenderer {
 		float[] originalMargins =  prerenderSizingInfo.sizingContext().boxOffsetDimensions().margins();
 		float[] adjustedMargins = FlowBlockMarginCalculations.expandAutoMargins(originalMargins, adjustedSize, prerenderSizingInfo.parentSize());
 		return FlowBlockMarginCalculations.collapseOverflowMargins(prerenderSizingInfo.parentSize(), adjustedSize, adjustedMargins);
+	}
+
+	private static void setupClearedPosition(
+		FlowBlockRenderContext state, Box childBox
+	) {
+		ClearDirection clearDirection = childBox
+			.styleDirectives()
+			.getDirectiveOrEmpty(ClearDirective.class)
+			.map(ClearDirective::getClearDirection)
+			.orElse(ClearDirection.NONE);
+		FloatTracker floatTracker = state.flowContext().flowRootContextSwitch().floatContext().getFloatTracker();
+		
+		state.positionTracker().clearBoxPosition(clearDirection, floatTracker);
 	}
 
 	private static AbsoluteSize computeFallbackPreferredSize(AbsoluteSize parentSize, AbsoluteSize preferredSize, float[] margins) {
