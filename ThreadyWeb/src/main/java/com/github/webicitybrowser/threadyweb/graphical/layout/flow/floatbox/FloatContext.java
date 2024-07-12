@@ -13,6 +13,8 @@ public interface FloatContext {
 	Queue<FloatEntry> getEndFloats();
 
 	void addEndFloat(Box floatBox, RenderedUnit floatUnit, Box orginatingBox);
+
+	FloatContext offset(float offset);
 	
 	static record FloatEntry(Box floatBox, RenderedUnit floatUnit, Box orginatingBox) {}
 

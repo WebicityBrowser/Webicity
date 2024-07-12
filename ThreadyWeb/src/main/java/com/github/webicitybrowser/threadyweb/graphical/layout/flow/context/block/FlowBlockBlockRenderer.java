@@ -4,7 +4,6 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
-import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -29,7 +28,7 @@ public final class FlowBlockBlockRenderer {
 		AbsoluteSize parentSize = state.getLocalRenderContext().preferredSize();
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
 			state, childBox, boxDimensions,
-			FlowBlockBlockRenderer::createChildLocalRenderContext,
+			(state2, childSize) -> createChildLocalRenderContext(state2, childSize, boxDimensions),
 			(childState, childSize) -> computeFallbackPreferredSize(parentSize, childSize, boxDimensions.margins())
 		);
 		
@@ -111,15 +110,22 @@ public final class FlowBlockBlockRenderer {
 		return new AbsoluteSize(stretchedPreferredWidth, stretchedPreferredHeight);
 	}
 
-	private static LocalRenderContext createChildLocalRenderContext(FlowBlockRenderContext state, AbsoluteSize childSize) {
+	private static LocalRenderContext createChildLocalRenderContext(FlowBlockRenderContext state, AbsoluteSize childSize, BoxOffsetDimensions boxDimensions) {
 		FlowRootContextSwitch parentSwitch = state.flowContext().flowRootContextSwitch();
-		AbsolutePosition predictedChildPosition = state.positionTracker().getPosition();
-		AbsolutePosition offsetPredictedChildPosition = AbsoluteDimensionsMath.sum(
-			predictedChildPosition, parentSwitch.predictedPosition(), AbsolutePosition::new);
+		AbsolutePosition cursorPosition = state.positionTracker().getPosition();
+		float extraY =
+			zeroUnbounded(boxDimensions.margins()[2]) +
+			zeroUnbounded(boxDimensions.borders()[2]) +
+			zeroUnbounded(boxDimensions.padding()[2]);
 		FlowRootContextSwitch childSwitch = new FlowRootContextSwitch(
-			offsetPredictedChildPosition, parentSwitch.floatContext());
+			parentSwitch.floatContext().offset(
+				cursorPosition.y() + extraY));
 
 		return LocalRenderContext.create(childSize, new ContextSwitch[] { childSwitch });
+	}
+
+	private static float zeroUnbounded(float dimension) {
+		return dimension == RelativeDimension.UNBOUNDED ? 0 : dimension;
 	}
 
 }

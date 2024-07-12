@@ -18,6 +18,11 @@ public class FloatContextImp implements FloatContext {
 		this.endFloats = new ArrayDeque<>();
 	}
 
+	private FloatContextImp(FloatTracker floatTracker, Queue<FloatEntry> endFloats) {
+		this.floatTracker = floatTracker;
+		this.endFloats = endFloats;
+	}
+
 	@Override
 	public FloatTracker getFloatTracker() {
 		return floatTracker;
@@ -31,6 +36,13 @@ public class FloatContextImp implements FloatContext {
 	@Override
 	public void addEndFloat(Box floatBox, RenderedUnit floatUnit, Box orginatingBox) {
 		endFloats.add(new FloatEntry(floatBox, floatUnit, orginatingBox));
+	}
+
+	@Override
+	public FloatContext offset(float offset) {
+		return new FloatContextImp(
+			OffsetFloatTrackerImp.offset(floatTracker, offset),
+			endFloats);
 	}
 
 }

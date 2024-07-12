@@ -1,6 +1,5 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.flow.util;
 
-import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -41,9 +40,8 @@ public final class FlowUtils {
 			}
 		}
 
-		AbsolutePosition predictedPosition = AbsolutePosition.ZERO_POSITION;
 		FloatContextImp floatContext = new FloatContextImp(new FloatTrackerImp());
-		return new FlowRootContextSwitch(predictedPosition, floatContext);
+		return new FlowRootContextSwitch(floatContext);
 	}
 
 }

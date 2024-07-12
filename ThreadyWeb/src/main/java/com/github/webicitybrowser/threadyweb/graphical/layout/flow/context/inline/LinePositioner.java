@@ -34,17 +34,15 @@ public final class LinePositioner {
 	}
 
 	private static List<LineBox> breakAndPositionLine(LineBox lineBox, LinePositionContext linePositionContext) {
-		float startHeight = determineStartHeight(linePositionContext);
-
 		List<LineBox> wrappedLines = new ArrayList<>();
 		LineSplitter lineSplitter = new LineSplitter(lineBox);
 
 		while (!lineSplitter.isDone()) {
-			float availableInlineSize = determineAvailableInlineSize(linePositionContext, startHeight);
+			float availableInlineSize = determineAvailableInlineSize(linePositionContext);
 			lineSplitter.splitFits(availableInlineSize);
 			LineBox splitLineBox = lineSplitter.nextLine();
 
-			Rectangle positioningInfo = determinePositionInfo(linePositionContext, splitLineBox, startHeight);
+			Rectangle positioningInfo = determinePositionInfo(linePositionContext, splitLineBox);
 			LineBox positionedLineBox = new LineBox(splitLineBox.direction(), splitLineBox.entries(), positioningInfo);
 			wrappedLines.add(positionedLineBox);
 
@@ -55,18 +53,11 @@ public final class LinePositioner {
 		return wrappedLines;
 	}
 
-	private static float determineStartHeight(LinePositionContext linePositionContext) {
-		FlowRootContextSwitch flowRootContextSwitch = linePositionContext.flowRootContextSwitch();
-		AbsolutePosition predictedPosition = flowRootContextSwitch.predictedPosition();
-		AbsolutePosition offsetPosition = getCursorAbsolutePosition(linePositionContext);
-		return predictedPosition.y() + offsetPosition.y();
-	}
-
-	private static float determineAvailableInlineSize(LinePositionContext linePositionContext, float startHeight) {
+	private static float determineAvailableInlineSize(LinePositionContext linePositionContext) {
 		FloatTracker floatTracker = linePositionContext.flowRootContextSwitch().floatContext().getFloatTracker();
 
 		AbsolutePosition offsetPosition = getCursorAbsolutePosition(linePositionContext);
-		float currentHeight = startHeight + offsetPosition.y();
+		float currentHeight = offsetPosition.y();
 		
 		// TODO: Vertical direction
 		// TODO: What if width is unbounded?
@@ -75,12 +66,12 @@ public final class LinePositioner {
 			- floatTracker.getRightInlineOffset(currentHeight, linePositionContext.containerSize().width());
 	}
 
-	private static Rectangle determinePositionInfo(LinePositionContext linePositionContext, LineBox lineBox, float startHeight) {
+	private static Rectangle determinePositionInfo(LinePositionContext linePositionContext, LineBox lineBox) {
 		TextAlign textAlign = getLineTextAlign(linePositionContext.styleDirectives());
 
 		FloatTracker floatTracker = linePositionContext.flowRootContextSwitch().floatContext().getFloatTracker();
 		AbsolutePosition offsetPosition = getCursorAbsolutePosition(linePositionContext);
-		float currentHeight = startHeight + offsetPosition.y();
+		float currentHeight = offsetPosition.y();
 		float containerWidth = linePositionContext.containerSize().width();
 
 		float heightOverride = determineHeightOverride(linePositionContext);

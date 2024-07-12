@@ -238,7 +238,7 @@ public class FlowInlineRendererTest {
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World");
 		box.getChildrenTracker().addChild(textBox);
 		GlobalRenderContext globalRenderContext = FlowTestUtils.mockGlobalRenderContext();
-		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(new AbsolutePosition(0, 0), FloatContext.create(FloatTracker.create()));
+		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(FloatContext.create(FloatTracker.create()));
 		LocalRenderContext localRenderContext = FlowTestUtils.createLocalRenderContext(
 			new AbsoluteSize(70, 100), new ContextSwitch[] { contextSwitch });
 		LayoutResult result = new FlowInlineLayout(flowConfig).render(FlowTestUtils.createRenderContext(box, globalRenderContext, localRenderContext));
@@ -311,9 +311,8 @@ public class FlowInlineRendererTest {
 	public void precedingLeftFloatReflowsContent() {
 		FloatTracker floatTracker = FloatTracker.create();
 		floatTracker.addLeftFloat(new Rectangle(new AbsolutePosition(0, 0), new AbsoluteSize(10, 10)));
-		AbsolutePosition childPosition = new AbsolutePosition(0, 0);
 		FloatContext floatContext = FloatContext.create(floatTracker);
-		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(childPosition, floatContext);
+		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(floatContext);
 		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World");
 		box.getChildrenTracker().addChild(textBox);
@@ -331,9 +330,8 @@ public class FlowInlineRendererTest {
 	public void precedingRightFloatReflowsContent() {
 		FloatTracker floatTracker = FloatTracker.create();
 		floatTracker.addRightFloat(new Rectangle(new AbsolutePosition(48, 0), new AbsoluteSize(10, 1)));
-		AbsolutePosition childPosition = new AbsolutePosition(0, 0);
 		FloatContext floatContext = FloatContext.create(floatTracker);
-		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(childPosition, floatContext);
+		FlowRootContextSwitch contextSwitch = new FlowRootContextSwitch(floatContext);
 		ChildrenBox box = new TestStubChildrenBox(baseDirectivePool);
 		TextBox textBox = FlowTestUtils.createTextBox("Hello World");
 		box.getChildrenTracker().addChild(textBox);
