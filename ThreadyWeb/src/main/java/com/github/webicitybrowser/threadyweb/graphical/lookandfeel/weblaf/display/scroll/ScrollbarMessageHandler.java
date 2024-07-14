@@ -43,9 +43,9 @@ public class ScrollbarMessageHandler implements MessageHandler {
 	}
 
 	private MessageResponse handleScrollMessage(MessageContext context, ScrollMessage scrollMessage) {
-		unit.box().scrollContext().componentUI().invalidate(InvalidationLevel.PAINT);
+		unit.box().displayContext().componentUI().invalidate(InvalidationLevel.PAINT);
 		ScrollScreenEvent scrollEvent = scrollMessage.getScreenEvent();
-		AbsolutePosition scrollPosition = unit.box().scrollContext().scrollPosition();
+		AbsolutePosition scrollPosition = unit.box().displayContext().scrollPosition();
 		AbsoluteSize pageSize = unit.innerUnit().fitSize();
 		float maxScrollX = pageSize.width() - documentRect.size().width();
 		float maxScrollY = pageSize.height() - documentRect.size().height();
@@ -62,7 +62,7 @@ public class ScrollbarMessageHandler implements MessageHandler {
 			Math.max(0, Math.min(unclampedNewScrollY, maxScrollY));
 		AbsolutePosition newScrollPosition = new AbsolutePosition(newScrollX, newScrollY);
 
-		unit.box().scrollContext().setScrollPosition(newScrollPosition);
+		unit.box().displayContext().setScrollPosition(newScrollPosition);
 
 		return null;
 	}
@@ -89,7 +89,7 @@ public class ScrollbarMessageHandler implements MessageHandler {
 		MouseScreenEvent screenEvent = mouseMessage.getScreenEvent();
 		if (screenEvent.getButton() != MouseConstants.LEFT_BUTTON) return null;
 
-		unit.box().scrollContext().componentUI().invalidate(InvalidationLevel.PAINT);
+		unit.box().displayContext().componentUI().invalidate(InvalidationLevel.PAINT);
 		if (unit.verticalScrollState().isScrolling()) {
 			handleScrollbarMove(screenEvent, ScrollbarStyles.VERTICAL_SCROLLBAR, unit.verticalScrollState());
 			return (MouseMessageResponse) () -> true;
@@ -107,7 +107,7 @@ public class ScrollbarMessageHandler implements MessageHandler {
 		float scrollBarMovement = translatedMousePosition.y() - scrollState.scrollStartPosition();
 		float pageScrollChange = ScrollUtils.computePageScrollChange(unit, documentRect, scrollBarMovement, positionTranslator);
 		AbsolutePosition translatedOriginalScrollPosition = positionTranslator.translateToUpright(
-			unit.box().scrollContext().scrollPosition());
+			unit.box().displayContext().scrollPosition());
 		AbsoluteSize translatedPageSize = positionTranslator.translateToUpright(unit.innerUnit().fitSize());
 		AbsoluteSize translatedDocumentSize = positionTranslator.translateToUpright(documentRect.size());
 		float pageOverflow = translatedPageSize.height() - translatedDocumentSize.height();
@@ -116,7 +116,7 @@ public class ScrollbarMessageHandler implements MessageHandler {
 		AbsolutePosition translatedNewScrollPosition = new AbsolutePosition(
 			translatedOriginalScrollPosition.x(),
 			scrollComponent);
-		unit.box().scrollContext().setScrollPosition(
+		unit.box().displayContext().setScrollPosition(
 			positionTranslator.translateFromUpright(translatedNewScrollPosition));
 		if (screenEvent.getAction() == MouseConstants.RELEASE) {
 			scrollState.endScroll();

@@ -5,6 +5,7 @@ import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.BoxSizingDirective;
@@ -82,14 +83,14 @@ public final class LayoutSizeUtils {
 		return new AbsoluteSize(widthComponent, heightComponent);
 	}
 
-	public static SizeCalculationContext createSizeCalculationContext(LayoutRenderContext context, DirectivePool directives) {
-		return createSizeCalculationContext(context.globalRenderContext(), context.localRenderContext(), directives);
+	public static SizeCalculationContext createSizeCalculationContext(LayoutRenderContext context, ComponentUI componentUI) {
+		return createSizeCalculationContext(context.globalRenderContext(), context.localRenderContext(), componentUI);
 	}
 
 	public static SizeCalculationContext createSizeCalculationContext(
-		GlobalRenderContext context, LocalRenderContext localRenderContext, DirectivePool parentDirectives
+		GlobalRenderContext context, LocalRenderContext localRenderContext, ComponentUI componentUI
 	) {
-		FontMetrics fontMetrics = WebFontUtil.getFont(parentDirectives, context).getMetrics();
+		FontMetrics fontMetrics = WebFontUtil.getFont(componentUI, context).getMetrics();
 		return createSizeCalculationContext(context, localRenderContext, fontMetrics);
 	}
 

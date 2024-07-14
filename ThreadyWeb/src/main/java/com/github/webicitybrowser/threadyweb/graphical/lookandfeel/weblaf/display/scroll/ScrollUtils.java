@@ -13,7 +13,7 @@ public final class ScrollUtils {
 		AbsoluteSize translatedDocumentSize = positionTranslator.translateToUpright(documentRect.size());
 		float availableBlockSize = translatedDocumentSize.height();
 		float pageBlockSize = positionTranslator.translateToUpright(unit.innerUnit().fitSize()).height();
-		float scrollThrough = positionTranslator.translateToUpright(unit.box().scrollContext().scrollPosition()).y();
+		float scrollThrough = positionTranslator.translateToUpright(unit.box().displayContext().scrollPosition()).y();
 
 		if (scrollThrough == ScrollbarStyles.NOT_PRESENT) {
 			return new Rectangle(

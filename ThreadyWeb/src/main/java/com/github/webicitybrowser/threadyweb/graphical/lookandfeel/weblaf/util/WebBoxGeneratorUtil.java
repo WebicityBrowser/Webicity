@@ -15,11 +15,9 @@ public final class WebBoxGeneratorUtil {
 	private WebBoxGeneratorUtil() {}
 	
 	public static List<Box> generateWebBoxes(Context context, BoxContext boxContext) {
-		OuterDisplay outerDisplay = context
-			.styleDirectives()
-			.getDirectiveOrEmpty(OuterDisplayDirective.class)
-			.map(directive -> directive.getOuterDisplay())
-			.orElse(OuterDisplay.INLINE);
+		OuterDisplay outerDisplay = context.componentUI()
+			.getStyleReference(OuterDisplayDirective.class).get()
+			.getOuterDisplay();
 
 		switch (outerDisplay) {
 		case NONE:

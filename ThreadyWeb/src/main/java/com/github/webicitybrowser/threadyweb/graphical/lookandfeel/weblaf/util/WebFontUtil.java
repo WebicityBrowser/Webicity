@@ -8,6 +8,7 @@ import com.github.webicitybrowser.thready.drawing.core.text.FontMetrics;
 import com.github.webicitybrowser.thready.drawing.core.text.FontSettings;
 import com.github.webicitybrowser.thready.drawing.core.text.source.FontSource;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.style.StyleContext;
 import com.github.webicitybrowser.threadyweb.graphical.directive.derived.DerivedFontDirective;
@@ -20,8 +21,10 @@ public final class WebFontUtil {
 
 	private WebFontUtil() {}
 
-	public static Font2D getFont(DirectivePool styleDirectives, GlobalRenderContext globalRenderContext) {
-		return styleDirectives.inheritDirectiveOrEmpty(DerivedFontDirective.class).orElseThrow().getFont();
+	public static Font2D getFont(ComponentUI componentUI, GlobalRenderContext globalRenderContext) {
+		return componentUI
+			.getStyleReference(DerivedFontDirective.class).get()
+			.getFont();
 	}
 
 	public static DerivedFontDirective deriveFont(DirectivePool self, DirectivePool parent, StyleContext styleContext) {

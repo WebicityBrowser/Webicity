@@ -3,7 +3,6 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.te
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.context.GenericContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
@@ -16,7 +15,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.message.basics.DefaultGraphicalMessageHandler;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
-import com.github.webicitybrowser.threadyweb.tree.TextComponent;
 
 public class TextDisplay implements UIDisplay<GenericContext, TextBox, TextUnit> {
 
@@ -29,9 +27,7 @@ public class TextDisplay implements UIDisplay<GenericContext, TextBox, TextUnit>
 
 	@Override
 	public List<TextBox> generateBoxes(GenericContext displayContext, BoxContext boxContext) {
-		TextComponent component = (TextComponent) displayContext.componentUI().getComponent();
-		DirectivePool directives = displayContext.styleDirectives();
-		return List.of(new TextBox(this, component, directives));
+		return List.of(new TextBox(displayContext));
 	}
 
 	@Override

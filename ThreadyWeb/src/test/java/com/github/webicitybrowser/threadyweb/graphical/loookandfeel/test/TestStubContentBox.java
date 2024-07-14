@@ -6,9 +6,9 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class TestStubContentBox implements Box {
 
@@ -52,8 +52,8 @@ public class TestStubContentBox implements Box {
 	}
 
 	@Override
-	public Component owningComponent() {
-		throw new UnsupportedOperationException("Unimplemented method 'owningComponent'");
+	public Context displayContext() {
+		throw new UnsupportedOperationException("Unimplemented method 'displayContext'");
 	}
 
 	public AbsoluteSize getLastTargetSize() {

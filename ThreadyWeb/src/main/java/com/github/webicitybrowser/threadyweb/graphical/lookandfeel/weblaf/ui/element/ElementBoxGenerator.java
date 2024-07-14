@@ -9,12 +9,12 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.threadyweb.graphical.directive.InnerDisplayDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.OuterDisplayDirective;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flexbox.FlexInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebBoxGeneratorUtil;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.InnerDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
 
@@ -36,21 +36,24 @@ public class ElementBoxGenerator {
 	//
 	
 	private ChildrenBox createBox(ElementContext elementContext, DirectivePool directives) {
-		Component component = elementContext.component();
-		SolidLayoutManager layout = getLayout(elementContext, directives);
+		SolidLayoutManager layout = getLayout(elementContext);
 		
-		OuterDisplay outerDisplay = WebDirectiveUtil.getOuterDisplay(directives);
+		OuterDisplay outerDisplay = elementContext.componentUI()
+			.getStyleReference(OuterDisplayDirective.class).get()
+			.getOuterDisplay();
 		switch (outerDisplay) {
 		case BLOCK:
-			return new ElementBlockBox(elementContext.display(), component, directives, layout);
+			return new ElementBlockBox(elementContext, layout);
 		case INLINE:
 		default:
-			return new ElementInlineBox(elementContext.display(), component, directives, layout);
+			return new ElementInlineBox(elementContext, layout);
 		}
 	}
 
-	private SolidLayoutManager getLayout(ElementContext elementContext, DirectivePool directives) {
-		InnerDisplay innerDisplay = WebDirectiveUtil.getInnerDisplay(directives);
+	private SolidLayoutManager getLayout(ElementContext elementContext) {
+		InnerDisplay innerDisplay = elementContext.componentUI()
+			.getStyleReference(InnerDisplayDirective.class).get()
+			.getInnerDisplay();
 		return switch (innerDisplay) {
 			case FLEX -> new FlexInnerDisplayLayout(flowConfig.styledUnitGenerator());
 			default -> new FlowInnerDisplayLayout(flowConfig);

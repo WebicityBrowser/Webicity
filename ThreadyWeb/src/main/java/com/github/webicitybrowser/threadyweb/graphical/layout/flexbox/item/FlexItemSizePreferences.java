@@ -30,7 +30,7 @@ public class FlexItemSizePreferences {
 		LocalRenderContext localRenderContext = layoutManagerContext.localRenderContext();
 		this.styleDirectives = box.styleDirectives();
 
-		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(globalRenderContext, localRenderContext, styleDirectives);
+		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(globalRenderContext, localRenderContext, box.componentUI());
 		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, styleDirectives);
 		float[] padding = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, styleDirectives);
 		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, styleDirectives);

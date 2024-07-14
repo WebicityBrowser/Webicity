@@ -56,8 +56,7 @@ public class ElementInlineDisplay implements UIDisplay<ElementContext, ChildrenB
 
 	private static ElementUnit asElementUnit(BuildableRenderedUnit unit) {
 		return new ElementUnit(
-			unit.display(),
-			unit.styleDirectives(),
+			unit.box(),
 			LayoutResult.create(unit.childLayoutResults(), unit.fitSize()));
 	}
 

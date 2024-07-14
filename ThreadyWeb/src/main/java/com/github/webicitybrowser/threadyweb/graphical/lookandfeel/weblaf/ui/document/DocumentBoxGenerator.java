@@ -2,7 +2,6 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.do
 
 import java.util.List;
 
-import com.github.webicitybrowser.thready.gui.directive.basics.pool.BasicDirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -23,7 +22,7 @@ public final class DocumentBoxGenerator {
 	}
 
 	private static ChildrenBox generateBlockRootBox(DocumentContext context, List<Box> childBoxes) {
-		ChildrenBox rootBox = new DocumentBox(context.display(), context.component(), new BasicDirectivePool());
+		ChildrenBox rootBox = new DocumentBox(context);
 		
 		for (Box childBox: childBoxes) {
 			rootBox.getChildrenTracker().addChild(childBox);

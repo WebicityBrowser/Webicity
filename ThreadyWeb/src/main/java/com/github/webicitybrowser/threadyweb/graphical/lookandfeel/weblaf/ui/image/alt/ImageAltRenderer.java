@@ -13,14 +13,14 @@ public final class ImageAltRenderer {
 	private ImageAltRenderer() {}
 
 	public static ImageUnit render(ImageBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext, String altText) {
-		Font2D font = WebFontUtil.getFont(box.styleDirectives(), globalRenderContext);
+		Font2D font = WebFontUtil.getFont(box.componentUI(), globalRenderContext);
 
 		float width = font.getMetrics().getStringWidth(altText);
 		float height = font.getMetrics().getCapHeight();
 
 		AbsoluteSize fitSize = new AbsoluteSize(width, height);
 
-		return new ImageAltUnit(box.display(), fitSize, box.styleDirectives(), altText, font);
+		return new ImageAltUnit(box, fitSize, altText, font);
 	}
 
 }

@@ -56,7 +56,7 @@ public class AdjustedLayoutManager implements SolidLayoutManager {
 			ChildLayoutResult originalLayoutResult = originalChildLayoutResults[i];
 			DirectivePool directives = originalLayoutResult.unit().styleDirectives();
 			if (PositionOffsetUtil.getPositionType(directives) == PositionType.RELATIVE) {
-				SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(layoutManagerContext, directives);
+				SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(layoutManagerContext, originalLayoutResult.unit().componentUI());
 				adjustedChildLayoutResults[i] = adjustRelativeChild(originalLayoutResult, sizeCalculationContext);
 			} else {
 				adjustedChildLayoutResults[i] = originalLayoutResult;

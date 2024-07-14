@@ -4,9 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.text.LineBreakDirective.LineBreak;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextUnit;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebTextDirectiveUtil;
 
 public class LineSplitter {
 
@@ -73,7 +73,9 @@ public class LineSplitter {
 			&& !remainingEntries.isEmpty()
 			&& remainingEntries.get(0) instanceof LineEntry.Text textEntry
 		) {
-			LineBreak lineBreak =  WebTextDirectiveUtil.getLineBreak(textEntry.textUnit().box().styleDirectives());
+			LineBreak lineBreak = textEntry.textUnit().componentUI()
+				.getStyleReference(LineBreakDirective.class).get()
+				.getLineBreak();
 			textSplitter = new TextSplitter(textEntry.textUnit(), lineBreak);
 			remainingEntries.remove(0);
 		}

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.base.layout.StaticTreeTracker;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
@@ -12,6 +11,7 @@ import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutM
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.composite.GlobalCompositeContext;
@@ -39,10 +39,10 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, El
 	private static final UIDisplay<?, ?, ?> ELEMENT_INLINE_DISPLAY = new ElementInlineDisplay();
 	private static final UIDisplay<?, ?, ?> ELEMENT_STYLED_DISPLAY = new StyledUnitDisplay();
 
-	private final Function<DirectivePool, BuildableRenderedUnit> innerUnitGenerator =
-		directives -> BuildableRenderedUnit.create(ELEMENT_INLINE_DISPLAY, directives);
+	private final Function<Box, BuildableRenderedUnit> innerUnitGenerator =
+		box -> BuildableRenderedUnit.create(ELEMENT_INLINE_DISPLAY, box);
 	private final StyledUnitGenerator styledUnitGenerator =
-		context -> new StyledUnit(ELEMENT_STYLED_DISPLAY, context);
+		context -> new StyledUnit(context, ELEMENT_STYLED_DISPLAY);
 	
 	private final FlowConfig flowConfig = new FlowConfig(innerUnitGenerator, styledUnitGenerator);
 	private final ElementBoxGenerator elementBoxGenerator = new ElementBoxGenerator(flowConfig);
@@ -67,7 +67,7 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, El
 			new StaticTreeTracker(box, box.getChildrenTracker().getChildren()));
 		LayoutResult layoutResult = adjustedLayoutManager.render(layoutManagerContext);
 		
-		return new ElementUnit(this, box.styleDirectives(), layoutResult);
+		return new ElementUnit(box, layoutResult);
 	}
 
 	@Override

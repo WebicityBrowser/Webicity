@@ -17,7 +17,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends RenderedUnit> implements UIDisplay<SimpleWrapperContext<T>, SimpleWrapperBox<U>, SimpleWrapperUnit<V>> {
 
@@ -36,9 +35,8 @@ public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends Re
 	public List<SimpleWrapperBox<U>> generateBoxes(SimpleWrapperContext<T> displayContext, BoxContext boxContext) {
 		List<U> originalBoxes = childDisplay.generateBoxes(displayContext.childContext(), boxContext);
 		List<SimpleWrapperBox<U>> wrappedBoxes = new ArrayList<>(originalBoxes.size());
-		Component component = displayContext.componentUI().getComponent();
 		for (U originalBox: originalBoxes) {
-			wrappedBoxes.add(new SimpleWrapperBox<>(component, displayContext.styleDirectives(), this, originalBox));
+			wrappedBoxes.add(new SimpleWrapperBox<>(this, originalBox));
 		}
 		
 		return wrappedBoxes;
@@ -47,7 +45,7 @@ public class SimpleWrapperDisplay<T extends Context, U extends Box, V extends Re
 	@Override
 	public SimpleWrapperUnit<V> renderBox(SimpleWrapperBox<U> box, GlobalRenderContext renderContext, LocalRenderContext localRenderContext) {
 		V childUnit = childDisplay.renderBox(box.innerBox(), renderContext, localRenderContext);
-		return new SimpleWrapperUnit<>(this, childUnit.fitSize(), box.styleDirectives(), childUnit);
+		return new SimpleWrapperUnit<>(this, childUnit.fitSize(), childUnit);
 	}
 
 	@Override

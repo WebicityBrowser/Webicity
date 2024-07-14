@@ -37,7 +37,7 @@ public class ScrollDisplay implements UIDisplay<ScrollContext, ScrollBox, Scroll
 		}
 		Box innerBox = innerBoxes.get(0);
 
-		return List.of(new ScrollBox(displayContext, displayContext.styleDirectives(), innerBox));
+		return List.of(new ScrollBox(displayContext, innerBox));
 	}
 
 	@Override

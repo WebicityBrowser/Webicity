@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline;
 
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextUnit;
 
@@ -27,10 +27,10 @@ public interface LineEntry {
 
 	}
 
-	public record UnitEnter(DirectivePool directives, boolean isStart) implements LineEntry {
+	public record UnitEnter(Box box, boolean isStart) implements LineEntry {
 
 		public UnitEnter split() {
-			return new UnitEnter(directives, false);
+			return new UnitEnter(box, false);
 		}
 
 		@Override

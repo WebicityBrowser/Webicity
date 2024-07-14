@@ -12,6 +12,8 @@ import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutM
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
+import com.github.webicitybrowser.threadyweb.graphical.directive.WhiteSpaceCollapseDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.text.LetterSpacingDirective;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRenderContext;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.inline.LineDimension.LineDirection;
@@ -19,7 +21,6 @@ import com.github.webicitybrowser.threadyweb.graphical.layout.flow.util.FlowUtil
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.br.BreakBox;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebTextDirectiveUtil;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.WhiteSpaceCollapse;
 
@@ -41,7 +42,9 @@ public class FlowInlineLayout implements SolidLayoutManager {
 			addBoxToLineContainer(child, layoutRenderContext, lineContainer);
 		}
 
-		WhiteSpaceCollapse whiteSpaceCollapse = WebTextDirectiveUtil.getWhiteSpaceCollapse(layoutRenderContext.layoutDirectives());
+		WhiteSpaceCollapse whiteSpaceCollapse = layoutRenderContext.componentUI()
+			.getStyleReference(WhiteSpaceCollapseDirective.class).get()
+			.getWhiteSpaceCollapse();
 		LineContainer transformedContainer = lineContainer.map(lineBox -> WhitespaceHandler.collapse(lineBox, whiteSpaceCollapse));
 		transformedContainer = LinePositioner.positionLines(transformedContainer, flowRenderContext);
 
@@ -50,7 +53,7 @@ public class FlowInlineLayout implements SolidLayoutManager {
 
 	private void addBoxToLineContainer(Box child, LayoutRenderContext layoutRenderContext, LineContainer lineContainer) {
 		if (!child.managesSelf() && child instanceof ChildrenBox childrenBox) {
-			lineContainer.currentLine().addEntry(new LineEntry.UnitEnter(child.styleDirectives(), true));
+			lineContainer.currentLine().addEntry(new LineEntry.UnitEnter(child, true));
 			for (Box innerChild : childrenBox.getChildrenTracker().getChildren()) {
 				addBoxToLineContainer(innerChild, layoutRenderContext, lineContainer);
 			}
@@ -60,8 +63,11 @@ public class FlowInlineLayout implements SolidLayoutManager {
 			lineContainer.newLine();
 		} else if (child instanceof TextBox textBox) {
 			SizeCalculationContext sizeCalculationContext = LayoutSizeUtils
-				.createSizeCalculationContext(layoutRenderContext, textBox.styleDirectives());
-			float letterSpacing = WebTextDirectiveUtil.getLetterSpacing(textBox.styleDirectives(), sizeCalculationContext);
+				.createSizeCalculationContext(layoutRenderContext, textBox.componentUI());
+			float letterSpacing = textBox.componentUI()
+				.getStyleReference(LetterSpacingDirective.class).get()
+				.getLetterSpacing()
+				.calculate(sizeCalculationContext, true);
 			lineContainer.currentLine().addEntry(new LineEntry.Text(
 				InlineTextRenderer.renderInitialText(textBox, layoutRenderContext, letterSpacing)));
 		} else {

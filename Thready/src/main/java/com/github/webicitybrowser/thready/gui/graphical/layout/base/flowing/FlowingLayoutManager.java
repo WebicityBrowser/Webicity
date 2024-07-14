@@ -6,6 +6,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
+import com.github.webicitybrowser.thready.dimensions.RelativePosition;
 import com.github.webicitybrowser.thready.gui.graphical.directive.PositionDirective;
 import com.github.webicitybrowser.thready.gui.graphical.directive.SizeDirective;
 import com.github.webicitybrowser.thready.gui.graphical.layout.base.flowing.imp.RenderCursorTracker;
@@ -61,11 +62,10 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 
 	private AbsoluteSize precomputeChildSize(Box childBox, AbsoluteSize parentSize) {
 		return childBox
-			.styleDirectives()
-			.getDirectiveOrEmpty(SizeDirective.class)
-			.map(directive -> directive.getSize())
-			.map(relativeSize -> relativeSize.resolveAbsoluteSize(parentSize))
-			.orElse(new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED));
+			.componentUI()
+			.getStyleReference(SizeDirective.class).get()
+			.getSize()
+			.resolveAbsoluteSize(parentSize);
 	}
 	
 	private AbsoluteSize computeFinalChildSize(AbsoluteSize renderedSize, AbsoluteSize precomputedSize, AbsoluteSize parentSize) {
@@ -83,12 +83,18 @@ public class FlowingLayoutManager implements SolidLayoutManager {
 	private AbsolutePosition computeNormalChildPosition(
 		Box child, AbsoluteSize parentSize, AbsoluteSize finalSize, RenderCursorTracker renderCursor
 	) {
-		return child
-			.styleDirectives()
-			.getDirectiveOrEmpty(PositionDirective.class)
-			.map(directive -> directive.getPosition())
-			.map(relativePosition -> relativePosition.resolveAbsolutePosition(parentSize))
-			.orElse(selectNextPosition(finalSize, renderCursor));
+		RelativePosition relativePosition = child
+			.componentUI()
+			.getStyleReference(PositionDirective.class).get()
+			.getPosition();
+		if (
+			relativePosition.x().relativeComponent() == RelativeDimension.UNBOUNDED
+			&& relativePosition.y().relativeComponent() == RelativeDimension.UNBOUNDED
+		) {
+			return selectNextPosition(finalSize, renderCursor);
+		}
+		
+		return relativePosition.resolveAbsolutePosition(parentSize);
 	}
 
 	private AbsolutePosition selectNextPosition(AbsoluteSize finalSize, RenderCursorTracker renderCursor) {

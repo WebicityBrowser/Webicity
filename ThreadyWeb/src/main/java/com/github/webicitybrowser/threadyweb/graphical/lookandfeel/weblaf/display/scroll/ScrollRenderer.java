@@ -54,7 +54,7 @@ public final class ScrollRenderer {
 	}
 
 	private static void setUnpresentScrollPosition(ScrollBox box, AbsoluteSize contentSize, AbsoluteSize outerSize) {
-		AbsolutePosition scrollPosition = box.scrollContext().scrollPosition();
+		AbsolutePosition scrollPosition = box.displayContext().scrollPosition();
 		if (contentSize.width() <= outerSize.width()) {
 			scrollPosition = new AbsolutePosition(ScrollbarStyles.NOT_PRESENT, scrollPosition.y());
 		} else if (scrollPosition.x() == ScrollbarStyles.NOT_PRESENT) {
@@ -67,7 +67,7 @@ public final class ScrollRenderer {
 			scrollPosition = new AbsolutePosition(scrollPosition.x(), 0);
 		}
 
-		box.scrollContext().setScrollPosition(scrollPosition);
+		box.displayContext().setScrollPosition(scrollPosition);
 	}
 
 	private static RenderedUnit renderInnerBox(

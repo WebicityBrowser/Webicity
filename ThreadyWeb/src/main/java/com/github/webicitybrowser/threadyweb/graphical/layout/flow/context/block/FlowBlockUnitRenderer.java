@@ -69,7 +69,7 @@ public final class FlowBlockUnitRenderer {
 
 	private static LayoutSizingContext createLayoutSizingContext(FlowBlockRenderContext state, Box childBox, BoxOffsetDimensions boxOffsetDimensions) {
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
-			state.flowContext().layoutRenderContext(), childBox.styleDirectives());
+			state.flowContext().layoutRenderContext(), childBox.componentUI());
 
 		return LayoutSizeUtils.createLayoutSizingContext(
 			childBox.styleDirectives(), sizeCalculationContext, boxOffsetDimensions

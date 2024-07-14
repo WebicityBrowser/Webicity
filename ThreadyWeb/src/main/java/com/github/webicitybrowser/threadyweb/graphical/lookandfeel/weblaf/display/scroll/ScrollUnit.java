@@ -21,7 +21,7 @@ public class ScrollUnit implements RenderedUnit {
 		this.innerUnit = innerUnit;
 		this.innerUnitSize = innerUnitSize;
 
-		ScrollContext scrollContext = box.scrollContext();
+		ScrollContext scrollContext = box.displayContext();
 		this.verticalScrollState = new ScrollState(scrollContext);
 		this.horizontalScrollState = new ScrollState(scrollContext);
 	}

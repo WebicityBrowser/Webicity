@@ -3,7 +3,6 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.webicitybrowser.thready.gui.directive.basics.pool.NestingDirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
@@ -86,9 +85,7 @@ public class SolidBoxChildrenTracker implements BoxChildrenTracker {
 			return;
 		}
 		
-		ChildrenBox anonymousBox = new BasicAnonymousFluidBox(
-			anonDisplay, parentBox.owningComponent(),
-			new NestingDirectivePool(parentBox.styleDirectives()));
+		ChildrenBox anonymousBox = new BasicAnonymousFluidBox(parentBox.displayContext(), anonDisplay);
 		// TODO: Is the passed-through renderer generator fine?
 		if (clearPrior) {
 			children.clear();

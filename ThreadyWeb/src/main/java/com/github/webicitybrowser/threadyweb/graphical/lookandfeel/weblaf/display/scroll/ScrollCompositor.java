@@ -11,7 +11,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.c
 public final class ScrollCompositor {
 
 	public static void composite(ScrollUnit unit, GlobalCompositeContext compositeContext, LocalCompositeContext localCompositeContext) {
-		ScrollContext scrollContext = unit.box().scrollContext();
+		ScrollContext scrollContext = unit.box().displayContext();
 	
 		compositeContext.addPaintUnit(unit, localCompositeContext);
 

@@ -21,16 +21,16 @@ public final class StyledUnitPainter {
 			paintDebugRectangle(localPaintContext);
 		}
 
-		BackgroundPainter.paintBackground(unit.context().styleDirectives(), globalPaintContext, localPaintContext);
+		BackgroundPainter.paintBackground(unit.context().innerUnit().styleDirectives(), globalPaintContext, localPaintContext);
 		paintOutlines(unit, globalPaintContext, localPaintContext);
 	}
 
 	private static void paintOutlines(StyledUnit unit, GlobalPaintContext globalPaintContext, LocalPaintContext localPaintContext) {
 		float[] borders = unit.context().boxOffsetDimensions().borders();
-		BorderPainter.paintLeftOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[0]);
-		BorderPainter.paintRightOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[1]);
-		BorderPainter.paintTopOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[2]);
-		BorderPainter.paintBottomOutline(unit.context().styleDirectives(), globalPaintContext, localPaintContext, borders[3]);
+		BorderPainter.paintLeftOutline(unit.context().innerUnit().styleDirectives(), globalPaintContext, localPaintContext, borders[0]);
+		BorderPainter.paintRightOutline(unit.context().innerUnit().styleDirectives(), globalPaintContext, localPaintContext, borders[1]);
+		BorderPainter.paintTopOutline(unit.context().innerUnit().styleDirectives(), globalPaintContext, localPaintContext, borders[2]);
+		BorderPainter.paintBottomOutline(unit.context().innerUnit().styleDirectives(), globalPaintContext, localPaintContext, borders[3]);
 	}
 
 	private static void paintDebugRectangle(LocalPaintContext localPaintContext) {

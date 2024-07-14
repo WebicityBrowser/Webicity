@@ -2,12 +2,11 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.BoxOffsetDimensions;
 
 public record StyledUnitContext(
-	DirectivePool styleDirectives, RenderedUnit innerUnit, AbsoluteSize size, BoxOffsetDimensions boxOffsetDimensions
+	RenderedUnit innerUnit, AbsoluteSize size, BoxOffsetDimensions boxOffsetDimensions
 ) {
 
 	public AbsoluteSize innerUnitSize() {

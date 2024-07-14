@@ -60,7 +60,7 @@ public class LineBox {
 	public List<LineEntry> splitRemainingSections() {
 		List<LineEntry> splitOff = new ArrayList<>();
 		while (!activeUnits.isEmpty()) {
-			splitOff.add(new LineEntry.UnitEnter(activeUnits.pop().directives(), false));
+			splitOff.add(new LineEntry.UnitEnter(activeUnits.pop().box(), false));
 			lineEntries.add(new LineEntry.UnitExit());
 		}
 

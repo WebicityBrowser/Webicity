@@ -30,7 +30,7 @@ public final class SelfManagedRenderer {
 		GlobalRenderContext globalRenderContext = layoutRenderContext.globalRenderContext();
 
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
-			layoutRenderContext, childBox.styleDirectives());
+			layoutRenderContext, childBox.componentUI());
 		BoxOffsetDimensions boxOffsetDimensions = getBoxOffsetDimensions(childBox.styleDirectives(), sizeCalculationContext);
 		AbsoluteSize preferredSize = computePreferredSize(sizeCalculationContext, childBox, boxOffsetDimensions);
 		AbsoluteSize containerSize = new AbsoluteSize(localRenderContext.preferredSize().width(), RelativeDimension.UNBOUNDED);
@@ -47,8 +47,7 @@ public final class SelfManagedRenderer {
 		AbsoluteSize outerSize = LayoutSizeUtils.addPadding(rawChildSize, boxOffsetDimensions.padding());
 		AbsoluteSize adjustedOuterSize = LayoutSizeUtils.enforceSize(outerSize, preferredSize);
 
-		StyledUnitContext styledUnitContext = new StyledUnitContext(
-			childBox.styleDirectives(), childUnit, adjustedOuterSize, boxOffsetDimensions);
+		StyledUnitContext styledUnitContext = new StyledUnitContext(childUnit, adjustedOuterSize, boxOffsetDimensions);
 		RenderedUnit styledUnit = flowConfig.styledUnitGenerator().generateStyledUnit(styledUnitContext);
 
 		return styledUnit;

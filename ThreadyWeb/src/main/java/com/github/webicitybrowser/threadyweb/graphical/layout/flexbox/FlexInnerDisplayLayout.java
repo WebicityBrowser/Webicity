@@ -105,8 +105,7 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 			RenderedUnit renderedUnit = flexItem.getRenderedUnit();
 			FlexItemSizePreferences sizePreferences = flexItem.getSizePreferences();
 			RenderedUnit styledUnit = styledUnitGenerator.generateStyledUnit(new StyledUnitContext(
-				flexItem.getBox().styleDirectives(), renderedUnit, childBounds.size(),
-				sizePreferences.getBoxOffsetDimensions()));
+				renderedUnit, childBounds.size(), sizePreferences.getBoxOffsetDimensions()));
 			layoutResults.add(new ChildLayoutResult(styledUnit, childBounds));
 		}
 	}

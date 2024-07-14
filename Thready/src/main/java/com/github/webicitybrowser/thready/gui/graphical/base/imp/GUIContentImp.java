@@ -9,6 +9,8 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.drawing.core.text.Font2D;
+import com.github.webicitybrowser.thready.gui.directive.core.Directive;
+import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.style.StyleGenerator;
 import com.github.webicitybrowser.thready.gui.graphical.base.GUIContent;
 import com.github.webicitybrowser.thready.gui.graphical.base.InvalidationLevel;
@@ -28,6 +30,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.style.StyleContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.style.StyleReference;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.thready.windowing.core.event.ScreenEvent;
 
@@ -95,7 +98,22 @@ public class GUIContentImp implements GUIContent {
 
 			@Override
 			public UIDisplay<?, ?, ?> getRootDisplay() {
-				return null;
+				throw new UnsupportedOperationException("Unimplemented method 'styleDirectives'");
+			}
+
+			@Override
+			public <T extends Directive> StyleReference<T> getStyleReference(Class<T> directiveType) {
+				throw new UnsupportedOperationException("Unimplemented method 'styleDirectives'");
+			}
+
+			@Override
+			public DirectivePool styleDirectives() {
+				throw new UnsupportedOperationException("Unimplemented method 'styleDirectives'");
+			}
+
+			@Override
+			public void regenerateStyling(DirectivePool styleDirectives, StyleContext styleContext) {
+				throw new UnsupportedOperationException("Unimplemented method 'regenerateStyling'");
 			}
 		};
 		
@@ -144,6 +162,7 @@ public class GUIContentImp implements GUIContent {
 	}
 
 	private void recursiveStyleCycle(Context rootContext, StyleGenerator styleGenerator, StyleContext styleContext) {
+		rootContext.componentUI().regenerateStyling(styleGenerator.getStyleDirectives(), styleContext);
 		rootContext.regenerateStyling(styleGenerator.getStyleDirectives(), styleContext);
 		ComponentUI[] childUIs = rootContext.children()
 			.stream()

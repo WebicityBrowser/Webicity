@@ -129,7 +129,7 @@ public final class LinePositioner {
 		if (isEmptyBox(lineBox)) {
 			return WebFontUtil
 				.getFont(
-					linePositionContext.styleDirectives(),
+					linePositionContext.layoutRenderContext().componentUI(),
 					linePositionContext.layoutRenderContext().globalRenderContext())
 				.getMetrics()
 				.getSize();
@@ -163,7 +163,7 @@ public final class LinePositioner {
 	}
 
 	private static float determineHeightOverride(LinePositionContext linePositionContext) {
-		return FlowUtils.getLineHeight(linePositionContext.layoutRenderContext(), linePositionContext.styleDirectives());
+		return FlowUtils.getLineHeight(linePositionContext.layoutRenderContext());
 	}
 
 	private static record LinePositionContext(
@@ -173,6 +173,7 @@ public final class LinePositioner {
 			return layoutRenderContext.localRenderContext().preferredSize();
 		}
 
+		@Deprecated
 		public DirectivePool styleDirectives() {
 			return layoutRenderContext.layoutDirectives();
 		}

@@ -1,18 +1,14 @@
 package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.context;
 
 
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
-import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.style.StyleContext;
 
 public class GenericContext implements Context {
 	
 	private final UIDisplay<?, ?, ?> display;
 	private final ComponentUI componentUI;
-	
-	private DirectivePool styleDirectives;
 
 	public GenericContext(UIDisplay<?, ?, ?> display, ComponentUI componentUI) {
 		this.display = display;
@@ -27,16 +23,6 @@ public class GenericContext implements Context {
 	@Override
 	public ComponentUI componentUI() {
 		return this.componentUI;
-	}
-
-	@Override
-	public DirectivePool styleDirectives() {
-		return styleDirectives;
-	}
-
-	@Override
-	public void regenerateStyling(DirectivePool styleDirectives, StyleContext styleContext) {
-		this.styleDirectives = styleDirectives;
 	}
 	
 }

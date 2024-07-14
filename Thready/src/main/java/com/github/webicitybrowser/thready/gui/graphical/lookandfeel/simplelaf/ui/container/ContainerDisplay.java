@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.graphical.cache.MappingCache;
 import com.github.webicitybrowser.thready.gui.graphical.cache.imp.MappingCacheImp;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.GenericComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
@@ -15,10 +16,13 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.p
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.paint.LocalPaintContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.display.wrapper.SimpleWrapperDisplay;
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class ContainerDisplay implements UIDisplay<ContainerContext, ChildrenBox, ContainerRenderedUnit> {
+
+	private static final UIDisplay<?, ?, ?> INSTANCE = new SimpleWrapperDisplay<>(new ContainerDisplay());
 
 	@Override
 	public ContainerContext createContext(ComponentUI componentUI) {
@@ -28,9 +32,7 @@ public class ContainerDisplay implements UIDisplay<ContainerContext, ChildrenBox
 
 	@Override
 	public List<ChildrenBox> generateBoxes(ContainerContext displayContext, BoxContext boxContext) {
-		ContainerBox rootBox = new ContainerBox(
-			this, displayContext.owningComponent(),
-			displayContext.styleDirectives(), this);
+		ContainerBox rootBox = new ContainerBox(displayContext, this);
 		ContainerChildrenBoxGenerator.addChildrenBoxes(displayContext, rootBox, boxContext);
 		return List.of(rootBox);
 	}
@@ -53,6 +55,10 @@ public class ContainerDisplay implements UIDisplay<ContainerContext, ChildrenBox
 	@Override
 	public MessageHandler createMessageHandler(ContainerRenderedUnit unit, Rectangle documentRect) {
 		return ContainerMessageHandler.createMessageHandler(unit, documentRect);
+	}
+
+	public static ComponentUI componentUI(Component component, ComponentUI parent) {
+		return new GenericComponentUI(component, parent, INSTANCE);
 	}
 
 }

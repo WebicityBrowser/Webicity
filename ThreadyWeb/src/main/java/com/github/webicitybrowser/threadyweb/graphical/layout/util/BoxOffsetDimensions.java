@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.util;
 
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public record BoxOffsetDimensions(float[] margins, float[] padding, float[] borders) {
@@ -14,12 +14,12 @@ public record BoxOffsetDimensions(float[] margins, float[] padding, float[] bord
 		return totalPadding;
 	}
 
-	public static BoxOffsetDimensions create(LayoutRenderContext layoutRenderContext, DirectivePool styleDirectives) {
+	public static BoxOffsetDimensions create(LayoutRenderContext layoutRenderContext, ComponentUI componentUI) {
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
-			layoutRenderContext, styleDirectives);
-		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, styleDirectives);
-		float[] paddings = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, styleDirectives);
-		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, styleDirectives);
+			layoutRenderContext, componentUI);
+		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, componentUI.styleDirectives());
+		float[] paddings = LayoutPaddingCalculations.computePaddings(sizeCalculationContext, componentUI.styleDirectives());
+		float[] borders = LayoutBorderWidthCalculations.computeBorderWidths(sizeCalculationContext, componentUI.styleDirectives());
 
 		return new BoxOffsetDimensions(margins, paddings, borders);
 	}

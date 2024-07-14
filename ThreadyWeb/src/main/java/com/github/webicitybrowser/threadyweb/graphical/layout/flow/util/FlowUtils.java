@@ -1,6 +1,5 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.flow.util;
 
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
@@ -17,12 +16,11 @@ public final class FlowUtils {
 	
 	private FlowUtils() {}
 
-	public static float getLineHeight(LayoutRenderContext context, DirectivePool directives) {
-		SizeCalculationContext sizeContext = LayoutSizeUtils.createSizeCalculationContext(context, directives);
-		SizeCalculation lineHeightSizeCalculation = directives
-			.inheritDirectiveOrEmpty(LineHeightDirective.class)
-			.map(LineHeightDirective::getLineHeightCalculation)
-			.orElse(LineHeightDirective.NORMAL);
+	public static float getLineHeight(LayoutRenderContext context) {
+		SizeCalculationContext sizeContext = LayoutSizeUtils.createSizeCalculationContext(context, context.componentUI());
+		SizeCalculation lineHeightSizeCalculation = context.componentUI()
+			.getStyleReference(LineHeightDirective.class).get()
+			.getLineHeightCalculation();
 		return lineHeightSizeCalculation.calculate(sizeContext, true);
 	}
 

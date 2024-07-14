@@ -10,8 +10,8 @@ import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.ima
 public class LoadedImageRenderer {
 
 	public static ImageUnit render(ImageBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext, ImageData imageData) {
-		Image[] imageFrames = box.imageContext().cachedLoadedImageFrames(globalRenderContext.resourceLoader(), imageData);
-		return new LoadedImageUnit(box.display(), box.styleDirectives(), imageData, imageFrames);
+		Image[] imageFrames = box.displayContext().cachedLoadedImageFrames(globalRenderContext.resourceLoader(), imageData);
+		return new LoadedImageUnit(box, imageData, imageFrames);
 	}
 
 }

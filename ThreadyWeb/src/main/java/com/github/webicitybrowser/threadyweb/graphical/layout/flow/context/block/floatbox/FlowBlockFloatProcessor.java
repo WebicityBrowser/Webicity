@@ -21,7 +21,7 @@ public final class FlowBlockFloatProcessor {
 			if (!FlowBlockFloatRenderer.isFloatBox(childBox)) break;
 			float blockPosition = state.positionTracker().getPosition().y();
 			RenderedUnit childUnit = FlowBlockFloatRenderer.renderFloatBoxUnit(state, childBox);
-			FlowBlockFloatRenderer.addFloatBoxToLine(state, childUnit, childBox.styleDirectives(), blockPosition);
+			FlowBlockFloatRenderer.addFloatBoxToLine(state, childUnit, blockPosition);
 			floats++;
 		}
 
@@ -53,9 +53,7 @@ public final class FlowBlockFloatProcessor {
 			floatContext.getEndFloats().poll();
 
 			float blockPosition = state.positionTracker().getPosition().y();
-			FlowBlockFloatRenderer.addFloatBoxToLine(
-				state, floatEntry.floatUnit(),
-				floatEntry.floatBox().styleDirectives(), blockPosition);
+			FlowBlockFloatRenderer.addFloatBoxToLine(state, floatEntry.floatUnit(), blockPosition);
 		}
 	}
 

@@ -19,7 +19,6 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.derived.Derived
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.imp.BuildableRenderedUnitImp;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.element.styled.StyledUnit;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextBox;
-import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.text.TextDisplay;
 import com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test.TestFontMetrics;
 
 public class FlowTestUtils {
@@ -55,8 +54,8 @@ public class FlowTestUtils {
 
 	public static FlowConfig createFlowConfig() {
 		return new FlowConfig(
-			directives -> new BuildableRenderedUnitImp(null, directives),
-			context -> new StyledUnit(null, context)
+			box -> new BuildableRenderedUnitImp(null, box),
+			context -> new StyledUnit(context, null)
 		);
 	}
 
@@ -70,7 +69,12 @@ public class FlowTestUtils {
 		Font2D font = createTestFont();
 
 		if (directives == null) directives = baseDirectivePool;
-		return new TextBox(new TextDisplay(), null, directives, text, font);
+		TextBox textBox = Mockito.mock(TextBox.class);
+		Mockito.when(textBox.getFont(Mockito.any(), Mockito.any())).thenReturn(font);
+		Mockito.when(textBox.styleDirectives()).thenReturn(directives);
+		Mockito.when(textBox.text()).thenReturn(text);
+
+		return textBox;
 	}
 
 	public static TextBox createTextBox(String text) {

@@ -9,10 +9,10 @@ import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.BoxOffsetDimensions;
@@ -29,7 +29,7 @@ public class LineRenderer {
 
 	private final List<LineEntry> remainingEntries = new LinkedList<>();
 	private final Deque<LineSectionBuilder> sectionBuilders = new ArrayDeque<>();
-	private final Deque<DirectivePool> styleDirectivesStack = new ArrayDeque<>();
+	private final Deque<Box> boxStack = new ArrayDeque<>();
 	
 	public LineRenderer(FlowConfig flowConfig, LayoutRenderContext layoutRenderContext, LineBox lineBox) {
 		this.flowConfig = flowConfig;
@@ -65,7 +65,7 @@ public class LineRenderer {
 			renderNext();
 		}
 		assert sectionBuilders.size() == 1;
-		assert styleDirectivesStack.isEmpty();
+		assert boxStack.isEmpty();
 	}
 
 	private void renderNext() {
@@ -90,14 +90,14 @@ public class LineRenderer {
 
 	private void enterSection(LineEntry.UnitEnter unitEnter) {
 		startSection();
-		styleDirectivesStack.push(unitEnter.directives());
+		boxStack.push(unitEnter.box());
 	}
 	
 	private void exitSection() {
 		LineSectionBuilder sectionBuilder = sectionBuilders.pop();
 		ChildLayoutResult[] childLayoutResults = sectionBuilder.render();
-		DirectivePool styleDirectives = styleDirectivesStack.pop();
-		BuildableRenderedUnit buildableUnit = flowConfig.buildableUnitGenerator().apply(styleDirectives);
+		Box box = boxStack.pop();
+		BuildableRenderedUnit buildableUnit = flowConfig.buildableUnitGenerator().apply(box);
 
 		float maxWidth = 0;
 		float maxHeight = 0;
@@ -109,10 +109,10 @@ public class LineRenderer {
 		}
 		buildableUnit.setFitSize(new AbsoluteSize(maxWidth, maxHeight));
 		
-		BoxOffsetDimensions boxOffsetDimensions = BoxOffsetDimensions.create(layoutRenderContext, styleDirectives);
+		BoxOffsetDimensions boxOffsetDimensions = BoxOffsetDimensions.create(layoutRenderContext, box.componentUI());
 		AbsoluteSize outerSize = addPaddingAndBorder(buildableUnit.fitSize(), boxOffsetDimensions);
-		RenderedUnit styledUnit = flowConfig.styledUnitGenerator().generateStyledUnit(new StyledUnitContext(
-			styleDirectives, buildableUnit, outerSize, boxOffsetDimensions));
+		RenderedUnit styledUnit = flowConfig.styledUnitGenerator().generateStyledUnit(
+			new StyledUnitContext(buildableUnit, outerSize, boxOffsetDimensions));
 		addUnit(styledUnit);
 	}
 

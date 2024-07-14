@@ -4,16 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public interface Box {
 
-	UIDisplay<?, ?, ?> display();
-	
-	Component owningComponent();
-
-	DirectivePool styleDirectives();
+	Context displayContext();
 
 	default boolean isFluid() {
 		return false;
@@ -29,6 +27,27 @@ public interface Box {
 
 	default List<Box> getAdjustedBoxTree() {
 		return List.of(this);
+	}
+
+	// Standard implementations
+
+	default Component owningComponent() {
+		return componentUI().getComponent();
+	}
+
+	default ComponentUI componentUI() {
+		return displayContext().componentUI();
+	}
+
+	default UIDisplay<?, ?, ?> display() {
+		return displayContext().display();
+	}
+
+	// Legacy
+
+	@Deprecated
+	default DirectivePool styleDirectives() {
+		return componentUI().styleDirectives();
 	}
 	
 }

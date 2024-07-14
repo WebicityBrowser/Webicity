@@ -12,7 +12,7 @@ import com.github.webicitybrowser.threadyweb.graphical.value.OuterDisplay;
 import com.github.webicitybrowser.threadyweb.tree.image.ImageComponent;
 import com.github.webicitybrowser.threadyweb.tree.image.ImageStatus;
 
-public record ImageBox(ImageContext imageContext) implements Box {
+public record ImageBox(ImageContext displayContext) implements Box {
 
 	@Override
 	public Optional<ReplacedInfo> replacedInfo() {
@@ -40,18 +40,8 @@ public record ImageBox(ImageContext imageContext) implements Box {
 	}
 
 	@Override
-	public UIDisplay<?, ?, ?> display() {
-		return imageContext.display();
-	}
-
-	@Override
 	public ImageComponent owningComponent() {
-		return (ImageComponent) imageContext.componentUI().getComponent();
-	}
-
-	@Override
-	public DirectivePool styleDirectives() {
-		return imageContext.styleDirectives();
+		return (ImageComponent) displayContext.componentUI().getComponent();
 	}
 
 	private static record ImageReplacedInfo(float intrinsicWidth, float intrinsicHeight, float intrinsicRatio) implements ReplacedInfo {}

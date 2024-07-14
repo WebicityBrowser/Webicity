@@ -42,8 +42,8 @@ public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, 
 	private static final UIDisplay<?, ?, ?> ELEMENT_STYLED_DISPLAY = new StyledUnitDisplay();
 
 	private final SolidLayoutManager INNER_DISPLAY_LAYOUT = new FlowInnerDisplayLayout(new FlowConfig(
-		directives -> BuildableRenderedUnit.create(ELEMENT_INLINE_DISPLAY, directives),
-		context -> new StyledUnit(ELEMENT_STYLED_DISPLAY, context)));
+		box -> BuildableRenderedUnit.create(ELEMENT_INLINE_DISPLAY, box),
+		context -> new StyledUnit(context, ELEMENT_STYLED_DISPLAY)));
 	
 	@Override
 	public DocumentContext createContext(ComponentUI componentUI) {
@@ -61,7 +61,7 @@ public class DocumentDisplay implements UIDisplay<DocumentContext, ChildrenBox, 
 			globalRenderContext, localRenderContext,
 			new StaticTreeTracker(box, box.getChildrenTracker().getChildren()));
 		LayoutResult layoutResult = INNER_DISPLAY_LAYOUT.render(layoutManagerContext);
-		return new ElementUnit(this, box.styleDirectives(), layoutResult);
+		return new ElementUnit(box, layoutResult);
 	}
 
 	@Override

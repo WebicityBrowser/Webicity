@@ -3,7 +3,6 @@ package com.github.webicitybrowser.threadyweb.graphical.layout.flow.context.bloc
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
 import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
-import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
@@ -30,24 +29,23 @@ public final class FlowBlockFloatRenderer {
 
 	public static boolean isFloatBox(Box childBox) {
 		return childBox
-			.styleDirectives()
-			.getDirectiveOrEmpty(FloatDirective.class)
-			.map(floatDirective -> floatDirective.getFloatDirection() != FloatDirection.NONE)
-			.orElse(false);
+			.componentUI()
+			.getStyleReference(FloatDirective.class).get()
+			.getFloatDirection() != FloatDirection.NONE;
 	}
 
 	public static void addFloatBoxToLine(
-		FlowBlockRenderContext state, RenderedUnit childUnit, DirectivePool styleDirectives, float blockPosition
+		FlowBlockRenderContext state, RenderedUnit childUnit, float blockPosition
 	) {
-		FloatDirection floatDirection = styleDirectives
-			.getDirectiveOrEmpty(FloatDirective.class)
-			.map(FloatDirective::getFloatDirection)
-			.orElseThrow(() -> new IllegalStateException("Float box has no float directive"));
+		FloatDirection floatDirection = childUnit
+			.componentUI()
+			.getStyleReference(FloatDirective.class).get()
+			.getFloatDirection();
 		addFloat(state, childUnit, blockPosition, floatDirection);
 	}
 
 	public static RenderedUnit renderFloatBoxUnit(FlowBlockRenderContext state, Box childBox) {
-		BoxOffsetDimensions renderParameters = BoxOffsetDimensions.create(state.flowContext().layoutRenderContext(), childBox.styleDirectives());
+		BoxOffsetDimensions renderParameters = BoxOffsetDimensions.create(state.flowContext().layoutRenderContext(), childBox.componentUI());
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
 			state, childBox, renderParameters,
 			FlowBlockFloatRenderer::createLocalRenderContext,
@@ -59,7 +57,7 @@ public final class FlowBlockFloatRenderer {
 		AbsoluteSize styledUnitSize = LayoutSizeUtils.addPadding(childRenderResult.adjustedSize(), renderParameters.totalPadding());
 
 		StyledUnitContext styledUnitContext = new StyledUnitContext(
-			childBox.styleDirectives(), childRenderResult.unit(), styledUnitSize,
+			childRenderResult.unit(), styledUnitSize,
 			prerenderSizingInfo.sizingContext().boxOffsetDimensions()
 		);
 		RenderedUnit styledUnit = state.flowConfig().styledUnitGenerator().generateStyledUnit(styledUnitContext);
@@ -75,7 +73,7 @@ public final class FlowBlockFloatRenderer {
 		AbsoluteSize parentSize = state.getLocalRenderContext().preferredSize();
 		
 		SizeCalculationContext sizeCalculationContext = LayoutSizeUtils.createSizeCalculationContext(
-			state.getGlobalRenderContext(), state.getLocalRenderContext(), childUnit.styleDirectives());
+			state.getGlobalRenderContext(), state.getLocalRenderContext(), childUnit.componentUI());
 		float[] margins = LayoutMarginCalculations.computeMargins(sizeCalculationContext, childUnit.styleDirectives());
 		margins = LayoutMarginCalculations.zeroAutoMargins(margins);
 

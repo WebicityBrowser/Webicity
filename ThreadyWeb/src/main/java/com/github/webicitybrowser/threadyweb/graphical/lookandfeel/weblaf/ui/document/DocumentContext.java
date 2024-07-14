@@ -15,7 +15,6 @@ public class DocumentContext implements Context {
 	private final UIDisplay<?, ?, ?> display;
 	private final ComponentUI componentUI;
 	
-	private DirectivePool styleDirectives;
 	private Context childComponentContext;
 
 	public DocumentContext(UIDisplay<?, ?, ?> display, ComponentUI componentUI) {
@@ -49,14 +48,7 @@ public class DocumentContext implements Context {
 	}
 
 	@Override
-	public DirectivePool styleDirectives() {
-		return styleDirectives;
-	}
-
-	@Override
 	public void regenerateStyling(DirectivePool styleDirectives, StyleContext styleContext) {
-		this.styleDirectives = styleDirectives;
-		
 		updateChildComponentUI(styleContext);
 	}
 

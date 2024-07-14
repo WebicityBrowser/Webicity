@@ -5,7 +5,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.b
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 
 public class TestStubChildrenBox implements ChildrenBox {
 
@@ -39,8 +39,8 @@ public class TestStubChildrenBox implements ChildrenBox {
 	}
 
 	@Override
-	public Component owningComponent() {
-		throw new UnsupportedOperationException("Unimplemented method 'owningComponent'");
+	public Context displayContext() {
+		throw new UnsupportedOperationException("Unimplemented method 'displayContext'");
 	}
 	
 }
