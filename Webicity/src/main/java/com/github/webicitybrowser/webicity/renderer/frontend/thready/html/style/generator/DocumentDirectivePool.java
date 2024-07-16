@@ -5,44 +5,46 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
-import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.thready.gui.directive.basics.pool.DirectiveDeriver;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePoolListener;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMPropertyResolver;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMPropertyResolver.CSSOMPropertyResolverFilter;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
+import com.github.webicitybrowser.threadyweb.graphical.directive.derived.DerivedFontDirective;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMMappedRuleList;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMMappedRuleList.PropertyMeta;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMMappedRuleList.RelativeResolver;
 
-public class DocumentDirectivePool implements DirectivePool {
+public class DocumentDirectivePool implements DirectivePool, RelativeResolver<Directive> {
 
-	private final DirectivePool parentPool;
-	private final CSSOMPropertyResolver propertyResolver;
-	private final CSSOMDeclarationParser declarationParser;
+	private final DocumentDirectivePool parentPool;
+	private final List<CSSOMMappedRuleList<Directive>> mappedRuleLists;
 	private final Map<Class<? extends Directive>, DirectiveDeriver<? extends Directive>> derivers;
 
-	private final DocumentDirectivePoolCache directiveCache = new DocumentDirectivePoolCache();
+	// TODO: Better way to cache this
+	private DerivedFontDirective fontDirective;
 
 	public DocumentDirectivePool(
-		DirectivePool parentPool, CSSOMPropertyResolver propertyResolver,
-		CSSOMDeclarationParser declarationParser, Map<Class<? extends Directive>, DirectiveDeriver<? extends Directive>> derivers
+		DocumentDirectivePool parentPool, List<CSSOMMappedRuleList<Directive>> mappedRuleLists,
+		Map<Class<? extends Directive>, DirectiveDeriver<? extends Directive>> derivers
 	) {
 		this.parentPool = parentPool;
-		this.propertyResolver = propertyResolver;
-		this.declarationParser = declarationParser;
+		this.mappedRuleLists = mappedRuleLists;
 		this.derivers = derivers;
 	}
 
 	@Override
 	public DirectivePool directive(Directive directive) {
-		directiveCache.put(directive.getClass(), Optional.of(directive));
-
-		return this;
+		throw new UnsupportedOperationException("Unimplemented method 'directive'");
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	
 	public <T extends Directive> Optional<T> getDirectiveOrEmpty(Class<T> directiveClass) {
-		return (Optional<T>) directiveCache.computeIfAbsent(directiveClass, this::resolveDirective);
+		if (directiveClass == DerivedFontDirective.class && fontDirective != null) {
+			return Optional.of((T) fontDirective);
+		}
+		return resolveDirective(directiveClass);
 	}
 
 	@Override
@@ -74,43 +76,52 @@ public class DocumentDirectivePool implements DirectivePool {
 			DirectiveDeriver<T> deriver = (DirectiveDeriver<T>) derivers.get(directiveClass);
 			Optional<T> derived = deriver.derive(this, parentPool);
 			if (derived.isPresent()) {
-				directiveCache.put(directiveClass, derived);
+				if (directiveClass == DerivedFontDirective.class) {
+					fontDirective = (DerivedFontDirective) derived.get();
+				}
+				
 				return derived;
 			}
 		}
 
-		return propertyResolver.resolveProperty(new DocumentPropertyResolverFilter<>(directiveClass));
-	}
-	
-
-	private class DocumentPropertyResolverFilter<T> implements CSSOMPropertyResolverFilter<T> {
-
-		private final Class<? extends Directive> directiveClass;
-		private final List<String> directivePropertyNames;
-
-		public DocumentPropertyResolverFilter(Class<? extends Directive> directiveClass) {
-			this.directiveClass = directiveClass;
-			this.directivePropertyNames = declarationParser.getDirectivePropertyNames(directiveClass);
-		}
-
-		@Override
-		public boolean isApplicable(Declaration propertyValue) {
-			return directivePropertyNames.contains(propertyValue.getName());
-		}
-
-		@Override
-		@SuppressWarnings("unchecked")
-		public Optional<T> filter(String name, TokenLike[] tokens) {
-			Directive[] results = declarationParser.parseDeclaration(name, tokens);
-			for (Directive result: results) {
-				if (result.getPrimaryType() == directiveClass) {
-					return Optional.of((T) result);
-				}
+		PropertyMeta<T> resolvedPropertyMeta = null;
+		for (CSSOMMappedRuleList<Directive> mappedRuleList: mappedRuleLists) {
+			PropertyMeta<T> propertyMeta = mappedRuleList.resolveProperty(directiveClass, this);
+			if (propertyMeta.present() && (propertyMeta.important() || resolvedPropertyMeta == null)) {
+				resolvedPropertyMeta = propertyMeta;
 			}
-
-			return Optional.empty();
+			if (propertyMeta.present() && propertyMeta.important()) break;
 		}
-		
+
+		if (resolvedPropertyMeta == null) return Optional.empty();
+		return Optional.of(resolvedPropertyMeta.resolvedValue());
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public <U extends Directive> PropertyMeta<U> resolveParentProperty(Class<U> propertyType) {
+		if (parentPool == null) {
+			return (PropertyMeta) PropertyMeta.EMPTY;
+		}
+
+		U property = parentPool.getDirectiveOrEmpty(propertyType).orElse(null);
+		if (property == null) {
+			return (PropertyMeta) PropertyMeta.EMPTY;
+		}
+
+		return new PropertyMeta<U>(property, null, null, false, false, null);
+	}
+
+	@Override
+	public Optional<TokenLike[]> resolveVariable(String variableName) {
+		for (CSSOMMappedRuleList<Directive> mappedRuleList: mappedRuleLists) {
+			Optional<TokenLike[]> variableValue = mappedRuleList.resolveVariable(variableName, this);
+			if (variableValue.isPresent()) {
+				return variableValue;
+			}
+		}
+
+		return parentPool != null ? parentPool.resolveVariable(variableName) : Optional.empty();
 	}
 	
 }

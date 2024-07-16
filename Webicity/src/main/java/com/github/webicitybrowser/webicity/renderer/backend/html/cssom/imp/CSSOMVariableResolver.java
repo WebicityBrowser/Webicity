@@ -10,9 +10,7 @@ import com.github.webicitybrowser.spec.css.parser.TokenStream;
 import com.github.webicitybrowser.spec.css.parser.tokens.CommaToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
 import com.github.webicitybrowser.spec.css.parser.util.TokenUtils;
-import com.github.webicitybrowser.spec.css.rule.Declaration;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMPropertyResolver;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMPropertyResolver.CSSOMPropertyResolverFilter;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMMappedRuleList.RelativeResolver;
 
 public final class CSSOMVariableResolver {
 
@@ -20,8 +18,18 @@ public final class CSSOMVariableResolver {
 	
 	private CSSOMVariableResolver() {}
 
-	public static Optional<TokenLike[]> resolveVariables(TokenLike[] tokens, CSSOMPropertyResolver propertyResolver) {
-		if (!peekForVariable(tokens)) {
+	public static boolean hasVariable(TokenLike[] tokens) {
+		for (TokenLike token: tokens) {
+			if (token instanceof FunctionValue functionValue && functionValue.getName().equals(VARIABLE_FUNCTION)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static Optional<TokenLike[]> resolveVariables(TokenLike[] tokens, RelativeResolver<?> relativeResolver) {
+		if (!hasVariable(tokens)) {
 			return Optional.of(tokens);
 		}
 
@@ -32,7 +40,7 @@ public final class CSSOMVariableResolver {
 				functionValue.getName().equals(VARIABLE_FUNCTION)
 			) {
 				TokenStream subStream = TokenStream.create(TokenUtils.stripWhitespace(functionValue.getValue()));
-				if (!parseAndResolveVariable(subStream, adjustedTokens, propertyResolver)) {
+				if (!parseAndResolveVariable(subStream, adjustedTokens, relativeResolver)) {
 					return Optional.empty();
 				}
 			} else {
@@ -43,20 +51,10 @@ public final class CSSOMVariableResolver {
 		return Optional.of(adjustedTokens.toArray(TokenLike[]::new));
 	}
 
-	private static boolean peekForVariable(TokenLike[] tokens) {
-		for (TokenLike token: tokens) {
-			if (token instanceof FunctionValue functionValue && functionValue.getName().equals(VARIABLE_FUNCTION)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private static boolean parseAndResolveVariable(TokenStream tokenStream, List<TokenLike> adjustedTokens, CSSOMPropertyResolver propertyResolver) {
+	private static boolean parseAndResolveVariable(TokenStream tokenStream, List<TokenLike> adjustedTokens, RelativeResolver<?> relativeResolver) {
 		String variableName = readVariableName(tokenStream);
 		if (variableName == null) return false;
-		Optional<TokenLike[]> variableValue = propertyResolver.resolveOrInheritProperty(new VariablePropertyResolverFilter(variableName));
+		Optional<TokenLike[]> variableValue = relativeResolver.resolveVariable(variableName);
 		TokenLike[] fallbackValue = null;
 		if (!tokenStream.isEmpty()) {
 			if (!(tokenStream.read() instanceof CommaToken)) {
@@ -68,7 +66,7 @@ public final class CSSOMVariableResolver {
 
 		if (variableValue.isEmpty() && fallbackValue == null) return false;
 		if (variableValue.isEmpty()) {
-			TokenLike[] resolvedFallbackValue = resolveVariables(fallbackValue, propertyResolver).orElse(null);
+			TokenLike[] resolvedFallbackValue = resolveVariables(fallbackValue, relativeResolver).orElse(null);
 			if (resolvedFallbackValue == null) return false;
 			adjustedTokens.addAll(List.of(resolvedFallbackValue));
 			return true;
@@ -98,27 +96,6 @@ public final class CSSOMVariableResolver {
 		}
 
 		return identToken.getValue();
-	}
-
-	private static class VariablePropertyResolverFilter implements CSSOMPropertyResolverFilter<TokenLike[]> {
-
-		private final String variableName;
-
-		public VariablePropertyResolverFilter(String variableName) {
-			this.variableName = variableName;
-		}
-
-		@Override
-		public boolean isApplicable(Declaration propertyValue) {
-			return propertyValue.getName().equals(variableName);
-		}
-
-		@Override
-		public Optional<TokenLike[]> filter(String name, TokenLike[] tokens) {
-			// TODO: Check constraints and cycles
-			return Optional.of(tokens);
-		}
-		
 	}
 
 }

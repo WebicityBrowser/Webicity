@@ -17,8 +17,8 @@ public class NestingDirectivePool implements ComposedDirectivePool<DirectivePool
 	
 	private final DirectivePool parent;
 	private final DirectivePool defaultPool = new BasicDirectivePool();
-	private final List<DirectivePool> subpools = new ArrayList<>(4);
-	private final List<DirectivePoolListener> subpoolListeners = new ArrayList<>(4);
+	private final List<DirectivePool> subpools = new ArrayList<>(1);
+	private final List<DirectivePoolListener> subpoolListeners = new ArrayList<>(1);
 	private final Set<DirectivePoolListener> listeners = new HashSet<>(1);
 	
 	public NestingDirectivePool(DirectivePool parent) {
