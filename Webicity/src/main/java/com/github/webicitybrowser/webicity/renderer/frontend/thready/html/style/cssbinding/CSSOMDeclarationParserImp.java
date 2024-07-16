@@ -62,7 +62,7 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 	public Directive[] parseDeclaration(String name, TokenLike[] tokens) {
 		CSSOMNamedDeclarationParser<?> namedParser = namedDeclarationParsers.get(name);
 		if (namedParser == null) {
-			logger.warn("Unrecognized declaration name: " + name);
+			logger.debug("Unrecognized declaration name: " + name);
 			return EMPTY_DIRECTIVE_ARRAY;
 		}
 		
