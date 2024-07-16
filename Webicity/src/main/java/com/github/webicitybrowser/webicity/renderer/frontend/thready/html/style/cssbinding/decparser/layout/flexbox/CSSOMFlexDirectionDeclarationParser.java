@@ -30,7 +30,7 @@ public class CSSOMFlexDirectionDeclarationParser implements CSSOMNamedDeclaratio
 		return List.of(FlexDirectionDirective.class);
 	}
 
-	private FlexDirection convertFlexDirection(FlexDirectionValue value) {
+	public static FlexDirection convertFlexDirection(FlexDirectionValue value) {
 		return switch(value) {
 			case ROW -> FlexDirection.ROW;
 			case ROW_REVERSE -> FlexDirection.ROW_REVERSE;

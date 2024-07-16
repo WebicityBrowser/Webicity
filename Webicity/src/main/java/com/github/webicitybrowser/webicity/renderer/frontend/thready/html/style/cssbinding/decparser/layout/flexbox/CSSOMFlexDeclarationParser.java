@@ -13,7 +13,7 @@ import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.
 
 public class CSSOMFlexDeclarationParser implements CSSOMNamedDeclarationParser<FlexValue> {
 
-	private PropertyValueParser<FlexValue> parser = new FlexShorthandValueParser();
+	private final PropertyValueParser<FlexValue> parser = new FlexShorthandValueParser();
 
 	@Override
 	public PropertyValueParser<FlexValue> getPropertyValueParser() {

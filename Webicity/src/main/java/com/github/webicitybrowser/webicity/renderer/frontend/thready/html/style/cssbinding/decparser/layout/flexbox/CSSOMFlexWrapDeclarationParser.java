@@ -30,7 +30,7 @@ public class CSSOMFlexWrapDeclarationParser implements CSSOMNamedDeclarationPars
 		return List.of(FlexWrapDirective.class);
 	}
 
-	private FlexWrap convertFlexWrap(FlexWrapValue value) {
+	public static FlexWrap convertFlexWrap(FlexWrapValue value) {
 		return switch(value) {
 			case NOWRAP -> FlexWrap.NOWRAP;
 			case WRAP -> FlexWrap.WRAP;
