@@ -1,9 +1,12 @@
 package com.github.webicitybrowser.spiderhtml;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PushbackReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 
+import com.github.webicitybrowser.spec.encoding.EncodingUtil;
 import com.github.webicitybrowser.spec.html.parse.HTMLParser;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spec.html.parse.ParserSettings;
@@ -17,6 +20,12 @@ import com.github.webicitybrowser.spiderhtml.tokenize.DataState;
 import com.github.webicitybrowser.spiderhtml.tokenize.TokenizeState;
 
 public class SpiderHTMLParserImp implements HTMLParser {
+
+	@Override
+	public void parse(InputStream inputStream, HTMLTreeBuilder treeBuilder, ParserSettings settings) throws IOException {
+		Reader inputReader = EncodingUtil.decode(inputStream, StandardCharsets.UTF_8);
+		parse(inputReader, treeBuilder, settings);
+	}
 
 	@Override
 	public void parse(Reader inputReader, HTMLTreeBuilder treeBuilder, ParserSettings settings) throws IOException {
