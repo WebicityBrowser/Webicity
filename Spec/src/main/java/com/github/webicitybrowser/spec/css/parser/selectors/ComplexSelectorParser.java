@@ -81,18 +81,20 @@ public class ComplexSelectorParser {
 	}
 
 	private void consumeSimpleSelectors(TokenStream stream, List<ComplexSelectorPart> selectorParts) throws ParseFormatException {
-		ComplexSelectorPart selectorPart = consumeSimpleSelector(stream);
-		selectorParts.add(selectorPart);
+		ComplexSelectorPart selectorPart = consumeSimpleSelector(stream, true);
+		if (selectorPart == null) {
+			throw new ParseFormatException("Unsupported selector format", stream.position());
+		}
 
-		while (isDelimiterToken(stream.peek(), '.') || stream.peek() instanceof LSBracketToken) {
-			selectorPart = consumeSimpleSelector(stream);
+		while (selectorPart != null) {
 			selectorParts.add(selectorPart);
+			selectorPart = consumeSimpleSelector(stream, false);
 		}
 	}
 
-	private ComplexSelectorPart consumeSimpleSelector(TokenStream stream) throws ParseFormatException {
+	private ComplexSelectorPart consumeSimpleSelector(TokenStream stream, boolean allowIdent) throws ParseFormatException {
 		TokenLike token = stream.peek();
-		if (token instanceof IdentToken) {
+		if (token instanceof IdentToken && allowIdent) {
 			return typeSelectorParser.parse(stream);
 		} else if (isDelimiterToken(token, '.')) {
 			return classSelectorParser.parse(stream);
@@ -103,7 +105,7 @@ public class ComplexSelectorParser {
 		} else if (token instanceof ColonToken) {
 			return psuedoSelectorParser.parse(stream);
 		} else {
-			throw new ParseFormatException("Expected simple selector", stream.position());
+			return null;
 		}
 	}
 

@@ -14,9 +14,9 @@ import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseRes
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
-import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.CSSOMBackgroundColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.CSSOMColorDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.CSSOMDisplayDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.background.CSSOMBackgroundBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.border.CSSOMBorderBindings;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.floatbox.CSSOMClearDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.floatbox.CSSOMFloatDeclarationParser;
@@ -40,12 +40,11 @@ public class CSSOMDeclarationParserImp implements CSSOMDeclarationParser {
 		namedDeclarationParsers.put("display", new CSSOMDisplayDeclarationParser());
 		
 		namedDeclarationParsers.put("color", new CSSOMColorDeclarationParser());
-		namedDeclarationParsers.put("background-color", new CSSOMBackgroundColorDeclarationParser());
-		namedDeclarationParsers.put("background", new CSSOMBackgroundColorDeclarationParser()); // TODO
 
 		namedDeclarationParsers.put("float", new CSSOMFloatDeclarationParser());
 		namedDeclarationParsers.put("clear", new CSSOMClearDeclarationParser());
 
+		CSSOMBackgroundBindings.installTo(namedDeclarationParsers);
 		CSSOMBorderBindings.installTo(namedDeclarationParsers);
 		CSSOMTextBindings.installTo(namedDeclarationParsers);
 		CSSOMFlexBindings.installTo(namedDeclarationParsers);

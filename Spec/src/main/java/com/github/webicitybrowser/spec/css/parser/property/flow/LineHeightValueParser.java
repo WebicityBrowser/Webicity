@@ -22,7 +22,7 @@ public class LineHeightValueParser implements PropertyValueParser<CSSValue>	 {
 		}
 
 		if (tokens[offset] instanceof IdentToken identToken && identToken.getValue().equals("normal")) {
-			return PropertyValueParseResultImp.of(new AutoValue() {}, 1);
+			return PropertyValueParseResultImp.of(new AutoValue(), 1);
 		} else if (tokens[offset] instanceof NumberToken numberToken) {
 			return PropertyValueParseResultImp.of((NumberValue) () -> numberToken.getValue(), 1);
 		}

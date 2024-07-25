@@ -35,4 +35,9 @@ public class RGBColorValueImp implements ColorValue {
 		return color & 255;
 	}
 
+	@Override
+	public String toString() {
+		return Integer.toHexString(color);
+	}
+
 }
