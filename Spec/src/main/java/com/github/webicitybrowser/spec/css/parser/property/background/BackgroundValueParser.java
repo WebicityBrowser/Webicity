@@ -77,7 +77,7 @@ public class BackgroundValueParser implements PropertyValueParser<BackgroundValu
 			BackgroundPositionValue position = positionResult.getResult().get();
 			int totalLength = positionResult.getLength();
 
-			if (!(tokens[offset + totalLength] instanceof DelimToken delimToken && delimToken.getValue() == '/')) {
+			if (!(totalLength < length && tokens[offset + totalLength] instanceof DelimToken delimToken && delimToken.getValue() == '/')) {
 				return PropertyValueParseResultImp.of(new PositionSizeComposite(position, null), totalLength);
 			}
 			totalLength++;

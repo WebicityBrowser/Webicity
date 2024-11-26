@@ -90,7 +90,13 @@ public class BackgroundPositionValueParser implements PropertyValueParser<Backgr
 			PropertyValueParseResult<CSSValue> offsetResult1 = lengthPercentageValueParser.parse(tokens, offset + totalLength, length - totalLength);
 			if (offsetResult1.getResult().isPresent()) totalLength += offsetResult1.getLength();
 
-			if (!(tokens[offset + totalLength] instanceof IdentToken identToken2)) return PropertyValueParseResultImp.empty();
+			if (!(
+				offset + totalLength < length
+				&& tokens[offset + totalLength] instanceof IdentToken identToken2)
+			) {
+				return PropertyValueParseResultImp.empty();
+			}
+			
 			totalLength++;
 			PropertyValueParseResult<CSSValue> offsetResult2 = lengthPercentageValueParser.parse(tokens, offset + totalLength, length - totalLength);
 			if (offsetResult2.getResult().isPresent()) totalLength += offsetResult2.getLength();

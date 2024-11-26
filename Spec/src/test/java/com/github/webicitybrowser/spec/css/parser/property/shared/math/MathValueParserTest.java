@@ -1,0 +1,80 @@
+package com.github.webicitybrowser.spec.css.parser.property.shared.math;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import com.github.webicitybrowser.spec.css.componentvalue.FunctionValue;
+import com.github.webicitybrowser.spec.css.parser.TokenLike;
+import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;
+import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
+import com.github.webicitybrowser.spec.css.parser.property.imp.PropertyValueParseResultImp;
+import com.github.webicitybrowser.spec.css.parser.tokens.CommaToken;
+import com.github.webicitybrowser.spec.css.property.CSSValue;
+import com.github.webicitybrowser.spec.css.property.shared.math.MinMathValue;
+
+public class MathValueParserTest {
+
+	private MathValueParser mathValueParser;
+
+	@BeforeEach
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void setup() {
+		mathValueParser = new MathValueParser((PropertyValueParser<CSSValue>) (PropertyValueParser) new IntegerValueParser());
+	}
+
+	@Test
+	@DisplayName("Can parse value with no math function")
+	public void canParseValueWithNoMathFunction() {
+		TokenLike[] tokens = new TokenLike[] { new IntegerToken(5) };
+		PropertyValueParseResult<CSSValue> result = mathValueParser.parse(tokens, 0, tokens.length);
+		Assertions.assertTrue(result.getResult().isPresent());
+		Assertions.assertEquals(new IntegerValue(5), result.getResult().get());
+	}
+
+	@Test
+	@DisplayName("Can parse value with min function")
+	public void canParseValueWithMinFunction() {
+		TokenLike[] tokens = new TokenLike[] {
+			createFunctionValue("min",
+				new IntegerToken(5), new CommaToken() {}, new IntegerToken(3)
+			)
+		};
+		PropertyValueParseResult<CSSValue> result = mathValueParser.parse(tokens, 0, tokens.length);
+		Assertions.assertTrue(result.getResult().isPresent());
+		Assertions.assertEquals(
+			new MinMathValue(List.of(new IntegerValue(5), new IntegerValue(3))),
+			result.getResult().get());
+	}
+
+	private static class IntegerValueParser implements PropertyValueParser<IntegerValue> {
+		@Override
+		public PropertyValueParseResult<IntegerValue> parse(TokenLike[] tokens, int offset, int length) {
+			if (length > 0 && tokens[offset] instanceof IntegerToken) {
+				return PropertyValueParseResultImp.of(new IntegerValue(((IntegerToken) tokens[offset]).value()), 1);
+			} else {
+				return PropertyValueParseResultImp.empty();
+			}
+		}
+	}
+
+	private static FunctionValue createFunctionValue(String name, TokenLike... values) {
+		return new FunctionValue() {
+			@Override
+			public String getName() {
+				return name;
+			}
+			@Override
+			public TokenLike[] getValue() {
+				return values;
+			}
+		};
+	}
+
+	private static record IntegerToken(int value) implements TokenLike {}
+	private static record IntegerValue(int value) implements CSSValue {}
+	
+}

@@ -3,16 +3,22 @@ package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.AbsoluteLengthValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.RelativeLengthValue;
+import com.github.webicitybrowser.spec.css.property.shared.math.MathValue;
 import com.github.webicitybrowser.spec.css.property.shared.percentage.PercentageValue;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
+import com.github.webicitybrowser.threadyweb.graphical.value.math.MathCalculation;
 
 public final class SizeParser {
 	
 	private SizeParser() {}
 	
 	public static SizeCalculation parseWithBoxPercents(CSSValue value) {
+		if (value instanceof MathValue mathValue) {
+			MathCalculation<SizeCalculation> mathCalculation = MathParser.parseMathValue(mathValue, SizeParser::parseWithBoxPercents);
+			return (context, isHorizontal) -> mathCalculation.evaluate(calculation -> calculation.calculate(context, isHorizontal));
+		}
 		if (value instanceof PercentageValue percentageValue) {
 			return (context, isHorizontal) -> translateBoxPercentageValue(context, percentageValue, isHorizontal);
 		}
@@ -20,6 +26,10 @@ public final class SizeParser {
 	}
 
 	public static SizeCalculation parseWithFontPercents(CSSValue value) {
+		if (value instanceof MathValue mathValue) {
+			MathCalculation<SizeCalculation> mathCalculation = MathParser.parseMathValue(mathValue, SizeParser::parseWithFontPercents);
+			return (context, isHorizontal) -> mathCalculation.evaluate(calculation -> calculation.calculate(context, isHorizontal));
+		}
 		if (value instanceof PercentageValue percentageValue) {
 			return (context, isHorizontal) -> context.relativeFont().getSize() * percentageValue.getValue() / 100;
 		}
@@ -27,7 +37,10 @@ public final class SizeParser {
 	}
 
 	public static SizeCalculation parseNonPercent(CSSValue value) {
-		if (value instanceof AbsoluteLengthValue lengthValue) {
+		if (value instanceof MathValue mathValue) {
+			MathCalculation<SizeCalculation> mathCalculation = MathParser.parseMathValue(mathValue, SizeParser::parseNonPercent);
+			return (context, isHorizontal) -> mathCalculation.evaluate(calculation -> calculation.calculate(context, isHorizontal));
+		} else if (value instanceof AbsoluteLengthValue lengthValue) {
 			float translatedValue = translateAbsoluteValue(lengthValue);
 			return (_1, _2) -> translatedValue;
 		} else if (value instanceof RelativeLengthValue lengthValue) {

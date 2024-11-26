@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;
+import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.AbsoluteLengthValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.AbsoluteLengthValue.AbsoluteLengthUnit;
-import com.github.webicitybrowser.spec.css.property.shared.length.LengthValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.RelativeLengthValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.RelativeLengthValue.RelativeLengthUnit;
 
@@ -29,7 +29,7 @@ public class LengthValueParserTest {
 	@DisplayName("Can parse absolute length")
 	public void canParseAbsoluteLength() {
 		TokenLike[] tokens = new TokenLike[] { createDimensionToken(400, "px") };
-		PropertyValueParseResult<LengthValue> result = lengthValueParser.parse(tokens, 0, tokens.length);
+		PropertyValueParseResult<CSSValue> result = lengthValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertInstanceOf(AbsoluteLengthValue.class, result.getResult().get());
 		AbsoluteLengthValue absoluteLengthValue = (AbsoluteLengthValue) result.getResult().get();
@@ -41,7 +41,7 @@ public class LengthValueParserTest {
 	@DisplayName("Can parse relative length")
 	public void canParseRelativeLength() {
 		TokenLike[] tokens = new TokenLike[] { createDimensionToken(400, "em") };
-		PropertyValueParseResult<LengthValue> result = lengthValueParser.parse(tokens, 0, tokens.length);
+		PropertyValueParseResult<CSSValue> result = lengthValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertInstanceOf(RelativeLengthValue.class, result.getResult().get());
 		RelativeLengthValue relativeLengthValue = (RelativeLengthValue) result.getResult().get();
@@ -53,7 +53,7 @@ public class LengthValueParserTest {
 	@DisplayName("Can parse zero")
 	public void canParseZero() {
 		TokenLike[] tokens = new TokenLike[] { createNumberToken(0) };
-		PropertyValueParseResult<LengthValue> result = lengthValueParser.parse(tokens, 0, tokens.length);
+		PropertyValueParseResult<CSSValue> result = lengthValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertInstanceOf(AbsoluteLengthValue.class, result.getResult().get());
 		AbsoluteLengthValue absoluteLengthValue = (AbsoluteLengthValue) result.getResult().get();

@@ -6,16 +6,16 @@ import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.imp.PropertyValueParseResultImp;
 import com.github.webicitybrowser.spec.css.parser.property.shared.length.LengthValueParser;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
+import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.AbsoluteLengthValue;
-import com.github.webicitybrowser.spec.css.property.shared.length.LengthValue;
 
-public class LetterSpacingValueParser implements PropertyValueParser<LengthValue> {
+public class LetterSpacingValueParser implements PropertyValueParser<CSSValue> {
 
 	private final LengthValueParser lengthValueParser = new LengthValueParser();
 
 	@Override
-	public PropertyValueParseResult<LengthValue> parse(TokenLike[] tokens, int offset, int length) {
-		if (length > 0 && tokens[offset] instanceof IdentToken && ((IdentToken) tokens[offset]).equals("normal")) {
+	public PropertyValueParseResult<CSSValue> parse(TokenLike[] tokens, int offset, int length) {
+		if (length > 0 && tokens[offset] instanceof IdentToken && ((IdentToken) tokens[offset]).getValue().equals("normal")) {
 			return PropertyValueParseResultImp.of(AbsoluteLengthValue.of(0, "px"), 1);
 		}
 

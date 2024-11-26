@@ -21,6 +21,11 @@ public interface AbsoluteLengthValue extends LengthValue {
 			public float getValue() {
 				return value.floatValue();
 			}
+
+			@Override
+			public String toString() {
+				return value + unit.name().toLowerCase();
+			}
 		};
 	}
 
