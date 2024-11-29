@@ -3,8 +3,11 @@ package com.github.webicitybrowser.spec.fetch.imp;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.github.webicitybrowser.spec.fetch.FetchBody;
+import com.github.webicitybrowser.spec.fetch.FetchBody.FetchBodyWithType;
+import com.github.webicitybrowser.spec.fetch.FetchResponse.MessageStream;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.FetchParameters;
 import com.github.webicitybrowser.spec.fetch.FetchParams;
@@ -16,7 +19,8 @@ import com.github.webicitybrowser.spec.fetch.connection.FetchNetworkPartitionKey
 import com.github.webicitybrowser.spec.fetch.imp.DataURLProcessor.DataURLStruct;
 import com.github.webicitybrowser.spec.fetch.taskdestination.TaskDestination;
 import com.github.webicitybrowser.spec.htmlbrowsers.ParallelContext;
-import com.github.webicitybrowser.spec.stream.ByteStreamReader;
+import com.github.webicitybrowser.spec.stream.ReadableStream;
+import com.github.webicitybrowser.spec.stream.ReadableStreamDefaultReader;
 import com.github.webicitybrowser.spec.url.URL;
 
 public class FetchEngineImp implements FetchEngine {
@@ -56,8 +60,11 @@ public class FetchEngineImp implements FetchEngine {
 			Optional<DataURLStruct> struct = DataURLProcessor.processDataURL(url);
 			if (struct.isEmpty()) return FetchResponse.createNetworkError();
 			return new FetchResponseImp(
-				FetchBody.createBody(null, struct.get().body()),
+				safelyExtract(struct.get().body()).body(),
 				new EmptyFetchHeaderListImp());
+		case "http":
+		case "https":
+			return httpFetch(params);
 		default:
 			break;
 		}
@@ -66,8 +73,9 @@ public class FetchEngineImp implements FetchEngine {
 			Optional<InputStream> inputStream = fetchProtocolRegistry.openConnection(url);
 			if (inputStream.isEmpty()) return FetchResponse.createNetworkError();
 
+			// TODO: Do this better
 			return new FetchResponseImp(
-				FetchBody.createBody(inputStream.get(), null),
+				safelyExtract(inputStream.get().readAllBytes()).body(),
 				new EmptyFetchHeaderListImp());
 		} catch (Exception e) {
 			return FetchResponse.createNetworkError();
@@ -82,16 +90,33 @@ public class FetchEngineImp implements FetchEngine {
 		FetchNetworkPartitionKey key = FetchConnectionMethods.determineNetworkPartitionKey(params.request());
 		URL url = params.request().url();
 		FetchConnection connection = FetchConnectionMethods.obtainConnection(connectionPool, key, url);
-		return connection.send(params.request());
+		FetchResponse response = connection.send(params.request());
+		ReadableStream stream = ReadableStream.create();
+
+		response.setBody(FetchBody.createBody(stream, null));
+
+		parallelContext.inParallel(() -> {
+			MessageStream messageStream = response.getMessageStream().get();
+			while (!messageStream.done()) {
+				byte[] bytes = messageStream.read();
+				stream.enqueue(bytes);
+			}
+			// TODO: What if aborted? Also, content coding
+			// TODO: Check if stream readable
+			stream.close();
+		});
+
+		return response;
 	}
 
 	private void fetchResponseHandover(FetchParams params, FetchResponse response) {
 		if (params.consumeBodyAction() != null) {
 			Consumer<byte[]> processBody = nullOrBytes -> params.consumeBodyAction().execute(response, true, nullOrBytes);
+			// TODO: Error handling
 			if(response.body() == null) {
 				queueAFetchTask(() -> processBody.accept(null), params);
 			} else {
-				fullyReadBody(response.body(), processBody, params.taskDestination());
+				fullyReadBody(response.body(), processBody, null, params.taskDestination());
 			}
 		}
 	}
@@ -100,16 +125,55 @@ public class FetchEngineImp implements FetchEngine {
 		params.taskDestination().enqueue(fetchTask);
 	}
 
-	private void fullyReadBody(FetchBody body, Consumer<byte[]> processBody, TaskDestination taskDestination) {
-		try {
-			final byte[] allBytes = body.source() != null ?
-				body.source() :
-				ByteStreamReader.readAllBytes(body.readableStream());
-			Consumer<byte[]> successSteps = bytes -> taskDestination.enqueue(() -> processBody.accept(bytes));
-			successSteps.accept(allBytes);
-		} catch (Exception e) {
-			// TODO
+	private	FetchBodyWithType safelyExtract(Object object) {
+		return extract(object);
+	}
+
+	private FetchBodyWithType extract(Object object) {
+		ReadableStream stream;
+		if (object instanceof ReadableStream) {
+			stream = (ReadableStream) object;
+		} else {
+			stream = ReadableStream.create();
 		}
+
+		Supplier<byte[]> action = null;
+		Object source;
+		if (object instanceof byte[] byteArray) {
+			source = byteArray;
+			// TODO: Length
+		} else {
+			throw new IllegalArgumentException("Unknown body type: " + object.getClass());
+		}
+
+		if (source instanceof byte[]) {
+			action = () -> (byte[]) source;
+		}
+
+		if (action != null) {
+			byte[] bytes = action.get();
+			// TODO: Convert to UInt8Array
+			stream.enqueue(bytes);
+			stream.close();
+		}
+
+		return new FetchBodyWithType(FetchBody.createBody(stream, source), null);
+	}
+
+	private void fullyReadBody(FetchBody body, Consumer<byte[]> processBody, Consumer<Exception> processBodyError, TaskDestination taskDestination) {
+		// TODO: What if TaskDestination is null?
+		Consumer<byte[]> successSteps = bytes -> taskDestination.enqueue(() -> processBody.accept(bytes));
+		Consumer<Exception> errorSteps = exception -> taskDestination.enqueue(() -> processBodyError.accept(exception));
+		ReadableStreamDefaultReader reader = null;
+		try {
+			reader = ReadableStreamDefaultReader.acquire(body.stream());
+		} catch (Exception e) {
+			// TODO: Specifically TypeError
+			errorSteps.accept(e);
+			e.printStackTrace();
+			return;
+		}
+		reader.readAllBytes(successSteps, errorSteps);
 	}
 
 }

@@ -90,7 +90,6 @@ public class BackgroundValueParser implements PropertyValueParser<BackgroundValu
 			return PropertyValueParseResultImp.of(new PositionSizeComposite(position, size), totalLength);
 		}
 	
-		
 	}
 	
 }

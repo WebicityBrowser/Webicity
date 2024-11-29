@@ -1,30 +1,23 @@
 package com.github.webicitybrowser.spec.fetch;
 
-import java.io.InputStream;
-
 import com.github.webicitybrowser.spec.fetch.imp.FetchBodyImp;
+import com.github.webicitybrowser.spec.stream.ReadableStream;
 
 /**
  * A FetchBody includes the body of a FetchResponse.
  * It represents the actual content of a resource obtained
  * through some means (e.g. HTTP, file system, etc.).
- * It can hold either a byte array or an InputStream.
  */
 public interface FetchBody {
 
-	InputStream readableStream();
+	ReadableStream stream();
 
-	byte[] source();
+	Object source();
 
-	static FetchBody createBody(InputStream sourceStream, byte[] sourceArray) {
-		if (
-			(sourceStream != null && sourceArray != null) ||
-			(sourceStream == null && sourceArray == null)
-		) {
-			throw new IllegalArgumentException("Need exactly one input type");
-		}
-
-		return new FetchBodyImp(sourceStream, sourceArray);
+	static FetchBody createBody(ReadableStream stream, Object source) {
+		return new FetchBodyImp(stream, source);
 	}
+
+	public static record FetchBodyWithType(FetchBody body, String type) {}
 
 }

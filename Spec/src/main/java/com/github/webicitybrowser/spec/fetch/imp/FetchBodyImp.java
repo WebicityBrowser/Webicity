@@ -1,25 +1,24 @@
 package com.github.webicitybrowser.spec.fetch.imp;
 
-import java.io.InputStream;
-
 import com.github.webicitybrowser.spec.fetch.FetchBody;
+import com.github.webicitybrowser.spec.stream.ReadableStream;
 
 public class FetchBodyImp implements FetchBody {
 
-	private InputStream bodyStream;
-	private byte[] bodyBytes;
+	private ReadableStream stream;
+	private Object source;
 
-	public FetchBodyImp(InputStream inputStream, byte[] source) {
-		this.bodyStream = inputStream;
-		this.bodyBytes = source;
+	public FetchBodyImp(ReadableStream stream, Object source) {
+		this.stream = stream;
+		this.source = source;
 	}
 
-	public InputStream readableStream() {
-		return bodyStream;
+	public ReadableStream stream() {
+		return stream;
 	}
 
-	public byte[] source() {
-		return bodyBytes;
+	public Object source() {
+		return source;
 	}
 
 }

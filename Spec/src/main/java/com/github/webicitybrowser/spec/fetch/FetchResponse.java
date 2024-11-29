@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.spec.fetch;
 
+import java.util.Optional;
+
 import com.github.webicitybrowser.spec.fetch.imp.FetchNetworkError;
 
 /**
@@ -22,6 +24,13 @@ public interface FetchResponse {
 	 */
 	FetchHeaderList headerList();
 
+	// Internal
+	default Optional<MessageStream> getMessageStream() {
+		return Optional.empty();
+	};
+
+    void setBody(FetchBody body);
+
 	/**
 	 * Create a network error response. This indicates that the
 	 * resource could not be fetched due to an error.
@@ -29,6 +38,11 @@ public interface FetchResponse {
 	 */
 	static FetchResponse createNetworkError() {
 		return new FetchNetworkError();
+	}
+
+	public static interface MessageStream {
+		byte[] read();
+		boolean done();
 	}
 
 }

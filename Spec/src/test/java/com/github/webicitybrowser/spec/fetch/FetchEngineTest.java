@@ -1,18 +1,22 @@
 package com.github.webicitybrowser.spec.fetch;
 
-import java.io.ByteArrayInputStream;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.github.webicitybrowser.spec.fetch.FetchResponse.MessageStream;
 import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
 import com.github.webicitybrowser.spec.fetch.test.DummyTaskDestination;
+import com.github.webicitybrowser.spec.stream.ReadableStream;
 import com.github.webicitybrowser.spec.url.URL;
 
 
@@ -46,9 +50,7 @@ public class FetchEngineTest {
 	public void testFetchWithMockData() {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
 		Mockito.doAnswer(invocation -> {
-			FetchResponse response = invocation.getArgument(1);
-			FetchBody body = response.body();
-			byte[] bodyBytes = body.readableStream().readAllBytes();
+			byte[] bodyBytes = invocation.getArgument(2);
 			Assertions.assertArrayEquals(DUMMY_BODY, bodyBytes);
 
 			return null;
@@ -100,8 +102,23 @@ public class FetchEngineTest {
 
 	private FetchResponse mockFetchResponse() {
 		FetchResponse response = Mockito.mock(FetchResponse.class);
-		FetchBody mockBody = FetchBody.createBody(new ByteArrayInputStream(DUMMY_BODY), null);
-		Mockito.when(response.body()).thenReturn(mockBody);
+		ReadableStream stream = ReadableStream.create();
+		stream.enqueue(DUMMY_BODY);
+		MessageStream messageStream = Mockito.mock(MessageStream.class);
+		AtomicBoolean done = new AtomicBoolean(false);
+		Mockito.when(messageStream.read()).thenAnswer(invocation -> {
+			done.set(true);
+			return DUMMY_BODY;
+		});
+		Mockito.when(messageStream.done()).thenAnswer(invocation -> done.get());
+		Mockito.when(response.getMessageStream()).thenReturn(Optional.of(messageStream));
+
+		AtomicReference<FetchBody> body = new AtomicReference<>();
+		Mockito.when(response.body()).thenAnswer(invocation -> body.get());
+		Mockito.doAnswer(invocation -> {
+			body.set(invocation.getArgument(0));
+			return null;
+		}).when(response).setBody(Mockito.any());
 		
 		return response;
 	}

@@ -11,6 +11,11 @@ public class FetchNetworkError implements FetchResponse {
 		return null;
 	}
 
+
+
+	@Override
+	public void setBody(FetchBody body) {}
+
 	@Override
 	public FetchHeaderList headerList() {
 		return new EmptyFetchHeaderListImp();

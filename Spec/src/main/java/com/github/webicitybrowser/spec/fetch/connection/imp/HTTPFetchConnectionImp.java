@@ -1,12 +1,14 @@
 package com.github.webicitybrowser.spec.fetch.connection.imp;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.webicitybrowser.spec.fetch.FetchBody;
 import com.github.webicitybrowser.spec.fetch.FetchHeaderList;
 import com.github.webicitybrowser.spec.fetch.FetchRequest;
 import com.github.webicitybrowser.spec.fetch.FetchResponse;
+import com.github.webicitybrowser.spec.fetch.FetchResponse.MessageStream;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnection;
 import com.github.webicitybrowser.spec.fetch.connection.FetchConnectionInfo;
 import com.github.webicitybrowser.spec.fetch.imp.FetchResponseImp;
@@ -48,10 +50,34 @@ public class HTTPFetchConnectionImp implements FetchConnection {
 
 	private FetchResponse convertHTTPResponseToFetchResponse(HTTPResponse response) {
 		if (response instanceof HTTPSuccessResponse successResponse) {
-			FetchBody fetchBody = FetchBody.createBody(successResponse.getInputStream(), null);
 			FetchHeaderList fetchHeaderList = HTTPFetchHeaderListImp.create(successResponse.getHeaders());
-			
-			return new FetchResponseImp(fetchBody, fetchHeaderList);
+			MessageStream messageStream = new MessageStream() {
+				private boolean read;
+
+				@Override
+				public byte[] read() {
+					try {
+						read = true;
+						return successResponse.getInputStream().readAllBytes();
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+						e.printStackTrace();
+						return new byte[0];
+					}
+				}
+
+				@Override
+				public boolean done() {
+					return read;
+				}
+			};
+
+			return new FetchResponseImp(null, fetchHeaderList) {
+				@Override
+				public Optional<MessageStream> getMessageStream() {
+					return Optional.of(messageStream);
+				};
+			};
 		} else {
 			logger.error("Unhandled HTTP response object: " + response);
 			return FetchResponse.createNetworkError();
