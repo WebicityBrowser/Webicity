@@ -29,6 +29,7 @@ public class ReadableStreamDefaultReaderImp implements ReadableStreamDefaultRead
 	public void read(ReadRequest request) {
 		assert stream != null;
 		// TODO: Set disturbed
+		request = handleReadAllRequest(request);
 		if (stream.getState() == State.CLOSED) {
 			request.closeSteps().run();
 		} else if (stream.getState() == State.ERRORED) {
@@ -52,17 +53,7 @@ public class ReadableStreamDefaultReaderImp implements ReadableStreamDefaultRead
 			true
 		);
 
-		boolean endWhile = false;
-		do {
-			endWhile = stream.getState() != State.READABLE;
-			read(request);
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		} while (!endWhile);
-		// TODO: Is a while loop really suitable?
+		read(request);
 	}
 
 	private byte[] collapseBytes(List<byte[]> chunks) {
@@ -77,6 +68,21 @@ public class ReadableStreamDefaultReaderImp implements ReadableStreamDefaultRead
 			offset += chunk.length;
 		}
 		return result;
+	}
+
+	private ReadRequest handleReadAllRequest(ReadRequest request) {
+		if (!request.readAll()) return request;
+		
+		return new ReadRequest(
+			chunk -> {
+				request.chunkSteps().accept(chunk);
+				// TODO: Ensure we don't overflow the stack
+				read(request);
+			},
+			request.closeSteps(),
+			request.errorSteps(),
+			false
+		);
 	}
 	
 }

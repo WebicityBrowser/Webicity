@@ -32,6 +32,9 @@ public class ScrollDisplay implements UIDisplay<ScrollContext, ScrollBox, Scroll
 	@Override
 	public List<ScrollBox> generateBoxes(ScrollContext displayContext, BoxContext boxContext) {
 		List<Box> innerBoxes = UIPipeline.generateBoxes(displayContext.innerContext(), boxContext);
+		if (innerBoxes.isEmpty()) {
+			return List.of();
+		}
 		if (innerBoxes.size() != 1) {
 			throw new IllegalStateException("Multiple inner boxes for scroll display not yet supported");
 		}

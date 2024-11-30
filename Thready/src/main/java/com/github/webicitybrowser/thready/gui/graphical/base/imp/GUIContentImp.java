@@ -104,7 +104,7 @@ public class GUIContentImp implements GUIContent {
 
 	private void performRenderPipeline(ScreenContentRedrawContext redrawContext) {
 		if (invalidationLevel.compareTo(InvalidationLevel.STYLE) > 0 && rootBox == null) {
-			return;
+			invalidationLevel = InvalidationLevel.STYLE;
 		}
 		
 		switch (invalidationLevel) {
@@ -113,15 +113,18 @@ public class GUIContentImp implements GUIContent {
 		case BOX:
 			performBoxCycle();
 		case RENDER:
+			if (rootBox == null) return;
 			long start = System.currentTimeMillis();
 			performRenderCycle(redrawContext);
 			logger.info("Render cycle took: " + (System.currentTimeMillis() - start) + "ms");
 			System.gc();
 		case COMPOSITE:
+			if (rootUnit == null) return;
 			this.compositeLayers = ContentCompositor.performCompositeCycle(redrawContext, rootUnit);
 		case PAINT:
 		case PAINT_LAYERS:
 		case NONE:
+			if (rootUnit == null) return;
 			// Even if the invalidation level is NONE, there is
 			// probably a reason that redraw was called.
 			// For example, if a buffer must be drawn twice.
@@ -143,6 +146,7 @@ public class GUIContentImp implements GUIContent {
 		recursiveStyleCycle(rootContext, styleGenerator, styleContext);
 	}
 
+	// TODO: Fix new crash on Medium (Race condition?)
 	private void recursiveStyleCycle(Context rootContext, StyleGenerator styleGenerator, StyleContext styleContext) {
 		rootContext.regenerateStyling(styleGenerator.getStyleDirectives(), styleContext);
 		ComponentUI[] childUIs = rootContext.children()

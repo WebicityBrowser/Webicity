@@ -41,6 +41,7 @@ public class DocumentComponentImp extends BaseWebComponent implements DocumentCo
 
 	@Override
 	public Optional<Component> getVisibleChild() {
+		updateVisibleChild();
 		return Optional.ofNullable(visibleChild);
 	}
 

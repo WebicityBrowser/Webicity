@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.webicity.core;
 
+import java.util.function.Consumer;
+
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.url.URL;
@@ -12,7 +14,9 @@ import com.github.webicitybrowser.webicity.core.ui.Frame;
 
 public interface RenderingEngine {
 
-	RendererHandle openRenderer(URL url, Frame frame);
+	void openRenderer(URL url, Frame frame, Consumer<RendererHandle> onRendererOpened);
+	
+	RendererHandle createBlankRenderer();
 	
 	Frame createFrame();
 	

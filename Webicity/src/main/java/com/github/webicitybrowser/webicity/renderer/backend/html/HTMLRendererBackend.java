@@ -1,18 +1,20 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.webicitybrowser.spec.fetch.FetchResponse;
 import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
 import com.github.webicitybrowser.spec.html.node.HTMLDocument;
 import com.github.webicitybrowser.spec.html.parse.CharacterReferenceLookup;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
+import com.github.webicitybrowser.spec.html.parse.ParserSettings;
+import com.github.webicitybrowser.spec.stream.ReadRequest;
+import com.github.webicitybrowser.spec.stream.ReadableStreamDefaultReader;
 import com.github.webicitybrowser.spiderhtml.SpiderHTMLParserImp;
-import com.github.webicitybrowser.webicity.core.net.Connection;
 import com.github.webicitybrowser.webicity.core.renderer.RendererBackend;
 import com.github.webicitybrowser.webicity.core.renderer.RendererContext;
 import com.github.webicitybrowser.webicity.core.renderer.RendererFrontend;
@@ -33,13 +35,13 @@ public class HTMLRendererBackend implements RendererBackend {
 	private final EventScheduler eventScheduler;
 
 	public HTMLRendererBackend(
-		RendererContext rendererContext, Connection connection, CharacterReferenceLookup characterReferenceLookup
+		RendererContext rendererContext, FetchResponse response, CharacterReferenceLookup characterReferenceLookup
 	) throws IOException {
 		this.htmlRendererContext = createHTMLRendererContext(rendererContext);
 		this.characterReferenceLookup = characterReferenceLookup;
 		this.document = HTMLDocument.create();
 		this.eventScheduler = new EventSchedulerImp(htmlRendererContext.eventLoop());
-		parseAndTimeDocument(connection);
+		parseAndTimeDocument(response);
 	}
 
 	@Override
@@ -56,17 +58,33 @@ public class HTMLRendererBackend implements RendererBackend {
 		return this.document;
 	}
 	
-	private void parseAndTimeDocument(Connection connection) throws IOException {
-		long time = System.currentTimeMillis();
-		parseDocument(connection.getInputStream());
-		long millisToParse = System.currentTimeMillis()-time;
-		int secondsToParse = (int) (millisToParse/1000 + .5);
-		logger.info("Page (" + connection.getURL() + ") parsed in " + (millisToParse) + " millis (" + secondsToParse +" seconds).");
-	}
-	
-	private void parseDocument(InputStream inputStream) throws IOException {
+	private void parseAndTimeDocument(FetchResponse response) throws IOException {
+		ReadableStreamDefaultReader reader = ReadableStreamDefaultReader.acquire(response.body().stream());
 		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		new SpiderHTMLParserImp().parse(inputStream, treeBuilder, new HTMLRendererBackendParserSettings(characterReferenceLookup, createTagActions()));
+		ParserSettings parserSettings = new HTMLRendererBackendParserSettings(characterReferenceLookup, createTagActions());
+		SpiderHTMLParserImp parser = new SpiderHTMLParserImp(treeBuilder, parserSettings);
+
+		long time = System.currentTimeMillis();
+		reader.read(new ReadRequest(chunk -> {
+			runAndHandleError(() -> parser.next((byte[]) chunk));
+			long millisToParse = System.currentTimeMillis()-time;
+			int secondsToParse = (int) (millisToParse/1000 + .5);
+			logger.info("Page (" + response.url() + ") parsed in " + (millisToParse) + " millis (" + secondsToParse +" seconds).");
+		}, () -> {
+			runAndHandleError(() -> parser.done());
+		}, e -> handleError(e), true));
+	}
+
+	private void runAndHandleError(IORunnable runnable) {
+		try {
+			runnable.run();
+		} catch (Exception e) {
+			handleError(e);
+		}
+	}
+
+	private void handleError(Exception e) {
+		logger.error("Error while running task", e);
 	}
 
 	private TagActions createTagActions() {
@@ -82,6 +100,10 @@ public class HTMLRendererBackend implements RendererBackend {
 
 	private HTMLRendererContext createHTMLRendererContext(RendererContext rendererContext) {
 		return new HTMLRendererContext(rendererContext, new EventLoopImp());
+	}
+
+	private static interface IORunnable {
+		void run() throws IOException;
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.spiderhtml.context;
 
-import java.io.PushbackReader;
-
 import com.github.webicitybrowser.spiderhtml.token.Token;
 
 public class ParsingContext {
@@ -13,8 +11,8 @@ public class ParsingContext {
 	private Token currentToken;
 	private int charRefCode;
 
-	public ParsingContext(PushbackReader reader) {
-		this.readerHandle = new ReaderHandle(reader);
+	public ParsingContext(ReaderHandle readerHandle) {
+		this.readerHandle = readerHandle;
 	}
 
 	public ReaderHandle readerHandle() {

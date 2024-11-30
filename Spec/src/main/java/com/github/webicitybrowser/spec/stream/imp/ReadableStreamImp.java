@@ -83,7 +83,7 @@ public class ReadableStreamImp implements ReadableStream {
 		assert state == State.READABLE;
 		this.state = State.CLOSED;
 		if (reader == null) return;
-		// Resolve promise
+		// TODO: Resolve promise
 		if (reader instanceof ReadableStreamDefaultReaderImp) {
 			List<ReadRequest> requests = new ArrayList<>(readRequests);
 			readRequests.clear();
@@ -98,7 +98,7 @@ public class ReadableStreamImp implements ReadableStream {
 		@Override
 		public void enqueue(Object chunk) {
 			if (!canCloseOrEnqueue()) return;
-			if (!isLocked() && !readRequests.isEmpty()) {
+			if (isLocked() && !readRequests.isEmpty()) {
 				fulfillReadRequest(chunk, false);
 			} else {
 				// TODO: Track backpressure

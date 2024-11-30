@@ -1,8 +1,7 @@
 package com.github.webicitybrowser.spiderhtml;
 
-import java.io.StringReader;
-
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,20 +15,26 @@ import com.github.webicitybrowser.spec.dom.node.imp.DocumentImp;
 import com.github.webicitybrowser.spec.dom.node.support.NodeList;
 import com.github.webicitybrowser.spec.html.binding.BindingHTMLTreeBuilder;
 import com.github.webicitybrowser.spec.html.node.HTMLElement;
-import com.github.webicitybrowser.spec.html.parse.HTMLParser;
 import com.github.webicitybrowser.spec.html.parse.HTMLTreeBuilder;
 import com.github.webicitybrowser.spiderhtml.test.TestParserSettings;
 
 public class HTMLParserTest {
 
+	private SpiderHTMLParserImp parser;
+	private Document document;
+
+	@BeforeEach
+	public void setup() {
+		this.document = new DocumentImp();
+		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
+		parser = new SpiderHTMLParserImp(treeBuilder, new TestParserSettings());
+	}
+
 	@Test
 	@DisplayName("Empty input generates minimal tree")
 	public void emptyInputGeneratesMinimalTree() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("");
+
 		NodeList documentChildren = document.getChildNodes();
 		Assertions.assertEquals(1, documentChildren.getLength());
 		HTMLElement htmlLeaf = testElement(documentChildren.get(0), "html", 2);
@@ -41,34 +46,22 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Minimal input generates minimal tree")
 	public void minimalInputGeneratesMinimalTree() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body></body></html>");
 		testToBody(document, 0);
 	}
 	
 	@Test
 	@DisplayName("Ignores whitespace before head")
 	public void ignoresWhitespaceBeforeHead() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("\n<!doctype html>\n<html>\n<head></head><body></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html>\n<html>\n  <head></head><body></body></html>");
 		testToBody(document, 0);
 	}
 	
 	@Test
 	@DisplayName("Properly parses minimal tree with indentation")
 	public void properlyParsesMinimalTreeWithIndentation() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader(
-			"\n<!doctype html>\n\t<html>\n\t\t<head>\n\t\t</head>\n\t\t<body>\n\t\t</body>\n\t</html>\n");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("\n<!doctype html>\n\t<html>\n\t\t<head>\n\t\t</head>\n\t\t<body>\n\t\t</body>\n\t</html>\n");
+
 		HTMLElement htmlNode = testToHtml(document, 3);
 		NodeList htmlChildren = htmlNode.getChildNodes();
 		Element headElement = testElement(htmlChildren.get(0), "head", 1);
@@ -83,11 +76,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse character reference text")
 	public void canParseCharacterReferenceText() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body>&lt;</body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body>&lt;</body></html>");
+		
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		Text textLeaf = (Text) bodyLeaf.getChildNodes().get(0);
 		Assertions.assertEquals("<", textLeaf.getData());
@@ -96,11 +86,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse character reference digit")
 	public void canParseCharacterReferenceDigit() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body>&#60;</body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body>&#60;</body></html>");
+		
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		Text textLeaf = (Text) bodyLeaf.getChildNodes().get(0);
 		Assertions.assertEquals("<", textLeaf.getData());
@@ -109,11 +96,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse character reference hex")
 	public void canParseCharacterReferenceHex() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body>&#x3C;</body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body>&#x3C;</body></html>");
+		
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		Text textLeaf = (Text) bodyLeaf.getChildNodes().get(0);
 		Assertions.assertEquals("<", textLeaf.getData());
@@ -122,11 +106,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse basic text")
 	public void canParseBasicText() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body>text</body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body>text</body></html>");
+		
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		Text textLeaf = (Text) bodyLeaf.getChildNodes().get(0);
 		Assertions.assertEquals("text", textLeaf.getData());
@@ -135,11 +116,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse empty div")
 	public void canParseEmptyDiv() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><div></div></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><div></div></body></html>");
+		
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		NodeList childNodes = bodyLeaf.getChildNodes();
 		testElement(childNodes.get(0), "div", 0);
@@ -148,11 +126,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse ordinary element")
 	public void canParseOrdinaryElement() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span></span></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><span></span></body></html>");
+		
 		HTMLElement bodyLeaf = testToBody(document, 1);
 		NodeList childNodes = bodyLeaf.getChildNodes();
 		testElement(childNodes.get(0), "span", 0);
@@ -161,11 +136,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse self-closing element")
 	public void canParseSelfClosingElement() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><br><br/></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><br><br/></body></html>");
+		
 		HTMLElement bodyLeaf = testToBody(document, 2);
 		NodeList childNodes = bodyLeaf.getChildNodes();
 		testElement(childNodes.get(0), "br", 0);
@@ -175,11 +147,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse element with quoted attributes")
 	public void canParseElementWithQuotedAttributes() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span a='b' c=\"d\"></span></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><span a='b' c=\"d\"></span></body></html>");
+		
 		HTMLElement bodyNode = testToBody(document, 1);
 		NodeList childNodes = bodyNode.getChildNodes();
 		HTMLElement spanElement = testElement(childNodes.get(0), "span", 0);
@@ -191,11 +160,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse element with unquoted attributes")
 	public void canParseElementWithUnquottedAttributes() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><span a=boo></span></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><span a=boo></span></body></html>");
+		
 		HTMLElement bodyNode = testToBody(document, 1);
 		NodeList childNodes = bodyNode.getChildNodes();
 		HTMLElement spanElement = testElement(childNodes.get(0), "span", 0);
@@ -206,11 +172,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse style element")
 	public void canParseStyleElement() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head><style>a < b {}</style></head><body></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head><style>a < b {}</style></head><body></body></html>");
+		
 		HTMLElement headNode = testToHead(document, 1);
 		NodeList headChildren = headNode.getChildNodes();
 		HTMLElement styleElement = testElement(headChildren.get(0), "style", 1);
@@ -223,11 +186,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse script element")
 	public void canParseScriptElement() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head><script>alert(a < b)</script></head><body></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head><script>alert(a < b)</script></head><body></body></html>");
+		
 		HTMLElement headNode = testToHead(document, 1);
 		NodeList headChildren = headNode.getChildNodes();
 		HTMLElement scriptElement = testElement(headChildren.get(0), "script", 1);
@@ -240,11 +200,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse escaped script element")
 	public void canParseEscapedScriptElement() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head><script><!--test\n// hi\n//--></script></head><body></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head><script><!--test\n// hi\n//--></script></head><body></body></html>");
+		
 		HTMLElement headNode = testToHead(document, 1);
 		NodeList headChildren = headNode.getChildNodes();
 		HTMLElement scriptElement = testElement(headChildren.get(0), "script", 1);
@@ -257,11 +214,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse title element")
 	public void canParseTitleElement() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head><title>Hello, World!</title></head><body></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head><title>Hello, World!</title></head><body></body></html>");
+		
 		HTMLElement headNode = testToHead(document, 1);
 		NodeList headChildren = headNode.getChildNodes();
 		HTMLElement titleElement = testElement(headChildren.get(0), "title", 1);
@@ -274,11 +228,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse a comment")
 	public void canParseAComment() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><!--Hello, World--></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><!--Hello, World--></body></html>");
+		
 		HTMLElement bodyNode = testToBody(document, 1);
 		NodeList bodyChildren = bodyNode.getChildNodes();
 		Assertions.assertInstanceOf(Comment.class, bodyChildren.get(0));
@@ -289,11 +240,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse self-closing in-head tag")
 	public void canParseSelfClosingInHeadTag() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head><link/><link/></head><body></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head><link/><link/></head><body></body></html>");
+		
 		HTMLElement headNode = testToHead(document, 2);
 		NodeList headChildren = headNode.getChildNodes();
 		testElement(headChildren.get(0), "link", 0);
@@ -303,11 +251,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse list with multiple li")
 	public void canParseListWithMultipleLi() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><ul><li>Text<li>Test</ul></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><ul><li>Text<li>Test</ul></body></html>");
+		
 		HTMLElement bodyNode = testToBody(document, 1);
 		NodeList bodyChildren = bodyNode.getChildNodes();
 		HTMLElement ulElement = testElement(bodyChildren.get(0), "ul", 2);
@@ -323,11 +268,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse multiple p")
 	public void canParseMultipleP() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><p>Text<p>Test</body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><p>Text<p>Test</body></html>");
+		
 		HTMLElement bodyNode = testToBody(document, 2);
 		NodeList bodyChildren = bodyNode.getChildNodes();
 		testElement(bodyChildren.get(0), "p", 1);
@@ -341,11 +283,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse multiple dt and dd")
 	public void canParseMultipleDtAndDd() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><dl><dt>Text<dd>Test<dt>Test2<dd>Test3</dl></body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><dl><dt>Text<dd>Test<dt>Test2<dd>Test3</dl></body></html>");
+		
 		HTMLElement bodyNode = testToBody(document, 1);
 		NodeList bodyChildren = bodyNode.getChildNodes();
 		HTMLElement dlElement = testElement(bodyChildren.get(0), "dl", 4);
@@ -367,11 +306,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can close ol and ul")
 	public void canCloseOlAndUl() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><ol><li>Test</ol><ul><li>Test2</ul>End</body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><ol><li>Test</ol><ul><li>Test2</ul>End</body></html>");
+		
 		HTMLElement bodyNode = testToBody(document, 3);
 		NodeList bodyChildren = bodyNode.getChildNodes();
 		HTMLElement olElement = testElement(bodyChildren.get(0), "ol", 1);
@@ -390,11 +326,8 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("hr is self-closing")
 	public void hrIsSelfClosing() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader("<!doctype html><html><head></head><body><hr>test</body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		parse("<!doctype html><html><head></head><body><hr>test</body></html>");
+		
 		HTMLElement bodyNode = testToBody(document, 2);
 		NodeList bodyChildren = bodyNode.getChildNodes();
 		testElement(bodyChildren.get(0), "hr", 0);
@@ -404,14 +337,11 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse multiple tr and td")
 	public void canParseMultipleTrAndTd() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader(
+		parse(
 			"<!doctype html><html><head></head>" +
 			"<body><table><tr><td>Test<td>Test2<tr>" +
 			"<td>Test3<td>Test4</td></tr></table>End</body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		
 		HTMLElement bodyNode = testToBody(document, 2);
 		NodeList bodyChildren = bodyNode.getChildNodes();
 		HTMLElement tableElement = testElement(bodyChildren.get(0), "table", 1);
@@ -440,16 +370,13 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can parse table with thead, tbody, and tfoot")
 	public void canParseTableWithTheadAndTbodyAndTfoot() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader(
+		parse(
 			"<!doctype html><html><head></head><body><table>" +
 			"<thead><tr><th>Test</th></tr></thead>" +
 			"<tbody><tr><td>Test2" + // Test without end tags, too
 			"<tfoot><tr><td>Test3" +
 			"</table>End</body></html>");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		
 		HTMLElement bodyNode = testToBody(document, 2);
 		NodeList bodyChildren = bodyNode.getChildNodes();
 		HTMLElement tableElement = testElement(bodyChildren.get(0), "table", 3);
@@ -479,8 +406,7 @@ public class HTMLParserTest {
 	@Test
 	@DisplayName("Can handle comments in various places")
 	public void canHandleCommentsInVariousPlaces() {
-		HTMLParser parser = new SpiderHTMLParserImp();
-		StringReader reader = new StringReader(
+		parse(
 			"<!-- comment before doctype -->" +
 			"<!doctype html>" +
 			"<!-- comment after doctype -->" +
@@ -496,9 +422,7 @@ public class HTMLParserTest {
 			"<!-- comment after body -->" +
 			"</html>" +
 			"<!-- comment after html -->");
-		Document document = new DocumentImp();
-		HTMLTreeBuilder treeBuilder = new BindingHTMLTreeBuilder(document);
-		Assertions.assertDoesNotThrow(() -> parser.parse(reader, treeBuilder, new TestParserSettings()));
+		
 		NodeList documentChildren = document.getChildNodes();
 		Assertions.assertEquals(5, documentChildren.getLength());
 		Assertions.assertInstanceOf(Comment.class, documentChildren.get(0));
@@ -553,6 +477,11 @@ public class HTMLParserTest {
 		Assertions.assertInstanceOf(Text.class, node);
 		Text text = (Text) node;
 		Assertions.assertEquals(string, text.getData());
+	}
+
+	private void parse(String input) throws AssertionError {
+		Assertions.assertDoesNotThrow(() -> parser.next(input.getBytes()));
+		Assertions.assertDoesNotThrow(() -> parser.done());
 	}
 	
 }

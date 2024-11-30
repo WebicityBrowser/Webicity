@@ -66,6 +66,8 @@ public class SkijaWindowingThreadImp implements SkijaWindowingThread {
 	}
 	
 	private void continueRunningScreens() {
+		// TODO: Figure out how to glfwSwapInterval(1) without causing flickering
+		try { Thread.sleep(1); } catch (InterruptedException e) { }
 		for (SkijaWindow window: List.copyOf(windows)) {
 			if (window.closed()) {
 				windows.remove(window);

@@ -3,12 +3,19 @@ package com.github.webicitybrowser.webicity.core.renderer.imp;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.fetch.FetchDecoderRegistry;
 import com.github.webicitybrowser.spec.fetch.FetchEngine;
 import com.github.webicitybrowser.spec.fetch.FetchProtocolRegistry;
+import com.github.webicitybrowser.spec.fetch.FetchRequest;
+import com.github.webicitybrowser.spec.fetch.FetchResponse;
+import com.github.webicitybrowser.spec.fetch.builder.FetchParametersBuilder;
 import com.github.webicitybrowser.spec.fetch.connection.imp.HTTPFetchConnectionPool;
 import com.github.webicitybrowser.spec.fetch.imp.FetchEngineImp;
+import com.github.webicitybrowser.spec.fetch.imp.FetchNetworkError;
+import com.github.webicitybrowser.spec.htmlbrowsers.tasks.EventLoop;
+import com.github.webicitybrowser.spec.htmlbrowsers.tasks.TaskQueue;
 import com.github.webicitybrowser.spec.http.HTTPService;
 import com.github.webicitybrowser.spec.url.URL;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
@@ -16,9 +23,6 @@ import com.github.webicitybrowser.webicity.core.RenderingEngine;
 import com.github.webicitybrowser.webicity.core.image.ImageCodecRegistry;
 import com.github.webicitybrowser.webicity.core.image.imp.ImageLoaderRegistryImp;
 import com.github.webicitybrowser.webicity.core.imp.RendererHandleImp;
-import com.github.webicitybrowser.webicity.core.net.Connection;
-import com.github.webicitybrowser.webicity.core.net.Protocol;
-import com.github.webicitybrowser.webicity.core.net.ProtocolContext;
 import com.github.webicitybrowser.webicity.core.net.ProtocolRegistry;
 import com.github.webicitybrowser.webicity.core.net.imp.ProtocolRegistryImp;
 import com.github.webicitybrowser.webicity.core.renderer.ExceptionRendererCrashReason;
@@ -31,6 +35,10 @@ import com.github.webicitybrowser.webicity.core.renderer.RendererCrashException;
 import com.github.webicitybrowser.webicity.core.renderer.RendererHandle;
 import com.github.webicitybrowser.webicity.core.ui.Frame;
 import com.github.webicitybrowser.webicity.core.ui.imp.FrameImp;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tasks.EventLoopImp;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tasks.EventScheduler;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tasks.EventSchedulerImp;
+import com.github.webicitybrowser.webicity.renderer.backend.html.tasks.TaskQueueTaskDestination;
 
 public class RenderingEngineImp implements RenderingEngine {
 
@@ -42,11 +50,16 @@ public class RenderingEngineImp implements RenderingEngine {
 	private final RendererBackendRegistry rendererBackendRegistry = new RendererBackendRegistryImp();
 	private final List<SoftReference<Frame>> frames = new ArrayList<>();
 
+	private final EventLoop internalEventLoop = new EventLoopImp();
+	private final EventScheduler internalEventScheduler = new EventSchedulerImp(internalEventLoop);
+
 	public RenderingEngineImp(AssetLoader assetLoader, HTTPService httpService) {
 		this.assetLoader = assetLoader;
 		
 		FetchProtocolRegistry fetchProtocolRegistry = new FetchProtocolRegistryImp(protocolRegistry);
-		this.fetchEngine = new FetchEngineImp(new HTTPFetchConnectionPool(httpService), fetchProtocolRegistry, new ParallelContextImp());
+		this.fetchEngine = new FetchEngineImp(
+			new HTTPFetchConnectionPool(httpService), fetchProtocolRegistry,
+			FetchDecoderRegistry.createDefault(), new ParallelContextImp());
 	}
 
 	@Override
@@ -58,22 +71,27 @@ public class RenderingEngineImp implements RenderingEngine {
 	}
 	
 	@Override
-	public RendererHandle openRenderer(URL url, Frame frame) {
-		Optional<Protocol> protocol = protocolRegistry.getProtocolForURL(url);
-		if (protocol.isEmpty()) {
-			return RendererHandleImp.fail(new GenericRendererCrashReason("PROTOCOL_NOT_REGISTERED"));
-		}
-		
+	public void openRenderer(URL url, Frame frame, Consumer<RendererHandle> onRendererOpened) {
 		try {
-			ProtocolContext context = new ProtocolContext("GET", redirectURL -> frame.redirect(redirectURL));
-			Connection connection = protocol.get().openConnection(url, context);
-			return openRenderer(connection);
+			TaskQueue taskQueue = internalEventLoop.getTaskQueue(EventLoop.NETWORK_TASK_QUEUE);
+			FetchParametersBuilder builder = FetchParametersBuilder.create();
+			builder.setRequest(FetchRequest.createRequest("GET", url));
+			builder.setProcessResponseAction(response ->
+				onRendererOpened.accept(maybeOpenRenderer(response)));
+			builder.setTaskDestination(new TaskQueueTaskDestination(taskQueue));
+			fetchEngine.fetch(builder.build());
 		} catch (Exception e) {
 			if (e instanceof RendererCrashException crashException) {
-				return RendererHandleImp.fail(crashException.getReason());
+				onRendererOpened.accept(RendererHandleImp.fail(crashException.getReason()));
+			} else {
+				onRendererOpened.accept(RendererHandleImp.fail(new ExceptionRendererCrashReason(e)));
 			}
-			return RendererHandleImp.fail(new ExceptionRendererCrashReason(e));
 		}
+	}
+
+	@Override
+	public RendererHandle createBlankRenderer() {
+		return RendererHandleImp.fail(new GenericRendererCrashReason("NO_RENDERER"));
 	}
 
 	@Override
@@ -119,20 +137,36 @@ public class RenderingEngineImp implements RenderingEngine {
 			
 			frame.tick();
 		}
+
+		internalEventScheduler.tick();
+	}
+
+	private RendererHandle maybeOpenRenderer(FetchResponse response) {
+		if (response instanceof FetchNetworkError) {
+			return RendererHandleImp.fail(new GenericRendererCrashReason("NETWORK_FAILURE"));
+		}
+		
+		return openRenderer(response);
 	}
 	
-	private RendererHandle openRenderer(Connection connection) {
+	private RendererHandle openRenderer(FetchResponse response) {
+		String contentType = response.headerList().getHeaderValue("Content-Type");
+		if (contentType == null) {
+			contentType = "text/html"; // TODO: Correctly fallback
+		}
+		contentType = contentType.split(";")[0];
+
 		return rendererBackendRegistry
-			.getBackendFactory(connection.getContentType())
-			.map(factory -> instantiateRendererBackend(factory, connection))
+			.getBackendFactory(contentType)
+			.map(factory -> instantiateRendererBackend(factory, response))
 			.map(renderer -> RendererHandleImp.of(renderer))
 			.orElse(RendererHandleImp.fail(
 				new GenericRendererCrashReason("RENDERER_BACKEND_NOT_REGISTERED")));
 	}
 	
-	private RendererBackend instantiateRendererBackend(RendererBackendFactory factory, Connection connection) {
+	private RendererBackend instantiateRendererBackend(RendererBackendFactory factory, FetchResponse response) {
 		try {
-			return factory.create(createRendererContext(connection.getURL()), connection);
+			return factory.create(createRendererContext(response.url()), response);
 		} catch (Exception e) {
 			throw new RendererCrashException(new ExceptionRendererCrashReason(e));
 		}

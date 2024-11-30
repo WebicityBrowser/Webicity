@@ -42,13 +42,13 @@ public class HTTPFetchConnectionImp implements FetchConnection {
 		} catch(Exception e) {
 			logger.error(e.getClass().toString());
 			e.printStackTrace();
-			return FetchResponse.createNetworkError();
+			return FetchResponse.createNetworkError(request);
 		}
 
-		return convertHTTPResponseToFetchResponse(response);
+		return convertHTTPResponseToFetchResponse(request, response);
 	}
 
-	private FetchResponse convertHTTPResponseToFetchResponse(HTTPResponse response) {
+	private FetchResponse convertHTTPResponseToFetchResponse(FetchRequest request, HTTPResponse response) {
 		if (response instanceof HTTPSuccessResponse successResponse) {
 			FetchHeaderList fetchHeaderList = HTTPFetchHeaderListImp.create(successResponse.getHeaders());
 			MessageStream messageStream = new MessageStream() {
@@ -72,7 +72,7 @@ public class HTTPFetchConnectionImp implements FetchConnection {
 				}
 			};
 
-			return new FetchResponseImp(null, fetchHeaderList) {
+			return new FetchResponseImp(null, request.urlList(), fetchHeaderList) {
 				@Override
 				public Optional<MessageStream> getMessageStream() {
 					return Optional.of(messageStream);
@@ -80,7 +80,7 @@ public class HTTPFetchConnectionImp implements FetchConnection {
 			};
 		} else {
 			logger.error("Unhandled HTTP response object: " + response);
-			return FetchResponse.createNetworkError();
+			return FetchResponse.createNetworkError(request);
 		}
 	}
 

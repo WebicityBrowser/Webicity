@@ -15,9 +15,12 @@ public class HTMLDocumentImp extends DocumentImp implements HTMLDocument {
 	
 	private final StyleSheetList styleSheetList = StyleSheetList.create();
 
+	// TODO: Probably better to use optionals
+
 	@Override
 	public String getTitle() {
 		HTMLTitleElement titleElement = getTitleElement();
+		if (titleElement == null) return "Untitled Document";
 		String value = titleElement == null ?
 			"" :
 			titleElement.getText();
@@ -26,11 +29,13 @@ public class HTMLDocumentImp extends DocumentImp implements HTMLDocument {
 
 	private HTMLTitleElement getTitleElement() {
 		HTMLHeadElement headElement = getHeadElement();
+		if (headElement == null) return null;
 		return (HTMLTitleElement) scan(headElement, child -> child instanceof HTMLTitleElement);
 	}
 
 	private HTMLHeadElement getHeadElement() {
 		HTMLHtmlElement htmlElement = getHtmlElement();
+		if (htmlElement == null) return null;
 		return (HTMLHeadElement) scan(htmlElement, child -> child instanceof HTMLHeadElement);
 	}
 	

@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,21 +26,29 @@ public class FetchEngineTest {
 	private static final byte[] DUMMY_BODY = new byte[] { 1, 2, 3 };
 	private static final URL DUMMY_URL = URL.ofSafe("https://www.google.com/");
 
+	private FetchEngine fetchEngine;
+
+	@BeforeEach
+	public void setup() {
+		FetchProtocolRegistry registry = Mockito.mock(FetchProtocolRegistry.class);
+		FetchDecoderRegistry decoderRegistry = Mockito.mock(FetchDecoderRegistry.class);
+		Mockito.when(decoderRegistry.getDecoder(Mockito.any())).thenReturn(null);
+		fetchEngine = new FetchEngineImp(mockConnectionPool(), registry, decoderRegistry, task -> task.run());
+	}
+
 	@Test
 	@DisplayName("Can reach process response consume body")
 	public void canReachProcessResponseConsumeBody() {
 		FetchConsumeBodyAction consumeBodyAction = Mockito.mock(FetchConsumeBodyAction.class);
-		FetchProtocolRegistry registry = Mockito.mock(FetchProtocolRegistry.class);
 		Mockito.doNothing().when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchEngineImp fetchEngineImp = new FetchEngineImp(mockConnectionPool(), registry, task -> task.run());
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
 		parametersBuilder.setConsumeBodyAction(consumeBodyAction);
 		parametersBuilder.setTaskDestination(new DummyTaskDestination());
 		FetchParameters parameters = parametersBuilder.build();
-		fetchEngineImp.fetch(parameters);
+		fetchEngine.fetch(parameters);
 
 		Mockito.verify(consumeBodyAction, Mockito.times(1))
 			.execute(Mockito.any(), Mockito.eq(true), Mockito.any());
@@ -56,8 +65,6 @@ public class FetchEngineTest {
 			return null;
 		}).when(consumeBodyAction).execute(Mockito.any(), Mockito.anyBoolean(), Mockito.any());
 
-		FetchProtocolRegistry registry = Mockito.mock(FetchProtocolRegistry.class);
-		FetchEngine fetchEngine = new FetchEngineImp(mockConnectionPool(), registry, task -> task.run());
 		FetchRequest request = FetchRequest.createRequest("GET", DUMMY_URL);
 		FetchParametersBuilder parametersBuilder = FetchParametersBuilder.create();
 		parametersBuilder.setRequest(request);
@@ -95,7 +102,7 @@ public class FetchEngineTest {
 					return mockFetchResponse();
 				}
 
-				return FetchResponse.createNetworkError();
+				return FetchResponse.createNetworkError(request);
 			}
 		};
 	}

@@ -1,8 +1,10 @@
 package com.github.webicitybrowser.spec.fetch;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.github.webicitybrowser.spec.fetch.imp.FetchNetworkError;
+import com.github.webicitybrowser.spec.url.URL;
 
 /**
  * A fetch response includes details about a resource that was
@@ -10,6 +12,19 @@ import com.github.webicitybrowser.spec.fetch.imp.FetchNetworkError;
  * which the resource was fetched.
  */
 public interface FetchResponse {
+
+	/**
+	 * Get the URL of the response.
+	 * @return The URL of the response.
+	 */
+	URL url();
+
+	/**
+	 * Get the URL list of the response, the last of which is the
+	 * main URL of the response.
+	 * @return The URL list of the response.
+	 */
+	List<URL> urlList();
 
 	/**
 	 * Get the body of the response.
@@ -34,10 +49,11 @@ public interface FetchResponse {
 	/**
 	 * Create a network error response. This indicates that the
 	 * resource could not be fetched due to an error.
+	 * @param request The request that caused the error.
 	 * @return A network error response.
 	 */
-	static FetchResponse createNetworkError() {
-		return new FetchNetworkError();
+	static FetchResponse createNetworkError(FetchRequest request) {
+		return new FetchNetworkError(request.urlList());
 	}
 
 	public static interface MessageStream {

@@ -47,7 +47,8 @@ public class LinkTagHandler implements TagAction {
 				element.getAttribute("href"));
 			request = FetchRequest.createRequest("GET", url);
 		} catch (InvalidURLException e) {
-			throw new RuntimeException(e);
+			// TODO: What to do?
+			return;
 		}
 
 		if(!linkedResourceFetchSetupSteps(element, request)) {

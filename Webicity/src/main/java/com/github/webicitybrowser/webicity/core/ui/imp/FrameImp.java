@@ -20,6 +20,7 @@ public class FrameImp implements Frame {
 
 	public FrameImp(RenderingEngine renderingEngine) {
 		this.renderingEngine = renderingEngine;
+		this.currentRenderer = renderingEngine.createBlankRenderer();
 		navigate(URL.ofSafe("about:blank"));
 	}
 
@@ -50,8 +51,10 @@ public class FrameImp implements Frame {
 	public void navigate(URL url) {
 		this.url = url;
 		eventDispatcher.fire(listener -> listener.onURLChange(url));
-		this.currentRenderer = renderingEngine.openRenderer(url, this);
-		eventDispatcher.fire(listener -> listener.onRendererChange(currentRenderer));
+		renderingEngine.openRenderer(url, this, renderer -> {
+			this.currentRenderer = renderer;
+			eventDispatcher.fire(listener -> listener.onRendererChange(renderer));
+		});
 	}
 	
 	@Override

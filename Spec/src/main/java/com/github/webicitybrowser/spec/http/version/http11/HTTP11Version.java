@@ -45,6 +45,8 @@ public class HTTP11Version implements HTTPVersion {
 		// TODO: Copy request headers
 		headers.set("Host", url.getHost());
 		headers.set("User-Agent", context.userAgent());
+		// TODO: Autogenerate
+		headers.set("Accept-Encoding", "gzip, deflate");
 		
 		//
 		headers.set("Upgrade-Insecure-Requests", "1");

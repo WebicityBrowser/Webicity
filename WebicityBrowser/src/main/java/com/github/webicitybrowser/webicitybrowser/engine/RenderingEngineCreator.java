@@ -49,7 +49,7 @@ public final class RenderingEngineCreator {
 		CharacterReferenceLookup characterReferenceLookup = createCharacterReferenceLookup();
 		
 		renderingEngine.getBackendRendererRegistry()
-			.registerBackendFactory("text/html", (r, c) -> new HTMLRendererBackend(r, c, characterReferenceLookup));
+			.registerBackendFactory("text/html", (ctx, response) -> new HTMLRendererBackend(ctx, response, characterReferenceLookup));
 	}
 
 	private static void registerImageLoaders(RenderingEngine renderingEngine) {
