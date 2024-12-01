@@ -15,9 +15,18 @@ public class DeflateDecoder implements FetchDecoder {
 
 	private ByteBuffer remainingData = EMPTY_BUFFER;
 
-    @Override
+	@Override
 	public byte[] translate(byte[] data) {
 		ByteBuffer buffer = ByteBuffer.wrap(data);
+		return deflate(buffer);
+	}
+
+	@Override
+	public void close() {
+		inflater.end();
+	}
+
+	protected byte[] deflate(ByteBuffer buffer) {
 		try {
 			appendRemaining(buffer);
 			buffer = remainingData;
@@ -47,12 +56,7 @@ public class DeflateDecoder implements FetchDecoder {
 		}
 	}
 
-	@Override
-	public void close() {
-		inflater.end();
-	}
-
-	private void appendRemaining(ByteBuffer buffer) {
+	protected void appendRemaining(ByteBuffer buffer) {
 		ByteBuffer newBuffer = ByteBuffer.allocate(remainingData.remaining() + buffer.remaining());
 		newBuffer.put(remainingData);
 		newBuffer.put(buffer);

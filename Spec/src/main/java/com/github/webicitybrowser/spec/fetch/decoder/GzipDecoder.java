@@ -1,64 +1,23 @@
 package com.github.webicitybrowser.spec.fetch.decoder;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
-import java.util.zip.DataFormatException;
-import java.util.zip.Inflater;
 
-import com.github.webicitybrowser.spec.fetch.FetchDecoder;
+public class GzipDecoder extends DeflateDecoder {
 
-public class GzipDecoder implements FetchDecoder {
-
-	private static final ByteBuffer EMPTY_BUFFER = ByteBuffer.allocate(0);
-
-	private final Inflater inflater = new Inflater(true);
-
-	private ByteBuffer remainingData = EMPTY_BUFFER;
 	private boolean headerSkipped = false;
 
-    @Override
+	@Override
 	public byte[] translate(byte[] data) {
 		ByteBuffer buffer = ByteBuffer.wrap(data);
-		try {
-			if (!headerSkipped) {
-				if (!skipGZIPHeader(buffer)) {
-					appendRemaining(buffer);
-					return new byte[0];
-				}
-				headerSkipped = true;
+		if (!headerSkipped) {
+			if (!skipGZIPHeader(buffer)) {
+				appendRemaining(buffer);
+				return new byte[0];
 			}
-		
-			appendRemaining(buffer);
-			buffer = remainingData;
-			remainingData = EMPTY_BUFFER;
-			
-			inflater.setInput(buffer.array(), buffer.position(), buffer.remaining());
-			
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			byte[] buf = new byte[1024];
-			while (!inflater.finished()) {
-				int count = inflater.inflate(buf);
-				out.write(buf, 0, count);
-			}
-
-			if (inflater.needsDictionary()) {
-				throw new RuntimeException("Dictionary needed during decompression");
-			}
-
-			if (inflater.getRemaining() > 0) {
-				remainingData = ByteBuffer.allocate(inflater.getRemaining());
-				remainingData.put(buffer.array(), buffer.position() + buffer.remaining() - inflater.getRemaining(), inflater.getRemaining());
-			}
-
-			return out.toByteArray();
-		} catch (DataFormatException e) {
-			throw new RuntimeException("Data format error during decompression", e);
+			headerSkipped = true;
 		}
-	}
-
-	@Override
-	public void close() {
-		inflater.end();
+		
+		return deflate(buffer);
 	}
 
 	private boolean skipGZIPHeader(ByteBuffer buffer) {
@@ -74,7 +33,10 @@ public class GzipDecoder implements FetchDecoder {
 			throw new IllegalArgumentException("Unsupported compression method");
 		}
 
-		// Ensure we have enough data to skip extra fields
+		return skipExtraFields(buffer);
+	}
+
+	private boolean skipExtraFields(ByteBuffer buffer) {
 		int offset = 10;
 		byte headerTag = buffer.get(3);
 		if ((headerTag & 0x04) != 0) { // FEXTRA
@@ -99,6 +61,7 @@ public class GzipDecoder implements FetchDecoder {
 		}
 		
 		buffer.position(offset);
+
 		return true;
 	}
 
@@ -109,14 +72,6 @@ public class GzipDecoder implements FetchDecoder {
 			}
 		}
 		return -1;
-	}
-
-	private void appendRemaining(ByteBuffer buffer) {
-		ByteBuffer newBuffer = ByteBuffer.allocate(remainingData.remaining() + buffer.remaining());
-		newBuffer.put(remainingData);
-		newBuffer.put(buffer);
-		newBuffer.flip();
-		remainingData = newBuffer;
 	}
 
 }

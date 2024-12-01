@@ -6,6 +6,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ public class Decoder {
 			this.encoding = bomSniff(byteBuffer);
 			encoding = encoding != null ? encoding : fallbackEncoding;
 			decoder = encoding.newDecoder();
+			decoder.onMalformedInput(CodingErrorAction.REPLACE);
+			decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
 		}
 		encoding = encoding != null ? encoding : fallbackEncoding;
 
@@ -40,8 +43,6 @@ public class Decoder {
 		CoderResult result = decoder.decode(combinedBuffer, charBuffer, false);
 		if (result.isUnderflow()) {
 			leftoverBuffer.put(combinedBuffer);
-		} else if (result.isError()) {
-			throw new IOException("Error decoding input");
 		}
 
 		charBuffer.flip();
