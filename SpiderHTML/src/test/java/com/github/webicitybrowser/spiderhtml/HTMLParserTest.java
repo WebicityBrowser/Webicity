@@ -441,6 +441,18 @@ public class HTMLParserTest {
 		Assertions.assertInstanceOf(Comment.class, bodyChildren.get(1));
 	}
 
+	@Test
+	@DisplayName("Can recover from bogus comment")
+	public void canRecoverFromBogusComment() {
+		parse("<!doctype html><html><head></head><body><![endif]-->Normal</body></html>");
+		
+		HTMLElement bodyNode = testToBody(document, 2);
+		NodeList bodyChildren = bodyNode.getChildNodes();
+		Comment comment = (Comment) bodyChildren.get(0);
+		Assertions.assertEquals("[endif]--", comment.getData());
+		assertText("Normal", bodyChildren.get(1));
+	}
+
 	private HTMLElement testToBody(Document document, int numBodyChildren) {
 		HTMLElement htmlNode = testToHtml(document, 2);
 		NodeList htmlChildren = htmlNode.getChildNodes();

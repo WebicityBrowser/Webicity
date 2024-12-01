@@ -7,6 +7,9 @@ public class RendererCrashException extends RuntimeException {
 	private final RendererCrashReason reason;
 	
 	public RendererCrashException(RendererCrashReason reason) {
+		super(reason instanceof ExceptionRendererCrashReason exceptionReason ?
+			exceptionReason.getException() :
+			null);
 		this.reason = reason;
 	}
 

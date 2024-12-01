@@ -59,33 +59,6 @@ public class SpiderHTMLParserImp implements HTMLParser {
 		}
 	}
 
-	/*@Override
-	public void parse(InputStream inputStream, HTMLTreeBuilder treeBuilder, ParserSettings settings) throws IOException {
-		Reader inputReader = EncodingUtil.decode(inputStream, StandardCharsets.UTF_8);
-		parse(inputReader, treeBuilder, settings);
-	}
-
-	@Override
-	public void parse(Reader inputReader, HTMLTreeBuilder treeBuilder, ParserSettings settings) throws IOException {
-		PushbackReader reader = new PushbackReader(inputReader, 32);
-		ParsingContext parsingContext = new ParsingContext(reader);
-		
-		while (true) {
-			TokenizeState tokenizeState = sharedContext.getTokenizeState();
-			if (tokenizeState == null) {
-				break;
-			}
-			
-			int ch = reader.read();
-			if (ch == '\r') {
-				ch = '\n';
-			} else if (ch == '\n' && parsingContext.readerHandle().peek() == '\r') {
-				reader.read();
-			}
-			tokenizeState.process(sharedContext, parsingContext, ch);
-		}
-	}*/
-
 	private void initializeContext(ParserSettings settings, SharedContext sharedContext) {
 		ParsingInitializer parsingInitializer = new ParsingInitializer(settings);
 

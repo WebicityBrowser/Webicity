@@ -1,10 +1,14 @@
 package com.github.webicitybrowser.spiderhtml.tokenize;
 
+import java.io.IOException;
 import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.html.parse.ParseError;
 import com.github.webicitybrowser.spiderhtml.context.ParsingContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.SharedContext;
+import com.github.webicitybrowser.spiderhtml.token.DoctypeToken;
+import com.github.webicitybrowser.spiderhtml.token.EOFToken;
 
 public class DoctypeState implements TokenizeState {
 
@@ -16,7 +20,7 @@ public class DoctypeState implements TokenizeState {
 	}
 	
 	@Override
-	public void process(SharedContext context, ParsingContext parsingContext, int ch) {
+	public void process(SharedContext context, ParsingContext parsingContext, int ch) throws IOException {
 		switch (ch) {
 		case '\t':
 		case '\n':
@@ -24,9 +28,15 @@ public class DoctypeState implements TokenizeState {
 		case ' ':
 			context.setTokenizeState(beforeDoctypeNameState);
 			break;
-		default:
-			// TODO
-			throw new UnsupportedOperationException();
+		case '>':
+			parsingContext.readerHandle().unread(ch);
+			context.setTokenizeState(beforeDoctypeNameState);
+			break;
+		case -1:
+			context.recordError(ParseError.EOF_IN_DOCTYPE);
+			// TODO: Force quirks
+			context.emit(new DoctypeToken());
+			context.emit(new EOFToken());
 		}
 	}
 

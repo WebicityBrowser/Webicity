@@ -3,6 +3,7 @@ package com.github.webicitybrowser.spiderhtml.tokenize;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import com.github.webicitybrowser.spec.html.parse.ParseError;
 import com.github.webicitybrowser.spiderhtml.context.ParsingContext;
 import com.github.webicitybrowser.spiderhtml.context.ParsingInitializer;
 import com.github.webicitybrowser.spiderhtml.context.ReaderHandle;
@@ -13,11 +14,13 @@ public class MarkupDeclarationOpenState implements TokenizeState {
 
 	private final DoctypeState doctypeState;
 	private final CommentStartState commentStartState;
+	private final BogusCommentState bogusCommentState;
 
 	public MarkupDeclarationOpenState(ParsingInitializer initializer, Consumer<TokenizeState> callback) {
 		callback.accept(this);
 		this.doctypeState = initializer.getTokenizeState(DoctypeState.class);
 		this.commentStartState = initializer.getTokenizeState(CommentStartState.class);
+		this.bogusCommentState = initializer.getTokenizeState(BogusCommentState.class);
 	}
 	
 	@Override
@@ -32,8 +35,10 @@ public class MarkupDeclarationOpenState implements TokenizeState {
 			reader.eat(7);
 			context.setTokenizeState(doctypeState);
 		} else {
-			// TODO
-			throw new UnsupportedOperationException();
+			context.recordError(ParseError.INCORRECTLY_OPENED_COMMENT);
+			CommentToken token = new CommentToken("");
+			parsingContext.setCurrentToken(token);
+			context.setTokenizeState(bogusCommentState);
 		}
 	}
 
