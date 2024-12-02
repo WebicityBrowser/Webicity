@@ -2,22 +2,22 @@ package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.simplelaf.u
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.SolidBoxChildrenTracker;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class ContainerBox implements ChildrenBox {
 
 	private final UIDisplay<?, ?, ?> display;
-	private final Component owningComponent;
+	private final ComponentUI componentUI;
 	private final DirectivePool styleDirectives;
 	
 	private final BoxChildrenTracker childTracker;
 	
-	public ContainerBox(UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, UIDisplay<?, ChildrenBox, ?> anonDisplay) {
+	public ContainerBox(UIDisplay<?, ?, ?> display, ComponentUI componentUI, DirectivePool styleDirectives, UIDisplay<?, ChildrenBox, ?> anonDisplay) {
 		this.display = display;
-		this.owningComponent = owningComponent;
+		this.componentUI = componentUI;
 		this.styleDirectives = styleDirectives;
 		this.childTracker = new SolidBoxChildrenTracker(this, anonDisplay);
 	}
@@ -28,8 +28,8 @@ public class ContainerBox implements ChildrenBox {
 	}
 
 	@Override
-	public Component owningComponent() {
-		return this.owningComponent;
+	public ComponentUI componentUI() {
+		return this.componentUI;
 	}
 
 	@Override

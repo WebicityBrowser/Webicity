@@ -31,7 +31,7 @@ public class TextDisplay implements UIDisplay<GenericContext, TextBox, TextUnit>
 	public List<TextBox> generateBoxes(GenericContext displayContext, BoxContext boxContext) {
 		TextComponent component = (TextComponent) displayContext.componentUI().getComponent();
 		DirectivePool directives = displayContext.styleDirectives();
-		return List.of(new TextBox(this, component, directives));
+		return List.of(new TextBox(this, component, displayContext.componentUI(), directives));
 	}
 
 	@Override

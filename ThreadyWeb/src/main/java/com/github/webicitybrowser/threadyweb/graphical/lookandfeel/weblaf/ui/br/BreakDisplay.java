@@ -29,7 +29,7 @@ public class BreakDisplay implements UIDisplay<GenericContext, BreakBox, BreakUn
 	@Override
 	public List<BreakBox> generateBoxes(GenericContext displayContext, BoxContext boxContext) {
 		return List.of(new BreakBox(
-			this, displayContext.componentUI().getComponent(), displayContext.styleDirectives()
+			this, displayContext.componentUI(), displayContext.styleDirectives()
 		));
 	}
 

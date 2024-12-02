@@ -25,6 +25,7 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.c
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.GlobalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.RenderCache;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.style.StyleContext;
@@ -94,8 +95,18 @@ public class GUIContentImp implements GUIContent {
 			}
 
 			@Override
+			public void validateUpTo(InvalidationLevel validationLevel) {
+				
+			}
+
+			@Override
 			public UIDisplay<?, ?, ?> getRootDisplay() {
 				return null;
+			}
+
+			@Override
+			public InvalidationLevel invalidationLevel() {
+				return invalidationLevel;
 			}
 		};
 		
@@ -116,6 +127,7 @@ public class GUIContentImp implements GUIContent {
 			if (rootBox == null) return;
 			long start = System.currentTimeMillis();
 			performRenderCycle(redrawContext);
+			renderCache.swap();
 			logger.info("Render cycle took: " + (System.currentTimeMillis() - start) + "ms");
 			System.gc();
 		case COMPOSITE:
@@ -175,12 +187,13 @@ public class GUIContentImp implements GUIContent {
 		this.rootBox = rootBox;
 	}
 
+	private RenderCache renderCache = new RenderCacheImp();
 	@SuppressWarnings("unchecked")
 	private <U extends Box> void performRenderCycle(ScreenContentRedrawContext redrawContext) {
 		AbsoluteSize contentSize = redrawContext.contentSize();
 		Font2D baseFont = redrawContext.resourceLoader().loadFont(configuration.fontSettings());
 		GlobalRenderContext globalRenderContext = new GlobalRenderContext(
-			contentSize, redrawContext.resourceLoader(), baseFont.getMetrics(), new RenderCacheImp());
+			contentSize, redrawContext.resourceLoader(), baseFont.getMetrics(), renderCache);
 		LocalRenderContext localRenderContext = LocalRenderContext.create(contentSize, new ContextSwitch[0]);
 		UIDisplay<?, U, ?> rootDisplay = (UIDisplay<?, U, ?>) rootUI.getRootDisplay();
 		this.rootUnit = rootDisplay.renderBox((U) rootBox, globalRenderContext, localRenderContext);

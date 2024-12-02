@@ -8,6 +8,10 @@ public interface ComponentUI {
 	Component getComponent();
 	
 	void invalidate(InvalidationLevel level);
+
+	InvalidationLevel invalidationLevel();
+
+    void validateUpTo(InvalidationLevel render);
 	
 	UIDisplay<?, ?, ?> getRootDisplay();
 	

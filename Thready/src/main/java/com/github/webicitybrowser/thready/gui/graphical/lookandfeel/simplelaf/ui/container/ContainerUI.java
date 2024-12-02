@@ -13,6 +13,8 @@ public class ContainerUI implements ComponentUI {
 	private final Component component;
 	private final ComponentUI parent;
 
+	private InvalidationLevel invalidationLevel = InvalidationLevel.STYLE;
+
 	public ContainerUI(Component component, ComponentUI parent) {
 		this.component = component;
 		this.parent = parent;
@@ -26,6 +28,19 @@ public class ContainerUI implements ComponentUI {
 	@Override
 	public void invalidate(InvalidationLevel level) {
 		parent.invalidate(level);
+		this.invalidationLevel = level;
+	}
+
+	@Override
+	public void validateUpTo(InvalidationLevel validationLevel) {
+		if (validationLevel.compareTo(invalidationLevel) < 0) {
+			invalidationLevel = validationLevel;
+		}
+	}
+
+	@Override
+	public InvalidationLevel invalidationLevel() {
+		return invalidationLevel;
 	}
 
 	@Override

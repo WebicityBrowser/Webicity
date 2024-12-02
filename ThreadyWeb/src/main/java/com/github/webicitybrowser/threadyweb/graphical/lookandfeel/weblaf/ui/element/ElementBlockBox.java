@@ -3,22 +3,22 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.el
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.SolidBoxChildrenTracker;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDefaults;
 
 public class ElementBlockBox implements ElementBox {
 	
 	private final UIDisplay<?, ?, ?> display;
-	private final Component owningComponent;
+	private final ComponentUI componentUI;
 	private final DirectivePool styleDirectives;
 	private final BoxChildrenTracker childrenTracker;
 	private final SolidLayoutManager layout;
 
-	public ElementBlockBox(UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, SolidLayoutManager layout) {
+	public ElementBlockBox(UIDisplay<?, ?, ?> display, ComponentUI owningComponentUI, DirectivePool styleDirectives, SolidLayoutManager layout) {
 		this.display = display;
-		this.owningComponent = owningComponent;
+		this.componentUI = owningComponentUI;
 		this.styleDirectives = styleDirectives;
 		this.childrenTracker = new SolidBoxChildrenTracker(this, WebDefaults.INLINE_DISPLAY);
 		this.layout = layout;
@@ -30,8 +30,8 @@ public class ElementBlockBox implements ElementBox {
 	}
 	
 	@Override
-	public Component owningComponent() {
-		return this.owningComponent;
+	public ComponentUI componentUI() {
+		return this.componentUI;
 	}
 
 	@Override

@@ -2,14 +2,15 @@ package com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.SolidBoxChildrenTracker;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public class TestStubBlockBox implements ChildrenBox {
 
 	private final BoxChildrenTracker childrenTracker = new SolidBoxChildrenTracker(this, null);
+	private final ComponentUI componentUI = new TestComponentUI();
 	private final DirectivePool styleDirectives;
 
 	public TestStubBlockBox(DirectivePool styleDirectives) {
@@ -27,8 +28,8 @@ public class TestStubBlockBox implements ChildrenBox {
 	}
 
 	@Override
-	public Component owningComponent() {
-		throw new UnsupportedOperationException("Unimplemented method 'owningComponent'");
+	public ComponentUI componentUI() {
+		return componentUI;
 	}
 
 	@Override

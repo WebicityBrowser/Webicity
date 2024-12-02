@@ -1,9 +1,9 @@
 package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.display.scroll;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public record ScrollBox(ScrollContext scrollContext, DirectivePool styleDirectives, Box innerBox) implements Box {
 	
@@ -13,8 +13,8 @@ public record ScrollBox(ScrollContext scrollContext, DirectivePool styleDirectiv
 	}
 
 	@Override
-	public Component owningComponent() {
-		return scrollContext.componentUI().getComponent();
+	public ComponentUI componentUI() {
+		return scrollContext.componentUI();
 	}
 
 	@Override

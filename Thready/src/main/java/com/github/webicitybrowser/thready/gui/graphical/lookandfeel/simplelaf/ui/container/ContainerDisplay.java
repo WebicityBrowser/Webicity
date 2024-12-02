@@ -29,7 +29,7 @@ public class ContainerDisplay implements UIDisplay<ContainerContext, ChildrenBox
 	@Override
 	public List<ChildrenBox> generateBoxes(ContainerContext displayContext, BoxContext boxContext) {
 		ContainerBox rootBox = new ContainerBox(
-			this, displayContext.owningComponent(),
+			this, displayContext.componentUI(),
 			displayContext.styleDirectives(), this);
 		ContainerChildrenBoxGenerator.addChildrenBoxes(displayContext, rootBox, boxContext);
 		return List.of(rootBox);

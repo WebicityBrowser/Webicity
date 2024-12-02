@@ -12,6 +12,8 @@ public class TextUI implements ComponentUI {
 	
 	private final Component component;
 	private final ComponentUI parent;
+
+	private InvalidationLevel invalidationLevel = InvalidationLevel.STYLE;
 	
 	public TextUI(Component component, ComponentUI parent) {
 		this.component = component;
@@ -26,8 +28,21 @@ public class TextUI implements ComponentUI {
 	@Override
 	public void invalidate(InvalidationLevel level) {
 		parent.invalidate(level);
+		invalidationLevel = level;
+	}
+
+	@Override
+	public void validateUpTo(InvalidationLevel validationLevel) {
+		if (validationLevel.compareTo(invalidationLevel) < 0) {
+			invalidationLevel = validationLevel;
+		}
 	}
 	
+	@Override
+	public InvalidationLevel invalidationLevel() {
+		return invalidationLevel;
+	}
+
 	@Override
 	public UIDisplay<?, ?, ?> getRootDisplay() {
 		return TEXT_DISPLAY;

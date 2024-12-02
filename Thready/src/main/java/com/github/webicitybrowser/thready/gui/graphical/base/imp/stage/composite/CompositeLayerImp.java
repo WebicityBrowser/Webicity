@@ -23,7 +23,7 @@ public class CompositeLayerImp implements CompositeLayer {
 	private final List<LayerPaintEntry> paintEntries;
 	private final int stackLevel;
 
-	private InvalidationLevel invalidationLevel;
+	private InvalidationLevel invalidationLevel = InvalidationLevel.STYLE;
 
 	public CompositeLayerImp(Rectangle bounds, CompositeParameters parameters, List<LayerPaintEntry> paintEntries, int stackLevel) {
 		this.bounds = bounds;

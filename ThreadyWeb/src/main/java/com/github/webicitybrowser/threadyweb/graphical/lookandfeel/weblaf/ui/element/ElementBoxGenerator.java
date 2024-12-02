@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ChildrenBox;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flexbox.FlexInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowInnerDisplayLayout;
@@ -36,16 +36,16 @@ public class ElementBoxGenerator {
 	//
 	
 	private ChildrenBox createBox(ElementContext elementContext, DirectivePool directives) {
-		Component component = elementContext.component();
+		ComponentUI componentUI = elementContext.componentUI();
 		SolidLayoutManager layout = getLayout(elementContext, directives);
 		
 		OuterDisplay outerDisplay = WebDirectiveUtil.getOuterDisplay(directives);
 		switch (outerDisplay) {
 		case BLOCK:
-			return new ElementBlockBox(elementContext.display(), component, directives, layout);
+			return new ElementBlockBox(elementContext.display(), componentUI, directives, layout);
 		case INLINE:
 		default:
-			return new ElementInlineBox(elementContext.display(), component, directives, layout);
+			return new ElementInlineBox(elementContext.display(), componentUI, directives, layout);
 		}
 	}
 

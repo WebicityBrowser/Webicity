@@ -70,7 +70,7 @@ public class FlowTestUtils {
 		Font2D font = createTestFont();
 
 		if (directives == null) directives = baseDirectivePool;
-		return new TextBox(new TextDisplay(), null, directives, text, font);
+		return new TextBox(new TextDisplay(), null, null, directives, text, font);
 	}
 
 	public static TextBox createTextBox(String text) {

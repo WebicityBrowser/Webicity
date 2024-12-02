@@ -87,7 +87,7 @@ public class SolidBoxChildrenTracker implements BoxChildrenTracker {
 		}
 		
 		ChildrenBox anonymousBox = new BasicAnonymousFluidBox(
-			anonDisplay, parentBox.owningComponent(),
+			anonDisplay, parentBox.componentUI(),
 			new NestingDirectivePool(parentBox.styleDirectives()));
 		// TODO: Is the passed-through renderer generator fine?
 		if (clearPrior) {

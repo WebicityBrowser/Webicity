@@ -4,14 +4,19 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public interface Box {
 
 	UIDisplay<?, ?, ?> display();
+
+	ComponentUI componentUI();
 	
-	Component owningComponent();
+	default Component owningComponent() {
+		return componentUI().getComponent();
+	};
 
 	DirectivePool styleDirectives();
 

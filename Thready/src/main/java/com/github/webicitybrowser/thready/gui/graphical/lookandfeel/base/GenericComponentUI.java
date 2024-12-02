@@ -11,6 +11,8 @@ public class GenericComponentUI implements ComponentUI {
 	private final ComponentUI parent;
 	private final UIDisplay<?, ?, ?> display;
 
+	private InvalidationLevel invalidationLevel = InvalidationLevel.STYLE;
+
 	public GenericComponentUI(Component component, ComponentUI parent, UIDisplay<?, ?, ?> display) {
 		this.component = component;
 		this.parent = parent;
@@ -25,6 +27,19 @@ public class GenericComponentUI implements ComponentUI {
 	@Override
 	public void invalidate(InvalidationLevel level) {
 		parent.invalidate(level);
+		this.invalidationLevel = level;
+	}
+
+	@Override
+	public void validateUpTo(InvalidationLevel validationLevel) {
+		if (validationLevel.compareTo(invalidationLevel) < 0) {
+			invalidationLevel = validationLevel;
+		}
+	}
+	
+	@Override
+	public InvalidationLevel invalidationLevel() {
+		return invalidationLevel;
 	}
 
 	@Override

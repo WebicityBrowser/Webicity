@@ -1,16 +1,17 @@
 package com.github.webicitybrowser.threadyweb.graphical.loookandfeel.test;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.CloneBox;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowTestUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.box.InlineBoxChildrenTracker;
 
 public class TestStubInlineBox implements CloneBox {
 
 	private BoxChildrenTracker childrenTracker = new InlineBoxChildrenTracker(this);
+	private final TestComponentUI componentUI = new TestComponentUI();
 	private DirectivePool styleDirectives = FlowTestUtils.createBasicDirectivePool();
 
 	@Override
@@ -34,8 +35,8 @@ public class TestStubInlineBox implements CloneBox {
 	}
 
 	@Override
-	public Component owningComponent() {
-		throw new UnsupportedOperationException("Unimplemented method 'owningComponent'");
+	public ComponentUI componentUI() {
+		return componentUI;
 	}
 
 	@Override

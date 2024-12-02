@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.github.webicitybrowser.codec.image.ImageFrame;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.ReplacedInfo;
@@ -42,6 +43,11 @@ public record ImageBox(ImageContext imageContext) implements Box {
 	@Override
 	public UIDisplay<?, ?, ?> display() {
 		return imageContext.display();
+	}
+
+	@Override
+	public ComponentUI componentUI() {
+		return imageContext.componentUI();
 	}
 
 	@Override

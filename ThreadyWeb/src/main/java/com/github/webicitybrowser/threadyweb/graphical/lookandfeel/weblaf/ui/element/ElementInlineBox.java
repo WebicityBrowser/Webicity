@@ -3,10 +3,10 @@ package com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.ui.el
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.SolidLayoutManager;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box.SolidBoxChildrenTracker;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.BoxChildrenTracker;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.CloneBox;
-import com.github.webicitybrowser.thready.gui.tree.core.Component;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.box.InlineBoxChildrenTracker;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.WebDefaults;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.util.directive.WebDirectiveUtil;
@@ -17,16 +17,16 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 	private final BoxChildrenTracker childrenTracker;
 	
 	private final UIDisplay<?, ?, ?> display;
-	private final Component owningComponent;
+	private final ComponentUI componentUI;
 	private final DirectivePool styleDirectives;
 	private final SolidLayoutManager layout;
 	private final boolean managesSelf;
 
 	public ElementInlineBox(
-		UIDisplay<?, ?, ?> display, Component owningComponent, DirectivePool styleDirectives, SolidLayoutManager layout
+		UIDisplay<?, ?, ?> display, ComponentUI componentUI, DirectivePool styleDirectives, SolidLayoutManager layout
 	) {
 		this.display = display;
-		this.owningComponent = owningComponent;
+		this.componentUI = componentUI;
 		this.styleDirectives = styleDirectives;
 		this.layout = layout;
 		this.managesSelf = computeSelfManages();
@@ -41,8 +41,8 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 	}
 	
 	@Override
-	public Component owningComponent() {
-		return this.owningComponent;
+	public ComponentUI componentUI() {
+		return this.componentUI;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class ElementInlineBox implements ElementBox, CloneBox {
 
 	@Override
 	public CloneBox cloneEmpty() {
-		return new ElementInlineBox(display, owningComponent, styleDirectives, layout);
+		return new ElementInlineBox(display, componentUI, styleDirectives, layout);
 	}
 
 	private boolean computeSelfManages() {

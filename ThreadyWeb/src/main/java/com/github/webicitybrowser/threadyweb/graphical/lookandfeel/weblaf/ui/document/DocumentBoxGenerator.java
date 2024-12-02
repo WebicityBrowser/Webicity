@@ -23,7 +23,7 @@ public final class DocumentBoxGenerator {
 	}
 
 	private static ChildrenBox generateBlockRootBox(DocumentContext context, List<Box> childBoxes) {
-		ChildrenBox rootBox = new DocumentBox(context.display(), context.component(), new BasicDirectivePool());
+		ChildrenBox rootBox = new DocumentBox(context.display(), context.componentUI(), new BasicDirectivePool());
 		
 		for (Box childBox: childBoxes) {
 			rootBox.getChildrenTracker().addChild(childBox);

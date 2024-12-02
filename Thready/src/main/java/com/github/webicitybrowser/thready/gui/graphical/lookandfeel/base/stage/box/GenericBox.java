@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.thready.gui.graphical.lookandfeel.base.stage.box;
 
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
+import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.ComponentUI;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.UIDisplay;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.context.Context;
@@ -8,6 +9,11 @@ import com.github.webicitybrowser.thready.gui.tree.core.Component;
 
 public record GenericBox<T extends Component, U extends Context>(U displayContext) implements Box {
 	
+	@Override
+	public ComponentUI componentUI() {
+		return displayContext.componentUI();
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public T owningComponent() {
