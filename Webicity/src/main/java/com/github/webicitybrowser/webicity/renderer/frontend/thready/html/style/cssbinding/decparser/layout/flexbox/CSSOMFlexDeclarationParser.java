@@ -7,9 +7,11 @@ import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.flex.FlexShorthandValueParser;
 import com.github.webicitybrowser.spec.css.property.flexbox.FlexValue;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexBasisDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexGrowDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexShrinkDirective;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMNamedDeclarationParser;
+import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.componentparser.SizeParser;
 
 public class CSSOMFlexDeclarationParser implements CSSOMNamedDeclarationParser<FlexValue> {
 
@@ -30,8 +32,9 @@ public class CSSOMFlexDeclarationParser implements CSSOMNamedDeclarationParser<F
 		if (value.shrinkFactor() != null) {
 			directives.add(FlexShrinkDirective.of(value.shrinkFactor().value()));
 		}
-
-		// TODO: basis
+		if (value.basis() != null) {
+			directives.add(FlexBasisDirective.of(SizeParser.parseNonPercent(value.basis())));
+		}
 		
 		return directives.toArray(Directive[]::new);
 	}

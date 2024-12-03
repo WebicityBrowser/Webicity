@@ -12,6 +12,8 @@ public interface RenderCache {
 
 	<U extends Box> AbsoluteSize maxContentSize(U box, GlobalRenderContext globalRenderContext, boolean isHorizontal);
 
+	void prepare();
+
 	void swap();
 
 }

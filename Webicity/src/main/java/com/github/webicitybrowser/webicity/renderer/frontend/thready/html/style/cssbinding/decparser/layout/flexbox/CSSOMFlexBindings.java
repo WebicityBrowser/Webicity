@@ -12,6 +12,7 @@ public class CSSOMFlexBindings {
 
 	public static void installTo(Map<String, CSSOMNamedDeclarationParser<?>> namedDeclarationParsers) {
 		namedDeclarationParsers.put("flex", new CSSOMFlexDeclarationParser());
+		namedDeclarationParsers.put("flex-basis", new CSSOMFlexBasisParser());
 		namedDeclarationParsers.put("flex-direction", new CSSOMFlexDirectionDeclarationParser());
 		namedDeclarationParsers.put("flex-wrap", new CSSOMFlexWrapDeclarationParser());
 		namedDeclarationParsers.put("flex-flow", new CSSOMFlexFlowDeclarationParser());

@@ -84,21 +84,23 @@ public final class FlexMainSizeDetermination {
 	private static void determineMainSize(
 		LayoutRenderContext layoutManagerContext, FlexItem flexItem, FlexDirection flexDirection
 	) {
-		// TODO: Check flex basis
+		float preferredBaseSize = flexItem.getSizePreferences().getBaseSize();
 		float preferredWidth = flexItem.getSizePreferences().getMainSize(flexDirection);
-		if (preferredWidth != RelativeDimension.UNBOUNDED) {
+		if (preferredBaseSize != RelativeDimension.UNBOUNDED) {
+			flexItem.setBaseSize(preferredBaseSize);
+			flexItem.setHypotheticalMainSize(clampMinMax(preferredBaseSize, flexItem, flexDirection));
+		} else if (preferredWidth != RelativeDimension.UNBOUNDED) {
 			flexItem.setBaseSize(preferredWidth);
 			flexItem.setHypotheticalMainSize(clampMinMax(preferredWidth, flexItem, flexDirection));
-			return;
+		} else {
+			GlobalRenderContext globalRenderContext = layoutManagerContext.globalRenderContext();
+			FlexItemRenderer.FlexItemRenderContext flexItemRenderContext = new FlexItemRenderer.FlexItemRenderContext(
+				globalRenderContext, flexDirection);
+			AbsoluteSize fitSize = FlexItemRenderer.render(flexItem, flexItemRenderContext);
+			FlexDimension flexDimension = FlexDimension.createFrom(fitSize, flexDirection);
+			flexItem.setBaseSize(flexDimension.main());
+			flexItem.setHypotheticalMainSize(clampMinMax(flexDimension.main(), flexItem, flexDirection));
 		}
-		
-		GlobalRenderContext globalRenderContext = layoutManagerContext.globalRenderContext();
-		FlexItemRenderer.FlexItemRenderContext flexItemRenderContext = new FlexItemRenderer.FlexItemRenderContext(
-			globalRenderContext, flexDirection);
-		AbsoluteSize fitSize = FlexItemRenderer.render(flexItem, flexItemRenderContext);
-		FlexDimension flexDimension = FlexDimension.createFrom(fitSize, flexDirection);
-		flexItem.setBaseSize(flexDimension.main());
-		flexItem.setHypotheticalMainSize(clampMinMax(flexDimension.main(), flexItem, flexDirection));
 	}
 
 	private static float clampMinMax(float main, FlexItem flexItem, FlexDirection flexDirection) {

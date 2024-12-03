@@ -125,10 +125,16 @@ public class GUIContentImp implements GUIContent {
 			performBoxCycle();
 		case RENDER:
 			if (rootBox == null) return;
-			long start = System.currentTimeMillis();
+			long time1 = System.currentTimeMillis();
+			renderCache.prepare();
+			long time2 = System.currentTimeMillis();
 			performRenderCycle(redrawContext);
+			long time3 = System.currentTimeMillis();
 			renderCache.swap();
-			logger.info("Render cycle took: " + (System.currentTimeMillis() - start) + "ms");
+			long time4 = System.currentTimeMillis();
+			if (time4 - time1 > 100) {
+				logger.info("Long render cycle took: " + (time4 - time1) + "ms (Inner " + (time3 - time2) + "ms)");
+			}
 			System.gc();
 		case COMPOSITE:
 			if (rootUnit == null) return;

@@ -29,6 +29,7 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.derived.Derived
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.MarginDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MaxWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexBasisDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexGrowDirective;
@@ -436,6 +437,26 @@ public class FlexInnerDisplayLayoutTest {
 		LocalRenderContext localRenderContext = createLocalRenderContext(new AbsoluteSize(RelativeDimension.UNBOUNDED, RelativeDimension.UNBOUNDED));
 		LayoutResult result = render(box, localRenderContext);
 		Assertions.assertEquals(new AbsoluteSize(30, 50), result.fitSize());
+	}
+
+	@Test
+	@DisplayName("Can render with flex-basis width")
+	public void canRenderWithFlexBasisWidth() {
+		ChildrenBox box = new TestStubBlockBox(emptyDirectivePool);
+		DirectivePool directivePool = createBaseDirectivePool();
+		directivePool.directive(FlexGrowDirective.of(0));
+		directivePool.directive(FlexShrinkDirective.of(0));
+		directivePool.directive(FlexBasisDirective.of((_1, _2) -> 20));
+		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
+		box.getChildrenTracker().addChild(childBox);
+		LocalRenderContext localRenderContext = createLocalRenderContext();
+		LayoutResult result = render(box, localRenderContext);
+		// TODO: Does the container size change?
+		//Assertions.assertEquals(new AbsoluteSize(20, 50), result.fitSize());
+		Assertions.assertEquals(1, result.childLayoutResults().length);
+		ChildLayoutResult childLayoutResult = result.childLayoutResults()[0];
+		Assertions.assertEquals(new AbsolutePosition(0, 0), childLayoutResult.relativeRect().position());
+		Assertions.assertEquals(new AbsoluteSize(20, 50), childLayoutResult.relativeRect().size());
 	}
 
 	private LayoutResult render(ChildrenBox box, LocalRenderContext localRenderContext) {

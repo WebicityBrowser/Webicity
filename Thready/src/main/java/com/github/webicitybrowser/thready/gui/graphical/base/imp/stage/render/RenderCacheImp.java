@@ -40,28 +40,12 @@ public class RenderCacheImp implements RenderCache {
 				cache.put(renderEntry, renderedUnit);
 			}
 		}
-		if (renderedUnit != null && hasNoContextSwitches && box.componentUI().invalidationLevel().compareTo(InvalidationLevel.RENDER) < 0) {
+
+		if (renderedUnit != null && hasNoContextSwitches) {
 			return (V) renderedUnit;
 		}
 	
-		RenderCache subCache = subCaches.get(box);
-		if (subCache == null) {
-			subCache = new RenderCacheImp();
-			subCaches.put(box, subCache);
-		}
-		V result = display.renderBox(box, new GlobalRenderContext(
-			globalRenderContext.viewportSize(), globalRenderContext.resourceLoader(),
-			globalRenderContext.rootFontMetrics(), subCache), localRenderContext);
-		//if (hasNoContextSwitches) {
-			RenderEntry fitRenderEntry = new RenderEntry(box, result.fitSize());
-			cache.put(renderEntry, result);
-			cache.put(fitRenderEntry, result);
-			subCache.swap();
-
-			box.componentUI().validateUpTo(InvalidationLevel.COMPOSITE);
-		//}
-
-		return result;
+		return cacheFallbackRender(display, box, globalRenderContext, localRenderContext);
 	}
 
 
@@ -86,6 +70,16 @@ public class RenderCacheImp implements RenderCache {
 	}
 
 	@Override
+	public void prepare() {
+		// Remove all invalid entires
+		cache.entrySet().removeIf(entry ->
+			entry.getKey().box.componentUI().invalidationLevel().compareTo(InvalidationLevel.RENDER) >= 0);
+		for (RenderCache subCache : subCaches.values()) {
+			subCache.prepare();
+		}
+	}
+
+	@Override
 	public void swap() {
 		Map<RenderEntry, RenderedUnit> temp = cache;
 		cache = swapCache;
@@ -99,6 +93,32 @@ public class RenderCacheImp implements RenderCache {
 		for (RenderCache subCache : subCaches.values()) {
 			subCache.swap();
 		}
+	}
+
+	private <U extends Box, V extends RenderedUnit> V cacheFallbackRender(
+		UIDisplay<?, U, V> display, U box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext
+	) {
+		RenderEntry renderEntry = new RenderEntry(box, localRenderContext.preferredSize());
+
+		RenderCache subCache = subCaches.get(box);
+		if (subCache == null) {
+			subCache = new RenderCacheImp();
+			subCaches.put(box, subCache);
+		}
+		
+		V result = display.renderBox(box, new GlobalRenderContext(
+			globalRenderContext.viewportSize(), globalRenderContext.resourceLoader(),
+			globalRenderContext.rootFontMetrics(), subCache), localRenderContext);
+		//if (hasNoContextSwitches) {
+			RenderEntry fitRenderEntry = new RenderEntry(box, result.fitSize());
+			cache.put(renderEntry, result);
+			cache.put(fitRenderEntry, result);
+			subCache.swap();
+
+			box.componentUI().validateUpTo(InvalidationLevel.COMPOSITE);
+		//}
+
+		return result;
 	}
 
 	private record RenderEntry(Box box, AbsoluteSize size) {}

@@ -11,6 +11,7 @@ import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.s
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MinHeightDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.MinWidthDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.WidthDirective;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexBasisDirective;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexDirectionDirective.FlexDirection;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutBorderWidthCalculations;
@@ -64,6 +65,10 @@ public class FlexItemSizePreferences {
 		return flexDirection.isHorizontal() ?
 			LayoutSizeUtils.computeSize(styleDirectives, HeightDirective.class, sizingContext) :
 			LayoutSizeUtils.computeSize(styleDirectives, WidthDirective.class, sizingContext);
+	}
+
+	public float getBaseSize() {
+		return LayoutSizeUtils.computeSize(styleDirectives, FlexBasisDirective.class, sizingContext);
 	}
 
 }
