@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.adjusted.position;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
+import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionOffsetDirective;
@@ -49,6 +50,17 @@ public class PositionOffsetCalculations {
 			positions[0];
 		float yOffset = positions[2] == POSITION_AUTO ?
 			positions[3] == POSITION_AUTO ? 0 : -positions[3] :
+			positions[2];
+		
+		return new AbsolutePosition(xOffset, yOffset);
+	}
+
+	public static AbsolutePosition calculateFixedPositionOffset(float[] positions, AbsoluteSize viewportSize, AbsoluteSize boxSize) {
+		float xOffset = positions[0] == POSITION_AUTO ?
+			positions[1] == POSITION_AUTO ? 0 : viewportSize.width() - positions[1] - boxSize.width() :
+			positions[0];
+		float yOffset = positions[2] == POSITION_AUTO ?
+			positions[3] == POSITION_AUTO ? 0 : viewportSize.height() - positions[3] - boxSize.height() :
 			positions[2];
 		
 		return new AbsolutePosition(xOffset, yOffset);

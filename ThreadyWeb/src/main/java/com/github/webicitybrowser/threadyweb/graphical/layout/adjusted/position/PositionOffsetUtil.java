@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.adjusted.position;
 
 import com.github.webicitybrowser.thready.dimensions.AbsolutePosition;
+import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position.PositionTypeDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.PositionType;
@@ -14,6 +15,12 @@ public final class PositionOffsetUtil {
 		float[] positions = PositionOffsetCalculations.calculateOffset(sizeCalculationContext, styleDirectives);
 
 		return PositionOffsetCalculations.calculateRelativePositionOffset(positions);
+	}
+
+	public static AbsolutePosition getFixedPositionOffset(SizeCalculationContext sizeCalculationContext, DirectivePool styleDirectives, AbsoluteSize boxSize) {
+		float[] positions = PositionOffsetCalculations.calculateOffset(sizeCalculationContext, styleDirectives);
+
+		return PositionOffsetCalculations.calculateFixedPositionOffset(positions, sizeCalculationContext.viewportSize(), boxSize);
 	}
 
 	public static PositionType getPositionType(DirectivePool styleDirectives) {

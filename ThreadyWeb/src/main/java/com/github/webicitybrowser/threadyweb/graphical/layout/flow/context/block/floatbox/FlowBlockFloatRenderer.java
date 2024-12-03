@@ -5,6 +5,7 @@ import com.github.webicitybrowser.thready.dimensions.AbsoluteSize;
 import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
@@ -47,15 +48,17 @@ public final class FlowBlockFloatRenderer {
 	}
 
 	public static RenderedUnit renderFloatBoxUnit(FlowBlockRenderContext state, Box childBox) {
-		BoxOffsetDimensions renderParameters = BoxOffsetDimensions.create(state.flowContext().layoutRenderContext(), childBox.styleDirectives());
+		LayoutRenderContext layoutRenderContext = state.flowContext().layoutRenderContext();
+		BoxOffsetDimensions renderParameters = BoxOffsetDimensions.create(layoutRenderContext, childBox.styleDirectives());
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
-			state, childBox, renderParameters,
+			childBox, renderParameters,
 			FlowBlockFloatRenderer::createLocalRenderContext,
 			FlowBlockFloatRenderer::computeFloatBoxPreferredSize
 		);
 
-		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(context);
-		FlowBlockChildRenderResult childRenderResult = FlowBlockUnitRenderer.generateChildUnit(context, prerenderSizingInfo);
+		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(layoutRenderContext, context);
+		FlowBlockChildRenderResult childRenderResult = FlowBlockUnitRenderer.generateChildUnit(
+			context, prerenderSizingInfo, layoutRenderContext.globalRenderContext());
 		AbsoluteSize styledUnitSize = LayoutSizeUtils.addPadding(childRenderResult.adjustedSize(), renderParameters.totalPadding());
 
 		StyledUnitContext styledUnitContext = new StyledUnitContext(
@@ -105,11 +108,11 @@ public final class FlowBlockFloatRenderer {
 		// TODO: Simplify this method
 	}
 
-	private static AbsoluteSize computeFloatBoxPreferredSize(FlowBlockRenderContext state, AbsoluteSize enforcedSize) {
+	private static AbsoluteSize computeFloatBoxPreferredSize(AbsoluteSize enforcedSize) {
 		return enforcedSize;
 	}
 
-	private static LocalRenderContext createLocalRenderContext(FlowBlockRenderContext state, AbsoluteSize preferredSize) {
+	private static LocalRenderContext createLocalRenderContext(AbsoluteSize preferredSize) {
 		// We do not pass the flow root context switch, as the float establishes its own root context
 		return LocalRenderContext.create(preferredSize, new ContextSwitch[0]);
 	}

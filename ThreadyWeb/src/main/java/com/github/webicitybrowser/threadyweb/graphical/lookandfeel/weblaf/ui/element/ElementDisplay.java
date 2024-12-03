@@ -23,7 +23,6 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.r
 import com.github.webicitybrowser.thready.gui.message.MessageHandler;
 import com.github.webicitybrowser.thready.gui.message.NoopMessageHandler;
 import com.github.webicitybrowser.thready.gui.tree.core.Component;
-import com.github.webicitybrowser.threadyweb.graphical.layout.adjusted.AdjustedLayoutManager;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowConfig;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowInnerDisplayLayout;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.BuildableRenderedUnit;
@@ -61,11 +60,10 @@ public class ElementDisplay implements UIDisplay<ElementContext, ChildrenBox, El
 	@Override
 	public ElementUnit renderBox(ChildrenBox box, GlobalRenderContext globalRenderContext, LocalRenderContext localRenderContext) {
 		SolidLayoutManager layoutManager = box instanceof ElementBlockBox elementBox ? elementBox.layout() : defaultLayout;
-		SolidLayoutManager adjustedLayoutManager = new AdjustedLayoutManager(layoutManager);
 		LayoutRenderContext layoutManagerContext = new LayoutRenderContext(
 			globalRenderContext, localRenderContext,
 			new StaticTreeTracker(box, box.getChildrenTracker().getChildren()));
-		LayoutResult layoutResult = adjustedLayoutManager.render(layoutManagerContext);
+		LayoutResult layoutResult = layoutManager.render(layoutManagerContext);
 		
 		return new ElementUnit(this, box.styleDirectives(), layoutResult);
 	}

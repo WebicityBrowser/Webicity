@@ -6,17 +6,20 @@ import com.github.webicitybrowser.thready.dimensions.Rectangle;
 import com.github.webicitybrowser.thready.dimensions.RelativeDimension;
 import com.github.webicitybrowser.thready.dimensions.util.AbsoluteDimensionsMath;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.ChildLayoutResult;
+import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.LocalRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.ContextSwitch;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.render.unit.RenderedUnit;
 import com.github.webicitybrowser.threadyweb.graphical.directive.ClearDirective;
+import com.github.webicitybrowser.threadyweb.graphical.layout.adjusted.AdjustedLayout;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.FlowRootContextSwitch;
 import com.github.webicitybrowser.threadyweb.graphical.layout.flow.floatbox.FloatTracker;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.BoxOffsetDimensions;
 import com.github.webicitybrowser.threadyweb.graphical.layout.util.LayoutSizeUtils;
 import com.github.webicitybrowser.threadyweb.graphical.lookandfeel.weblaf.stage.render.unit.StyledUnitContext;
 import com.github.webicitybrowser.threadyweb.graphical.value.ClearDirection;
+import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation.SizeCalculationContext;
 
 public final class FlowBlockBlockRenderer {
 
@@ -25,31 +28,37 @@ public final class FlowBlockBlockRenderer {
 	public static void renderChild(FlowBlockRenderContext state, Box childBox) {
 		setupClearedPosition(state, childBox);
 		
-		BoxOffsetDimensions boxDimensions = BoxOffsetDimensions.create(state.flowContext().layoutRenderContext(), childBox.styleDirectives());
+		LayoutRenderContext layoutRenderContext = state.flowContext().layoutRenderContext();
+		BoxOffsetDimensions boxDimensions = BoxOffsetDimensions.create(layoutRenderContext, childBox.styleDirectives());
 		AbsoluteSize parentSize = state.getLocalRenderContext().preferredSize();
 		FlowBlockUnitRenderingContext context = new FlowBlockUnitRenderingContext(
-			state, childBox, boxDimensions,
-			(state2, childSize) -> createChildLocalRenderContext(state2, childSize, boxDimensions),
-			(childState, childSize) -> computeFallbackPreferredSize(parentSize, childSize, boxDimensions.margins())
-		);
+			childBox, boxDimensions,
+			childSize -> createChildLocalRenderContext(state, childSize, boxDimensions),
+			childSize -> computeFallbackPreferredSize(parentSize, childSize, boxDimensions.margins()));
 		
-		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(context);
-		FlowBlockChildRenderResult childRenderResult = FlowBlockUnitRenderer.generateChildUnit(context, prerenderSizingInfo);
+		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(layoutRenderContext, context);
+		FlowBlockChildRenderResult childRenderResult = FlowBlockUnitRenderer.generateChildUnit(
+			context, prerenderSizingInfo, layoutRenderContext.globalRenderContext());
 		AbsoluteSize finalChildSize = computeFinalChildSize(prerenderSizingInfo, childRenderResult);
 		float[] finalMargins = computeFinalMargins(prerenderSizingInfo, finalChildSize);
 
 		AbsolutePosition childPosition = state.positionTracker().nextBoxPosition(finalChildSize, finalMargins);
 		Rectangle childRect = new Rectangle(childPosition, finalChildSize);
 		
-		addChildToLayout(state, childBox, childRenderResult.unit(), childRect, boxDimensions);
+		addChildToLayout(
+			state, childBox, childRenderResult.unit(), childRect, boxDimensions,
+			prerenderSizingInfo.sizingContext().sizeCalculationContext());
 	}
 
 	private static void addChildToLayout(
-		FlowBlockRenderContext state, Box childBox, RenderedUnit childUnit, Rectangle childRect, BoxOffsetDimensions boxDimensions
+		FlowBlockRenderContext state, Box childBox, RenderedUnit childUnit,
+		Rectangle childRect, BoxOffsetDimensions boxDimensions, SizeCalculationContext sizeCalculationContext
 	) {
 		StyledUnitContext styledUnitContext = new StyledUnitContext(childBox.styleDirectives(), childUnit, childRect.size(), boxDimensions);
 		RenderedUnit styledUnit = state.flowConfig().styledUnitGenerator().generateStyledUnit(styledUnitContext);
-		state.addChildLayoutResult(new ChildLayoutResult(styledUnit, childRect));
+		ChildLayoutResult childLayoutResult = new ChildLayoutResult(styledUnit, childRect);
+		ChildLayoutResult positionedChildLayoutResult = AdjustedLayout.adjustLayoutResult(childLayoutResult, sizeCalculationContext);
+		state.addChildLayoutResult(positionedChildLayoutResult);
 	}
 
 	private static AbsoluteSize computeFinalChildSize(
