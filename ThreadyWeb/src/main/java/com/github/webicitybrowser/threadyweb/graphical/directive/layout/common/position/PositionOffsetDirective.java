@@ -1,11 +1,10 @@
 package com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.position;
 
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
+import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.SizeCalculationDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 
-public interface PositionOffsetDirective extends Directive {
-	
-	SizeCalculation getSizeCalculation();
+public interface PositionOffsetDirective extends SizeCalculationDirective {
 
 	public static interface LeftPositionOffsetDirective extends PositionOffsetDirective {
 

@@ -12,6 +12,7 @@ public final class PositionOffsetUtil {
 	private PositionOffsetUtil() {}
 
 	public static AbsolutePosition getRelativePositionOffset(SizeCalculationContext sizeCalculationContext, DirectivePool styleDirectives) {
+		// TODO: Properly handle percentages
 		float[] positions = PositionOffsetCalculations.calculateOffset(sizeCalculationContext, styleDirectives);
 
 		return PositionOffsetCalculations.calculateRelativePositionOffset(positions);
@@ -19,8 +20,9 @@ public final class PositionOffsetUtil {
 
 	public static AbsolutePosition getFixedPositionOffset(SizeCalculationContext sizeCalculationContext, DirectivePool styleDirectives, AbsoluteSize boxSize) {
 		float[] positions = PositionOffsetCalculations.calculateOffset(sizeCalculationContext, styleDirectives);
+		float[] margins = PositionOffsetCalculations.calculateMargin(sizeCalculationContext, styleDirectives);
 
-		return PositionOffsetCalculations.calculateFixedPositionOffset(positions, sizeCalculationContext.viewportSize(), boxSize);
+		return PositionOffsetCalculations.calculateFixedPositionOffset(positions, margins, sizeCalculationContext.viewportSize(), boxSize);
 	}
 
 	public static PositionType getPositionType(DirectivePool styleDirectives) {

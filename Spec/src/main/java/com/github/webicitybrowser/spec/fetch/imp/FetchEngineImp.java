@@ -2,6 +2,7 @@ package com.github.webicitybrowser.spec.fetch.imp;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -75,7 +76,7 @@ public class FetchEngineImp implements FetchEngine {
 			return new FetchResponseImp(
 				safelyExtract(struct.get().body()).body(),
 				request.urlList(),
-				new EmptyFetchHeaderListImp());
+				new MapFetchHeaderList(Map.of("Content-Type", struct.get().mimeType())));
 		case "http":
 		case "https":
 			return httpFetch(params);

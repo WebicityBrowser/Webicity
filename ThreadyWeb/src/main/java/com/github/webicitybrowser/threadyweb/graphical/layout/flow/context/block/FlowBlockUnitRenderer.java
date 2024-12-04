@@ -18,7 +18,7 @@ public final class FlowBlockUnitRenderer {
 	
 	private FlowBlockUnitRenderer() {}
 
-	public static FlowBlockPrerenderSizingInfo prerenderChild(LayoutRenderContext layoutRenderContext, FlowBlockUnitRenderingContext context) {
+	public static FlowBlockPrerenderSizingInfo prerenderChild(LayoutRenderContext layoutRenderContext, FlowBlockUnitRenderingContext context, boolean forcePreferred) {
 		AbsoluteSize parentSize = layoutRenderContext.localRenderContext().preferredSize();
 		Box childBox = context.childBox();
 		BoxOffsetDimensions renderParameters = context.renderParameters();
@@ -27,8 +27,10 @@ public final class FlowBlockUnitRenderer {
 		AbsoluteSize forcedChildOuterSize = computePreferredSize(childBox, layoutSizingContext);
 		AbsoluteSize preferredChildOuterSize = context.childSizeGenerator().apply(forcedChildOuterSize);
 
-		AbsoluteSize forcedChildContentSize = LayoutSizeUtils.subtractPadding(forcedChildOuterSize, renderParameters.totalPadding());
 		AbsoluteSize preferredChildContentSize = LayoutSizeUtils.subtractPadding(preferredChildOuterSize, renderParameters.totalPadding());
+		AbsoluteSize forcedChildContentSize = forcePreferred ?
+			preferredChildContentSize :
+			LayoutSizeUtils.subtractPadding(forcedChildOuterSize, renderParameters.totalPadding());
 
 		return new FlowBlockPrerenderSizingInfo(forcedChildContentSize, preferredChildContentSize, parentSize, layoutSizingContext);
 	}

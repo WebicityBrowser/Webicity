@@ -56,7 +56,7 @@ public final class FlowBlockFloatRenderer {
 			FlowBlockFloatRenderer::computeFloatBoxPreferredSize
 		);
 
-		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(layoutRenderContext, context);
+		FlowBlockPrerenderSizingInfo prerenderSizingInfo = FlowBlockUnitRenderer.prerenderChild(layoutRenderContext, context, false);
 		FlowBlockChildRenderResult childRenderResult = FlowBlockUnitRenderer.generateChildUnit(
 			context, prerenderSizingInfo, layoutRenderContext.globalRenderContext());
 		AbsoluteSize styledUnitSize = LayoutSizeUtils.addPadding(childRenderResult.adjustedSize(), renderParameters.totalPadding());
