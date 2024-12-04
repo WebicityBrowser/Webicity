@@ -1,8 +1,5 @@
 package com.github.webicitybrowser.spec.css.parser.property.text;
 
-import static com.github.webicitybrowser.spec.css.parser.property.PropertyParseTestUtil.createDimensionToken;
-import static com.github.webicitybrowser.spec.css.parser.property.PropertyParseTestUtil.createNumberToken;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;
 import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.DimensionToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.NumberToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.StringToken;
 import com.github.webicitybrowser.spec.css.property.font.FontValue;
 import com.github.webicitybrowser.spec.css.property.fontfamily.FontFamilyValue.FontFamilyEntry;
@@ -31,7 +30,7 @@ public class FontShorthandValueParserTest {
 	@DisplayName("Can parse font shorthand with font families")
 	public void canParseFontShorthandWithFontFamilies() {
 		TokenLike[] tokens = new TokenLike[] {
-			(StringToken) () -> "Arial"
+			new StringToken("Arial")
 		};
 
 		PropertyValueParseResult<FontValue> fontResult = fontShorthandValueParser.parse(tokens, 0, tokens.length);
@@ -46,8 +45,8 @@ public class FontShorthandValueParserTest {
 	@DisplayName("Can parse font shorthand with font families and font size")
 	public void canParseFontShorthandWithFontFamiliesAndFontSize() {
 		TokenLike[] tokens = new TokenLike[] {
-			createDimensionToken(1, "px"),
-			(StringToken) () -> "Arial"
+			new DimensionToken(1, "px"),
+			new StringToken("Arial")
 		};
 
 		PropertyValueParseResult<FontValue> fontResult = fontShorthandValueParser.parse(tokens, 0, tokens.length);
@@ -64,10 +63,10 @@ public class FontShorthandValueParserTest {
 	@DisplayName("Can parse font shorthand with font families and font size and line height")
 	public void canParseFontShorthandWithFontFamiliesAndFontSizeAndLineHeight() {
 		TokenLike[] tokens = new TokenLike[] {
-			createDimensionToken(1, "px"),
-			(DelimToken) () -> '/',
-			createNumberToken(1),
-			(StringToken) () -> "Arial"
+			new DimensionToken(1, "px"),
+			new DelimToken('/'),
+			new NumberToken(1),
+			new StringToken("Arial")
 		};
 
 		PropertyValueParseResult<FontValue> fontResult = fontShorthandValueParser.parse(tokens, 0, tokens.length);

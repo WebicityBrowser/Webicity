@@ -15,7 +15,7 @@ public class FlexWrapValueParser implements PropertyValueParser<FlexWrapValue> {
 			return PropertyValueParseResultImp.empty();
 		}
 
-		return switch (((IdentToken) tokens[offset]).getValue()) {
+		return switch (((IdentToken) tokens[offset]).value()) {
 			case "nowrap" -> PropertyValueParseResultImp.of(FlexWrapValue.NOWRAP, 1);
 			case "wrap" -> PropertyValueParseResultImp.of(FlexWrapValue.WRAP, 1);
 			case "wrap-reverse" -> PropertyValueParseResultImp.of(FlexWrapValue.WRAP_REVERSE, 1);

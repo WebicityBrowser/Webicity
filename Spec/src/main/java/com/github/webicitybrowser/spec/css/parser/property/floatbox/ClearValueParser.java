@@ -15,7 +15,7 @@ public class ClearValueParser implements PropertyValueParser<ClearValue> {
 			return PropertyValueParseResultImp.empty();
 		}
 
-		return switch (((IdentToken) tokens[offset]).getValue()) {
+		return switch (((IdentToken) tokens[offset]).value()) {
 			case "left" -> PropertyValueParseResultImp.of(ClearValue.LEFT, 1);
 			case "right" -> PropertyValueParseResultImp.of(ClearValue.RIGHT, 1);
 			case "none" -> PropertyValueParseResultImp.of(ClearValue.NONE, 1);

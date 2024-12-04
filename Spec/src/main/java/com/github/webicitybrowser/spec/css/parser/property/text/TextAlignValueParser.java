@@ -25,7 +25,7 @@ public class TextAlignValueParser implements PropertyValueParser<TextAlignValue>
 
 	private TextAlignValue parseTextAlignValue(TokenLike token) {
 		if (token instanceof IdentToken IdentToken) {
-			return switch (IdentToken.getValue()) {
+			return switch (IdentToken.value()) {
 			case "start" -> TextAlignValue.START;
 			case "end" -> TextAlignValue.END;
 			case "left" -> TextAlignValue.LEFT;

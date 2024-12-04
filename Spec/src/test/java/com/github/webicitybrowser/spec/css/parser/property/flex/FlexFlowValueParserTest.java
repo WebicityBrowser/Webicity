@@ -25,8 +25,8 @@ public class FlexFlowValueParserTest {
 	@DisplayName("Can parse flex flow value")
 	public void canParseFlexFlowValue() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "row",
-			(IdentToken) () -> "wrap"
+			new IdentToken("row"),
+			new IdentToken("wrap")
 		};
 
 		PropertyValueParseResult<FlexFlowValue> parseResult = parser.parse(tokens, 0, tokens.length);

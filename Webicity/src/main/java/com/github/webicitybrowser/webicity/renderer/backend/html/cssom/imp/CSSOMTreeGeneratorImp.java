@@ -49,11 +49,11 @@ public class CSSOMTreeGeneratorImp<T> implements CSSOMTreeGenerator<T> {
 	}
 
 	private void addQualifiedRuleToCSSOMNode(CSSOMNode<T, CSSRuleList> rootNode, QualifiedRule rule, int order, Source source) {
-		TokenLike[] prelude = rule.getPrelude();
+		TokenLike[] prelude = rule.prelude().toArray(TokenLike[]::new);
 		ComplexSelector[] selectors = new ComplexSelectorParser().parseMany(prelude, order, source);
 		for (ComplexSelector selector: selectors) {
 			CSSOMNode<T, CSSRuleList> targetNode = getSelectedCSSOMNode(rootNode, selector);
-			CSSRuleList properties = createCSSRuleList(rule.getValue());
+			CSSRuleList properties = createCSSRuleList(rule.value());
 			targetNode.addNodeProperties(properties);
 		}
 	}
@@ -81,7 +81,7 @@ public class CSSOMTreeGeneratorImp<T> implements CSSOMTreeGenerator<T> {
 	}
 
 	private CSSRule[] parseDeclarations(SimpleBlock value) {
-		return new CSSParserImp().parseAListOfDeclarations(value.getValue());
+		return new CSSParserImp().parseAListOfDeclarations(value.value().toArray(TokenLike[]::new));
 	}
 	
 }

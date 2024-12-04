@@ -10,6 +10,7 @@ import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
 import com.github.webicitybrowser.spec.css.parser.tokens.CDOToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.ColonToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.CommaToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.EOFToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.LCBracketToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.LParenToken;
@@ -45,60 +46,38 @@ public class TokenizerImp implements CSSTokenizer {
 		consumeComments(reader);
 		
 		int ch = reader.read();
-		switch (ch) {
-		case '\n':
-		case '\t':
-		case ' ':
-			consumeWhitespace(reader);
-			return new WhitespaceToken() {};
-		case '"':
-		case '\'':
-			return StringTokenizer.consumeString(reader, ch);
-		case '#':
-			return IdentTokenizer.consumeHashSign(reader);
-		case '(':
-			return new LParenToken() {};
-		case ')':
-			return new RParenToken() {};
-		case '+':
-			return NumberTokenizer.consumePlusSign(reader);
-		case ',':
-			return new CommaToken() {};
-		case '-':
-			return NumberTokenizer.consumeMinusSign(reader);
-		case '.':
-			return NumberTokenizer.consumeFullStopSign(reader);
-		case ':':
-			return new ColonToken() {};
-		case ';':
-			return new SemicolonToken() {};
-		case '<':
-			return consumeLessThanSign(reader);
-		case '@':
-			return IdentTokenizer.consumeCommercialAtSign(reader);
-		case '[':
-			return new LSBracketToken() {};
-		case '\\':
-			return IdentTokenizer.consumeReverseSolidusSign(reader);
-		case ']':
-			return new RSBracketToken() {};
-		case '{':
-			return new LCBracketToken() {};
-		case '}':
-			return new RCBracketToken() {};
-		case -1:
-			return new EOFToken() {};
-		default:
-			if (ASCIIUtil.isASCIIDigit(ch)) {
-				reader.unread(ch);
-				return NumberTokenizer.consumeANumericToken(reader);
-			}
-			if (IdentTokenizer.isIdentStartCodePoint(ch)) {
-				reader.unread(ch);
-				return IdentTokenizer.consumeAnIdentLikeToken(reader);
-			}
-			return SharedTokenizer.createDelimToken(ch);
+
+		if (ASCIIUtil.isASCIIDigit(ch)) {
+			reader.unread(ch);
+			return NumberTokenizer.consumeANumericToken(reader);
 		}
+		if (IdentTokenizer.isIdentStartCodePoint(ch)) {
+			reader.unread(ch);
+			return IdentTokenizer.consumeAnIdentLikeToken(reader);
+		}
+
+		return switch (ch) {
+			case '\n', '\t', ' ' -> consumeWhitespace(reader);
+			case '"', '\'' -> StringTokenizer.consumeString(reader, ch);
+			case '#' -> IdentTokenizer.consumeHashSign(reader);
+			case '(' -> new LParenToken();
+			case ')' -> new RParenToken();
+			case '+' ->NumberTokenizer.consumePlusSign(reader);
+			case ',' -> new CommaToken();
+			case '-' -> NumberTokenizer.consumeMinusSign(reader);
+			case '.' -> NumberTokenizer.consumeFullStopSign(reader);
+			case ':' -> new ColonToken();
+			case ';' -> new SemicolonToken();
+			case '<' -> consumeLessThanSign(reader);
+			case '@' -> IdentTokenizer.consumeCommercialAtSign(reader);
+			case '[' -> new LSBracketToken();
+			case '\\' -> IdentTokenizer.consumeReverseSolidusSign(reader);
+			case ']' -> new RSBracketToken();
+			case '{' -> new LCBracketToken();
+			case '}' -> new RCBracketToken();
+			case -1 -> new EOFToken();
+			default -> new DelimToken(ch);
+		};
 	}
 
 	private void consumeComments(ReaderHandle reader) throws IOException {
@@ -118,7 +97,7 @@ public class TokenizerImp implements CSSTokenizer {
 		}
 	}
 
-	private void consumeWhitespace(ReaderHandle reader) throws IOException {
+	private WhitespaceToken consumeWhitespace(ReaderHandle reader) throws IOException {
 		while (true) {
 			int ch = reader.read();
 			if (ch == -1) {
@@ -128,6 +107,8 @@ public class TokenizerImp implements CSSTokenizer {
 				break;
 			}
 		}
+
+		return new WhitespaceToken();
 	}
 	
 	private Token consumeLessThanSign(ReaderHandle reader) throws IOException {
@@ -136,14 +117,14 @@ public class TokenizerImp implements CSSTokenizer {
 		int ch3 = reader.read();
 		
 		if (ch1 == '!' && ch2 == '-' && ch3 == '-') {
-			return new CDOToken() {};
+			return new CDOToken();
 		}
 		
 		reader.unread(ch3);
 		reader.unread(ch2);
 		reader.unread(ch1);
 		
-		return SharedTokenizer.createDelimToken('<');
+		return new DelimToken('<');
 	}
 	
 }

@@ -15,7 +15,7 @@ public class ClassSelectorParser implements SelectorParser {
 	public AttributeSelector parse(TokenStream stream) throws ParseFormatException {
 		if (!(
 			stream.read() instanceof DelimToken delimToken &&
-			delimToken.getValue() == '.'
+			delimToken.value() == '.'
 		)) {
 			fail(stream);
 		}
@@ -24,7 +24,7 @@ public class ClassSelectorParser implements SelectorParser {
 		if (!(token instanceof IdentToken)) {
 			fail(stream);
 		}
-		String ident = ((IdentToken) token).getValue();
+		String ident = ((IdentToken) token).value();
 		
 		return createClassSelector(ident);
 	}

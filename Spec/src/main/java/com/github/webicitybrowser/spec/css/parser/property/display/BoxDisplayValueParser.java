@@ -26,7 +26,7 @@ public class BoxDisplayValueParser implements PropertyValueParser<DisplayValue> 
 	}
 
 	private OuterDisplayType parseOuterDisplayType(IdentToken identifier) {
-		switch (identifier.getValue()) {
+		switch (identifier.value()) {
 		case "none":
 			return OuterDisplayType.NONE;
 		case "contents":

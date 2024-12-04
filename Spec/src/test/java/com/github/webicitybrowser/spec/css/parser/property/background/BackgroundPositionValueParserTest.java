@@ -27,7 +27,7 @@ public class BackgroundPositionValueParserTest {
 	@DisplayName("Can parse position with one keyword")
 	public void canParsePositionWithOneKeyword() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "top"
+			new IdentToken("top")
 		};
 
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);
@@ -40,7 +40,7 @@ public class BackgroundPositionValueParserTest {
 	@DisplayName("Can parse position with one percentage")
 	public void canParsePositionWithOnePercentage() {
 		TokenLike[] tokens = new TokenLike[] {
-			(PercentageToken) () -> 50
+			new PercentageToken(50)
 		};
 
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);
@@ -53,8 +53,8 @@ public class BackgroundPositionValueParserTest {
 	@DisplayName("Can parse position with two keywords")
 	public void canParsePositionWithTwoKeywords() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "top",
-			(IdentToken) () -> "left"
+			new IdentToken("top"),
+			new IdentToken("left")
 		};
 
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);
@@ -67,8 +67,8 @@ public class BackgroundPositionValueParserTest {
 	@DisplayName("Can parse position with two percentages")
 	public void canParsePositionWithTwoPercentages() {
 		TokenLike[] tokens = new TokenLike[] {
-			(PercentageToken) () -> 40,
-			(PercentageToken) () -> 60
+			new PercentageToken(40),
+			new PercentageToken(60)
 		};
 
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);
@@ -81,8 +81,8 @@ public class BackgroundPositionValueParserTest {
 	@DisplayName("Can parse position with one keyword and one percentage")
 	public void canParsePositionWithOneKeywordAndOnePercentage() {
 		TokenLike[] tokens = new TokenLike[] {
-			(PercentageToken) () -> 40,
-			(IdentToken) () -> "top",
+			new PercentageToken(40),
+			new IdentToken("top"),
 		};
 
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);
@@ -95,10 +95,10 @@ public class BackgroundPositionValueParserTest {
 	@DisplayName("Can parse position with two keyword-percentage pairs")
 	public void canParsePositionWithTwoKeywordPercentagePairs() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "top",
-			(PercentageToken) () -> 40,
-			(IdentToken) () -> "right",
-			(PercentageToken) () -> 60
+			new IdentToken("top"),
+			new PercentageToken(40),
+			new IdentToken("right"),
+			new PercentageToken(60)
 		};
 
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);

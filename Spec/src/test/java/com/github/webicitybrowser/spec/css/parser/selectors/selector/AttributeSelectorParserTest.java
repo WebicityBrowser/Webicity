@@ -32,7 +32,7 @@ public class AttributeSelectorParserTest {
 		LSBracketToken leftBracketToken = Mockito.mock(LSBracketToken.class);
 		RSBracketToken rightBracketToken = Mockito.mock(RSBracketToken.class);
 		IdentToken attrNameToken = Mockito.mock(IdentToken.class);
-		Mockito.when(attrNameToken.getValue()).thenReturn("attr");
+		Mockito.when(attrNameToken.value()).thenReturn("attr");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] {
 			leftBracketToken, attrNameToken, rightBracketToken	
 		});
@@ -48,11 +48,11 @@ public class AttributeSelectorParserTest {
 		LSBracketToken leftBracketToken = Mockito.mock(LSBracketToken.class);
 		RSBracketToken rightBracketToken = Mockito.mock(RSBracketToken.class);
 		IdentToken attrNameToken = Mockito.mock(IdentToken.class);
-		Mockito.when(attrNameToken.getValue()).thenReturn("attr");
+		Mockito.when(attrNameToken.value()).thenReturn("attr");
 		IdentToken attrValueToken = Mockito.mock(IdentToken.class);
-		Mockito.when(attrValueToken.getValue()).thenReturn("val");
+		Mockito.when(attrValueToken.value()).thenReturn("val");
 		DelimToken equalsToken = Mockito.mock(DelimToken.class);
-		Mockito.when(equalsToken.getValue()).thenReturn((int) '=');
+		Mockito.when(equalsToken.value()).thenReturn((int) '=');
 		TokenStream tokenStream = new TokenStreamImp(new Token[] {
 			leftBracketToken, attrNameToken, equalsToken, attrValueToken, rightBracketToken	
 		});
@@ -68,13 +68,13 @@ public class AttributeSelectorParserTest {
 		LSBracketToken leftBracketToken = Mockito.mock(LSBracketToken.class);
 		RSBracketToken rightBracketToken = Mockito.mock(RSBracketToken.class);
 		IdentToken attrNameToken = Mockito.mock(IdentToken.class);
-		Mockito.when(attrNameToken.getValue()).thenReturn("attr");
+		Mockito.when(attrNameToken.value()).thenReturn("attr");
 		StringToken attrValueToken = Mockito.mock(StringToken.class);
-		Mockito.when(attrValueToken.getValue()).thenReturn("val");
+		Mockito.when(attrValueToken.value()).thenReturn("val");
 		DelimToken equalsToken = Mockito.mock(DelimToken.class);
-		Mockito.when(equalsToken.getValue()).thenReturn((int) '=');
+		Mockito.when(equalsToken.value()).thenReturn((int) '=');
 		DelimToken comparisonToken = Mockito.mock(DelimToken.class);
-		Mockito.when(comparisonToken.getValue()).thenReturn((int) '~');
+		Mockito.when(comparisonToken.value()).thenReturn((int) '~');
 		TokenStream tokenStream = new TokenStreamImp(new Token[] {
 			leftBracketToken, attrNameToken, comparisonToken, equalsToken, attrValueToken, rightBracketToken	
 		});

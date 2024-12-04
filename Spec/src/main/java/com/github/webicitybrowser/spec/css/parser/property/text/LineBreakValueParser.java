@@ -15,7 +15,7 @@ public class LineBreakValueParser implements PropertyValueParser<LineBreakValue>
 			return PropertyValueParseResultImp.empty();
 		}
 
-		return switch (((IdentToken) tokens[offset]).getValue()) {
+		return switch (((IdentToken) tokens[offset]).value()) {
 			case "auto" -> PropertyValueParseResultImp.of(LineBreakValue.AUTO, 1);
 			case "loose" -> PropertyValueParseResultImp.of(LineBreakValue.LOOSE, 1);
 			case "normal" -> PropertyValueParseResultImp.of(LineBreakValue.NORMAL, 1);

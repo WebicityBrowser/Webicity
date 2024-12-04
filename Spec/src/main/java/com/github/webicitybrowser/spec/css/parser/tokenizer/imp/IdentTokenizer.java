@@ -3,11 +3,12 @@ package com.github.webicitybrowser.spec.css.parser.tokenizer.imp;
 import java.io.IOException;
 
 import com.github.webicitybrowser.spec.css.parser.tokens.AtKeywordToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.FunctionToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.HashToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.HashToken.HashTypeFlag;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.Token;
-import com.github.webicitybrowser.spec.css.parser.tokens.HashToken.HashTypeFlag;
 import com.github.webicitybrowser.spec.infra.util.ASCIIUtil;
 
 public final class IdentTokenizer {
@@ -19,10 +20,10 @@ public final class IdentTokenizer {
 	public static Token consumeCommercialAtSign(ReaderHandle reader) throws IOException {
 		if (wouldStartAnIdentSequence(reader)) {
 			String value = consumeAnIdentSequence(reader);
-			return createAtKeywordToken(value);
+			return new AtKeywordToken(value);
 		}
 		
-		return SharedTokenizer.createDelimToken('@');
+		return new DelimToken('@');
 	}
 	
 	public static Token consumeReverseSolidusSign(ReaderHandle reader) throws IOException {
@@ -32,7 +33,7 @@ public final class IdentTokenizer {
 		}
 		
 		//TODO: Parse error
-		return SharedTokenizer.createDelimToken('\\');
+		return new DelimToken('\\');
 	}
 	
 	public static Token consumeHashSign(ReaderHandle reader) throws IOException {
@@ -40,7 +41,7 @@ public final class IdentTokenizer {
 			return consumeHashToken(reader);
 		}
 		
-		return SharedTokenizer.createDelimToken('#');
+		return new DelimToken('#');
 	}
 	
 	public static Token consumeAnIdentLikeToken(ReaderHandle reader) throws IOException {
@@ -52,10 +53,10 @@ public final class IdentTokenizer {
 		
 		if (reader.peek() == '(') {
 			reader.read();
-			return createFunctionToken(identName);
+			return new FunctionToken(identName);
 		}
 		
-		return createIdentToken(identName);
+		return new IdentToken(identName);
 	}
 
 	public static String consumeAnIdentSequence(ReaderHandle reader) throws IOException {
@@ -130,7 +131,7 @@ public final class IdentTokenizer {
 			(SharedTokenizer.isWhitespace(ch1) && ch2 == '"') ||
 			(SharedTokenizer.isWhitespace(ch1) && ch2 == '\'')
 		) {
-			return createFunctionToken(functionName);
+			return new FunctionToken(functionName);
 		} else {
 			return URLTokenizer.consumeAURLToken(reader);
 		}
@@ -155,35 +156,7 @@ public final class IdentTokenizer {
 			HashTypeFlag.UNRESTRICTED;
 		String value = consumeAnIdentSequence(reader);
 		
-		return createHashToken(value, flag);
-	}
-	
-	private static IdentToken createIdentToken(String value) {
-		return () -> value;
-	}
-	
-	private static FunctionToken createFunctionToken(String value) {
-		return () -> value;
-	}
-	
-	private static AtKeywordToken createAtKeywordToken(String value) {
-		return () -> value;
-	}
-	
-	private static HashToken createHashToken(String value, HashTypeFlag flag) {
-		return new HashToken() {
-			
-			@Override
-			public String getValue() {
-				return value;
-			}
-			
-			@Override
-			public HashTypeFlag getTypeFlag() {
-				return flag;
-			}
-			
-		};
+		return new HashToken(value, flag);
 	}
 	
 }

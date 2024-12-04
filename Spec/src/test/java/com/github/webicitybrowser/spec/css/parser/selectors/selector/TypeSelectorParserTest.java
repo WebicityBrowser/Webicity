@@ -27,7 +27,7 @@ public class TypeSelectorParserTest {
 	@DisplayName("Can parse element with simple name")
 	public void canParseElementWithSimpleName() {
 		IdentToken nameToken = Mockito.mock(IdentToken.class);
-		Mockito.when(nameToken.getValue()).thenReturn("name");
+		Mockito.when(nameToken.value()).thenReturn("name");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { nameToken });
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		QualifiedName name = selector.getQualifiedName();
@@ -39,9 +39,9 @@ public class TypeSelectorParserTest {
 	@DisplayName("Can parse element without namespace")
 	public void canParseElementWithoutNamespace() {
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn((int) '|');
+		Mockito.when(delimToken.value()).thenReturn((int) '|');
 		IdentToken nameToken = Mockito.mock(IdentToken.class);
-		Mockito.when(nameToken.getValue()).thenReturn("name");
+		Mockito.when(nameToken.value()).thenReturn("name");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken, nameToken });
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		QualifiedName name = selector.getQualifiedName();
@@ -53,11 +53,11 @@ public class TypeSelectorParserTest {
 	@DisplayName("Can parse element with namespace")
 	public void canParseElementWithNamespace() {
 		IdentToken namespaceToken = Mockito.mock(IdentToken.class);
-		Mockito.when(namespaceToken.getValue()).thenReturn("namespace");
+		Mockito.when(namespaceToken.value()).thenReturn("namespace");
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn((int) '|');
+		Mockito.when(delimToken.value()).thenReturn((int) '|');
 		IdentToken nameToken = Mockito.mock(IdentToken.class);
-		Mockito.when(nameToken.getValue()).thenReturn("name");
+		Mockito.when(nameToken.value()).thenReturn("name");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { namespaceToken, delimToken, nameToken });
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		QualifiedName name = selector.getQualifiedName();
@@ -69,11 +69,11 @@ public class TypeSelectorParserTest {
 	@DisplayName("Can parse element with glob namespace")
 	public void canParseElementWithGlobNamespace() {
 		DelimToken namespaceToken = Mockito.mock(DelimToken.class);
-		Mockito.when(namespaceToken.getValue()).thenReturn((int) '*');
+		Mockito.when(namespaceToken.value()).thenReturn((int) '*');
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn((int) '|');
+		Mockito.when(delimToken.value()).thenReturn((int) '|');
 		IdentToken nameToken = Mockito.mock(IdentToken.class);
-		Mockito.when(nameToken.getValue()).thenReturn("name");
+		Mockito.when(nameToken.value()).thenReturn("name");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { namespaceToken, delimToken, nameToken });
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 		QualifiedName name = selector.getQualifiedName();

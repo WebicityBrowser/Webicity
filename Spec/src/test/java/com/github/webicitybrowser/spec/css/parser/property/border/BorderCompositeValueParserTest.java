@@ -27,9 +27,9 @@ public class BorderCompositeValueParserTest {
 	@DisplayName("Can parse composite border value")
 	public void canParseCompositeBorderValue() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "solid",
-			(IdentToken) () -> "thin",
-			(IdentToken) () -> "rebeccapurple"
+			new IdentToken("solid"),
+			new IdentToken("thin"),
+			new IdentToken("rebeccapurple")
 		};
 
 		PropertyValueParseResult<BorderCompositeValue> parseResult = parser.parse(tokens, 0, tokens.length);

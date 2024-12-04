@@ -27,7 +27,7 @@ public class InnerOuterDisplayValueParser implements PropertyValueParser<Display
 	}
 
 	private OuterDisplayType parseOuterDisplayTypeSingle(IdentToken identifier) {
-		switch (identifier.getValue()) {
+		switch (identifier.value()) {
 		case "inline":
 		case "inline-block":
 			return OuterDisplayType.INLINE;
@@ -40,7 +40,7 @@ public class InnerOuterDisplayValueParser implements PropertyValueParser<Display
 	}
 
 	private InnerDisplayType parseInnerDisplayTypeSingle(IdentToken identToken) {
-		switch (identToken.getValue()) {
+		switch (identToken.value()) {
 		case "block":
 		case "inline":
 			return InnerDisplayType.FLOW;

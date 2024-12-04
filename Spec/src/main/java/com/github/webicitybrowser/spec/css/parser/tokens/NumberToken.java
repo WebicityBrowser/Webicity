@@ -1,9 +1,11 @@
 package com.github.webicitybrowser.spec.css.parser.tokens;
 
-public interface NumberToken extends Token {
+public record NumberToken(Number value, NumberTypeFlag typeFlag) implements Token {
 
-	Number getValue();
-
-	NumberTypeFlag getTypeFlag();
+	public NumberToken(Number value) {
+		this(
+			value,
+			value instanceof Integer ? NumberTypeFlag.INTEGER : NumberTypeFlag.NUMBER);
+	}
 	
 }

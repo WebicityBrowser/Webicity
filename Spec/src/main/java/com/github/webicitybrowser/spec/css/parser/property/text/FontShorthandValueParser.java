@@ -35,7 +35,7 @@ public class FontShorthandValueParser implements PropertyValueParser<FontValue> 
 			if (
 				(offset + usedLength) < tokens.length &&
 				tokens[offset + usedLength] instanceof DelimToken delimToken &&
-				delimToken.getValue() == '/'
+				delimToken.value() == '/'
 			) {
 				usedLength++;
 				

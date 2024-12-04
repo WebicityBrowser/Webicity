@@ -15,7 +15,7 @@ public class FlexDirectionValueParser implements PropertyValueParser<FlexDirecti
 			return PropertyValueParseResultImp.empty();
 		}
 
-		return switch (((IdentToken) tokens[offset]).getValue()) {
+		return switch (((IdentToken) tokens[offset]).value()) {
 			case "row" -> PropertyValueParseResultImp.of(FlexDirectionValue.ROW, 1);
 			case "row-reverse" -> PropertyValueParseResultImp.of(FlexDirectionValue.ROW_REVERSE, 1);
 			case "column" -> PropertyValueParseResultImp.of(FlexDirectionValue.COLUMN, 1);

@@ -122,7 +122,7 @@ public class ComplexSelectorParser {
 	private boolean isDelimiterToken(TokenLike token, int ch) {
 		return
 			token instanceof DelimToken delimToken &&
-			delimToken.getValue() == ch;
+			delimToken.value() == ch;
 	}
 	
 	private void throwOutBadRule(TokenStream stream) {

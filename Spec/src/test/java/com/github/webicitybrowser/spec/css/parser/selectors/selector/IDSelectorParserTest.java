@@ -24,7 +24,7 @@ public class IDSelectorParserTest {
 	@Test
 	@DisplayName("Can parse ID selector")
 	public void canParseIDSelector() {
-		HashToken hashToken = HashToken.create("test", HashTypeFlag.ID);
+		HashToken hashToken = new HashToken("test", HashTypeFlag.ID);
 		TokenStream tokenStream = new TokenStreamImp(new Token[] {
 			hashToken
 		});

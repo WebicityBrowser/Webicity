@@ -15,7 +15,7 @@ public class FlexBasisValueParser implements PropertyValueParser<CSSValue> {
 
 	@Override
 	public PropertyValueParseResult<CSSValue> parse(TokenLike[] tokens, int offset, int length) {
-		if (offset > 0 && tokens[offset]  instanceof IdentToken identToken && identToken.getValue().equals("content")) {
+		if (offset > 0 && tokens[offset]  instanceof IdentToken identToken && identToken.value().equals("content")) {
 			return PropertyValueParseResultImp.of(new AutoValue(), 1);
 		}
 

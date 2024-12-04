@@ -15,7 +15,7 @@ public class LetterSpacingValueParser implements PropertyValueParser<CSSValue> {
 
 	@Override
 	public PropertyValueParseResult<CSSValue> parse(TokenLike[] tokens, int offset, int length) {
-		if (length > 0 && tokens[offset] instanceof IdentToken && ((IdentToken) tokens[offset]).getValue().equals("normal")) {
+		if (length > 0 && tokens[offset] instanceof IdentToken && ((IdentToken) tokens[offset]).value().equals("normal")) {
 			return PropertyValueParseResultImp.of(AbsoluteLengthValue.of(0, "px"), 1);
 		}
 

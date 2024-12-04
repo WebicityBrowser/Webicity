@@ -23,7 +23,7 @@ public class EnumParser<T extends CSSValue> implements PropertyValueParser<T> {
 			return PropertyValueParseResultImp.empty();
 		}
 
-		String name = ((IdentToken) tokens[offset]).getValue();
+		String name = ((IdentToken) tokens[offset]).value();
 		for (int i = 0; i < names.length; i++) {
 			if (names[i].equals(name)) {
 				return PropertyValueParseResultImp.of(values[i], 1);

@@ -1,5 +1,5 @@
 package com.github.webicitybrowser.spec.css.parser.tokens;
 
-public interface LSBracketToken extends Token {
+public record LSBracketToken() implements Token {
 
 }

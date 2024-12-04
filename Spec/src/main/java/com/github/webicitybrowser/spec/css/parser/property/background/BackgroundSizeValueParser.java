@@ -38,9 +38,9 @@ public class BackgroundSizeValueParser implements PropertyValueParser<Background
 			if (length < 1) return PropertyValueParseResultImp.empty();
 
 			if (tokens[offset] instanceof IdentToken identToken) {
-				if (identToken.getValue().equals("cover")) {
+				if (identToken.value().equals("cover")) {
 					return PropertyValueParseResultImp.of(new CoverBackgroundSizeValue(), 1);
-				} else if (identToken.getValue().equals("contain")) {
+				} else if (identToken.value().equals("contain")) {
 					return PropertyValueParseResultImp.of(new ContainBackgroundSizeValue(), 1);
 				}
 			}
@@ -64,7 +64,7 @@ public class BackgroundSizeValueParser implements PropertyValueParser<Background
 
 		private PropertyValueParseResult<CSSValue> parseComponent(TokenLike[] tokens, int offset, int length) {
 			if (length < 1) return PropertyValueParseResultImp.empty();
-			if (tokens[offset] instanceof IdentToken identToken && identToken.getValue().equals("auto")) {
+			if (tokens[offset] instanceof IdentToken identToken && identToken.value().equals("auto")) {
 				return PropertyValueParseResultImp.of(new AutoValue(), 1);
 			} else {
 				return lengthPercentageValueParser.parse(tokens, offset, length).as(CSSValue.class);

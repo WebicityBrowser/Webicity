@@ -40,17 +40,17 @@ public class BackgroundRepeatValueParser implements PropertyValueParser<Backgrou
 
 			IdentToken firstToken = (IdentToken) tokens[offset];
 			if (isSingleComponent(firstToken)) {
-				return firstToken.getValue().equals("repeat-x")
+				return firstToken.value().equals("repeat-x")
 					? PropertyValueParseResultImp.of(new BackgroundRepeatValue(RepeatStyle.REPEAT, RepeatStyle.NO_REPEAT), 1)
 					: PropertyValueParseResultImp.of(new BackgroundRepeatValue(RepeatStyle.NO_REPEAT, RepeatStyle.REPEAT), 1);
 			}
 
-			RepeatStyle firstStyle = repeatStyleMap.get(firstToken.getValue());
+			RepeatStyle firstStyle = repeatStyleMap.get(firstToken.value());
 			if (firstStyle == null) return PropertyValueParseResultImp.empty();
 
 			boolean hasTwoTokens = length >= 2 && tokens[offset + 1] instanceof IdentToken;
 			if (hasTwoTokens && isSecondComponent((IdentToken) tokens[offset + 1])) {
-				RepeatStyle secondStyle = repeatStyleMap.get(((IdentToken) tokens[offset + 1]).getValue());
+				RepeatStyle secondStyle = repeatStyleMap.get(((IdentToken) tokens[offset + 1]).value());
 				return PropertyValueParseResultImp.of(new BackgroundRepeatValue(firstStyle, secondStyle), 2);
 			}
 			
@@ -58,12 +58,12 @@ public class BackgroundRepeatValueParser implements PropertyValueParser<Backgrou
 		}
 
 		private boolean isSingleComponent(IdentToken firstToken) {
-			return firstToken.getValue().equals("repeat-x")
-				|| firstToken.getValue().equals("repeat-y");
+			return firstToken.value().equals("repeat-x")
+				|| firstToken.value().equals("repeat-y");
 		}
 
 		private boolean isSecondComponent(IdentToken secondToken) {
-			return repeatStyleMap.containsKey(secondToken.getValue());
+			return repeatStyleMap.containsKey(secondToken.value());
 		}
 		
 	}

@@ -15,7 +15,7 @@ public class FlexJustifyContentValueParser implements PropertyValueParser<FlexJu
 			return PropertyValueParseResultImp.empty();
 		}
 
-		String value = ((IdentToken) tokens[offset]).getValue();
+		String value = ((IdentToken) tokens[offset]).value();
 		return switch (value) {
 			case "center" -> PropertyValueParseResultImp.of(FlexJustifyContentValue.CENTER, 1);
 			case "flex-end" -> PropertyValueParseResultImp.of(FlexJustifyContentValue.FLEX_END, 1);

@@ -24,7 +24,7 @@ public class BorderStyleValueParserTest {
 	@DisplayName("Can parse named border style value")
 	public void canParseNamedBorderStyleValue() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "dashed"
+			new IdentToken("dashed")
 		};
 
 		PropertyValueParseResult<BorderStyleValue> parseResult = borderStyleValueParser.parse(tokens, 0, 1);
@@ -36,7 +36,7 @@ public class BorderStyleValueParserTest {
 	@DisplayName("Can't parse invalid named border style value")
 	public void canNotParseInvalidNamedBorderStyleValue() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "invalid"
+			new IdentToken("invalid")
 		};
 
 		PropertyValueParseResult<BorderStyleValue> parseResult = borderStyleValueParser.parse(tokens, 0, 1);

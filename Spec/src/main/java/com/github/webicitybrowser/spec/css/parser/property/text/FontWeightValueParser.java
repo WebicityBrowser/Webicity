@@ -29,11 +29,11 @@ public class FontWeightValueParser implements PropertyValueParser<FontWeightValu
 
 	private FontWeightValue parseFontWeightValue(TokenLike token) {
 		if (token instanceof NumberToken) {
-			int value = ((NumberToken) token).getValue().intValue();
+			int value = ((NumberToken) token).value().intValue();
 			if (value < 1 || value > 1000) return null;
 			return _1 -> value;
 		} else if (token instanceof IdentToken IdentToken) {
-			switch (IdentToken.getValue()) {
+			switch (IdentToken.value()) {
 			case "normal":
 				return _1 -> NORMAL;
 			case "bold":

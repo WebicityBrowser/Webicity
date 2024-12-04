@@ -21,10 +21,10 @@ public class LineHeightValueParser implements PropertyValueParser<CSSValue>	 {
 			return PropertyValueParseResultImp.empty();
 		}
 
-		if (tokens[offset] instanceof IdentToken identToken && identToken.getValue().equals("normal")) {
+		if (tokens[offset] instanceof IdentToken identToken && identToken.value().equals("normal")) {
 			return PropertyValueParseResultImp.of(new AutoValue(), 1);
 		} else if (tokens[offset] instanceof NumberToken numberToken) {
-			return PropertyValueParseResultImp.of((NumberValue) () -> numberToken.getValue(), 1);
+			return PropertyValueParseResultImp.of((NumberValue) () -> numberToken.value(), 1);
 		}
 
 		return lengthPercentageValueParser.parse(tokens, offset, 1);

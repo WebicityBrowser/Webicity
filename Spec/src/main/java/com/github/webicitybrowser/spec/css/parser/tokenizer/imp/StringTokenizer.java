@@ -18,17 +18,17 @@ public final class StringTokenizer {
 			switch(ch) {
 			case -1:
 				// TODO: Parse error
-				return createStringToken(value.toString());
+				return new StringToken(value.toString());
 			case '\n':
 				// TODO: Parse error
 				reader.unread(ch);
-				return new BadStringToken() {};
+				return new BadStringToken();
 			case '\\':
 				appendEscapedCodepoint(reader, value);
 				break;
 			default:
 				if (ch == endingCodePoint) {
-					return createStringToken(value.toString());
+					return new StringToken(value.toString());
 				}
 				value.appendCodePoint(ch);
 			}
@@ -42,10 +42,6 @@ public final class StringTokenizer {
 		}
 		reader.unread(ch2);
 		value.appendCodePoint(SharedTokenizer.consumeAnEscapedCodePoint(reader));
-	}
-
-	private static StringToken createStringToken(String value) {
-		return () -> value;
 	}
 	
 }

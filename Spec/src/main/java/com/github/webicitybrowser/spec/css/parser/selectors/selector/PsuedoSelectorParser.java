@@ -21,7 +21,7 @@ public class PsuedoSelectorParser implements SelectorParser {
 		if (!(token instanceof IdentToken)) {
 			fail(stream);
 		}
-		String ident = ((IdentToken) token).getValue();
+		String ident = ((IdentToken) token).value();
 
 		return switch (ident) {
 			case "root" -> new RootSelector() {};

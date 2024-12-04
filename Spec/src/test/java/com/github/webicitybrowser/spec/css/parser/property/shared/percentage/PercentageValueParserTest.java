@@ -22,7 +22,7 @@ public class PercentageValueParserTest {
 	@Test
 	@DisplayName("Can parse percentage")
 	public void canParsePercentage() {
-		TokenLike[] tokens = new TokenLike[] { (PercentageToken) () -> 100 };
+		TokenLike[] tokens = new TokenLike[] { new PercentageToken(100) };
 		PropertyValueParseResult<PercentageValue> result = percentageValueParser.parse(tokens, 0, 1);
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertEquals(1, result.getLength());

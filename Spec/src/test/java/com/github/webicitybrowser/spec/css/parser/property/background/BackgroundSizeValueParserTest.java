@@ -29,7 +29,7 @@ public class BackgroundSizeValueParserTest {
 	@DisplayName("Can parse well-defined background size")
 	public void canParseWellDefinedBackgroundSize() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "cover"
+			new IdentToken("cover")
 		};
 		
 		PropertyValueParseResult<BackgroundSizeValue> parseResult = bgSizeValueParser.parse(tokens, 0, tokens.length);
@@ -41,8 +41,8 @@ public class BackgroundSizeValueParserTest {
 	@DisplayName("Can parse background size with percentage and auto components")
 	public void canParseBackgroundSizeWithPercentageAndAutoComponents() {
 		TokenLike[] tokens = new TokenLike[] {
-			(PercentageToken) () -> 50,
-			(IdentToken) () -> "auto"
+			new PercentageToken(50),
+			new IdentToken("auto")
 		};
 		
 		PropertyValueParseResult<BackgroundSizeValue> parseResult = bgSizeValueParser.parse(tokens, 0, tokens.length);
@@ -59,7 +59,7 @@ public class BackgroundSizeValueParserTest {
 	@DisplayName("Can parse background size with collapsed component")
 	public void canParseBackgroundSizeWithCollapsedComponent() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "auto"
+			new IdentToken("auto")
 		};
 		
 		PropertyValueParseResult<BackgroundSizeValue> parseResult = bgSizeValueParser.parse(tokens, 0, tokens.length);

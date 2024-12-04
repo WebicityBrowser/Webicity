@@ -67,7 +67,7 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(StringToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals("Hello, World!", ((StringToken) tokens[0]).getValue());
+		Assertions.assertEquals("Hello, World!", ((StringToken) tokens[0]).value());
 	}
 	
 	@Test
@@ -78,7 +78,7 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(StringToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals("\"\uABCD", ((StringToken) tokens[0]).getValue());
+		Assertions.assertEquals("\"\uABCD", ((StringToken) tokens[0]).value());
 	}
 	
 	@Test
@@ -89,7 +89,7 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(StringToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals("Hello, World!", ((StringToken) tokens[0]).getValue());
+		Assertions.assertEquals("Hello, World!", ((StringToken) tokens[0]).value());
 	}
 	
 	@Test
@@ -100,8 +100,8 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(HashToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals("hello", ((HashToken) tokens[0]).getValue());
-		Assertions.assertEquals(HashTypeFlag.ID, ((HashToken) tokens[0]).getTypeFlag());
+		Assertions.assertEquals("hello", ((HashToken) tokens[0]).value());
+		Assertions.assertEquals(HashTypeFlag.ID, ((HashToken) tokens[0]).typeFlag());
 	}
 	
 	@Test
@@ -112,8 +112,8 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(NumberToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals(123, ((NumberToken) tokens[0]).getValue());
-		Assertions.assertEquals(NumberTypeFlag.INTEGER, ((NumberToken) tokens[0]).getTypeFlag());
+		Assertions.assertEquals(123, ((NumberToken) tokens[0]).value());
+		Assertions.assertEquals(NumberTypeFlag.INTEGER, ((NumberToken) tokens[0]).typeFlag());
 	}
 	
 	@Test
@@ -124,8 +124,8 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(NumberToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals(-1.5e3, ((NumberToken) tokens[0]).getValue());
-		Assertions.assertEquals(NumberTypeFlag.NUMBER, ((NumberToken) tokens[0]).getTypeFlag());
+		Assertions.assertEquals(-1.5e3, ((NumberToken) tokens[0]).value());
+		Assertions.assertEquals(NumberTypeFlag.NUMBER, ((NumberToken) tokens[0]).typeFlag());
 	}
 	
 	@Test
@@ -136,8 +136,8 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(NumberToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals(.5, ((NumberToken) tokens[0]).getValue());
-		Assertions.assertEquals(NumberTypeFlag.NUMBER, ((NumberToken) tokens[0]).getTypeFlag());
+		Assertions.assertEquals(.5, ((NumberToken) tokens[0]).value());
+		Assertions.assertEquals(NumberTypeFlag.NUMBER, ((NumberToken) tokens[0]).typeFlag());
 	}
 	
 	@Test
@@ -148,9 +148,9 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(DimensionToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals(5, ((DimensionToken) tokens[0]).getValue());
-		Assertions.assertEquals(NumberTypeFlag.INTEGER, ((DimensionToken) tokens[0]).getTypeFlag());
-		Assertions.assertEquals("px", ((DimensionToken) tokens[0]).getUnit());
+		Assertions.assertEquals(5, ((DimensionToken) tokens[0]).value());
+		Assertions.assertEquals(NumberTypeFlag.INTEGER, ((DimensionToken) tokens[0]).typeFlag());
+		Assertions.assertEquals("px", ((DimensionToken) tokens[0]).unit());
 	}
 	
 	@Test
@@ -161,7 +161,7 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(PercentageToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals(9, ((PercentageToken) tokens[0]).getValue());
+		Assertions.assertEquals(9, ((PercentageToken) tokens[0]).value());
 	}
 	
 	@Test
@@ -192,7 +192,7 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(IdentToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals("--hello", ((IdentToken) tokens[0]).getValue());
+		Assertions.assertEquals("--hello", ((IdentToken) tokens[0]).value());
 	}
 	
 	@Test
@@ -203,7 +203,7 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(FunctionToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals("calc", ((FunctionToken) tokens[0]).getValue());
+		Assertions.assertEquals("calc", ((FunctionToken) tokens[0]).value());
 	}
 	
 	@Test
@@ -214,7 +214,7 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(URLToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals("https://google.com/", ((URLToken) tokens[0]).getValue());
+		Assertions.assertEquals("https://google.com/", ((URLToken) tokens[0]).value());
 	}
 	
 	@Test
@@ -225,7 +225,7 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(AtKeywordToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals("media", ((AtKeywordToken) tokens[0]).getValue());
+		Assertions.assertEquals("media", ((AtKeywordToken) tokens[0]).value());
 	}
 	
 	@Test
@@ -236,7 +236,7 @@ public class CSSTokenizerTest {
 		Assertions.assertEquals(2, tokens.length);
 		Assertions.assertInstanceOf(IdentToken.class, tokens[0]);
 		Assertions.assertInstanceOf(EOFToken.class, tokens[1]);
-		Assertions.assertEquals("{hello", ((IdentToken) tokens[0]).getValue());
+		Assertions.assertEquals("{hello", ((IdentToken) tokens[0]).value());
 	}
 	
 	//

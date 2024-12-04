@@ -24,7 +24,7 @@ public class BackgroundRepeatValueParserTest {
 	@DisplayName("Can parse single-component repeat value")
 	public void canParseSingleComponentRepeatValue() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "repeat-x"
+			new IdentToken("repeat-x")
 		};
 
 		PropertyValueParseResult<BackgroundRepeatValue> parseResult = bgRepeatValueParser.parse(tokens, 0, tokens.length);
@@ -37,8 +37,8 @@ public class BackgroundRepeatValueParserTest {
 	@DisplayName("Can parse double-component repeat value")
 	public void canParseDoubleComponentRepeatValue() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "no-repeat",
-			(IdentToken) () -> "space"
+			new IdentToken("no-repeat"),
+			new IdentToken("space")
 		};
 
 		PropertyValueParseResult<BackgroundRepeatValue> parseResult = bgRepeatValueParser.parse(tokens, 0, tokens.length);
@@ -51,7 +51,7 @@ public class BackgroundRepeatValueParserTest {
 	@DisplayName("Can parse collapsed double-component repeat value")
 	public void canParseCollapsedDoubleComponentRepeatValue() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "round"
+			new IdentToken("round")
 		};
 
 		PropertyValueParseResult<BackgroundRepeatValue> parseResult = bgRepeatValueParser.parse(tokens, 0, tokens.length);

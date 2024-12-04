@@ -111,7 +111,7 @@ public class CSSParserImp implements CSSParser {
 	}
 
 	private Declaration consumeADeclaration(TokenStream stream) {
-		String name = ((IdentToken) stream.read()).getValue();
+		String name = ((IdentToken) stream.read()).value();
 		List<TokenLike> value = new ArrayList<>();
 		boolean important = false;
 		consumeWhitespace(stream);
@@ -127,7 +127,7 @@ public class CSSParserImp implements CSSParser {
 		while (!value.isEmpty() && value.get(value.size() - 1) instanceof WhitespaceToken) {
 			value.remove(value.size() - 1);
 		}
-		return createDeclaration(name, value, important);
+		return new Declaration(name, value.toArray(TokenLike[]::new), important);
 	}
 
 	private void consumeWhitespace(TokenStream stream) {
@@ -147,16 +147,16 @@ public class CSSParserImp implements CSSParser {
 		while (true) {
 			TokenLike token = stream.read();
 			if (token instanceof SemicolonToken) {
-				return createAtRule(atToken.getValue(), prelude, null);
+				return new AtRule(atToken.value(), prelude, null);
 			} else if (token instanceof EOFToken) {
 				// TODO: Parse Error
-				return createAtRule(atToken.getValue(), prelude, null);
+				return new AtRule(atToken.value(), prelude, null);
 			} else if (token instanceof LCBracketToken) {
 				SimpleBlock value = consumeASimpleBlock(stream, (Token) token);
-				return createAtRule(atToken.getValue(), prelude, value);
-			} else if (token instanceof SimpleBlock && ((SimpleBlock) token).getType() instanceof LCBracketToken) {
+				return new AtRule(atToken.value(), prelude, value);
+			} else if (token instanceof SimpleBlock && ((SimpleBlock) token).type() instanceof LCBracketToken) {
 				SimpleBlock value = (SimpleBlock) token;
-				return createAtRule(atToken.getValue(), prelude, value);
+				return new AtRule(atToken.value(), prelude, value);
 			} else {
 				stream.unread();
 				prelude.add(consumeAComponentValue(stream));
@@ -173,10 +173,10 @@ public class CSSParserImp implements CSSParser {
 				return null;
 			} else if (token instanceof LCBracketToken) {
 				SimpleBlock value = consumeASimpleBlock(stream, (Token) token);
-				return createQualifiedRule(prelude, value);
-			} else if (token instanceof SimpleBlock && ((SimpleBlock) token).getType() instanceof LCBracketToken) {
+				return new QualifiedRule(prelude, value);
+			} else if (token instanceof SimpleBlock && ((SimpleBlock) token).type() instanceof LCBracketToken) {
 				SimpleBlock value = (SimpleBlock) token;
-				return createQualifiedRule(prelude, value);
+				return new QualifiedRule(prelude, value);
 			} else {
 				stream.unread();
 				prelude.add(consumeAComponentValue(stream));
@@ -190,10 +190,10 @@ public class CSSParserImp implements CSSParser {
 		while (true) {
 			TokenLike token = stream.read();
 			if (isCloseToken(type, token)) {
-				return createSimpleBlock(type, value);
+				return new SimpleBlock(type, value);
 			} else if (token instanceof EOFToken) {
 				// TODO: Parse Error
-				return createSimpleBlock(type, value);
+				return new SimpleBlock(type, value);
 			} else {
 				stream.unread();
 				value.add(consumeAComponentValue(stream));
@@ -218,105 +218,15 @@ public class CSSParserImp implements CSSParser {
 		while (true) {
 			TokenLike token = stream.read();
 			if (token instanceof RParenToken) {
-				return createFunction(functionToken.getValue(), value);
+				return new FunctionValue(functionToken.value(), value.toArray(TokenLike[]::new));
 			} else if (token instanceof EOFToken) {
 				// TODO: Parse Error
-				return createFunction(functionToken.getValue(), value);
+				return new FunctionValue(functionToken.value(), value.toArray(TokenLike[]::new));
 			} else {
 				stream.unread();
 				value.add(consumeAComponentValue(stream));
 			}
 		}
-	}
-	
-	private Declaration createDeclaration(String name, List<TokenLike> valueList, boolean important) {
-		TokenLike[] value = valueList.toArray(new TokenLike[valueList.size()]);
-		
-		return new Declaration() {
-			@Override
-			public String getName() {
-				return name;
-			}
-			
-			@Override
-			public TokenLike[] getValue() {
-				return value;
-			}
-			
-			@Override
-			public boolean isImportant() {
-				return important;
-			}
-		};
-	}
-	
-	private CSSRule createAtRule(String name, List<TokenLike> preludeList, SimpleBlock value) {
-		TokenLike[] prelude = preludeList.toArray(new TokenLike[preludeList.size()]);
-		
-		return new AtRule() {
-			@Override
-			public String getName() {
-				return name;
-			}
-			
-			@Override
-			public TokenLike[] getPrelude() {
-				return prelude;
-			}
-			
-			@Override
-			public SimpleBlock getValue() {
-				return value;
-			}
-		};
-	}
-	
-	private CSSRule createQualifiedRule(List<TokenLike> preludeList, SimpleBlock value) {
-		TokenLike[] prelude = preludeList.toArray(new TokenLike[preludeList.size()]);
-		
-		return new QualifiedRule() {
-			@Override
-			public TokenLike[] getPrelude() {
-				return prelude;
-			}
-			
-			@Override
-			public SimpleBlock getValue() {
-				return value;
-			}
-		};
-	}
-	
-	private SimpleBlock createSimpleBlock(Token type, List<TokenLike> valueList) {
-		TokenLike[] value = valueList.toArray(new TokenLike[valueList.size()]);
-		
-		return new SimpleBlock() {
-			@Override
-			public Token getType() {
-				return type;
-			}
-
-			@Override
-			public TokenLike[] getValue() {
-				return value;
-			}
-		};
-	}
-	
-	private TokenLike createFunction(String name, List<TokenLike> valueList) {
-		TokenLike[] value = valueList.toArray(new TokenLike[valueList.size()]);
-		
-		return new FunctionValue() {
-			@Override
-			public TokenLike[] getValue() {
-				return value;
-			}
-			
-			@Override
-			public String getName() {
-				return name;
-			}
-		};
 	}
 
 

@@ -23,7 +23,7 @@ public class TokenStreamImp implements TokenStream {
 	@Override
 	public TokenLike read() {
 		if (position >= tokens.length) {
-			return new EOFToken() {};
+			return new EOFToken();
 		}
 		return tokens[position++];
 	}
@@ -36,7 +36,7 @@ public class TokenStreamImp implements TokenStream {
 	@Override
 	public TokenLike peek() {
 		if (position >= tokens.length) {
-			return new EOFToken() {};
+			return new EOFToken();
 		}
 		return tokens[position];
 	}

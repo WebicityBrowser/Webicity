@@ -15,7 +15,7 @@ public class FlexFactorValueParser implements PropertyValueParser<FlexFactorValu
 			return PropertyValueParseResultImp.empty();
 		}
 
-		float flexFactor = ((NumberToken) tokens[offset]).getValue().floatValue();
+		float flexFactor = ((NumberToken) tokens[offset]).value().floatValue();
 		return PropertyValueParseResultImp.of(new FlexFactorValue(flexFactor), 1);
 	}
 

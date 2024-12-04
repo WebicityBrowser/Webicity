@@ -23,7 +23,7 @@ public class ClearValueParserTest {
 	@DisplayName("Can parse clear value")
 	public void canParseClearValue() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "left"
+			new IdentToken("left")
 		};
 
 		PropertyValueParseResult<ClearValue> parseResult = clearValueParser.parse(tokens, 0, tokens.length);

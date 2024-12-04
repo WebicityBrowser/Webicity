@@ -15,7 +15,7 @@ public class IDSelectorParser implements SelectorParser {
 		if (!(token instanceof HashToken)) {
 			fail(stream);
 		}
-		String ident = ((HashToken) token).getValue();
+		String ident = ((HashToken) token).value();
 		
 		return () -> ident;
 	}

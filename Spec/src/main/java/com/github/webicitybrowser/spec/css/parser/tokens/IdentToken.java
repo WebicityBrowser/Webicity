@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.spec.css.parser.tokens;
 
-public interface IdentToken extends Token {
-
-	String getValue();
+public record IdentToken(String value) implements Token {
 	
 }

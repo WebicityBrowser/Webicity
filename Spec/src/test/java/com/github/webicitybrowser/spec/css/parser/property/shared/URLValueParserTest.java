@@ -25,7 +25,7 @@ public class URLValueParserTest {
 	@Test
 	@DisplayName("Can parse URL with URL-token")
 	public void canParseURLWithUrlToken() {
-		TokenLike[] tokens = new TokenLike[] { (URLToken) () -> "https://example.com" };
+		TokenLike[] tokens = new TokenLike[] { new URLToken("https://example.com") };
 		PropertyValueParseResult<URLValue> result = urlValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertEquals("https://example.com", result.getResult().get().url());
@@ -35,9 +35,9 @@ public class URLValueParserTest {
 	@DisplayName("Can parse URL with string")
 	public void canParseURLWithString() {
 		TokenLike[] tokens = new TokenLike[] {
-			(FunctionToken) () -> "url",
-			(StringToken) () -> "https://example.com",
-			new RParenToken() {}
+			new FunctionToken("url"),
+			new StringToken("https://example.com"),
+			new RParenToken()
 		};
 		PropertyValueParseResult<URLValue> result = urlValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(result.getResult().isPresent());

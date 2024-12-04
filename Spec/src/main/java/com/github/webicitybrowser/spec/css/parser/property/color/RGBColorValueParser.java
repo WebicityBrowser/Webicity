@@ -24,11 +24,11 @@ public class RGBColorValueParser implements PropertyValueParser<ColorValue> {
 		}
 
 		FunctionValue functionValue = (FunctionValue) tokens[offset];
-		if (!(functionValue.getName().equals("rgb") || functionValue.getName().equals("rgba"))) {
+		if (!(functionValue.name().equals("rgb") || functionValue.name().equals("rgba"))) {
 			return PropertyValueParseResultImp.empty();
 		}
 
-		TokenLike[] valueTokens = TokenUtils.stripWhitespace(functionValue.getValue());
+		TokenLike[] valueTokens = TokenUtils.stripWhitespace(functionValue.value());
 		TokenStream stream = new TokenStreamImp(valueTokens, offset);
 		
 		float[] rgbComponents = parseRGBComponents(stream);
@@ -40,7 +40,7 @@ public class RGBColorValueParser implements PropertyValueParser<ColorValue> {
 
 		float alphaComponent = 255;
 		if (!(stream.peek() instanceof EOFToken)) {
-			if ((stream.peek() instanceof DelimToken delimToken && delimToken.getValue() == '/') || stream.peek() instanceof CommaToken) {
+			if ((stream.peek() instanceof DelimToken delimToken && delimToken.value() == '/') || stream.peek() instanceof CommaToken) {
 				stream.read();
 			}
 			alphaComponent = parseAlphaComponent(stream.read());
@@ -107,7 +107,7 @@ public class RGBColorValueParser implements PropertyValueParser<ColorValue> {
 
 	private float parseNumberComponent(TokenLike component, float maxValue) {
 		if (component instanceof NumberToken numberToken) {
-			float value = numberToken.getValue().floatValue();
+			float value = numberToken.value().floatValue();
 			if (value < 0 || value > maxValue) {
 				return -1;
 			}
@@ -119,7 +119,7 @@ public class RGBColorValueParser implements PropertyValueParser<ColorValue> {
 
 	private float parsePercentageComponent(TokenLike component) {
 		if (component instanceof PercentageToken percentageToken) {
-			float value = percentageToken.getValue().floatValue();
+			float value = percentageToken.value().floatValue();
 			if (value < 0 || value > 100) {
 				return -1;
 			}

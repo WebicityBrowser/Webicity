@@ -46,7 +46,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Ident token creates type selector")
 	public void identTokenCreatesTypeSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "hi"
+			new IdentToken("hi")
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);
@@ -61,7 +61,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Two subsequent ident tokens discarded")
 	public void twoSubsequentIdentTokensDiscarded() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "hi", (IdentToken) () -> "hi"
+			new IdentToken("hi"), new IdentToken("hi")
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(0, selectors.length);
@@ -71,7 +71,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Two comma delimited ident tokens create type selectors")
 	public void twoCommaDelimitedIdentTokensCreateTypeSelectors() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "hi", new CommaToken() {}, (IdentToken) () -> "bye"
+			new IdentToken("hi"), new CommaToken(), new IdentToken("bye")
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(2, selectors.length);
@@ -94,7 +94,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Ident token with whitespace creates type selector")
 	public void identTokenWithWhitespaceCreatesTypeSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			new WhitespaceToken() {}, (IdentToken) () -> "hi", new WhitespaceToken() {}
+			new WhitespaceToken(), new IdentToken("hi"), new WhitespaceToken()
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);
@@ -109,7 +109,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Dot delim token creates class selector")
 	public void dotDelimTokenCreatesClassSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			(DelimToken) () -> '.', (IdentToken) () -> "hi"
+			new DelimToken('.'), new IdentToken("hi")
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);
@@ -124,7 +124,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Pound delim token creates ID selector")
 	public void poundDelimTokenCreatesIDSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			HashToken.create("hi", HashTypeFlag.ID)
+			new HashToken("hi", HashTypeFlag.ID)
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);
@@ -139,7 +139,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Colon creates psuedo selector")
 	public void colonCreatesPsuedoSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			new ColonToken() {}, (IdentToken) () -> "root"
+			new ColonToken(), new IdentToken("root")
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);
@@ -152,7 +152,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Left square bracket token creates attribute selector")
 	public void leftSquareBracketTokenCreatesAttributeSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			new LSBracketToken() {}, (IdentToken) () -> "hi", new RSBracketToken() {}
+			new LSBracketToken(), new IdentToken("hi"), new RSBracketToken()
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);
@@ -167,7 +167,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Two subsequent dot delim tokens creates multi-class selector")
 	public void twoSubsequentDotDelimTokensCreatesMultiClassSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			(DelimToken) () -> '.', (IdentToken) () -> "hi", (DelimToken) () -> '.', (IdentToken) () -> "bye"
+			new DelimToken('.'), new IdentToken("hi"), new DelimToken('.'), new IdentToken("bye")
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);
@@ -187,8 +187,8 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Two subsequent left square bracket tokens creates multi-attribute selector")
 	public void twoSubsequentLeftSquareBracketTokensCreatesMultiAttributeSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			new LSBracketToken() {}, (IdentToken) () -> "hi", new RSBracketToken() {},
-			new LSBracketToken() {}, (IdentToken) () -> "bye", new RSBracketToken() {}
+			new LSBracketToken(), new IdentToken("hi"), new RSBracketToken(),
+			new LSBracketToken(), new IdentToken("bye"), new RSBracketToken()
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);
@@ -208,7 +208,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Can parse complex selector with basic combinators")
 	public void canParseComplexSelectorWithBasicCombinators() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "hi", (DelimToken) () -> '>', (IdentToken) () -> "bye"
+			new IdentToken("hi"), new DelimToken('>'), new IdentToken("bye")
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);
@@ -230,7 +230,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Can parse complex selector with descendant combinator")
 	public void canParseComplexSelectorWithDescendantCombinator() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "hi", new WhitespaceToken() {}, (IdentToken) () -> "bye"
+			new IdentToken("hi"), new WhitespaceToken(), new IdentToken("bye")
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
 		Assertions.assertEquals(1, selectors.length);

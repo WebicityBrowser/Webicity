@@ -16,7 +16,7 @@ public class BoxSizingValueParser implements PropertyValueParser<BoxSizingValue>
 		}
 
 		IdentToken identToken = (IdentToken) tokens[offset];
-		String ident = identToken.getValue();
+		String ident = identToken.value();
 		if (ident.equals("content-box")) {
 			return PropertyValueParseResultImp.of(BoxSizingValue.CONTENT_BOX, 1);
 		} else if (ident.equals("border-box")) {

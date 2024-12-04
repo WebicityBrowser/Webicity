@@ -15,7 +15,7 @@ public class HexColorValueParser implements PropertyValueParser<ColorValue> {
 			return PropertyValueParseResultImp.empty();
 		}
 		
-		String colorHash = ((HashToken) tokens[offset]).getValue();
+		String colorHash = ((HashToken) tokens[offset]).value();
 		try {
 			ColorValue color = parseColor(colorHash);
 			return PropertyValueParseResultImp.of(color, 1);

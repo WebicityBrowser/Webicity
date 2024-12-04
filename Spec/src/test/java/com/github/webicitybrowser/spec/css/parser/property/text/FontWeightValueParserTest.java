@@ -9,7 +9,6 @@ import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.NumberToken;
-import com.github.webicitybrowser.spec.css.parser.tokens.NumberTypeFlag;
 import com.github.webicitybrowser.spec.css.property.fontweight.FontWeightValue;
 
 public class FontWeightValueParserTest {
@@ -24,7 +23,7 @@ public class FontWeightValueParserTest {
 	@Test
 	@DisplayName("Can parse numerical font weight")
 	public void canParseNumericalFontWeight() {
-		TokenLike[] tokens = new TokenLike[] { createNumberToken(400) };
+		TokenLike[] tokens = new TokenLike[] { new NumberToken(400) };
 		PropertyValueParseResult<FontWeightValue> result = fontWeightValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertEquals(400, result.getResult().get().getWeight(400));
@@ -33,7 +32,7 @@ public class FontWeightValueParserTest {
 	@Test
 	@DisplayName("Can parse normal font weight")
 	public void canParseNormalFontWeight() {
-		TokenLike[] tokens = new TokenLike[] { (IdentToken) () -> "normal" };
+		TokenLike[] tokens = new TokenLike[] { new IdentToken("normal") };
 		PropertyValueParseResult<FontWeightValue> result = fontWeightValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertEquals(400, result.getResult().get().getWeight(400));
@@ -42,26 +41,10 @@ public class FontWeightValueParserTest {
 	@Test
 	@DisplayName("Can parse bold font weight")
 	public void canParseBoldFontWeight() {
-		TokenLike[] tokens = new TokenLike[] { (IdentToken) () -> "bold" };
+		TokenLike[] tokens = new TokenLike[] { new IdentToken("bold") };
 		PropertyValueParseResult<FontWeightValue> result = fontWeightValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertEquals(700, result.getResult().get().getWeight(400));
-	}
-
-	private TokenLike createNumberToken(int i) {
-		return new NumberToken() {
-
-			@Override
-			public Number getValue() {
-				return i;
-			}
-
-			@Override
-			public NumberTypeFlag getTypeFlag() {
-				return NumberTypeFlag.INTEGER;
-			}
-
-		};
 	}
 
 }

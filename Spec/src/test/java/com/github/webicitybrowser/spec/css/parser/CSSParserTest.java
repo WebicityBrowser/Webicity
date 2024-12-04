@@ -36,7 +36,7 @@ public class CSSParserTest {
 	@DisplayName("Can parse a simple at rule")
 	public void canParseASimpleAtRule() {
 		AtKeywordToken atKeywordToken = Mockito.mock(AtKeywordToken.class);
-		Mockito.when(atKeywordToken.getValue()).thenReturn("test");
+		Mockito.when(atKeywordToken.value()).thenReturn("test");
 		Token semicolonToken = Mockito.mock(SemicolonToken.class);
 		Token eofToken = Mockito.mock(EOFToken.class);
 		Token[] tokens = new Token[] {
@@ -46,16 +46,16 @@ public class CSSParserTest {
 		Assertions.assertEquals(1, rules.length);
 		Assertions.assertInstanceOf(AtRule.class, rules[0]);
 		AtRule atRule = ((AtRule) rules[0]);
-		Assertions.assertEquals("test", atRule.getName());
-		Assertions.assertEquals(0, atRule.getPrelude().length);
-		Assertions.assertNull(atRule.getValue());
+		Assertions.assertEquals("test", atRule.name());
+		Assertions.assertEquals(0, atRule.prelude().size());
+		Assertions.assertNull(atRule.value());
 	}
 	
 	@Test
 	@DisplayName("Can parse an at rule with a raw block")
 	public void canParseAnAtRuleWithARawBlock() {
 		AtKeywordToken atKeywordToken = Mockito.mock(AtKeywordToken.class);
-		Mockito.when(atKeywordToken.getValue()).thenReturn("test");
+		Mockito.when(atKeywordToken.value()).thenReturn("test");
 		LCBracketToken lcBracketToken = Mockito.mock(LCBracketToken.class);
 		RCBracketToken rcBracketToken = Mockito.mock(RCBracketToken.class);
 		Token eofToken = Mockito.mock(EOFToken.class);
@@ -66,18 +66,18 @@ public class CSSParserTest {
 		Assertions.assertEquals(1, rules.length);
 		Assertions.assertInstanceOf(AtRule.class, rules[0]);
 		AtRule atRule = ((AtRule) rules[0]);
-		Assertions.assertEquals("test", atRule.getName());
-		Assertions.assertNotNull(atRule.getValue());
+		Assertions.assertEquals("test", atRule.name());
+		Assertions.assertNotNull(atRule.value());
 	}
 	
 	@Test
 	@DisplayName("Can parse an at rule with a preparsed block")
 	public void canParseAnAtRuleWithAPreparsedBlock() {
 		AtKeywordToken atKeywordToken = Mockito.mock(AtKeywordToken.class);
-		Mockito.when(atKeywordToken.getValue()).thenReturn("test");
+		Mockito.when(atKeywordToken.value()).thenReturn("test");
 		LCBracketToken lcBracketToken = Mockito.mock(LCBracketToken.class);
 		SimpleBlock simpleBlock = Mockito.mock(SimpleBlock.class);
-		Mockito.when(simpleBlock.getType()).thenReturn(lcBracketToken);
+		Mockito.when(simpleBlock.type()).thenReturn(lcBracketToken);
 		Token eofToken = Mockito.mock(EOFToken.class);
 		Token[] tokens = new Token[] {
 			atKeywordToken, simpleBlock, eofToken
@@ -86,19 +86,19 @@ public class CSSParserTest {
 		Assertions.assertEquals(1, rules.length);
 		Assertions.assertInstanceOf(AtRule.class, rules[0]);
 		AtRule atRule = ((AtRule) rules[0]);
-		Assertions.assertEquals("test", atRule.getName());
-		Assertions.assertEquals(simpleBlock, atRule.getValue());
+		Assertions.assertEquals("test", atRule.name());
+		Assertions.assertEquals(simpleBlock, atRule.value());
 	}
 	
 	@Test
 	@DisplayName("Can parse an at rule with a prelude")
 	public void canParseAnAtRuleWithAPrelude() {
 		AtKeywordToken atKeywordToken = Mockito.mock(AtKeywordToken.class);
-		Mockito.when(atKeywordToken.getValue()).thenReturn("test");
+		Mockito.when(atKeywordToken.value()).thenReturn("test");
 		IdentToken identToken = Mockito.mock(IdentToken.class);
 		LCBracketToken lcBracketToken = Mockito.mock(LCBracketToken.class);
 		SimpleBlock simpleBlock = Mockito.mock(SimpleBlock.class);
-		Mockito.when(simpleBlock.getType()).thenReturn(lcBracketToken);
+		Mockito.when(simpleBlock.type()).thenReturn(lcBracketToken);
 		Token eofToken = Mockito.mock(EOFToken.class);
 		Token[] tokens = new Token[] {
 			atKeywordToken, identToken, simpleBlock, eofToken
@@ -107,10 +107,10 @@ public class CSSParserTest {
 		Assertions.assertEquals(1, rules.length);
 		Assertions.assertInstanceOf(AtRule.class, rules[0]);
 		AtRule atRule = ((AtRule) rules[0]);
-		Assertions.assertEquals("test", atRule.getName());
-		Assertions.assertEquals(simpleBlock, atRule.getValue());
-		Assertions.assertEquals(1, atRule.getPrelude().length);
-		Assertions.assertEquals(identToken, atRule.getPrelude()[0]);
+		Assertions.assertEquals("test", atRule.name());
+		Assertions.assertEquals(simpleBlock, atRule.value());
+		Assertions.assertEquals(1, atRule.prelude().size());
+		Assertions.assertEquals(identToken, atRule.prelude().get(0));
 	}
 	
 	@Test
@@ -126,8 +126,8 @@ public class CSSParserTest {
 		Assertions.assertEquals(1, rules.length);
 		Assertions.assertInstanceOf(QualifiedRule.class, rules[0]);
 		QualifiedRule qualifiedRule = ((QualifiedRule) rules[0]);
-		Assertions.assertEquals(0, qualifiedRule.getPrelude().length);
-		Assertions.assertNotNull(qualifiedRule.getValue());
+		Assertions.assertEquals(0, qualifiedRule.prelude().size());
+		Assertions.assertNotNull(qualifiedRule.value());
 	}
 	
 	@Test
@@ -135,7 +135,7 @@ public class CSSParserTest {
 	public void canParseAQualifiedRuleWithAPreparsedBlock() {
 		LCBracketToken lcBracketToken = Mockito.mock(LCBracketToken.class);
 		SimpleBlock simpleBlock = Mockito.mock(SimpleBlock.class);
-		Mockito.when(simpleBlock.getType()).thenReturn(lcBracketToken);
+		Mockito.when(simpleBlock.type()).thenReturn(lcBracketToken);
 		Token eofToken = Mockito.mock(EOFToken.class);
 		Token[] tokens = new Token[] {
 			simpleBlock, eofToken
@@ -144,7 +144,7 @@ public class CSSParserTest {
 		Assertions.assertEquals(1, rules.length);
 		Assertions.assertInstanceOf(QualifiedRule.class, rules[0]);
 		QualifiedRule qualifiedRule = ((QualifiedRule) rules[0]);
-		Assertions.assertEquals(simpleBlock, qualifiedRule.getValue());
+		Assertions.assertEquals(simpleBlock, qualifiedRule.value());
 	}
 	
 	@Test
@@ -153,7 +153,7 @@ public class CSSParserTest {
 		IdentToken identToken = Mockito.mock(IdentToken.class);
 		LCBracketToken lcBracketToken = Mockito.mock(LCBracketToken.class);
 		SimpleBlock simpleBlock = Mockito.mock(SimpleBlock.class);
-		Mockito.when(simpleBlock.getType()).thenReturn(lcBracketToken);
+		Mockito.when(simpleBlock.type()).thenReturn(lcBracketToken);
 		Token eofToken = Mockito.mock(EOFToken.class);
 		Token[] tokens = new Token[] {
 			identToken, simpleBlock, eofToken
@@ -162,9 +162,9 @@ public class CSSParserTest {
 		Assertions.assertEquals(1, rules.length);
 		Assertions.assertInstanceOf(QualifiedRule.class, rules[0]);
 		QualifiedRule qualifiedRule = ((QualifiedRule) rules[0]);
-		Assertions.assertEquals(simpleBlock, qualifiedRule.getValue());
-		Assertions.assertEquals(1, qualifiedRule.getPrelude().length);
-		Assertions.assertEquals(identToken, qualifiedRule.getPrelude()[0]);
+		Assertions.assertEquals(simpleBlock, qualifiedRule.value());
+		Assertions.assertEquals(1, qualifiedRule.prelude().size());
+		Assertions.assertEquals(identToken, qualifiedRule.prelude().get(0));
 	}
 	
 	@Test
@@ -173,7 +173,7 @@ public class CSSParserTest {
 		LCBracketToken lcBracketToken = Mockito.mock(LCBracketToken.class);
 		RCBracketToken rcBracketToken = Mockito.mock(RCBracketToken.class);
 		FunctionToken functionToken = Mockito.mock(FunctionToken.class);
-		Mockito.when(functionToken.getValue()).thenReturn("calc");
+		Mockito.when(functionToken.value()).thenReturn("calc");
 		PercentageToken percentageToken = Mockito.mock(PercentageToken.class);
 		RParenToken rParenToken = Mockito.mock(RParenToken.class);
 		Token eofToken = Mockito.mock(EOFToken.class);
@@ -185,14 +185,14 @@ public class CSSParserTest {
 		Assertions.assertEquals(1, rules.length);
 		Assertions.assertInstanceOf(QualifiedRule.class, rules[0]);
 		QualifiedRule qualifiedRule = ((QualifiedRule) rules[0]);
-		Assertions.assertEquals(0, qualifiedRule.getPrelude().length);
-		Assertions.assertNotNull(qualifiedRule.getValue());
-		SimpleBlock innerBlock = qualifiedRule.getValue();
-		Assertions.assertInstanceOf(FunctionValue.class, innerBlock.getValue()[0]);
-		FunctionValue function = (FunctionValue) innerBlock.getValue()[0];
-		Assertions.assertEquals("calc", function.getName());
-		Assertions.assertEquals(1, function.getValue().length);
-		Assertions.assertEquals(percentageToken, function.getValue()[0]);
+		Assertions.assertEquals(0, qualifiedRule.prelude().size());
+		Assertions.assertNotNull(qualifiedRule.value());
+		SimpleBlock innerBlock = qualifiedRule.value();
+		Assertions.assertInstanceOf(FunctionValue.class, innerBlock.value().get(0));
+		FunctionValue function = (FunctionValue) innerBlock.value().get(0);
+		Assertions.assertEquals("calc", function.name());
+		Assertions.assertEquals(1, function.value().length);
+		Assertions.assertEquals(percentageToken, function.value()[0]);
 	}
 	
 	// TODO: Add test for "consume a list of declarations"

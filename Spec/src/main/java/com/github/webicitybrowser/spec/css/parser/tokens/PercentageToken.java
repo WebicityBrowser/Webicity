@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.spec.css.parser.tokens;
 
-public interface PercentageToken extends Token {
-
-	Number getValue();
+public record PercentageToken(Number value) implements Token {
 	
 }

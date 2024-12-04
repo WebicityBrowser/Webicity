@@ -51,30 +51,30 @@ public class CSSOMMappedRuleListImp<T> implements CSSOMMappedRuleList<T> {
 			// TODO: Handle other rule types
 			if (!(rule instanceof Declaration declaration)) continue;
 			// TODO: Support var types
-			TokenLike[] tokens = TokenUtils.stripWhitespace(declaration.getValue());
+			TokenLike[] tokens = TokenUtils.stripWhitespace(declaration.value());
 			if (isNonCachedProperty(declaration, tokens)) {
-				PropertyMeta<T> propertyMeta = new PropertyMeta<T>(null, declaration.getName(), tokens, declaration.isImportant(), false, null);
+				PropertyMeta<T> propertyMeta = new PropertyMeta<T>(null, declaration.name(), tokens, declaration.isImportant(), false, null);
 				maybeAddPropertyValue(declaration, propertyMeta);
 				continue;
 			}
-			List<T> propertyValues = propertyMapper.map(declaration.getName(), tokens);
+			List<T> propertyValues = propertyMapper.map(declaration.name(), tokens);
 			for (T propertyValue: propertyValues) {
-				PropertyMeta<T> propertyMeta = new PropertyMeta<T>(propertyValue, declaration.getName(), tokens, declaration.isImportant(), true, null);
+				PropertyMeta<T> propertyMeta = new PropertyMeta<T>(propertyValue, declaration.name(), tokens, declaration.isImportant(), true, null);
 				maybeAddPropertyValue(declaration, propertyMeta);
 			}
 		}
 	}
 
 	private void maybeAddPropertyValue(Declaration declaration, PropertyMeta<T> propertyMeta) {
-		PropertyMeta<T> oldMeta = resolvedProperties.get(declaration.getName());
+		PropertyMeta<T> oldMeta = resolvedProperties.get(declaration.name());
 		if (!declaration.isImportant() && oldMeta != null && oldMeta.important()) {
 			if (oldMeta.present()) return;
-			resolvedProperties.put(declaration.getName(), oldMeta.fallback());
+			resolvedProperties.put(declaration.name(), oldMeta.fallback());
 			maybeAddPropertyValue(declaration, propertyMeta);
-			PropertyMeta<T> newFallbackMeta = resolvedProperties.get(declaration.getName());
+			PropertyMeta<T> newFallbackMeta = resolvedProperties.get(declaration.name());
 			PropertyMeta<T> oldMetaWithNewFallback = new PropertyMeta<>(
 				oldMeta.resolvedValue(), oldMeta.name(), oldMeta.tokens(), oldMeta.important(), oldMeta.cacheable(), newFallbackMeta);
-			resolvedProperties.put(declaration.getName(), oldMetaWithNewFallback);
+			resolvedProperties.put(declaration.name(), oldMetaWithNewFallback);
 
 			return;
 		}
@@ -84,10 +84,10 @@ public class CSSOMMappedRuleListImp<T> implements CSSOMMappedRuleList<T> {
 
 		if (propertyMeta.present()) {
 			resolvedProperties.put(propertyMapper.keyForValue(propertyMeta.resolvedValue()), newMeta);
-		} else if (declaration.getName().startsWith("--")) {
-			resolvedProperties.put(declaration.getName(), newMeta);
+		} else if (declaration.name().startsWith("--")) {
+			resolvedProperties.put(declaration.name(), newMeta);
 		} else {
-			for (Class<? extends T> possibleType: propertyMapper.getPossibleResultantTypes(declaration.getName())) {
+			for (Class<? extends T> possibleType: propertyMapper.getPossibleResultantTypes(declaration.name())) {
 				resolvedProperties.put(possibleType, newMeta);
 			}
 		}
@@ -127,14 +127,14 @@ public class CSSOMMappedRuleListImp<T> implements CSSOMMappedRuleList<T> {
 	}
 
 	private boolean isNonCachedProperty(Declaration declaration, TokenLike[] tokens) {
-		boolean isVariable = declaration.getName().startsWith("--");
+		boolean isVariable = declaration.name().startsWith("--");
 		return isInherit(tokens) || isVariable || CSSOMVariableResolver.hasVariable(tokens);
 	}
 
 	private boolean isInherit(TokenLike[] tokens) {
 		return tokens.length == 1
 			&& tokens[0] instanceof IdentToken identToken
-			&& identToken.getValue().equals("inherit");
+			&& identToken.value().equals("inherit");
 	}
 	
 }

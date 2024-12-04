@@ -31,7 +31,7 @@ public class BackgroundImageValueParser implements PropertyValueParser<Backgroun
 
 		@Override
 		public PropertyValueParseResult<CSSValue> parse(TokenLike[] tokens, int offset, int length) {
-			if (length >= 1 && tokens[offset] instanceof IdentToken identToken && identToken.getValue().equals("none")) {
+			if (length >= 1 && tokens[offset] instanceof IdentToken identToken && identToken.value().equals("none")) {
 				return PropertyValueParseResultImp.of(new NoneValue(), 1);
 			}
 

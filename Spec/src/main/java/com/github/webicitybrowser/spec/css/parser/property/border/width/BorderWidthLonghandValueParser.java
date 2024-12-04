@@ -15,7 +15,7 @@ public class BorderWidthLonghandValueParser implements PropertyValueParser<CSSVa
 	@Override
 	public PropertyValueParseResult<CSSValue> parse(TokenLike[] tokens, int offset, int length) {
 		if (length > 0 && tokens[offset] instanceof IdentToken identToken) {
-			String name = identToken.getValue();
+			String name = identToken.value();
 			return switch (name) {
 				case "thin" -> PropertyValueParseResultImp.of(createAbsoluteLengthValue(1), 1);
 				case "medium" -> PropertyValueParseResultImp.of(createAbsoluteLengthValue(3), 1);

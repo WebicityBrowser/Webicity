@@ -33,11 +33,11 @@ public class FlexShorthandValueParser implements PropertyValueParser<FlexValue> 
 		FlexFactorValue growFactor = null;
 		FlexFactorValue shrinkFactor = null;
 		if (usedLength < length && tokens[offset + usedLength] instanceof NumberToken numberToken) {
-			growFactor = new FlexFactorValue(numberToken.getValue().floatValue());
+			growFactor = new FlexFactorValue(numberToken.value().floatValue());
 			usedLength++;
 		}
 		if (usedLength < length && tokens[offset + usedLength] instanceof NumberToken numberToken) {
-			shrinkFactor = new FlexFactorValue(numberToken.getValue().floatValue());
+			shrinkFactor = new FlexFactorValue(numberToken.value().floatValue());
 			usedLength++;
 		}
 

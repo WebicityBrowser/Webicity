@@ -2,7 +2,6 @@ package com.github.webicitybrowser.spec.css.parser.tokenizer.imp;
 
 import java.io.IOException;
 
-import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
 import com.github.webicitybrowser.spec.infra.util.ASCIIUtil;
 
 public final class SharedTokenizer {
@@ -39,10 +38,6 @@ public final class SharedTokenizer {
 		return
 			ch1 == '\\' &&
 			ch2 != '\n';
-	}
-	
-	public static DelimToken createDelimToken(int ch) {
-		return () -> ch;
 	}
 	
 	public static boolean isWhitespace(int ch) {

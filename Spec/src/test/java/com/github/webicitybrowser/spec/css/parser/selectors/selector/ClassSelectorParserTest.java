@@ -27,9 +27,9 @@ public class ClassSelectorParserTest {
 	@DisplayName("Can parse class selector")
 	public void canParseClassSelector() {
 		DelimToken delimToken = Mockito.mock(DelimToken.class);
-		Mockito.when(delimToken.getValue()).thenReturn((int) '.');
+		Mockito.when(delimToken.value()).thenReturn((int) '.');
 		IdentToken identToken = Mockito.mock(IdentToken.class);
-		Mockito.when(identToken.getValue()).thenReturn("test");
+		Mockito.when(identToken.value()).thenReturn("test");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] {
 			delimToken, identToken	
 		});

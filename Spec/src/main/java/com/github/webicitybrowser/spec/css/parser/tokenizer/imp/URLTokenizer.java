@@ -19,16 +19,16 @@ public final class URLTokenizer {
 			int ch = reader.read();
 			switch(ch) {
 			case ')':
-				return createURLToken(url.toString());
+				return new URLToken(url.toString());
 			case -1:
 				// TODO: Parse Error
-				return createURLToken(url.toString());
+				return new URLToken(url.toString());
 			case '"':
 			case '\'':
 			case '(':
 				// TODO: Parse Error
 				consumeTheRemnantsOfABadUrl(reader);
-				return new BadURLToken() {};
+				return new BadURLToken();
 			case '\\':
 				if (SharedTokenizer.isValidEscapeSequence(ch, reader)) {
 					int escapedCodePoint = SharedTokenizer.consumeAnEscapedCodePoint(reader);
@@ -37,7 +37,7 @@ public final class URLTokenizer {
 				} else {
 					// TODO: Parse Error
 					consumeTheRemnantsOfABadUrl(reader);
-					return new BadURLToken() {};
+					return new BadURLToken();
 				}
 			default:
 				if (SharedTokenizer.isWhitespace(ch)) {
@@ -46,17 +46,17 @@ public final class URLTokenizer {
 					}
 					if (reader.peek() == ')') {
 						reader.read();
-						return createURLToken(url.toString());
+						return new URLToken(url.toString());
 					}
 					if (reader.peek() == -1) {
 						// TODO: Parse Error
 						reader.read();
-						return createURLToken(url.toString());
+						return new URLToken(url.toString());
 					} else {
 						// TODO: (Implied) Parse Error
 						// The spec does not actually define this as a parse error
 						consumeTheRemnantsOfABadUrl(reader);
-						return new BadURLToken() {};
+						return new BadURLToken();
 					}
 				}
 				url.appendCodePoint(ch);
@@ -73,10 +73,6 @@ public final class URLTokenizer {
 				SharedTokenizer.consumeAnEscapedCodePoint(reader);
 			}
 		}
-	}
-	
-	private static URLToken createURLToken(String value) {
-		return () -> value;
 	}
 	
 }

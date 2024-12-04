@@ -26,7 +26,7 @@ public class PsuedoSelectorParserTest {
 	@DisplayName("Can parse root psuedo selector")
 	public void canParseRootPsuedoSelector() {
 		TokenStream tokenStream = new TokenStreamImp(new Token[] {
-			new ColonToken() {}, (IdentToken) () -> "root"
+			new ColonToken(), new IdentToken("root")
 		});
 		PsuedoSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
 

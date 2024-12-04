@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.spec.css.parser.tokens;
 
-public interface FunctionToken extends Token {
-
-	String getValue();
+public record FunctionToken(String value) implements Token {
 	
 }

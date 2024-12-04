@@ -67,7 +67,7 @@ public class CombinatorParser implements SelectorParser {
 	private boolean isCharacterToken(TokenLike token, char ch) {
 		return
 			token instanceof DelimToken &&
-			ch == ((DelimToken) token).getValue();
+			ch == ((DelimToken) token).value();
 	}
 	
 }

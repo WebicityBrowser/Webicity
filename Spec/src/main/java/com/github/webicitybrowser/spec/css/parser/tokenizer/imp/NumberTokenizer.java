@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 import com.github.webicitybrowser.spec.css.parser.tokens.CDCToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.DimensionToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.NumberToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.NumberTypeFlag;
@@ -20,7 +21,7 @@ public final class NumberTokenizer {
 			reader.unread('+');
 			return consumeANumericToken(reader);
 		} else {
-			return SharedTokenizer.createDelimToken('+');
+			return new DelimToken('+');
 		}
 	}
 	
@@ -35,7 +36,7 @@ public final class NumberTokenizer {
 			int ch1 = reader.read();
 			int ch2 = reader.read();
 			if (ch1 == '-' && ch2 == '>') {
-				return new CDCToken() {};
+				return new CDCToken();
 			}
 			reader.unread(ch2);
 			reader.unread(ch1);
@@ -46,7 +47,7 @@ public final class NumberTokenizer {
 			return IdentTokenizer.consumeAnIdentLikeToken(reader);
 		}
 		
-		return SharedTokenizer.createDelimToken('-');
+		return new DelimToken('-');
 	}
 	
 	public static Token consumeFullStopSign(ReaderHandle reader) throws IOException {
@@ -54,7 +55,7 @@ public final class NumberTokenizer {
 			reader.unread('.');
 			return consumeANumericToken(reader);
 		}
-		return SharedTokenizer.createDelimToken('.');
+		return new DelimToken('.');
 	}
 	
 	public static Token consumeANumericToken(ReaderHandle reader) throws IOException {
@@ -62,15 +63,15 @@ public final class NumberTokenizer {
 		
 		if (IdentTokenizer.wouldStartAnIdentSequence(reader)) {
 			String unit = IdentTokenizer.consumeAnIdentSequence(reader);
-			return createDimensionToken(number, unit);
+			return new DimensionToken(number, unit);
 		}
 		
 		if (reader.peek() == '%') {
 			reader.read();
-			return createPercentageToken(number);
+			return new PercentageToken(number);
 		}
 		
-		return createNumberToken(number);
+		return new NumberToken(number);
 	}
 	
 	private static Number consumeANumber(ReaderHandle reader) throws IOException {
@@ -181,51 +182,6 @@ public final class NumberTokenizer {
 		default:
 			return ASCIIUtil.isASCIIDigit(ch1);
 		}
-	}
-	
-	private static DimensionToken createDimensionToken(Number number, String unit) {
-		NumberTypeFlag flag = number instanceof Integer ?
-			NumberTypeFlag.INTEGER :
-			NumberTypeFlag.NUMBER;
-		
-		return new DimensionToken() {
-			@Override
-			public Number getValue() {
-				return number;
-			}
-
-			@Override
-			public NumberTypeFlag getTypeFlag() {
-				return flag;
-			}
-
-			@Override
-			public String getUnit() {
-				return unit;
-			}	
-		};
-	}
-	
-	private static NumberToken createNumberToken(Number number) {
-		NumberTypeFlag flag = number instanceof Integer ?
-			NumberTypeFlag.INTEGER :
-			NumberTypeFlag.NUMBER;
-		
-		return new NumberToken() {
-			@Override
-			public Number getValue() {
-				return number;
-			}
-
-			@Override
-			public NumberTypeFlag getTypeFlag() {
-				return flag;
-			}	
-		};
-	}
-	
-	private static PercentageToken createPercentageToken(Number number) {
-		return () -> number;
 	}
 	
 }

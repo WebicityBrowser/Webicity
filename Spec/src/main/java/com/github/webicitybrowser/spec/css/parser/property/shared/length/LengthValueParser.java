@@ -21,7 +21,7 @@ public class LengthValueParser implements PropertyValueParser<CSSValue> {
 	}
 
 	private static PropertyValueParseResult<CSSValue> parseInternal(TokenLike[] tokens, int offset, int length) {
-		if (length > 0 && offset < tokens.length && tokens[offset] instanceof NumberToken numberToken && numberToken.getValue().floatValue() == 0) {
+		if (length > 0 && offset < tokens.length && tokens[offset] instanceof NumberToken numberToken && numberToken.value().floatValue() == 0) {
 			return PropertyValueParseResultImp.of(AbsoluteLengthValue.of(0, "px"), 1);
 		}
 
@@ -38,7 +38,7 @@ public class LengthValueParser implements PropertyValueParser<CSSValue> {
 	}
 
 	private static PropertyValueParseResult<CSSValue> createParseResultFromDimensionToken(DimensionToken token) {
-		switch (token.getUnit()) {
+		switch (token.unit()) {
 		case "cm":
 		case "mm":
 		case "Q":
@@ -46,7 +46,7 @@ public class LengthValueParser implements PropertyValueParser<CSSValue> {
 		case "pc":
 		case "pt":
 		case "px":
-			return PropertyValueParseResultImp.of(AbsoluteLengthValue.of(token.getValue(), token.getUnit()), 1);
+			return PropertyValueParseResultImp.of(AbsoluteLengthValue.of(token.value(), token.unit()), 1);
 
 		case "em":
 		case "ex":
@@ -62,7 +62,7 @@ public class LengthValueParser implements PropertyValueParser<CSSValue> {
 		case "vb":
 		case "vmin":
 		case "vmax":
-			return PropertyValueParseResultImp.of(createRelativeLengthValue(token.getValue(), token.getUnit()), 1);
+			return PropertyValueParseResultImp.of(createRelativeLengthValue(token.value(), token.unit()), 1);
 
 		default:
 			return PropertyValueParseResultImp.empty();

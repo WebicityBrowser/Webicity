@@ -32,8 +32,8 @@ public class MathValueParser implements PropertyValueParser<CSSValue> {
 	@Override
 	public PropertyValueParseResult<CSSValue> parse(TokenLike[] tokens, int offset, int length) {
 		if (length >= 1 && tokens[offset] instanceof FunctionValue functionValue) {
-			TokenLike[] functionTokens = stripWhitespace(functionValue.getValue());
-			PropertyValueParseResult<CSSValue> result = switch (functionValue.getName()) {
+			TokenLike[] functionTokens = stripWhitespace(functionValue.value());
+			PropertyValueParseResult<CSSValue> result = switch (functionValue.name()) {
 				case "calc" -> parseCalc(functionTokens, 0, functionTokens.length, false);
 				case "min" -> parseMinMax(functionTokens, 0, functionTokens.length, true);
 				case "max" -> parseMinMax(functionTokens, 0, functionTokens.length, false);
@@ -69,8 +69,8 @@ public class MathValueParser implements PropertyValueParser<CSSValue> {
 			currentOffset < length
 			&& tokens[currentOffset] instanceof DelimToken delimToken
 			&& (
-				(!isMultiplicationPart && delimToken.getValue() == '+' || delimToken.getValue() == '-') ||
-				(isMultiplicationPart && delimToken.getValue() == '*' || delimToken.getValue() == '/'))
+				(!isMultiplicationPart && delimToken.value() == '+' || delimToken.value() == '-') ||
+				(isMultiplicationPart && delimToken.value() == '*' || delimToken.value() == '/'))
 		) {
 			PropertyValueParseResult<CSSValue> nextResult = isMultiplicationPart ?
 				parseFactor(tokens, currentOffset + 1, length - currentOffset - 1) :
@@ -79,7 +79,7 @@ public class MathValueParser implements PropertyValueParser<CSSValue> {
 				return PropertyValueParseResultImp.empty();
 			}
 
-			Operand operand = switch (delimToken.getValue()) {
+			Operand operand = switch (delimToken.value()) {
 				case '+' -> Operand.PLUS;
 				case '-' -> Operand.MINUS;
 				case '*' -> Operand.MULTIPLY;
@@ -118,7 +118,7 @@ public class MathValueParser implements PropertyValueParser<CSSValue> {
 
 			return PropertyValueParseResultImp.of(result.getResult().get(), result.getLength() + 2);
 		} else if (tokens[offset] instanceof NumberToken numberToken) {
-			return PropertyValueParseResultImp.of(new NumberMathValue(numberToken.getValue()), 1);
+			return PropertyValueParseResultImp.of(new NumberMathValue(numberToken.value()), 1);
 		} else {
 			return innerParser.parse(tokens, offset, length);
 		}

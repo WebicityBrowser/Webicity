@@ -26,7 +26,7 @@ public class FontFamilyValueParserTest {
 	@DisplayName("Can parse single named font family")
 	public void canParseSingleNamedFontFamily() {
 		TokenLike[] tokens = new TokenLike[] {
-			(StringToken) () -> "Arial"
+			new StringToken("Arial")
 		};
 		PropertyValueParseResult<FontFamilyValue> fontFamilyResult = fontFamilyValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(fontFamilyResult.getResult().isPresent());
@@ -41,9 +41,9 @@ public class FontFamilyValueParserTest {
 	@DisplayName("Can parse multiple named font families")
 	public void canParseMultipleNamedFontFamilies() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "Arial",
-			new CommaToken() {},
-			(StringToken) () -> "Helvetica"
+			new IdentToken("Arial"),
+			new CommaToken(),
+			new StringToken("Helvetica")
 		};
 		PropertyValueParseResult<FontFamilyValue> fontFamilyResult = fontFamilyValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(fontFamilyResult.getResult().isPresent());

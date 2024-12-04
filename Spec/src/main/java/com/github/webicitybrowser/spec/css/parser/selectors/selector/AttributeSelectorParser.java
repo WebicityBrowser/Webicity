@@ -48,7 +48,7 @@ public class AttributeSelectorParser implements SelectorParser {
 			fail(stream);
 		}
 		
-		switch(((DelimToken) token).getValue()) {
+		switch(((DelimToken) token).value()) {
 		case '~':
 			return AttributeSelectorOperation.ONE_OF;
 		case '|':
@@ -77,9 +77,9 @@ public class AttributeSelectorParser implements SelectorParser {
 	private String parseAttribValue(TokenStream stream) throws ParseFormatException {
 		TokenLike token = stream.read();
 		if (token instanceof IdentToken identToken) {
-			return identToken.getValue();
+			return identToken.value();
 		} else if (token instanceof StringToken stringToken) {
-			return stringToken.getValue();
+			return stringToken.value();
 		} else {
 			fail(stream);
 			return null;
@@ -89,7 +89,7 @@ public class AttributeSelectorParser implements SelectorParser {
 	private boolean isDelimToken(TokenLike token, int ch) {
 		return
 			token instanceof DelimToken &&
-			((DelimToken) token).getValue() == ch;
+			((DelimToken) token).value() == ch;
 	}
 	
 	private void fail(TokenStream stream) throws ParseFormatException {

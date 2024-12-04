@@ -23,7 +23,7 @@ public class NamedColorValueParserTest {
 	@DisplayName("Can parse named color")
 	public void canParseNamedColor() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "rebeccapurple"
+			new IdentToken("rebeccapurple")
 		};
 
 		PropertyValueParseResult<ColorValue> result = namedColorValueParser.parse(tokens, 0, 1);
@@ -41,7 +41,7 @@ public class NamedColorValueParserTest {
 	@DisplayName("Can't parse invalid named color")
 	public void canNotParseInvalidNamedColor() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "invalid"
+			new IdentToken("invalid")
 		};
 
 		PropertyValueParseResult<ColorValue> result = namedColorValueParser.parse(tokens, 0, 1);

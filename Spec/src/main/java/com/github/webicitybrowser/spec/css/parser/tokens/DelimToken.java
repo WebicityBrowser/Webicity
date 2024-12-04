@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.spec.css.parser.tokens;
 
-public interface DelimToken extends Token {
-
-	int getValue();
+public record DelimToken(int value) implements Token {
 	
 }

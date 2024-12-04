@@ -54,7 +54,7 @@ public class BackgroundPositionValueParser implements PropertyValueParser<Backgr
 		private PropertyValueParseResult<BackgroundPositionValue> parseOneKeywordPosition(TokenLike[] tokens, int offset, int length) {
 			if (length < 1 || !(tokens[offset] instanceof IdentToken identToken)) return PropertyValueParseResultImp.empty();
 			
-			String keyword = identToken.getValue();
+			String keyword = identToken.value();
 			switch (keyword) {
 				case "left":
 					return PropertyValueParseResultImp.of(position(BackgroundAxisReference.LEFT, BackgroundAxisReference.CENTER), 1);
@@ -112,14 +112,14 @@ public class BackgroundPositionValueParser implements PropertyValueParser<Backgr
 			}
 			if (!valuesAllowed(identToken1, identToken2)) return PropertyValueParseResultImp.empty();
 
-			BackgroundAxisReference horizontal = switch (identToken1.getValue()) {
+			BackgroundAxisReference horizontal = switch (identToken1.value()) {
 				case "left" -> BackgroundAxisReference.LEFT;
 				case "right" -> BackgroundAxisReference.RIGHT;
 				default -> BackgroundAxisReference.CENTER;
 			};
 			CSSValue horizontalOffset = offsetResult1.getResult().orElse(ZERO_LENGTH);
 
-			BackgroundAxisReference vertical = switch (identToken2.getValue()) {
+			BackgroundAxisReference vertical = switch (identToken2.value()) {
 				case "top" -> BackgroundAxisReference.TOP;
 				case "bottom" -> BackgroundAxisReference.BOTTOM;
 				default -> BackgroundAxisReference.CENTER;
@@ -163,11 +163,11 @@ public class BackgroundPositionValueParser implements PropertyValueParser<Backgr
 				valueResult.getLength());
 			
 			if (!(tokens[offset] instanceof IdentToken identToken)) return PropertyValueParseResultImp.empty();
-			if (!allowedValues.contains(identToken.getValue())) return PropertyValueParseResultImp.empty();
+			if (!allowedValues.contains(identToken.value())) return PropertyValueParseResultImp.empty();
 
 			return PropertyValueParseResultImp.of(
 				new BackgroundAxisPosition(
-					switch (identToken.getValue()) {
+					switch (identToken.value()) {
 						case "left" -> BackgroundAxisReference.LEFT;
 						case "right" -> BackgroundAxisReference.RIGHT;
 						case "top" -> BackgroundAxisReference.TOP;
@@ -185,12 +185,12 @@ public class BackgroundPositionValueParser implements PropertyValueParser<Backgr
 		}
 
 		private boolean valuesAreReversed(IdentToken identToken1, IdentToken identToken2) {
-			return identToken1.getValue().equals("top") || identToken1.getValue().equals("bottom")
-				|| identToken2.getValue().equals("left") || identToken2.getValue().equals("right");
+			return identToken1.value().equals("top") || identToken1.value().equals("bottom")
+				|| identToken2.value().equals("left") || identToken2.value().equals("right");
 		}
 
 		private boolean valuesAllowed(IdentToken identToken1, IdentToken identToken2) {
-			return ALLOWED_HORIZONTAL_VALUES.contains(identToken1.getValue()) && ALLOWED_VERTICAL_VALUES.contains(identToken2.getValue());
+			return ALLOWED_HORIZONTAL_VALUES.contains(identToken1.value()) && ALLOWED_VERTICAL_VALUES.contains(identToken2.value());
 		}
 
 	}

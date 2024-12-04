@@ -1,5 +1,5 @@
 package com.github.webicitybrowser.spec.css.parser.tokens;
 
-public interface EOFToken extends Token {
+public record EOFToken() implements Token {
 
 }

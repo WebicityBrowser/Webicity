@@ -15,7 +15,7 @@ public class PositionTypeValueParser implements PropertyValueParser<PositionType
 			return PropertyValueParseResultImp.empty();
 		}
 
-		return switch (((IdentToken) tokens[offset]).getValue()) {
+		return switch (((IdentToken) tokens[offset]).value()) {
 			case "static" -> PropertyValueParseResultImp.of(PositionTypeValue.STATIC, 1);
 			case "relative" -> PropertyValueParseResultImp.of(PositionTypeValue.RELATIVE, 1);
 			case "sticky" -> PropertyValueParseResultImp.of(PositionTypeValue.STICKY, 1);

@@ -1,7 +1,5 @@
 package com.github.webicitybrowser.spec.css.parser.tokens;
 
-public interface AtKeywordToken extends Token {
-
-	String getValue();
+public record AtKeywordToken(String value) implements Token {
 	
 }

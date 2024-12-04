@@ -15,7 +15,7 @@ public class BorderStyleLonghandValueParser implements PropertyValueParser<Borde
 			return PropertyValueParseResultImp.empty();
 		}
 
-		String name = ((IdentToken) tokens[offset]).getValue();
+		String name = ((IdentToken) tokens[offset]).value();
 		try {
 			BorderStyleValue borderStyleValue = BorderStyleValue.valueOf(name.toUpperCase());
 			return PropertyValueParseResultImp.of(borderStyleValue, 1);

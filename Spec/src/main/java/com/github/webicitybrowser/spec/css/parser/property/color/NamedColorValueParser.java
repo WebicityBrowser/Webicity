@@ -20,7 +20,7 @@ public class NamedColorValueParser implements PropertyValueParser<ColorValue> {
 			return PropertyValueParseResultImp.empty();
 		}
 
-		String name = ((IdentToken) tokens[offset]).getValue();
+		String name = ((IdentToken) tokens[offset]).value();
 		ColorValue color = colors.get(name);
 
 		if (color != null) {

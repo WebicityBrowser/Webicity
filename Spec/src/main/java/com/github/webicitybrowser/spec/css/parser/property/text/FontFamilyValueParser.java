@@ -46,9 +46,9 @@ public class FontFamilyValueParser implements PropertyValueParser<FontFamilyValu
 	private FontFamilyEntry parseFontFamilyEntry(TokenStream tokenStream) {
 		TokenLike token = tokenStream.read();
 		if (token instanceof StringToken stringToken) {
-			return (NamedFontFamilyEntry) () -> stringToken.getValue();
+			return (NamedFontFamilyEntry) () -> stringToken.value();
 		} else if (token instanceof IdentToken identToken) {
-			return (NamedFontFamilyEntry) () -> identToken.getValue();
+			return (NamedFontFamilyEntry) () -> identToken.value();
 		} else {
 			return null;
 		}

@@ -20,7 +20,7 @@ public final class CSSOMVariableResolver {
 
 	public static boolean hasVariable(TokenLike[] tokens) {
 		for (TokenLike token: tokens) {
-			if (token instanceof FunctionValue functionValue && functionValue.getName().equals(VARIABLE_FUNCTION)) {
+			if (token instanceof FunctionValue functionValue && functionValue.name().equals(VARIABLE_FUNCTION)) {
 				return true;
 			}
 		}
@@ -37,9 +37,9 @@ public final class CSSOMVariableResolver {
 		for (TokenLike token: tokens) {
 			if (
 				token instanceof FunctionValue functionValue &&
-				functionValue.getName().equals(VARIABLE_FUNCTION)
+				functionValue.name().equals(VARIABLE_FUNCTION)
 			) {
-				TokenStream subStream = TokenStream.create(TokenUtils.stripWhitespace(functionValue.getValue()));
+				TokenStream subStream = TokenStream.create(TokenUtils.stripWhitespace(functionValue.value()));
 				if (!parseAndResolveVariable(subStream, adjustedTokens, relativeResolver)) {
 					return Optional.empty();
 				}
@@ -91,11 +91,11 @@ public final class CSSOMVariableResolver {
 		if (!(token instanceof IdentToken identToken)) {
 			return null;
 		}
-		if (!identToken.getValue().startsWith("--")) {
+		if (!identToken.value().startsWith("--")) {
 			return null;
 		}
 
-		return identToken.getValue();
+		return identToken.value();
 	}
 
 }

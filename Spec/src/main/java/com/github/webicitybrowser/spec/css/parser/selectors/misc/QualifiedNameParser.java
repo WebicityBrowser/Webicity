@@ -32,7 +32,7 @@ public class QualifiedNameParser {
 		if (!(token instanceof IdentToken)) {
 			fail(stream);
 		}
-		String name = ((IdentToken) token).getValue();
+		String name = ((IdentToken) token).value();
 		
 		return createQualifiedName(QualifiedName.NO_NAMESPACE, name);
 	}
@@ -50,7 +50,7 @@ public class QualifiedNameParser {
 		if (!(token instanceof IdentToken)) {
 			fail(stream);
 		}
-		String elementName = ((IdentToken) token).getValue();
+		String elementName = ((IdentToken) token).value();
 		
 		return createQualifiedName(QualifiedName.ANY_NAMESPACE, elementName);
 	}
@@ -63,7 +63,7 @@ public class QualifiedNameParser {
 			fail(stream);
 		}
 		
-		String elementName = ((IdentToken) token).getValue();
+		String elementName = ((IdentToken) token).value();
 		
 		if (isBarToken(stream.peek())) {
 			stream.read();
@@ -73,7 +73,7 @@ public class QualifiedNameParser {
 			if (!(token instanceof IdentToken)) {
 				fail(stream);
 			}
-			elementName = ((IdentToken) token).getValue();
+			elementName = ((IdentToken) token).value();
 		}
 		
 		return createQualifiedName(namespace, elementName);
@@ -82,13 +82,13 @@ public class QualifiedNameParser {
 	private boolean isBarToken(TokenLike token) {
 		return
 			token instanceof DelimToken &&
-			((DelimToken) token).getValue() == '|';
+			((DelimToken) token).value() == '|';
 	}
 	
 	private boolean isGlobToken(TokenLike token) {
 		return
 			token instanceof DelimToken &&
-			((DelimToken) token).getValue() == '*';
+			((DelimToken) token).value() == '*';
 	}
 	
 	private void fail(TokenStream stream) throws ParseFormatException {

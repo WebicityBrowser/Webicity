@@ -16,7 +16,6 @@ import com.github.webicitybrowser.spec.css.parser.tokens.CommaToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.LParenToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.NumberToken;
-import com.github.webicitybrowser.spec.css.parser.tokens.NumberTypeFlag;
 import com.github.webicitybrowser.spec.css.parser.tokens.RParenToken;
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 import com.github.webicitybrowser.spec.css.property.shared.math.MinMathValue;
@@ -48,7 +47,7 @@ public class MathValueParserTest {
 	public void canParseValueWithMinFunction() {
 		TokenLike[] tokens = new TokenLike[] {
 			createFunctionValue("min",
-				new IntegerToken(5), new CommaToken() {}, new IntegerToken(3)
+				new IntegerToken(5), new CommaToken(), new IntegerToken(3)
 			)
 		};
 		PropertyValueParseResult<CSSValue> result = mathValueParser.parse(tokens, 0, tokens.length);
@@ -63,7 +62,7 @@ public class MathValueParserTest {
 	public void canParseCalcWithNoOperators() {
 		TokenLike[] tokens = new TokenLike[] {
 			createFunctionValue("calc",
-				createNumberToken(5)
+				new NumberToken(5)
 			)
 		};
 		PropertyValueParseResult<CSSValue> result = mathValueParser.parse(tokens, 0, tokens.length);
@@ -89,9 +88,9 @@ public class MathValueParserTest {
 	public void canParseCalcWithAddition() {
 		TokenLike[] tokens = new TokenLike[] {
 			createFunctionValue("calc",
-				createNumberToken(1),
-				(DelimToken) () -> '+',
-				createNumberToken(2)
+				new NumberToken(1),
+				new DelimToken('+'),
+				new NumberToken(2)
 			)
 		};
 		PropertyValueParseResult<CSSValue> result = mathValueParser.parse(tokens, 0, tokens.length);
@@ -108,9 +107,9 @@ public class MathValueParserTest {
 	public void canParseCalcWithMultiplication() {
 		TokenLike[] tokens = new TokenLike[] {
 			createFunctionValue("calc",
-				createNumberToken(1),
-				(DelimToken) () -> '*',
-				createNumberToken(2)
+				new NumberToken(1),
+				new DelimToken('*'),
+				new NumberToken(2)
 			)
 		};
 		PropertyValueParseResult<CSSValue> result = mathValueParser.parse(tokens, 0, tokens.length);
@@ -127,9 +126,9 @@ public class MathValueParserTest {
 	public void canParseCalcWithParentheses() {
 		TokenLike[] tokens = new TokenLike[] {
 			createFunctionValue("calc",
-				new LParenToken() {},
-				createNumberToken(1),
-				new RParenToken() {}
+				new LParenToken(),
+				new NumberToken(1),
+				new RParenToken()
 			)
 		};
 		PropertyValueParseResult<CSSValue> result = mathValueParser.parse(tokens, 0, tokens.length);
@@ -142,13 +141,13 @@ public class MathValueParserTest {
 	public void canParseCalcWithComplexExpression() {
 		TokenLike[] tokens = new TokenLike[] {
 			createFunctionValue("calc",
-				new LParenToken() {},
-				createNumberToken(1),
-				(DelimToken) () -> '-',
-				createNumberToken(2),
-				new RParenToken() {},
-				(DelimToken) () -> '/',
-				createNumberToken(3)
+				new LParenToken(),
+				new NumberToken(1),
+				new DelimToken('-'),
+				new NumberToken(2),
+				new RParenToken(),
+				new DelimToken('/'),
+				new NumberToken(3)
 			)
 		};
 		PropertyValueParseResult<CSSValue> result = mathValueParser.parse(tokens, 0, tokens.length);
@@ -176,29 +175,7 @@ public class MathValueParserTest {
 	}
 
 	private static FunctionValue createFunctionValue(String name, TokenLike... values) {
-		return new FunctionValue() {
-			@Override
-			public String getName() {
-				return name;
-			}
-			@Override
-			public TokenLike[] getValue() {
-				return values;
-			}
-		};
-	}
-
-	private static NumberToken createNumberToken(int value) {
-		return new NumberToken() {
-			@Override
-			public Number getValue() {
-				return value;
-			}
-			@Override
-			public NumberTypeFlag getTypeFlag() {
-				return NumberTypeFlag.INTEGER;
-			}
-		};
+		return new FunctionValue(name, values);
 	}
 
 	private static record IntegerToken(int value) implements TokenLike {}

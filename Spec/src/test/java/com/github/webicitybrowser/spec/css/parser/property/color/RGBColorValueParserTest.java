@@ -12,7 +12,6 @@ import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseRes
 import com.github.webicitybrowser.spec.css.parser.tokens.CommaToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.NumberToken;
-import com.github.webicitybrowser.spec.css.parser.tokens.NumberTypeFlag;
 import com.github.webicitybrowser.spec.css.parser.tokens.PercentageToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.property.color.ColorValue;
@@ -30,16 +29,16 @@ public class RGBColorValueParserTest {
 	@DisplayName("Can parse rgb(0,0,0)")
 	public void canParseRGB000() throws Exception {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0)
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertTrue(result.getResult().isPresent());
@@ -56,18 +55,18 @@ public class RGBColorValueParserTest {
 	@DisplayName("Can parse rgb(0, 0, 0)")
 	public void canParseRGB0_0_0() throws Exception {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(0),
-			new CommaToken() {},
-			new WhitespaceToken() {},
-			createNumberToken(0),
-			new CommaToken() {},
-			new WhitespaceToken() {},
-			createNumberToken(0)
+			new NumberToken(0),
+			new CommaToken(),
+			new WhitespaceToken(),
+			new NumberToken(0),
+			new CommaToken(),
+			new WhitespaceToken(),
+			new NumberToken(0)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertTrue(result.getResult().isPresent());
@@ -84,16 +83,16 @@ public class RGBColorValueParserTest {
 	@DisplayName("Can parse rgb(1,0,0)")
 	public void canParseRGB100() throws Exception {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(1),
-			new CommaToken() {},
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0)
+			new NumberToken(1),
+			new CommaToken(),
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertTrue(result.getResult().isPresent());
@@ -110,18 +109,18 @@ public class RGBColorValueParserTest {
 	@DisplayName("Can parse rgb(0,0,0 1%)")
 	public void canParseRGB0001p() throws Exception {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0),
-			new WhitespaceToken() {},
-			(PercentageToken) () -> 1
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0),
+			new WhitespaceToken(),
+			new PercentageToken(1)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertTrue(result.getResult().isPresent());
@@ -138,18 +137,18 @@ public class RGBColorValueParserTest {
 	@DisplayName("Can parse rgb(0,0,0/1)")
 	public void canParseRGB000slash1p() throws Exception {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0),
-			(DelimToken) () -> '/',
-			createNumberToken(1)
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0),
+			new DelimToken('/'),
+			new NumberToken(1)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertTrue(result.getResult().isPresent());
@@ -166,14 +165,14 @@ public class RGBColorValueParserTest {
 	@DisplayName("Can parse rgb(1%1%1%)")
 	public void canParseRGB1p1p1p() {
 		TokenLike[] valueTokens = new TokenLike[] {
-			(PercentageToken) () -> 1,
-			(PercentageToken) () -> 1,
-			(PercentageToken) () -> 1
+			new PercentageToken(1),
+			new PercentageToken(1),
+			new PercentageToken(1)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertTrue(result.getResult().isPresent());
@@ -190,18 +189,18 @@ public class RGBColorValueParserTest {
 	@DisplayName("Can parse rgba(255 255 255, .5)")
 	public void canParseRGBA000_5() throws Exception {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(255),
-			new WhitespaceToken() {},
-			createNumberToken(255),
-			new WhitespaceToken() {},
-			createNumberToken(255),
-			new CommaToken() {},
-			createNumberToken(.5f),
+			new NumberToken(255),
+			new WhitespaceToken(),
+			new NumberToken(255),
+			new WhitespaceToken(),
+			new NumberToken(255),
+			new CommaToken(),
+			new NumberToken(.5f),
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgba");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgba");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertTrue(result.getResult().isPresent());
@@ -218,16 +217,16 @@ public class RGBColorValueParserTest {
 	@DisplayName("Cannot parse wrong function name")
 	public void cannotParseWrongFunctionName() {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0)
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("wrong");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("wrong");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertFalse(result.getResult().isPresent());
@@ -237,15 +236,15 @@ public class RGBColorValueParserTest {
 	@DisplayName("Cannot parse wrong number of arguments")
 	public void cannotParseWrongNumberOfArguments() {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0),
-			new CommaToken() {},
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0),
+			new CommaToken(),
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertFalse(result.getResult().isPresent());
@@ -255,16 +254,16 @@ public class RGBColorValueParserTest {
 	@DisplayName("Cannot mix percentage and number")
 	public void cannotMixPercentageAndNumber() {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(0),
-			new CommaToken() {},
-			(PercentageToken) () -> 0,
-			new CommaToken() {},
-			createNumberToken(0)
+			new NumberToken(0),
+			new CommaToken(),
+			new PercentageToken(0),
+			new CommaToken(),
+			new NumberToken(0)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertFalse(result.getResult().isPresent());
@@ -274,46 +273,32 @@ public class RGBColorValueParserTest {
 	@DisplayName("Use of commas must be consistent")
 	public void useOfCommasMustBeConsistent() {
 		TokenLike[] valueTokens = new TokenLike[] {
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0),
-			createNumberToken(0)
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0),
+			new NumberToken(0)
 		};
 
 		FunctionValue functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result1 = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertFalse(result1.getResult().isPresent());
 
 		valueTokens = new TokenLike[] {
-			createNumberToken(0),
-			createNumberToken(0),
-			new CommaToken() {},
-			createNumberToken(0)
+			new NumberToken(0),
+			new NumberToken(0),
+			new CommaToken(),
+			new NumberToken(0)
 		};
 
 		functionValue = Mockito.mock(FunctionValue.class);
-		Mockito.when(functionValue.getName()).thenReturn("rgb");
-		Mockito.when(functionValue.getValue()).thenReturn(valueTokens);
+		Mockito.when(functionValue.name()).thenReturn("rgb");
+		Mockito.when(functionValue.value()).thenReturn(valueTokens);
 
 		PropertyValueParseResult<ColorValue> result2 = rgbColorValueParser.parse(new TokenLike[] { functionValue }, 0, 1);
 		Assertions.assertFalse(result2.getResult().isPresent());
-	}
-
-	private NumberToken createNumberToken(float value) {
-		return new NumberToken() {
-			@Override
-			public Number getValue() {
-				return value;
-			}
-
-			@Override
-			public NumberTypeFlag getTypeFlag() {
-				return NumberTypeFlag.NUMBER;
-			}
-		};
 	}
 
 }

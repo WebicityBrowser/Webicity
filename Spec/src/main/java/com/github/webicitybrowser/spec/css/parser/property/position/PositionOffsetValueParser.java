@@ -19,7 +19,7 @@ public class PositionOffsetValueParser implements PropertyValueParser<CSSValue> 
 			return PropertyValueParseResultImp.empty();
 		}
 
-		if (tokens[offset] instanceof IdentToken identToken && identToken.getValue().equals("auto")) {
+		if (tokens[offset] instanceof IdentToken identToken && identToken.value().equals("auto")) {
 			return PropertyValueParseResultImp.of(new AutoValue(), 1);
 		}
 

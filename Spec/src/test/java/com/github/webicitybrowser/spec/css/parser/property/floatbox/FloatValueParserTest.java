@@ -23,7 +23,7 @@ public class FloatValueParserTest {
 	@DisplayName("Can parse float value")
 	public void canParseFloatValue() {
 		TokenLike[] tokens = new TokenLike[] {
-			(IdentToken) () -> "left"
+			new IdentToken("left")
 		};
 
 		PropertyValueParseResult<FloatValue> parseResult = floatValueParser.parse(tokens, 0, tokens.length);

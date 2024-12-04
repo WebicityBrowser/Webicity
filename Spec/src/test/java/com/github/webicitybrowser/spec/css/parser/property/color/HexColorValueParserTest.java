@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseResult;
 import com.github.webicitybrowser.spec.css.parser.tokens.HashToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.HashToken.HashTypeFlag;
 import com.github.webicitybrowser.spec.css.property.color.ColorValue;
 
 public class HexColorValueParserTest {
@@ -23,7 +24,7 @@ public class HexColorValueParserTest {
 	@DisplayName("Can parse 6 digit hex color")
 	public void canParse6DigitHexColor() {
 		TokenLike[] tokens = new TokenLike[] {
-			createHashToken("ff0000")
+			new HashToken("ff0000", HashTypeFlag.UNRESTRICTED)
 		};
 
 		PropertyValueParseResult<ColorValue> result = hexColorValueParser.parse(tokens, 0, 1);
@@ -41,7 +42,7 @@ public class HexColorValueParserTest {
 	@DisplayName("Can parse 3 digit hex color")
 	public void canParse3DigitHexColor() {
 		TokenLike[] tokens = new TokenLike[] {
-			createHashToken("f00")
+			new HashToken("f00", HashTypeFlag.UNRESTRICTED)
 		};
 
 		PropertyValueParseResult<ColorValue> result = hexColorValueParser.parse(tokens, 0, 1);
@@ -59,7 +60,7 @@ public class HexColorValueParserTest {
 	@DisplayName("Can parse 8 digit hex color")
 	public void canParse8DigitHexColor() {
 		TokenLike[] tokens = new TokenLike[] {
-			createHashToken("ff000011")
+			new HashToken("ff000011", HashTypeFlag.UNRESTRICTED)
 		};
 
 		PropertyValueParseResult<ColorValue> result = hexColorValueParser.parse(tokens, 0, 1);
@@ -77,7 +78,7 @@ public class HexColorValueParserTest {
 	@DisplayName("Can parse 4 digit hex color")
 	public void canParse4DigitHexColor() {
 		TokenLike[] tokens = new TokenLike[] {
-			createHashToken("f001")
+			new HashToken("f001", HashTypeFlag.UNRESTRICTED)
 		};
 
 		PropertyValueParseResult<ColorValue> result = hexColorValueParser.parse(tokens, 0, 1);
@@ -95,25 +96,11 @@ public class HexColorValueParserTest {
 	@DisplayName("Cannot parse 5 digit hex color")
 	public void cannotParse5DigitHexColor() {
 		TokenLike[] tokens = new TokenLike[] {
-			createHashToken("ff000")
+			new HashToken("ff000", HashTypeFlag.UNRESTRICTED)
 		};
 
 		PropertyValueParseResult<ColorValue> result = hexColorValueParser.parse(tokens, 0, 1);
 		Assertions.assertFalse(result.getResult().isPresent());
-	}
-
-	private HashToken createHashToken(String value) {
-		return new HashToken() {
-			@Override
-			public String getValue() {
-				return value;
-			}
-
-			@Override
-			public HashTypeFlag getTypeFlag() {
-				return HashTypeFlag.UNRESTRICTED;
-			}
-		};
 	}
 
 }

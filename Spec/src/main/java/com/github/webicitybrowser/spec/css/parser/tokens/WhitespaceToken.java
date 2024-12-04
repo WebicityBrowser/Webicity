@@ -1,5 +1,5 @@
 package com.github.webicitybrowser.spec.css.parser.tokens;
 
-public interface WhitespaceToken extends Token {
+public record WhitespaceToken() implements Token {
 
 }
