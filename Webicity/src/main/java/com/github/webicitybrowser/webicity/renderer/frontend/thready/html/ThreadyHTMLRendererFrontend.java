@@ -10,6 +10,7 @@ import com.github.webicitybrowser.spec.css.parser.tokenizer.CSSTokenizer;
 import com.github.webicitybrowser.spec.css.parser.tokens.Token;
 import com.github.webicitybrowser.spec.css.rule.CSSRule;
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
+import com.github.webicitybrowser.spec.css.selectors.SelectorOrderingTag;
 import com.github.webicitybrowser.spec.html.node.HTMLDocument;
 import com.github.webicitybrowser.thready.drawing.core.text.CommonFontWeights;
 import com.github.webicitybrowser.thready.drawing.core.text.FontDecoration;
@@ -102,8 +103,11 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 	private CSSOMTree<DocumentStyleGenerator, CSSRuleList>[] createCSSOMTrees(DocumentStyleSheetSet styleSheetSet) {
 		List<CSSOMTree<DocumentStyleGenerator, CSSRuleList>> cssomTrees = new ArrayList<>();
 		CSSOMTreeGenerator<DocumentStyleGenerator> binder = CSSOMTreeGenerator.create(CSSOMFilterCreator.create(node -> node.getDOMNode()));
-		for (CSSRuleListEntry ruleEntry: styleSheetSet.getRuleLists()) {
-			cssomTrees.add(binder.createCSSOMFor(ruleEntry.ruleList(), ruleEntry.source()));
+		List<CSSRuleListEntry> ruleLists = styleSheetSet.getRuleLists();
+		for (int i = 0; i < ruleLists.size(); i++) {
+			CSSRuleListEntry ruleEntry = ruleLists.get(i);
+			SelectorOrderingTag tag = new SelectorOrderingTag(ruleEntry.source(), i);
+			cssomTrees.add(binder.createCSSOMFor(ruleEntry.ruleList(), tag));
 		}
 		
 		return cssomTrees.toArray(new CSSOMTree[0]);

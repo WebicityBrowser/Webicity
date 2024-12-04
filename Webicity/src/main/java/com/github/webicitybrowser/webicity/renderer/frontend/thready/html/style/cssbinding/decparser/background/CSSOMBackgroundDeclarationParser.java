@@ -8,6 +8,7 @@ import com.github.webicitybrowser.spec.css.parser.property.background.Background
 import com.github.webicitybrowser.spec.css.property.background.BackgroundValue;
 import com.github.webicitybrowser.spec.css.property.background.BackgroundValue.BackgroundLayer;
 import com.github.webicitybrowser.spec.css.property.color.ColorValue;
+import com.github.webicitybrowser.thready.color.Colors;
 import com.github.webicitybrowser.thready.color.colors.RGBA8Color;
 import com.github.webicitybrowser.thready.color.format.ColorFormat;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
@@ -28,11 +29,14 @@ public class CSSOMBackgroundDeclarationParser implements CSSOMNamedDeclarationPa
 		List<Directive> directives = new ArrayList<>();
 
 		BackgroundLayer lastLayer = value.layer().get(value.layer().size() - 1);
+
 		if (lastLayer.color() != null) {
 			directives.add(BackgroundColorDirective.of(createColorFrom(lastLayer.color())));
+		} else {
+			directives.add(BackgroundColorDirective.of(Colors.TRANSPARENT));
 		}
 
-		return directives.toArray(new Directive[0]);
+		return directives.toArray(Directive[]::new);
 	}
 
 	@Override

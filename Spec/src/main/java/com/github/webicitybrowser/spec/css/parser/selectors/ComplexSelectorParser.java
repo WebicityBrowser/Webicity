@@ -23,8 +23,8 @@ import com.github.webicitybrowser.spec.css.parser.tokens.LSBracketToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
+import com.github.webicitybrowser.spec.css.selectors.SelectorOrderingTag;
 import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity;
-import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity.Source;
 
 public class ComplexSelectorParser {
 
@@ -36,14 +36,14 @@ public class ComplexSelectorParser {
 	
 	private final CombinatorParser combinatorParser = new CombinatorParser();
 	
-	public ComplexSelector[] parseMany(TokenLike[] prelude, int order, Source source) {
+	public ComplexSelector[] parseMany(TokenLike[] prelude, int order, SelectorOrderingTag orderingTag) {
 		TokenStream stream = new TokenStreamImp(prelude);
 		List<ComplexSelector> selectors = new ArrayList<>();
 		
 		while (!(stream.peek() instanceof EOFToken)) {
 			ComplexSelector complexSelector;
 			try {
-				complexSelector = consumeComplexSelector(stream, order, source);
+				complexSelector = consumeComplexSelector(stream, order, orderingTag);
 				if (complexSelector != null) {
 					selectors.add(complexSelector);
 				} else {
@@ -57,7 +57,7 @@ public class ComplexSelectorParser {
 		return selectors.toArray(ComplexSelector[]::new);
 	}
 
-	private ComplexSelector consumeComplexSelector(TokenStream stream, int order, Source source) throws ParseFormatException {
+	private ComplexSelector consumeComplexSelector(TokenStream stream, int order, SelectorOrderingTag orderingTag) throws ParseFormatException {
 		List<ComplexSelectorPart> selectorParts = new ArrayList<>();
 		
 		consumeWhitespace(stream);
@@ -77,7 +77,7 @@ public class ComplexSelectorParser {
 		
 		stream.read();
 		
-		return createComplexSelectorFromParts(selectorParts, order, source);
+		return createComplexSelectorFromParts(selectorParts, order, orderingTag);
 	}
 
 	private void consumeSimpleSelectors(TokenStream stream, List<ComplexSelectorPart> selectorParts) throws ParseFormatException {
@@ -129,21 +129,11 @@ public class ComplexSelectorParser {
 		while (!isSeperatingToken(stream.read()));
 	}
 
-	private ComplexSelector createComplexSelectorFromParts(List<ComplexSelectorPart> selectorParts, int order, Source source) {
+	private ComplexSelector createComplexSelectorFromParts(List<ComplexSelectorPart> selectorParts, int order, SelectorOrderingTag orderingTag) {
 		ComplexSelectorPart[] parts = selectorParts.toArray(ComplexSelectorPart[]::new);
-		SelectorSpecificity selectorSpecificity = SelectorSpecificityCalculator.calculateSpecificity(parts, order, source);
+		SelectorSpecificity selectorSpecificity = SelectorSpecificityCalculator.calculateSpecificity(parts, order, orderingTag);
 		
-		return new ComplexSelector() {	
-			@Override
-			public SelectorSpecificity getSpecificity() {
-				return selectorSpecificity;
-			}
-			
-			@Override
-			public ComplexSelectorPart[] getParts() {
-				return parts;
-			}
-		};
+		return new ComplexSelector(parts, selectorSpecificity);
 	}
 
 }

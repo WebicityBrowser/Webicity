@@ -17,6 +17,7 @@ import com.github.webicitybrowser.spec.css.parser.tokens.RSBracketToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
+import com.github.webicitybrowser.spec.css.selectors.SelectorOrderingTag;
 import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity.Source;
 import com.github.webicitybrowser.spec.css.selectors.combinator.ChildCombinator;
 import com.github.webicitybrowser.spec.css.selectors.combinator.DescendantCombinator;
@@ -26,6 +27,8 @@ import com.github.webicitybrowser.spec.css.selectors.selector.TypeSelector;
 import com.github.webicitybrowser.spec.css.selectors.selector.psuedo.RootSelector;
 
 public class ComplexSelectorParserTest {
+
+	private static final SelectorOrderingTag DEFAULT_ORDERING_TAG = new SelectorOrderingTag(Source.UA, 0);
 
 	private ComplexSelectorParser complexSelectorParser;
 
@@ -38,7 +41,7 @@ public class ComplexSelectorParserTest {
 	@DisplayName("Empty input returns no complex selectors")
 	public void emptyInputReturnsNoComplexSelectors() {
 		TokenLike[] tokens = new TokenLike[0];
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertArrayEquals(new ComplexSelector[0], selectors);
 	}
 	
@@ -48,9 +51,9 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new IdentToken("hi")
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 		TypeSelector selector = (TypeSelector) parts[0];
@@ -63,7 +66,7 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new IdentToken("hi"), new IdentToken("hi")
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(0, selectors.length);
 	}
 	
@@ -73,16 +76,16 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new IdentToken("hi"), new CommaToken(), new IdentToken("bye")
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(2, selectors.length);
 		{
-			ComplexSelectorPart[] parts = selectors[0].getParts();
+			ComplexSelectorPart[] parts = selectors[0].parts();
 			Assertions.assertEquals(1, parts.length);
 			Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 			TypeSelector selector = (TypeSelector) parts[0];
 			Assertions.assertEquals("hi", selector.getQualifiedName().getName());
 		} {
-			ComplexSelectorPart[] parts = selectors[1].getParts();
+			ComplexSelectorPart[] parts = selectors[1].parts();
 			Assertions.assertEquals(1, parts.length);
 			Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 			TypeSelector selector = (TypeSelector) parts[0];
@@ -96,9 +99,9 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new WhitespaceToken(), new IdentToken("hi"), new WhitespaceToken()
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 		TypeSelector selector = (TypeSelector) parts[0];
@@ -111,9 +114,9 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new DelimToken('.'), new IdentToken("hi")
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
 		AttributeSelector selector = (AttributeSelector) parts[0];
@@ -126,9 +129,9 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new HashToken("hi", HashTypeFlag.ID)
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(IDSelector.class, parts[0]);
 		IDSelector selector = (IDSelector) parts[0];
@@ -141,9 +144,9 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new ColonToken(), new IdentToken("root")
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(RootSelector.class, parts[0]);
 	}
@@ -154,9 +157,9 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new LSBracketToken(), new IdentToken("hi"), new RSBracketToken()
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
 		AttributeSelector selector = (AttributeSelector) parts[0];
@@ -169,9 +172,9 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new DelimToken('.'), new IdentToken("hi"), new DelimToken('.'), new IdentToken("bye")
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(2, parts.length);
 
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
@@ -190,9 +193,9 @@ public class ComplexSelectorParserTest {
 			new LSBracketToken(), new IdentToken("hi"), new RSBracketToken(),
 			new LSBracketToken(), new IdentToken("bye"), new RSBracketToken()
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(2, parts.length);
 
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
@@ -210,9 +213,9 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new IdentToken("hi"), new DelimToken('>'), new IdentToken("bye")
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(3, parts.length);
 
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
@@ -232,9 +235,9 @@ public class ComplexSelectorParserTest {
 		TokenLike[] tokens = new TokenLike[] {
 			new IdentToken("hi"), new WhitespaceToken(), new IdentToken("bye")
 		};
-		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, Source.UA);
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
-		ComplexSelectorPart[] parts = selectors[0].getParts();
+		ComplexSelectorPart[] parts = selectors[0].parts();
 		Assertions.assertEquals(3, parts.length);
 
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);

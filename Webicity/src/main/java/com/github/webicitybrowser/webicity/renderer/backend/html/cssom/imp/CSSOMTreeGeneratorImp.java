@@ -12,7 +12,7 @@ import com.github.webicitybrowser.spec.css.rule.Declaration;
 import com.github.webicitybrowser.spec.css.rule.QualifiedRule;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
-import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity.Source;
+import com.github.webicitybrowser.spec.css.selectors.SelectorOrderingTag;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilterCreator;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
@@ -28,29 +28,29 @@ public class CSSOMTreeGeneratorImp<T> implements CSSOMTreeGenerator<T> {
 	}
 	
 	@Override
-	public CSSOMTree<T, CSSRuleList> createCSSOMFor(CSSRuleList ruleList, Source source) {
+	public CSSOMTree<T, CSSRuleList> createCSSOMFor(CSSRuleList ruleList, SelectorOrderingTag orderingTag) {
 		CSSOMNode<T, CSSRuleList> rootNode = CSSOMNode.create(null, null);
-		addRuleListToCSSOMNode(rootNode, ruleList, source);
+		addRuleListToCSSOMNode(rootNode, ruleList, orderingTag);
 		
 		return CSSOMTree.create(rootNode);
 	}
 
-	private void addRuleListToCSSOMNode(CSSOMNode<T, CSSRuleList> rootNode, CSSRuleList ruleList, Source source) {
+	private void addRuleListToCSSOMNode(CSSOMNode<T, CSSRuleList> rootNode, CSSRuleList ruleList, SelectorOrderingTag orderingTag) {
 		for (int i = 0; i < ruleList.getLength(); i++) {
 			CSSRule rule = ruleList.getItem(i);
-			addCSSRuleToCSSOMNode(rootNode, rule, i, source);
+			addCSSRuleToCSSOMNode(rootNode, rule, i, orderingTag);
 		}
 	}
 
-	private void addCSSRuleToCSSOMNode(CSSOMNode<T, CSSRuleList> rootNode, CSSRule rule, int order, Source source) {
+	private void addCSSRuleToCSSOMNode(CSSOMNode<T, CSSRuleList> rootNode, CSSRule rule, int order, SelectorOrderingTag orderingTag) {
 		if (rule instanceof QualifiedRule qualifiedRule) {
-			addQualifiedRuleToCSSOMNode(rootNode, qualifiedRule, order, source);
+			addQualifiedRuleToCSSOMNode(rootNode, qualifiedRule, order, orderingTag);
 		}
 	}
 
-	private void addQualifiedRuleToCSSOMNode(CSSOMNode<T, CSSRuleList> rootNode, QualifiedRule rule, int order, Source source) {
+	private void addQualifiedRuleToCSSOMNode(CSSOMNode<T, CSSRuleList> rootNode, QualifiedRule rule, int order, SelectorOrderingTag orderingTag) {
 		TokenLike[] prelude = rule.prelude().toArray(TokenLike[]::new);
-		ComplexSelector[] selectors = new ComplexSelectorParser().parseMany(prelude, order, source);
+		ComplexSelector[] selectors = new ComplexSelectorParser().parseMany(prelude, order, orderingTag);
 		for (ComplexSelector selector: selectors) {
 			CSSOMNode<T, CSSRuleList> targetNode = getSelectedCSSOMNode(rootNode, selector);
 			CSSRuleList properties = createCSSRuleList(rule.value());
@@ -62,11 +62,11 @@ public class CSSOMTreeGeneratorImp<T> implements CSSOMTreeGenerator<T> {
 		CSSOMNode<T, CSSRuleList> rootNode, ComplexSelector selector
 	) {
 		CSSOMNode<T, CSSRuleList> current = rootNode;
-		for (ComplexSelectorPart complexSelectorPart: selector.getParts()) {
+		for (ComplexSelectorPart complexSelectorPart: selector.parts()) {
 			CSSOMFilter<T, CSSRuleList> filter = filterCreator.createFilterFor(complexSelectorPart);
 			current = current.createChild(filter, 0);
 		}
-		current.setSpecificity(selector.getSpecificity());
+		current.setSpecificity(selector.specificity());
 		
 		return current;
 	}

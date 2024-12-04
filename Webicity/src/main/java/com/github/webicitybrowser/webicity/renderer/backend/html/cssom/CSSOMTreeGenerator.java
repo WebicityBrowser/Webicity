@@ -1,7 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.backend.html.cssom;
 
 import com.github.webicitybrowser.spec.css.rule.CSSRuleList;
-import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity.Source;
+import com.github.webicitybrowser.spec.css.selectors.SelectorOrderingTag;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.imp.CSSOMTreeGeneratorImp;
 
 /**
@@ -15,7 +15,7 @@ public interface CSSOMTreeGenerator<T> {
 	 * @param ruleList the {@link CSSRuleList} to create the {@link CSSOMTree} from
 	 * @return the created {@link CSSOMTree}
 	 */
-	CSSOMTree<T, CSSRuleList> createCSSOMFor(CSSRuleList ruleList, Source source);
+	CSSOMTree<T, CSSRuleList> createCSSOMFor(CSSRuleList ruleList, SelectorOrderingTag orderingTag);
 	
 	/**
 	 * Creates a {@link CSSOMTreeGenerator} using the given {@link CSSOMFilterCreator}

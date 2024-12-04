@@ -1,9 +1,5 @@
 package com.github.webicitybrowser.spec.css.selectors;
 
-public interface ComplexSelector extends ComplexSelectorPart {
-
-	ComplexSelectorPart[] getParts();
-	
-	SelectorSpecificity getSpecificity();
+public record ComplexSelector(ComplexSelectorPart[] parts, SelectorSpecificity specificity) implements ComplexSelectorPart {
 	
 }
