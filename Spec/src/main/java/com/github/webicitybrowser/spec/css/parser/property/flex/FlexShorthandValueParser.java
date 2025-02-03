@@ -5,7 +5,7 @@ import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParseRes
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.imp.PropertyValueParseResultImp;
 import com.github.webicitybrowser.spec.css.parser.tokens.NumberToken;
-import com.github.webicitybrowser.spec.css.property.CSSValue;
+import com.github.webicitybrowser.spec.css.property.flexbox.FlexBasisValue;
 import com.github.webicitybrowser.spec.css.property.flexbox.FlexFactorValue;
 import com.github.webicitybrowser.spec.css.property.flexbox.FlexValue;
 
@@ -20,10 +20,10 @@ public class FlexShorthandValueParser implements PropertyValueParser<FlexValue> 
 		}
 
 		int usedLength = 0;
-		CSSValue basisValue = null;
+		FlexBasisValue basisValue = null;
 
 		if (!(tokens[offset] instanceof NumberToken)) {
-			PropertyValueParseResult<CSSValue> result = basisValueParser.parse(tokens, offset, length);
+			PropertyValueParseResult<FlexBasisValue> result = basisValueParser.parse(tokens, offset, length);
 			if (result.getResult().isPresent()) {
 				basisValue = result.getResult().get();
 				usedLength += result.getLength();
@@ -42,7 +42,7 @@ public class FlexShorthandValueParser implements PropertyValueParser<FlexValue> 
 		}
 
 		if (basisValue == null && usedLength < length) {
-			PropertyValueParseResult<CSSValue> result = basisValueParser.parse(tokens, offset + usedLength, length - usedLength);
+			PropertyValueParseResult<FlexBasisValue> result = basisValueParser.parse(tokens, offset + usedLength, length - usedLength);
 			if (result.getResult().isPresent()) {
 				basisValue = result.getResult().get();
 				usedLength += result.getLength();

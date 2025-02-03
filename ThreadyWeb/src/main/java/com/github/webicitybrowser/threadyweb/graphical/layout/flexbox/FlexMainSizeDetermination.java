@@ -57,13 +57,14 @@ public final class FlexMainSizeDetermination {
 
 			FlexItem flexItem = flexItems.get(i);
 			flexLine.addFlexItem(flexItem);
+
 			float remainingMainSpace = availableMainSpace - flexItem.getHypotheticalMainSize();
 			
 			i++;
 			for (; i < flexItems.size(); i++) {
 				flexItem = flexItems.get(i);
 				float hypotheticalMainSize = flexItem.getHypotheticalMainSize();
-				if (availableMainSpace != RelativeDimension.UNBOUNDED && hypotheticalMainSize > remainingMainSpace) break;
+				if (availableMainSpace != RelativeDimension.UNBOUNDED && hypotheticalMainSize > remainingMainSpace + .01) break; // TODO: Better way to handle rounding errors
 				flexLine.addFlexItem(flexItem);
 				remainingMainSpace -= hypotheticalMainSize;
 			}
@@ -84,14 +85,13 @@ public final class FlexMainSizeDetermination {
 	private static void determineMainSize(
 		LayoutRenderContext layoutManagerContext, FlexItem flexItem, FlexDirection flexDirection
 	) {
-		float preferredBaseSize = flexItem.getSizePreferences().getBaseSize();
+		float preferredBaseSize = flexItem.getSizePreferences().getBasisSize(flexDirection);
 		float preferredWidth = flexItem.getSizePreferences().getMainSize(flexDirection);
+		// TODO: Make sure this is definite
 		if (preferredBaseSize != RelativeDimension.UNBOUNDED) {
 			flexItem.setBaseSize(preferredBaseSize);
-			flexItem.setHypotheticalMainSize(clampMinMax(preferredBaseSize, flexItem, flexDirection));
 		} else if (preferredWidth != RelativeDimension.UNBOUNDED) {
 			flexItem.setBaseSize(preferredWidth);
-			flexItem.setHypotheticalMainSize(clampMinMax(preferredWidth, flexItem, flexDirection));
 		} else {
 			GlobalRenderContext globalRenderContext = layoutManagerContext.globalRenderContext();
 			FlexItemRenderer.FlexItemRenderContext flexItemRenderContext = new FlexItemRenderer.FlexItemRenderContext(
@@ -99,8 +99,8 @@ public final class FlexMainSizeDetermination {
 			AbsoluteSize fitSize = FlexItemRenderer.render(flexItem, flexItemRenderContext);
 			FlexDimension flexDimension = FlexDimension.createFrom(fitSize, flexDirection);
 			flexItem.setBaseSize(flexDimension.main());
-			flexItem.setHypotheticalMainSize(clampMinMax(flexDimension.main(), flexItem, flexDirection));
 		}
+		flexItem.setHypotheticalMainSize(Math.max(0, clampMinMax(flexItem.getBaseSize(), flexItem, flexDirection)));
 	}
 
 	private static float clampMinMax(float main, FlexItem flexItem, FlexDirection flexDirection) {

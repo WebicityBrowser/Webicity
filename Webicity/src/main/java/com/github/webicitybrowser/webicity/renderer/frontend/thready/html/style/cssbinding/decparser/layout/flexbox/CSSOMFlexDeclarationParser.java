@@ -33,7 +33,7 @@ public class CSSOMFlexDeclarationParser implements CSSOMNamedDeclarationParser<F
 			directives.add(FlexShrinkDirective.of(value.shrinkFactor().value()));
 		}
 		if (value.basis() != null) {
-			directives.add(FlexBasisDirective.of(SizeParser.parseNonPercent(value.basis())));
+			directives.add(new FlexBasisDirective(SizeParser.parseNonPercent(value.basis().size()), value.basis().isAuto()));
 		}
 		
 		return directives.toArray(Directive[]::new);

@@ -76,14 +76,45 @@ public class FlexInnerDisplayLayout implements SolidLayoutManager {
 		for (Box child: children) {
 			if (child instanceof TextBox textBox && textBox.text().isBlank()) continue;
 			if (child instanceof BasicAnonymousFluidBox anonBox) {
-				addFlexItems(layoutManagerContext, flexItems, anonBox.getChildrenTracker().getChildren());
+				addAnonBoxFlexItems(layoutManagerContext, flexItems, anonBox);
 				continue;
 			};
 
-			FlexItemSizePreferences sizePreferences = new FlexItemSizePreferences(layoutManagerContext, child);
-			FlexItem childFlexItem = new FlexItem(child, sizePreferences);
-			flexItems.add(childFlexItem);
+			addFlexItem(layoutManagerContext, flexItems, child);
 		}
+	}
+
+	private void addAnonBoxFlexItems(LayoutRenderContext layoutManagerContext, List<FlexItem> flexItems, BasicAnonymousFluidBox anonBox) {
+		List<Box> anonBoxChildren = anonBox.getChildrenTracker().getChildren();
+		List<TextBox> textChildren = new ArrayList<>();
+		for (Box anonBoxChild: anonBoxChildren) {
+			if (anonBoxChild instanceof TextBox textBox) {
+				if (textBox.text().isBlank()) continue;
+				textChildren.add(textBox);
+			} else {
+				addTextBoxFlexItems(layoutManagerContext, flexItems, anonBox, textChildren);
+				addFlexItem(layoutManagerContext, flexItems, anonBoxChild);
+			}
+		}
+
+		addTextBoxFlexItems(layoutManagerContext, flexItems, anonBox, textChildren);
+	}
+
+	private void addTextBoxFlexItems(LayoutRenderContext layoutManagerContext, List<FlexItem> flexItems, BasicAnonymousFluidBox parentBox, List<TextBox> textBoxes) {
+		if (textBoxes.isEmpty()) return;
+
+		BasicAnonymousFluidBox textBoxContainer = new BasicAnonymousFluidBox(
+			parentBox.display(), parentBox.componentUI(), parentBox.styleDirectives());
+		textBoxes.forEach(textBoxContainer.getChildrenTracker()::addChild);
+		textBoxes.clear();
+
+		addFlexItem(layoutManagerContext, flexItems, textBoxContainer);
+	}
+
+	private void addFlexItem(LayoutRenderContext layoutManagerContext, List<FlexItem> flexItems, Box child) {
+		FlexItemSizePreferences sizePreferences = new FlexItemSizePreferences(layoutManagerContext, child);
+		FlexItem childFlexItem = new FlexItem(child, sizePreferences);
+		flexItems.add(childFlexItem);
 	}
 
 	private FlexDimension determineLineDimensions(List<FlexLine> flexLines, FlexDirection flexDirection) {

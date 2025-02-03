@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.github.webicitybrowser.spec.css.QualifiedName;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.spec.infra.Namespace;
@@ -62,8 +63,8 @@ public class TypeFilter<T, U> implements CSSOMComposableFilter<T, U, TypeFilter<
 	private boolean isApplicable(T participant) {
 		if (nodeGetter.apply(participant) instanceof Element element) {
 			return
-				element.getLocalName().equals(elementName) &&
-				namespaceMatches(element.getNamespace());
+				(element.getLocalName().equals(elementName) || elementName.equals(QualifiedName.ANY_NAME))
+				&& namespaceMatches(element.getNamespace());
 		} else {
 			return false;
 		}

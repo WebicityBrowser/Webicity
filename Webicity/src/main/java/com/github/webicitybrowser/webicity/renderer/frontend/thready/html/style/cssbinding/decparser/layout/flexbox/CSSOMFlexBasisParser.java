@@ -4,25 +4,25 @@ import java.util.List;
 
 import com.github.webicitybrowser.spec.css.parser.property.PropertyValueParser;
 import com.github.webicitybrowser.spec.css.parser.property.flex.FlexBasisValueParser;
-import com.github.webicitybrowser.spec.css.property.CSSValue;
+import com.github.webicitybrowser.spec.css.property.flexbox.FlexBasisValue;
 import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.flexbox.FlexBasisDirective;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMNamedDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.componentparser.SizeParser;
 
-public class CSSOMFlexBasisParser implements CSSOMNamedDeclarationParser<CSSValue> {
+public class CSSOMFlexBasisParser implements CSSOMNamedDeclarationParser<FlexBasisValue> {
 
-	private final PropertyValueParser<CSSValue> parser = new FlexBasisValueParser();
+	private final PropertyValueParser<FlexBasisValue> parser = new FlexBasisValueParser();
 
 	@Override
-	public PropertyValueParser<CSSValue> getPropertyValueParser() {
+	public PropertyValueParser<FlexBasisValue> getPropertyValueParser() {
 		return parser;
 	}
 
 	@Override
-	public Directive[] translatePropertyValue(CSSValue value) {
+	public Directive[] translatePropertyValue(FlexBasisValue value) {
 		return new Directive[] {
-			FlexBasisDirective.of(SizeParser.parseNonPercent(value))
+			new FlexBasisDirective(SizeParser.parseNonPercent(value.size()), value.isAuto())
 		};
 	}
 

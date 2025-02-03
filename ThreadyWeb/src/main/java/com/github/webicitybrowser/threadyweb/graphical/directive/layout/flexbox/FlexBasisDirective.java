@@ -4,15 +4,11 @@ import com.github.webicitybrowser.thready.gui.directive.core.Directive;
 import com.github.webicitybrowser.threadyweb.graphical.directive.layout.common.size.SizeCalculationDirective;
 import com.github.webicitybrowser.threadyweb.graphical.value.SizeCalculation;
 
-public interface FlexBasisDirective extends SizeCalculationDirective {
-	
-	@Override
-	default Class<? extends Directive> getPrimaryType() {
-		return FlexBasisDirective.class;
-	}
+public record FlexBasisDirective(SizeCalculation getSizeCalculation, boolean isAuto) implements SizeCalculationDirective {
 
-	static FlexBasisDirective of(SizeCalculation basis) {
-		return () -> basis;
+	@Override
+	public Class<? extends Directive> getPrimaryType() {
+		return FlexBasisDirective.class;
 	}
 
 }

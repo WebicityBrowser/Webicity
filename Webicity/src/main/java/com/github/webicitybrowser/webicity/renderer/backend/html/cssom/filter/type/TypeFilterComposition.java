@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import com.github.webicitybrowser.spec.css.QualifiedName;
 import com.github.webicitybrowser.spec.dom.node.Element;
 import com.github.webicitybrowser.spec.dom.node.Node;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
@@ -37,7 +38,13 @@ public class TypeFilterComposition<T, U> implements CSSOMFilterComposition<T, U,
 	@Override
 	public List<CSSOMFilterEntry<T, U>> getPossibleFilters(T node) {
 		if (nodeGetter.apply(node) instanceof Element element) {
-			return List.copyOf(filters.getOrDefault(element.getLocalName(), Set.of()));
+			Set<CSSOMFilterEntry<T, U>> elementFilters = filters.getOrDefault(element.getLocalName(), Set.of());
+			Set<CSSOMFilterEntry<T, U>> universalFilters = filters.getOrDefault(QualifiedName.ANY_NAME, Set.of());
+			List<CSSOMFilterEntry<T, U>> result = new java.util.ArrayList<>(elementFilters.size() + universalFilters.size());
+			result.addAll(elementFilters);
+			result.addAll(universalFilters);
+			
+			return result;
 		} else {
 			return List.of();
 		}

@@ -1,6 +1,7 @@
 package com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.decparser.componentparser;
 
 import com.github.webicitybrowser.spec.css.property.CSSValue;
+import com.github.webicitybrowser.spec.css.property.shared.basic.AutoValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.AbsoluteLengthValue;
 import com.github.webicitybrowser.spec.css.property.shared.length.RelativeLengthValue;
 import com.github.webicitybrowser.spec.css.property.shared.math.MathValue;
@@ -45,6 +46,8 @@ public final class SizeParser {
 			return (_1, _2) -> translatedValue;
 		} else if (value instanceof RelativeLengthValue lengthValue) {
 			return translateRelativeValue(lengthValue);
+		} else if (value instanceof AutoValue) {
+			return (_1, _2) -> RelativeDimension.UNBOUNDED;
 		}
 		throw new UnsupportedOperationException("Unrecognized CSSValue: " + value);
 	}
@@ -87,7 +90,8 @@ public final class SizeParser {
 		case REM:
 			return (context, isHorizontal) -> context.rootFont().getSize() * initialValue;
 		case LH:
-			throw new UnsupportedOperationException("LH (Line Height) is not supported yet");
+			return (context, isHorizontal) -> 1.5f;
+			//throw new UnsupportedOperationException("LH (Line Height) is not supported yet");
 		case RLH:
 			throw new UnsupportedOperationException("RLH (Root-Relative Line Height) is not supported yet");
 		case VW:

@@ -80,5 +80,17 @@ public class TypeSelectorParserTest {
 		Assertions.assertEquals(QualifiedName.ANY_NAMESPACE, name.getNamespace());
 		Assertions.assertEquals("name", name.getName());
 	}
+
+	@Test
+	@DisplayName("Can parse element with glob name")
+	public void canParseElementWithGlobName() {
+		DelimToken delimToken = Mockito.mock(DelimToken.class);
+		Mockito.when(delimToken.value()).thenReturn((int) '*');
+		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken });
+		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
+		QualifiedName name = selector.getQualifiedName();
+		Assertions.assertEquals(QualifiedName.DEFAULT_NAMESPACE, name.getNamespace());
+		Assertions.assertEquals("*", name.getName());
+	}
 	
 }

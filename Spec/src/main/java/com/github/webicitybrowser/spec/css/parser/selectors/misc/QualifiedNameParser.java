@@ -28,31 +28,20 @@ public class QualifiedNameParser {
 			fail(stream);
 		}
 		
-		TokenLike token = stream.read();
-		if (!(token instanceof IdentToken)) {
-			fail(stream);
-		}
-		String name = ((IdentToken) token).value();
-		
-		return createQualifiedName(QualifiedName.NO_NAMESPACE, name);
+		return parseSecondQualifiedPart(QualifiedName.NO_NAMESPACE, stream);
 	}
 	
 	private QualifiedName parseAnyNamespaceQualifiedName(TokenStream stream) throws ParseFormatException {
 		if (!isGlobToken(stream.read())) {
 			fail(stream);
 		}
-		
-		if (!isBarToken(stream.read())) {
-			fail(stream);
+
+		if (!isBarToken(stream.peek())) {
+			return createQualifiedName(QualifiedName.DEFAULT_NAMESPACE, QualifiedName.ANY_NAME);
 		}
+		stream.read();
 		
-		TokenLike token = stream.read();
-		if (!(token instanceof IdentToken)) {
-			fail(stream);
-		}
-		String elementName = ((IdentToken) token).value();
-		
-		return createQualifiedName(QualifiedName.ANY_NAMESPACE, elementName);
+		return parseSecondQualifiedPart(QualifiedName.ANY_NAMESPACE, stream);
 	}
 	
 	private QualifiedName parseNamespaceQualifiedToken(TokenStream stream) throws ParseFormatException {
@@ -69,14 +58,22 @@ public class QualifiedNameParser {
 			stream.read();
 			namespace = elementName;
 			
-			token = stream.read();
-			if (!(token instanceof IdentToken)) {
-				fail(stream);
-			}
-			elementName = ((IdentToken) token).value();
+			return parseSecondQualifiedPart(namespace, stream);
 		}
-		
+
 		return createQualifiedName(namespace, elementName);
+	}
+
+	private QualifiedName parseSecondQualifiedPart(String namespace, TokenStream stream) throws ParseFormatException {
+		TokenLike token = stream.read();
+		if (token instanceof IdentToken identToken) {
+			return createQualifiedName(namespace, identToken.value());
+		} else if (isGlobToken(token)) {
+			return createQualifiedName(namespace, QualifiedName.ANY_NAME);
+		} else {
+			fail(stream);
+			return null;
+		}
 	}
 
 	private boolean isBarToken(TokenLike token) {
@@ -99,12 +96,12 @@ public class QualifiedNameParser {
 		return new QualifiedName() {	
 			@Override
 			public String getNamespace() {
-				return namespace;
+				return namespace.toLowerCase();
 			}
 			
 			@Override
 			public String getName() {
-				return name;
+				return name.toLowerCase();
 			}
 		};
 	}

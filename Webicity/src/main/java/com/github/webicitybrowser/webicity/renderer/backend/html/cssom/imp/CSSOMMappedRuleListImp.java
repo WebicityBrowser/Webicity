@@ -120,7 +120,7 @@ public class CSSOMMappedRuleListImp<T> implements CSSOMMappedRuleList<T> {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private <U extends T> PropertyMeta<U> resolveSpecialProperty(TokenLike[] tokenLikes, RelativeResolver<T> relativeResolver, Class<U> propertyType) {
 		if (isInherit(tokenLikes)) {
-			return relativeResolver.resolveParentProperty(propertyType);
+			//return relativeResolver.resolveParentProperty(propertyType);
 		}
 
 		return (PropertyMeta) PropertyMeta.EMPTY;

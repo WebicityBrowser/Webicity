@@ -96,6 +96,8 @@ public class ComplexSelectorParser {
 		TokenLike token = stream.peek();
 		if (token instanceof IdentToken && allowIdent) {
 			return typeSelectorParser.parse(stream);
+		} else if (isDelimiterToken(token, '*') && allowIdent) {
+			return typeSelectorParser.parse(stream);
 		} else if (isDelimiterToken(token, '.')) {
 			return classSelectorParser.parse(stream);
 		} else if (token instanceof HashToken) {

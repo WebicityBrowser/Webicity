@@ -446,7 +446,7 @@ public class FlexInnerDisplayLayoutTest {
 		DirectivePool directivePool = createBaseDirectivePool();
 		directivePool.directive(FlexGrowDirective.of(0));
 		directivePool.directive(FlexShrinkDirective.of(0));
-		directivePool.directive(FlexBasisDirective.of((_1, _2) -> 20));
+		directivePool.directive(new FlexBasisDirective((_1, _2) -> 20, false));
 		Box childBox = new TestStubContentBox(false, new AbsoluteSize(10, 50), directivePool);
 		box.getChildrenTracker().addChild(childBox);
 		LocalRenderContext localRenderContext = createLocalRenderContext();

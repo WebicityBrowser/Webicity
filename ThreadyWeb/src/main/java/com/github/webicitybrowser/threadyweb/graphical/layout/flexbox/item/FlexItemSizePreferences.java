@@ -1,5 +1,7 @@
 package com.github.webicitybrowser.threadyweb.graphical.layout.flexbox.item;
 
+import java.util.Optional;
+
 import com.github.webicitybrowser.thready.gui.directive.core.pool.DirectivePool;
 import com.github.webicitybrowser.thready.gui.graphical.layout.core.LayoutRenderContext;
 import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.box.Box;
@@ -67,7 +69,11 @@ public class FlexItemSizePreferences {
 			LayoutSizeUtils.computeSize(styleDirectives, WidthDirective.class, sizingContext);
 	}
 
-	public float getBaseSize() {
+	public float getBasisSize(FlexDirection flexDirection) {
+		Optional<FlexBasisDirective> flexBasisDirective = styleDirectives.getDirectiveOrEmpty(FlexBasisDirective.class);
+		if (flexBasisDirective.isEmpty() || flexBasisDirective.get().isAuto()) {
+			return getMainSize(flexDirection);
+		}
 		return LayoutSizeUtils.computeSize(styleDirectives, FlexBasisDirective.class, sizingContext);
 	}
 

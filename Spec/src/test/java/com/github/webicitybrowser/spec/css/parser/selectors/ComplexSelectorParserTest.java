@@ -59,6 +59,21 @@ public class ComplexSelectorParserTest {
 		TypeSelector selector = (TypeSelector) parts[0];
 		Assertions.assertEquals("hi", selector.getQualifiedName().getName());
 	}
+
+	@Test
+	@DisplayName("Asterik delim token creates universal selector")
+	public void asterikDelimTokenCreatesUniversalSelector() {
+		TokenLike[] tokens = new TokenLike[] {
+			new DelimToken('*')
+		};
+		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
+		Assertions.assertEquals(1, selectors.length);
+		ComplexSelectorPart[] parts = selectors[0].parts();
+		Assertions.assertEquals(1, parts.length);
+		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
+		TypeSelector selector = (TypeSelector) parts[0];
+		Assertions.assertEquals("*", selector.getQualifiedName().getName());
+	}
 	
 	@Test
 	@DisplayName("Two subsequent ident tokens discarded")
