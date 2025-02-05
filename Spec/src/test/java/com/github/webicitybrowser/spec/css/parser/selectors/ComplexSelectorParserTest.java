@@ -1,10 +1,13 @@
 package com.github.webicitybrowser.spec.css.parser.selectors;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.github.webicitybrowser.spec.css.componentvalue.SimpleBlock;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.tokens.ColonToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.CommaToken;
@@ -13,7 +16,6 @@ import com.github.webicitybrowser.spec.css.parser.tokens.HashToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.HashToken.HashTypeFlag;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.LSBracketToken;
-import com.github.webicitybrowser.spec.css.parser.tokens.RSBracketToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.WhitespaceToken;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
@@ -167,10 +169,10 @@ public class ComplexSelectorParserTest {
 	}
 
 	@Test
-	@DisplayName("Left square bracket token creates attribute selector")
-	public void leftSquareBracketTokenCreatesAttributeSelector() {
+	@DisplayName("Left square bracket token in simple block creates attribute selector")
+	public void leftSquareBracketTokenInSimpleBlockCreatesAttributeSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			new LSBracketToken(), new IdentToken("hi"), new RSBracketToken()
+			new SimpleBlock(new LSBracketToken(), List.of(new IdentToken("hi")))
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);
@@ -202,11 +204,11 @@ public class ComplexSelectorParserTest {
 	}
 
 	@Test
-	@DisplayName("Two subsequent left square bracket tokens creates multi-attribute selector")
-	public void twoSubsequentLeftSquareBracketTokensCreatesMultiAttributeSelector() {
+	@DisplayName("Two subsequent left square bracket token in simple blocks creates multi-attribute selector")
+	public void twoSubsequentLeftSquareBracketTokenInSimpleBlocksCreatesMultiAttributeSelector() {
 		TokenLike[] tokens = new TokenLike[] {
-			new LSBracketToken(), new IdentToken("hi"), new RSBracketToken(),
-			new LSBracketToken(), new IdentToken("bye"), new RSBracketToken()
+			new SimpleBlock(new LSBracketToken(), List.of(new IdentToken("hi"))),
+			new SimpleBlock(new LSBracketToken(), List.of(new IdentToken("bye")))
 		};
 		ComplexSelector[] selectors = complexSelectorParser.parseMany(tokens, 0, DEFAULT_ORDERING_TAG);
 		Assertions.assertEquals(1, selectors.length);

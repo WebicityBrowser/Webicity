@@ -120,7 +120,12 @@ public class GUIContentImp implements GUIContent {
 		
 		switch (invalidationLevel) {
 		case STYLE:
+			long styleTime1 = System.currentTimeMillis();
 			performStyleCycle(redrawContext);
+			long styleTime2 = System.currentTimeMillis();
+			if (styleTime2 - styleTime1 > 100) {
+				logger.info("Long style cycle took: " + (styleTime2 - styleTime1) + "ms");
+			}
 		case BOX:
 			performBoxCycle();
 		case RENDER:
@@ -133,7 +138,7 @@ public class GUIContentImp implements GUIContent {
 			renderCache.swap();
 			long time4 = System.currentTimeMillis();
 			if (time4 - time1 > 100) {
-				logger.info("Long render cycle took: " + (time4 - time1) + "ms (Inner " + (time3 - time2) + "ms)");
+				logger.info("Long layout cycle took: " + (time4 - time1) + "ms (Inner " + (time3 - time2) + "ms)");
 			}
 			System.gc();
 		case COMPOSITE:

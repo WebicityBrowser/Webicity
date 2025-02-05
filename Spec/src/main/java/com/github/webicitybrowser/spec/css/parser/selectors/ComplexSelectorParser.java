@@ -105,6 +105,7 @@ public class ComplexSelectorParser {
 			return idSelectorParser.parse(stream);
 		} else if (token instanceof SimpleBlock simpleBlock && simpleBlock.type() instanceof LSBracketToken) {
 			TokenStream innerStream = new TokenStreamImp(simpleBlock.value().toArray(TokenLike[]::new));
+			stream.read();
 			return attributeSelectorParser.parse(innerStream);
 		} else if (token instanceof ColonToken) {
 			return psuedoSelectorParser.parse(stream);

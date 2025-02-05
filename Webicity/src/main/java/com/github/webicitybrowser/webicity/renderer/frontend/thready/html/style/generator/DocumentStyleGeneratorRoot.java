@@ -19,6 +19,8 @@ import com.github.webicitybrowser.thready.gui.graphical.lookandfeel.core.stage.s
 import com.github.webicitybrowser.threadyweb.tree.ElementComponent;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMMappedRuleList;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMMappedRuleList.PropertyMapper;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTraverseContext;
+import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTraverseContextGenerator;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMDeclarationParser;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.html.style.cssbinding.CSSOMNamedDeclarationParser;
@@ -51,8 +53,11 @@ public class DocumentStyleGeneratorRoot implements StyleGeneratorRoot {
 			derivers);
 
 		CSSOMTree<DocumentStyleGenerator, CSSRuleList>[] cssomTrees = cssomTreesSupplier.get();
+		CSSOMTraverseContext<DocumentStyleGenerator, CSSRuleList> traverseContext = CSSOMTraverseContextGenerator
+			.<DocumentStyleGenerator, CSSRuleList>create()
+			.apply(rootGenerator, new DocumentParticipantTraverser());
 		for (CSSOMTree<DocumentStyleGenerator, CSSRuleList> tree: cssomTrees) {
-			tree.apply(rootGenerator, new DocumentParticipantTraverser());
+			tree.apply(traverseContext);
 		}
 
 		// TODO: Allow rules from component

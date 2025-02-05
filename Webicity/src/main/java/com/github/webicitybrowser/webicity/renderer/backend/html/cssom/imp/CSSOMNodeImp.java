@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.github.webicitybrowser.spec.css.rule.imp.CSSRuleListImp;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
 import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
@@ -65,6 +66,18 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 	@Override
 	public SelectorSpecificity getSpecificity() {
 		return this.specificity;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder selectorPart = new StringBuilder();
+		for (U property: allProperties) {
+			CSSRuleListImp ruleList = (CSSRuleListImp) property;
+			for (int i = 0; i < ruleList.getLength(); i++) {
+				selectorPart.append(ruleList.getItem(i));
+			}
+		}
+		return selectorPart.toString();
 	}
 
 }
