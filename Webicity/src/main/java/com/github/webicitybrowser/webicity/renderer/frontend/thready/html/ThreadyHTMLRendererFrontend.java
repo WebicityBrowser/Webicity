@@ -32,7 +32,6 @@ import com.github.webicitybrowser.threadyweb.tree.DocumentComponent;
 import com.github.webicitybrowser.webicity.core.AssetLoader;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererBackend;
 import com.github.webicitybrowser.webicity.renderer.backend.html.HTMLRendererContext;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilterCreator;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTreeGenerator;
 import com.github.webicitybrowser.webicity.renderer.frontend.thready.core.ThreadyRendererFrontend;
@@ -102,7 +101,7 @@ public class ThreadyHTMLRendererFrontend implements ThreadyRendererFrontend {
 	@SuppressWarnings("unchecked")
 	private CSSOMTree<DocumentStyleGenerator, CSSRuleList>[] createCSSOMTrees(DocumentStyleSheetSet styleSheetSet) {
 		List<CSSOMTree<DocumentStyleGenerator, CSSRuleList>> cssomTrees = new ArrayList<>();
-		CSSOMTreeGenerator<DocumentStyleGenerator> binder = CSSOMTreeGenerator.create(CSSOMFilterCreator.create(node -> node.getDOMNode()));
+		CSSOMTreeGenerator<DocumentStyleGenerator> binder = CSSOMTreeGenerator.create();
 		List<CSSRuleListEntry> ruleLists = styleSheetSet.getRuleLists();
 		for (int i = 0; i < ruleLists.size(); i++) {
 			CSSRuleListEntry ruleEntry = ruleLists.get(i);

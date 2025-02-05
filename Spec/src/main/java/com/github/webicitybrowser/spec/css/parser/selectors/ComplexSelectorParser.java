@@ -3,6 +3,7 @@ package com.github.webicitybrowser.spec.css.parser.selectors;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.webicitybrowser.spec.css.componentvalue.SimpleBlock;
 import com.github.webicitybrowser.spec.css.parser.ParseFormatException;
 import com.github.webicitybrowser.spec.css.parser.TokenLike;
 import com.github.webicitybrowser.spec.css.parser.TokenStream;
@@ -102,8 +103,9 @@ public class ComplexSelectorParser {
 			return classSelectorParser.parse(stream);
 		} else if (token instanceof HashToken) {
 			return idSelectorParser.parse(stream);
-		} else if (token instanceof LSBracketToken) {
-			return attributeSelectorParser.parse(stream);
+		} else if (token instanceof SimpleBlock simpleBlock && simpleBlock.type() instanceof LSBracketToken) {
+			TokenStream innerStream = new TokenStreamImp(simpleBlock.value().toArray(TokenLike[]::new));
+			return attributeSelectorParser.parse(innerStream);
 		} else if (token instanceof ColonToken) {
 			return psuedoSelectorParser.parse(stream);
 		} else {

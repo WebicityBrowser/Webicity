@@ -13,19 +13,11 @@ import com.github.webicitybrowser.spec.css.rule.QualifiedRule;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelector;
 import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
 import com.github.webicitybrowser.spec.css.selectors.SelectorOrderingTag;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilterCreator;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTree;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMTreeGenerator;
 
 public class CSSOMTreeGeneratorImp<T> implements CSSOMTreeGenerator<T> {
-	
-	private final CSSOMFilterCreator<T> filterCreator;
-
-	public CSSOMTreeGeneratorImp(CSSOMFilterCreator<T> filterCreator) {
-		this.filterCreator = filterCreator;
-	}
 	
 	@Override
 	public CSSOMTree<T, CSSRuleList> createCSSOMFor(CSSRuleList ruleList, SelectorOrderingTag orderingTag) {
@@ -63,8 +55,7 @@ public class CSSOMTreeGeneratorImp<T> implements CSSOMTreeGenerator<T> {
 	) {
 		CSSOMNode<T, CSSRuleList> current = rootNode;
 		for (ComplexSelectorPart complexSelectorPart: selector.parts()) {
-			CSSOMFilter<T, CSSRuleList> filter = filterCreator.createFilterFor(complexSelectorPart);
-			current = current.createChild(filter, 0);
+			current = current.createChild(complexSelectorPart, 0);
 		}
 		current.setSpecificity(selector.specificity());
 		

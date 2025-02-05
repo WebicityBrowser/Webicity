@@ -20,11 +20,10 @@ public interface CSSOMTreeGenerator<T> {
 	/**
 	 * Creates a {@link CSSOMTreeGenerator} using the given {@link CSSOMFilterCreator}
 	 * to implement the logic used for selectors.
-	 * @param filterCreator the {@link CSSOMFilterCreator} to use
 	 * @return the created {@link CSSOMTreeGenerator}
 	 */
-	static <T> CSSOMTreeGenerator<T> create(CSSOMFilterCreator<T> filterCreator) {
-		return new CSSOMTreeGeneratorImp<>(filterCreator);
+	static <T> CSSOMTreeGenerator<T> create() {
+		return new CSSOMTreeGeneratorImp<>();
 	}
 	
 }

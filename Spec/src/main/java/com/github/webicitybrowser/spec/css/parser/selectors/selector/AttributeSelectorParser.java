@@ -7,9 +7,8 @@ import com.github.webicitybrowser.spec.css.parser.TokenStream;
 import com.github.webicitybrowser.spec.css.parser.selectors.SelectorParser;
 import com.github.webicitybrowser.spec.css.parser.selectors.misc.QualifiedNameParser;
 import com.github.webicitybrowser.spec.css.parser.tokens.DelimToken;
+import com.github.webicitybrowser.spec.css.parser.tokens.EOFToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.IdentToken;
-import com.github.webicitybrowser.spec.css.parser.tokens.LSBracketToken;
-import com.github.webicitybrowser.spec.css.parser.tokens.RSBracketToken;
 import com.github.webicitybrowser.spec.css.parser.tokens.StringToken;
 import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector;
 import com.github.webicitybrowser.spec.css.selectors.selector.AttributeSelector.AttributeSelectorOperation;
@@ -20,23 +19,15 @@ public class AttributeSelectorParser implements SelectorParser {
 	
 	@Override
 	public AttributeSelector parse(TokenStream stream) throws ParseFormatException {
-		if (!(stream.read() instanceof LSBracketToken)) {
-			fail(stream);
-		}
-		
 		QualifiedName attribName = qualifiedNameParser.parse(stream);
 		
 		AttributeSelectorOperation operation = AttributeSelectorOperation.PRESENT;
 		String opParameter = "";
 		
-		if (!(stream.peek() instanceof RSBracketToken)) {
+		if (!(stream.peek() instanceof EOFToken)) {
 			operation = parseOperation(stream);
 			parseEquals(stream);
 			opParameter = parseAttribValue(stream);
-		}
-		
-		if (!(stream.read() instanceof RSBracketToken)) {
-			fail(stream);
 		}
 		
 		return createAttributeSelector(attribName, operation, opParameter);

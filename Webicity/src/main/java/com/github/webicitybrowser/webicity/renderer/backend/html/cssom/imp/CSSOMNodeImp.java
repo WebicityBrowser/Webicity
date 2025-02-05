@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.github.webicitybrowser.spec.css.selectors.ComplexSelectorPart;
 import com.github.webicitybrowser.spec.css.selectors.SelectorSpecificity;
-import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMFilter;
 import com.github.webicitybrowser.webicity.renderer.backend.html.cssom.CSSOMNode;
 
 public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 
 	private final CSSOMNode<T, U> parent;
-	private final CSSOMFilter<T, U> filter;
-	private final HashMap<CSSOMFilter<T, U>, CSSOMNode<T, U>> children = new HashMap<>(4);
+	private final ComplexSelectorPart selectorPart;
+	private final HashMap<ComplexSelectorPart, CSSOMNode<T, U>> children = new HashMap<>(4);
 	private final List<U> allProperties = new ArrayList<>(1);
 	
 	private SelectorSpecificity specificity;
 
-	public CSSOMNodeImp(CSSOMNode<T, U> parent, CSSOMFilter<T, U> filter) {
+	public CSSOMNodeImp(CSSOMNode<T, U> parent, ComplexSelectorPart selectorPart) {
 		this.parent = parent;
-		this.filter = filter;
+		this.selectorPart = selectorPart;
 	}
 
 	@Override
@@ -28,8 +28,8 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 	}
 
 	@Override
-	public CSSOMNode<T, U> createChild(CSSOMFilter<T, U> filter, int staging) {
-		return children.computeIfAbsent(filter, key -> createChildNode(filter, staging));
+	public CSSOMNode<T, U> createChild(ComplexSelectorPart selectorPart, int staging) {
+		return children.computeIfAbsent(selectorPart, key -> new CSSOMNodeImp<>(this, selectorPart));
 	}
 
 	@Override
@@ -43,8 +43,8 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 	}
 	
 	@Override
-	public CSSOMFilter<T, U> getFilter() {
-		return filter;
+	public ComplexSelectorPart getSelectorPart() {
+		return selectorPart;
 	}
 
 	@Override
@@ -65,10 +65,6 @@ public class CSSOMNodeImp<T, U> implements CSSOMNode<T, U> {
 	@Override
 	public SelectorSpecificity getSpecificity() {
 		return this.specificity;
-	}
-	
-	private CSSOMNode<T, U> createChildNode(CSSOMFilter<T, U> filter, int staging) {
-		return new CSSOMNodeImp<>(this, filter);
 	}
 
 }

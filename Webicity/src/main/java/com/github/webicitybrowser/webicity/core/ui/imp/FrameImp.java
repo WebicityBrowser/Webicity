@@ -21,7 +21,7 @@ public class FrameImp implements Frame {
 	public FrameImp(RenderingEngine renderingEngine) {
 		this.renderingEngine = renderingEngine;
 		this.currentRenderer = renderingEngine.createBlankRenderer();
-		navigate(URL.ofSafe("about:blank"));
+		navigate(URL.ofSafe("file:///home/jason/Downloads/vkspec.html"));
 	}
 
 	@Override
