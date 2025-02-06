@@ -25,19 +25,19 @@ public class SelectorMatchUtil<T, U> {
 		if (part == null) return current;
 
 		if (part instanceof TypeSelector typeSelector) {
-			boolean matchAll = typeSelector.getQualifiedName().getName().equals(QualifiedName.ANY_NAME);
+			boolean matchAll = typeSelector.qualifiedName().name().equals(QualifiedName.ANY_NAME);
 			BitSet allElementsWithName = matchAll ? context.allParticipantsBitSet() :
-				context.typeMap().get(typeSelector.getQualifiedName().getName());
+				context.typeMap().get(typeSelector.qualifiedName().name());
 			BitSet part1 = intersect(current, allElementsWithName);
 			return filter(part1, participant -> elementMatch(participant, element -> isTypeMatch(element, typeSelector)), context);
 		} else if (part instanceof IDSelector idSelector) {
-			BitSet allElementsWithID = context.idMap().get(idSelector.getId());
+			BitSet allElementsWithID = context.idMap().get(idSelector.id());
 			BitSet part1 = intersect(current, allElementsWithID);
-			return filter(part1, participant -> elementMatch(participant, element -> element.getAttribute("id").equals(idSelector.getId())), context);
+			return filter(part1, participant -> elementMatch(participant, element -> element.getAttribute("id").equals(idSelector.id())), context);
 		} else if (part instanceof AttributeSelector classSelector && isClassSelector(classSelector)) {
-			BitSet allElementsWithClass = context.classMap().get(classSelector.getComparisonValue());
+			BitSet allElementsWithClass = context.classMap().get(classSelector.comparisonValue());
 			BitSet part1 = intersect(current, allElementsWithClass);
-			BitSet part2 = filter(part1, participant -> elementMatch(participant, element -> oneOf(element.getAttribute("class"), classSelector.getComparisonValue())), context);
+			BitSet part2 = filter(part1, participant -> elementMatch(participant, element -> oneOf(element.getAttribute("class"), classSelector.comparisonValue())), context);
 			return part2;
 		} else if (part instanceof AttributeSelector attributeSelector) {
 			return filter(current, participant -> elementMatch(participant, element -> attributeMatches(element, attributeSelector)), context);
@@ -87,14 +87,14 @@ public class SelectorMatchUtil<T, U> {
 	}
 
 	private boolean isTypeMatch(Element element, TypeSelector typeSelector) {
-		QualifiedName name = typeSelector.getQualifiedName();
-		String namespace = name.getNamespace();
+		QualifiedName name = typeSelector.qualifiedName();
+		String namespace = name.namespace();
 		String elementNamespace = element.getNamespace();
 		String elementName = element.getLocalName();
 
 		if (!namespaceMatches(namespace, elementNamespace)) return false;
-		if (name.getName().equals(QualifiedName.ANY_NAME)) return true;
-		if (!name.getName().equals(elementName)) return false;
+		if (name.name().equals(QualifiedName.ANY_NAME)) return true;
+		if (!name.name().equals(elementName)) return false;
 
 		return true;
 	}
@@ -114,9 +114,9 @@ public class SelectorMatchUtil<T, U> {
 
 	private boolean isClassSelector(AttributeSelector classSelector) {
 		return
-			namespaceMatches(classSelector.getAttributeName().getNamespace(), Namespace.HTML_NAMESPACE)
-			&& classSelector.getAttributeName().getName().equals("class")
-			&& classSelector.getOperation().equals(AttributeSelectorOperation.ONE_OF);
+			namespaceMatches(classSelector.attributeName().namespace(), Namespace.HTML_NAMESPACE)
+			&& classSelector.attributeName().name().equals("class")
+			&& classSelector.operation().equals(AttributeSelectorOperation.ONE_OF);
 	}
 
 	private boolean oneOf(String className, String comparisonValue) {
@@ -130,10 +130,10 @@ public class SelectorMatchUtil<T, U> {
 	}
 
 	private boolean attributeMatches(Element element, AttributeSelector attributeSelector) {
-		String attrValue = element.getAttribute(attributeSelector.getAttributeName().getName());
-		String comparisonValue = attributeSelector.getComparisonValue();
+		String attrValue = element.getAttribute(attributeSelector.attributeName().name());
+		String comparisonValue = attributeSelector.comparisonValue();
 		if (attrValue == null) return false;
-		switch (attributeSelector.getOperation()) {
+		switch (attributeSelector.operation()) {
 			case BEGINS_WITH:
 				return attrValue.startsWith(comparisonValue);
 			case CONTAINS:
@@ -149,7 +149,7 @@ public class SelectorMatchUtil<T, U> {
 			case PRESENT:
 				return true;
 			default:
-				throw new RuntimeException("Unknown operation: " + attributeSelector.getOperation());
+				throw new RuntimeException("Unknown operation: " + attributeSelector.operation());
 		}
 	}
 

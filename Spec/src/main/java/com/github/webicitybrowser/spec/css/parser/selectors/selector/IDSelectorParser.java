@@ -17,7 +17,7 @@ public class IDSelectorParser implements SelectorParser {
 		}
 		String ident = ((HashToken) token).value();
 		
-		return () -> ident;
+		return new IDSelector(ident);
 	}
 	
 	private void fail(TokenStream stream) throws ParseFormatException {

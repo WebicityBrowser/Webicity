@@ -16,22 +16,22 @@ public class RGBColorValueImp implements ColorValue {
 
 	
 	@Override
-	public int getRed() {
+	public int red() {
 		return (color >>> 24) & 0xFF;
 	}
 	
 	@Override
-	public int getGreen() {
+	public int green() {
 		return (color >>> 16) & 255;
 	}
 	
 	@Override
-	public int getBlue() {
+	public int blue() {
 		return (color >>> 8) & 255;
 	}
 	
 	@Override
-	public int getAlpha() {
+	public int alpha() {
 		return color & 255;
 	}
 

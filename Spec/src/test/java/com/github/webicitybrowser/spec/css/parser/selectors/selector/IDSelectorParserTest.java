@@ -29,7 +29,7 @@ public class IDSelectorParserTest {
 			hashToken
 		});
 		IDSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		Assertions.assertEquals("test", selector.getId());
+		Assertions.assertEquals("test", selector.id());
 	}
 	
 }

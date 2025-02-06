@@ -32,8 +32,8 @@ public class LengthValueParserTest {
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertInstanceOf(AbsoluteLengthValue.class, result.getResult().get());
 		AbsoluteLengthValue absoluteLengthValue = (AbsoluteLengthValue) result.getResult().get();
-		Assertions.assertEquals(400, absoluteLengthValue.getValue());
-		Assertions.assertEquals(AbsoluteLengthUnit.PX, absoluteLengthValue.getUnit());
+		Assertions.assertEquals(400, absoluteLengthValue.value());
+		Assertions.assertEquals(AbsoluteLengthUnit.PX, absoluteLengthValue.unit());
 	}
 
 	@Test
@@ -44,8 +44,8 @@ public class LengthValueParserTest {
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertInstanceOf(RelativeLengthValue.class, result.getResult().get());
 		RelativeLengthValue relativeLengthValue = (RelativeLengthValue) result.getResult().get();
-		Assertions.assertEquals(400, relativeLengthValue.getValue());
-		Assertions.assertEquals(RelativeLengthUnit.EM, relativeLengthValue.getUnit());
+		Assertions.assertEquals(400, relativeLengthValue.value());
+		Assertions.assertEquals(RelativeLengthUnit.EM, relativeLengthValue.unit());
 	}
 
 	@Test
@@ -56,8 +56,8 @@ public class LengthValueParserTest {
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertInstanceOf(AbsoluteLengthValue.class, result.getResult().get());
 		AbsoluteLengthValue absoluteLengthValue = (AbsoluteLengthValue) result.getResult().get();
-		Assertions.assertEquals(0, absoluteLengthValue.getValue());
-		Assertions.assertEquals(AbsoluteLengthUnit.PX, absoluteLengthValue.getUnit());
+		Assertions.assertEquals(0, absoluteLengthValue.value());
+		Assertions.assertEquals(AbsoluteLengthUnit.PX, absoluteLengthValue.unit());
 	}
 
 }

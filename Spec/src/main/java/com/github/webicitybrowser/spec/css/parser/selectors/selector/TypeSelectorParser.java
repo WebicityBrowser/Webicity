@@ -14,16 +14,7 @@ public class TypeSelectorParser implements SelectorParser {
 	@Override
 	public TypeSelector parse(TokenStream stream) throws ParseFormatException {
 		QualifiedName qualifiedName = qualifiedNameParser.parse(stream);
-		return createTypeSelector(qualifiedName);
-	}
-	
-	private TypeSelector createTypeSelector(QualifiedName qualifiedName) {
-		return new TypeSelector() {	
-			@Override
-			public QualifiedName getQualifiedName() {
-				return qualifiedName;
-			}
-		};
+		return new TypeSelector(qualifiedName);
 	}
 
 }

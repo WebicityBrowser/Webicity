@@ -26,7 +26,7 @@ public class PercentageValueParserTest {
 		PropertyValueParseResult<PercentageValue> result = percentageValueParser.parse(tokens, 0, 1);
 		Assertions.assertTrue(result.getResult().isPresent());
 		Assertions.assertEquals(1, result.getLength());
-		Assertions.assertEquals(100, result.getResult().get().getValue());
+		Assertions.assertEquals(100, result.getResult().get().value());
 	}
 
 }

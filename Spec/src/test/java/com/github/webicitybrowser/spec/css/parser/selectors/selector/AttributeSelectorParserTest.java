@@ -30,9 +30,9 @@ public class AttributeSelectorParserTest {
 			new IdentToken("attr")
 		});
 		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		Assertions.assertEquals("attr", selector.getAttributeName().getName());
-		Assertions.assertEquals(AttributeSelectorOperation.PRESENT, selector.getOperation());
-		Assertions.assertEquals("", selector.getComparisonValue());
+		Assertions.assertEquals("attr", selector.attributeName().name());
+		Assertions.assertEquals(AttributeSelectorOperation.PRESENT, selector.operation());
+		Assertions.assertEquals("", selector.comparisonValue());
 	}
 	
 	@Test
@@ -42,9 +42,9 @@ public class AttributeSelectorParserTest {
 			new IdentToken("attr"), new DelimToken((int) '='), new IdentToken("val")
 		});
 		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		Assertions.assertEquals("attr", selector.getAttributeName().getName());
-		Assertions.assertEquals(AttributeSelectorOperation.EQUALS, selector.getOperation());
-		Assertions.assertEquals("val", selector.getComparisonValue());
+		Assertions.assertEquals("attr", selector.attributeName().name());
+		Assertions.assertEquals(AttributeSelectorOperation.EQUALS, selector.operation());
+		Assertions.assertEquals("val", selector.comparisonValue());
 	}
 	
 	@Test
@@ -54,9 +54,9 @@ public class AttributeSelectorParserTest {
 			new IdentToken("attr"), new DelimToken((int) '~'), new DelimToken((int) '='), new StringToken("val")
 		});
 		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		Assertions.assertEquals("attr", selector.getAttributeName().getName());
-		Assertions.assertEquals(AttributeSelectorOperation.ONE_OF, selector.getOperation());
-		Assertions.assertEquals("val", selector.getComparisonValue());
+		Assertions.assertEquals("attr", selector.attributeName().name());
+		Assertions.assertEquals(AttributeSelectorOperation.ONE_OF, selector.operation());
+		Assertions.assertEquals("val", selector.comparisonValue());
 	}
 	
 }

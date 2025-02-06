@@ -31,7 +31,7 @@ public class CSSOMLineHeightDeclarationParser implements CSSOMNamedDeclarationPa
 		}
 
 		SizeCalculation sizeCalculation = value instanceof NumberValue numberValue ?
-			(ctx, isHorizontal) -> ctx.relativeFont().getSize() * numberValue.getValue().floatValue() :
+			(ctx, isHorizontal) -> ctx.relativeFont().getSize() * numberValue.value().floatValue() :
 			SizeParser.parseWithFontPercents(value);
 		return new Directive[] {
 			LineHeightDirective.of(sizeCalculation)

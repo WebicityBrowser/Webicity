@@ -80,19 +80,19 @@ public class FontShorthandValueParserTest {
 	}
 
 	private void assertFontIsArial(FontValue fontValue) {
-		FontFamilyEntry[] fontFamilies = fontValue.fontFamilies().getEntries();
+		FontFamilyEntry[] fontFamilies = fontValue.fontFamilies().entries();
 		Assertions.assertEquals(1, fontFamilies.length);
 		Assertions.assertInstanceOf(NamedFontFamilyEntry.class, fontFamilies[0]);
 		NamedFontFamilyEntry namedFontFamilyEntry = (NamedFontFamilyEntry) fontFamilies[0];
-		Assertions.assertEquals("Arial", namedFontFamilyEntry.getName());
+		Assertions.assertEquals("Arial", namedFontFamilyEntry.name());
 	}
 
 	private void assertFontSizeIs1px(FontValue fontValue) {
 		Assertions.assertTrue(fontValue.fontSize().isPresent());
 		Assertions.assertInstanceOf(AbsoluteLengthValue.class, fontValue.fontSize().get());
 		AbsoluteLengthValue absoluteLengthValue = (AbsoluteLengthValue) fontValue.fontSize().get();
-		Assertions.assertEquals(1, absoluteLengthValue.getValue());
-		Assertions.assertEquals(AbsoluteLengthUnit.PX, absoluteLengthValue.getUnit());
+		Assertions.assertEquals(1, absoluteLengthValue.value());
+		Assertions.assertEquals(AbsoluteLengthUnit.PX, absoluteLengthValue.unit());
 	}
 
 

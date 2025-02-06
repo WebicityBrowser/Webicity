@@ -37,10 +37,10 @@ public class BorderCompositeValueParserTest {
 		Assertions.assertEquals(3, parseResult.getLength());
 		BorderCompositeValue value = parseResult.getResult().get();
 		Assertions.assertInstanceOf(AbsoluteLengthValue.class, value.width());
-		Assertions.assertEquals(1, ((AbsoluteLengthValue) value.width()).getValue());
-		Assertions.assertEquals(AbsoluteLengthUnit.PX, ((AbsoluteLengthValue) value.width()).getUnit());
+		Assertions.assertEquals(1, ((AbsoluteLengthValue) value.width()).value());
+		Assertions.assertEquals(AbsoluteLengthUnit.PX, ((AbsoluteLengthValue) value.width()).unit());
 		Assertions.assertEquals(BorderStyleValue.SOLID, value.style());
-		Assertions.assertEquals(102, value.color().getRed());
+		Assertions.assertEquals(102, value.color().red());
 	}
 
 }

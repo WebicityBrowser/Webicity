@@ -40,15 +40,15 @@ public class FontFamilyValueParser implements PropertyValueParser<FontFamilyValu
 		}
 
 		return PropertyValueParseResultImp.of(
-			(FontFamilyValue) () -> entries.toArray(FontFamilyEntry[]::new), length);
+			new FontFamilyValue(entries.toArray(FontFamilyEntry[]::new)), length);
 	}
 
 	private FontFamilyEntry parseFontFamilyEntry(TokenStream tokenStream) {
 		TokenLike token = tokenStream.read();
 		if (token instanceof StringToken stringToken) {
-			return (NamedFontFamilyEntry) () -> stringToken.value();
+			return new NamedFontFamilyEntry(stringToken.value());
 		} else if (token instanceof IdentToken identToken) {
-			return (NamedFontFamilyEntry) () -> identToken.value();
+			return new NamedFontFamilyEntry(identToken.value());
 		} else {
 			return null;
 		}

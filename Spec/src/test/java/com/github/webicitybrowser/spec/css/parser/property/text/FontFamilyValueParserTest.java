@@ -31,10 +31,10 @@ public class FontFamilyValueParserTest {
 		PropertyValueParseResult<FontFamilyValue> fontFamilyResult = fontFamilyValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(fontFamilyResult.getResult().isPresent());
 		FontFamilyValue fontFamilyValue = fontFamilyResult.getResult().get();
-		Assertions.assertEquals(1, fontFamilyValue.getEntries().length);
-		Assertions.assertInstanceOf(NamedFontFamilyEntry.class, fontFamilyValue.getEntries()[0]);
-		NamedFontFamilyEntry namedFontFamilyEntry = (NamedFontFamilyEntry) fontFamilyValue.getEntries()[0];
-		Assertions.assertEquals("Arial", namedFontFamilyEntry.getName());
+		Assertions.assertEquals(1, fontFamilyValue.entries().length);
+		Assertions.assertInstanceOf(NamedFontFamilyEntry.class, fontFamilyValue.entries()[0]);
+		NamedFontFamilyEntry namedFontFamilyEntry = (NamedFontFamilyEntry) fontFamilyValue.entries()[0];
+		Assertions.assertEquals("Arial", namedFontFamilyEntry.name());
 	}
 
 	@Test
@@ -48,13 +48,13 @@ public class FontFamilyValueParserTest {
 		PropertyValueParseResult<FontFamilyValue> fontFamilyResult = fontFamilyValueParser.parse(tokens, 0, tokens.length);
 		Assertions.assertTrue(fontFamilyResult.getResult().isPresent());
 		FontFamilyValue fontFamilyValue = fontFamilyResult.getResult().get();
-		Assertions.assertEquals(2, fontFamilyValue.getEntries().length);
-		Assertions.assertInstanceOf(NamedFontFamilyEntry.class, fontFamilyValue.getEntries()[0]);
-		NamedFontFamilyEntry namedFontFamilyEntry = (NamedFontFamilyEntry) fontFamilyValue.getEntries()[0];
-		Assertions.assertEquals("Arial", namedFontFamilyEntry.getName());
-		Assertions.assertInstanceOf(NamedFontFamilyEntry.class, fontFamilyValue.getEntries()[1]);
-		namedFontFamilyEntry = (NamedFontFamilyEntry) fontFamilyValue.getEntries()[1];
-		Assertions.assertEquals("Helvetica", namedFontFamilyEntry.getName());
+		Assertions.assertEquals(2, fontFamilyValue.entries().length);
+		Assertions.assertInstanceOf(NamedFontFamilyEntry.class, fontFamilyValue.entries()[0]);
+		NamedFontFamilyEntry namedFontFamilyEntry = (NamedFontFamilyEntry) fontFamilyValue.entries()[0];
+		Assertions.assertEquals("Arial", namedFontFamilyEntry.name());
+		Assertions.assertInstanceOf(NamedFontFamilyEntry.class, fontFamilyValue.entries()[1]);
+		namedFontFamilyEntry = (NamedFontFamilyEntry) fontFamilyValue.entries()[1];
+		Assertions.assertEquals("Helvetica", namedFontFamilyEntry.name());
 	}
 
 }

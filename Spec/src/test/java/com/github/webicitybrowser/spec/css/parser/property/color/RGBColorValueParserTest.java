@@ -45,10 +45,10 @@ public class RGBColorValueParserTest {
 		Assertions.assertEquals(1, result.getLength());
 
 		ColorValue colorValue = result.getResult().get();
-		Assertions.assertEquals(0, colorValue.getRed());
-		Assertions.assertEquals(0, colorValue.getGreen());
-		Assertions.assertEquals(0, colorValue.getBlue());
-		Assertions.assertEquals(255, colorValue.getAlpha());
+		Assertions.assertEquals(0, colorValue.red());
+		Assertions.assertEquals(0, colorValue.green());
+		Assertions.assertEquals(0, colorValue.blue());
+		Assertions.assertEquals(255, colorValue.alpha());
 	}
 
 	@Test
@@ -73,10 +73,10 @@ public class RGBColorValueParserTest {
 		Assertions.assertEquals(1, result.getLength());
 
 		ColorValue colorValue = result.getResult().get();
-		Assertions.assertEquals(0, colorValue.getRed());
-		Assertions.assertEquals(0, colorValue.getGreen());
-		Assertions.assertEquals(0, colorValue.getBlue());
-		Assertions.assertEquals(255, colorValue.getAlpha());
+		Assertions.assertEquals(0, colorValue.red());
+		Assertions.assertEquals(0, colorValue.green());
+		Assertions.assertEquals(0, colorValue.blue());
+		Assertions.assertEquals(255, colorValue.alpha());
 	}
 
 	@Test
@@ -99,10 +99,10 @@ public class RGBColorValueParserTest {
 		Assertions.assertEquals(1, result.getLength());
 
 		ColorValue colorValue = result.getResult().get();
-		Assertions.assertEquals(1, colorValue.getRed());
-		Assertions.assertEquals(0, colorValue.getGreen());
-		Assertions.assertEquals(0, colorValue.getBlue());
-		Assertions.assertEquals(255, colorValue.getAlpha());
+		Assertions.assertEquals(1, colorValue.red());
+		Assertions.assertEquals(0, colorValue.green());
+		Assertions.assertEquals(0, colorValue.blue());
+		Assertions.assertEquals(255, colorValue.alpha());
 	}
 
 	@Test
@@ -127,10 +127,10 @@ public class RGBColorValueParserTest {
 		Assertions.assertEquals(1, result.getLength());
 
 		ColorValue colorValue = result.getResult().get();
-		Assertions.assertEquals(0, colorValue.getRed());
-		Assertions.assertEquals(0, colorValue.getGreen());
-		Assertions.assertEquals(0, colorValue.getBlue());
-		Assertions.assertEquals(2, colorValue.getAlpha());
+		Assertions.assertEquals(0, colorValue.red());
+		Assertions.assertEquals(0, colorValue.green());
+		Assertions.assertEquals(0, colorValue.blue());
+		Assertions.assertEquals(2, colorValue.alpha());
 	}
 
 	@Test
@@ -155,10 +155,10 @@ public class RGBColorValueParserTest {
 		Assertions.assertEquals(1, result.getLength());
 
 		ColorValue colorValue = result.getResult().get();
-		Assertions.assertEquals(0, colorValue.getRed());
-		Assertions.assertEquals(0, colorValue.getGreen());
-		Assertions.assertEquals(0, colorValue.getBlue());
-		Assertions.assertEquals(255, colorValue.getAlpha());
+		Assertions.assertEquals(0, colorValue.red());
+		Assertions.assertEquals(0, colorValue.green());
+		Assertions.assertEquals(0, colorValue.blue());
+		Assertions.assertEquals(255, colorValue.alpha());
 	}
 
 	@Test
@@ -179,10 +179,10 @@ public class RGBColorValueParserTest {
 		Assertions.assertEquals(1, result.getLength());
 
 		ColorValue colorValue = result.getResult().get();
-		Assertions.assertEquals(2, colorValue.getRed());
-		Assertions.assertEquals(2, colorValue.getGreen());
-		Assertions.assertEquals(2, colorValue.getBlue());
-		Assertions.assertEquals(255, colorValue.getAlpha());
+		Assertions.assertEquals(2, colorValue.red());
+		Assertions.assertEquals(2, colorValue.green());
+		Assertions.assertEquals(2, colorValue.blue());
+		Assertions.assertEquals(255, colorValue.alpha());
 	}
 
 	@Test
@@ -207,10 +207,10 @@ public class RGBColorValueParserTest {
 		Assertions.assertEquals(1, result.getLength());
 
 		ColorValue colorValue = result.getResult().get();
-		Assertions.assertEquals(255, colorValue.getRed());
-		Assertions.assertEquals(255, colorValue.getGreen());
-		Assertions.assertEquals(255, colorValue.getBlue());
-		Assertions.assertEquals(127, colorValue.getAlpha());
+		Assertions.assertEquals(255, colorValue.red());
+		Assertions.assertEquals(255, colorValue.green());
+		Assertions.assertEquals(255, colorValue.blue());
+		Assertions.assertEquals(127, colorValue.alpha());
 	}
 
 	@Test

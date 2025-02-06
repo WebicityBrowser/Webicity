@@ -34,9 +34,9 @@ public class ClassSelectorParserTest {
 			delimToken, identToken	
 		});
 		AttributeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		Assertions.assertEquals("class", selector.getAttributeName().getName());
-		Assertions.assertEquals(AttributeSelectorOperation.ONE_OF, selector.getOperation());
-		Assertions.assertEquals("test", selector.getComparisonValue());
+		Assertions.assertEquals("class", selector.attributeName().name());
+		Assertions.assertEquals(AttributeSelectorOperation.ONE_OF, selector.operation());
+		Assertions.assertEquals("test", selector.comparisonValue());
 	}
 	
 }

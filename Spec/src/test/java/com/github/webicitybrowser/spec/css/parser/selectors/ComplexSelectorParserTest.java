@@ -59,7 +59,7 @@ public class ComplexSelectorParserTest {
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 		TypeSelector selector = (TypeSelector) parts[0];
-		Assertions.assertEquals("hi", selector.getQualifiedName().getName());
+		Assertions.assertEquals("hi", selector.qualifiedName().name());
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class ComplexSelectorParserTest {
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 		TypeSelector selector = (TypeSelector) parts[0];
-		Assertions.assertEquals("*", selector.getQualifiedName().getName());
+		Assertions.assertEquals("*", selector.qualifiedName().name());
 	}
 	
 	@Test
@@ -100,13 +100,13 @@ public class ComplexSelectorParserTest {
 			Assertions.assertEquals(1, parts.length);
 			Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 			TypeSelector selector = (TypeSelector) parts[0];
-			Assertions.assertEquals("hi", selector.getQualifiedName().getName());
+			Assertions.assertEquals("hi", selector.qualifiedName().name());
 		} {
 			ComplexSelectorPart[] parts = selectors[1].parts();
 			Assertions.assertEquals(1, parts.length);
 			Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 			TypeSelector selector = (TypeSelector) parts[0];
-			Assertions.assertEquals("bye", selector.getQualifiedName().getName());
+			Assertions.assertEquals("bye", selector.qualifiedName().name());
 		}
 	}
 	
@@ -122,7 +122,7 @@ public class ComplexSelectorParserTest {
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 		TypeSelector selector = (TypeSelector) parts[0];
-		Assertions.assertEquals("hi", selector.getQualifiedName().getName());
+		Assertions.assertEquals("hi", selector.qualifiedName().name());
 	}
 	
 	@Test
@@ -137,7 +137,7 @@ public class ComplexSelectorParserTest {
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
 		AttributeSelector selector = (AttributeSelector) parts[0];
-		Assertions.assertEquals("hi", selector.getComparisonValue());
+		Assertions.assertEquals("hi", selector.comparisonValue());
 	}
 	
 	@Test
@@ -152,7 +152,7 @@ public class ComplexSelectorParserTest {
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(IDSelector.class, parts[0]);
 		IDSelector selector = (IDSelector) parts[0];
-		Assertions.assertEquals("hi", selector.getId());
+		Assertions.assertEquals("hi", selector.id());
 	}
 
 	@Test
@@ -180,7 +180,7 @@ public class ComplexSelectorParserTest {
 		Assertions.assertEquals(1, parts.length);
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
 		AttributeSelector selector = (AttributeSelector) parts[0];
-		Assertions.assertEquals("hi", selector.getAttributeName().getName());
+		Assertions.assertEquals("hi", selector.attributeName().name());
 	}
 	
 	@Test
@@ -196,11 +196,11 @@ public class ComplexSelectorParserTest {
 
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
 		AttributeSelector selector = (AttributeSelector) parts[0];
-		Assertions.assertEquals("hi", selector.getComparisonValue());
+		Assertions.assertEquals("hi", selector.comparisonValue());
 
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[1]);
 		selector = (AttributeSelector) parts[1];
-		Assertions.assertEquals("bye", selector.getComparisonValue());
+		Assertions.assertEquals("bye", selector.comparisonValue());
 	}
 
 	@Test
@@ -217,11 +217,11 @@ public class ComplexSelectorParserTest {
 
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[0]);
 		AttributeSelector selector = (AttributeSelector) parts[0];
-		Assertions.assertEquals("hi", selector.getAttributeName().getName());
+		Assertions.assertEquals("hi", selector.attributeName().name());
 
 		Assertions.assertInstanceOf(AttributeSelector.class, parts[1]);
 		selector = (AttributeSelector) parts[1];
-		Assertions.assertEquals("bye", selector.getAttributeName().getName());
+		Assertions.assertEquals("bye", selector.attributeName().name());
 	}
 
 	@Test
@@ -237,13 +237,13 @@ public class ComplexSelectorParserTest {
 
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 		TypeSelector selector = (TypeSelector) parts[0];
-		Assertions.assertEquals("hi", selector.getQualifiedName().getName());
+		Assertions.assertEquals("hi", selector.qualifiedName().name());
 
 		Assertions.assertInstanceOf(ChildCombinator.class, parts[1]);
 
 		Assertions.assertInstanceOf(TypeSelector.class, parts[2]);
 		selector = (TypeSelector) parts[2];
-		Assertions.assertEquals("bye", selector.getQualifiedName().getName());
+		Assertions.assertEquals("bye", selector.qualifiedName().name());
 	}
 
 	@Test
@@ -259,13 +259,13 @@ public class ComplexSelectorParserTest {
 
 		Assertions.assertInstanceOf(TypeSelector.class, parts[0]);
 		TypeSelector selector = (TypeSelector) parts[0];
-		Assertions.assertEquals("hi", selector.getQualifiedName().getName());
+		Assertions.assertEquals("hi", selector.qualifiedName().name());
 
 		Assertions.assertInstanceOf(DescendantCombinator.class, parts[1]);
 
 		Assertions.assertInstanceOf(TypeSelector.class, parts[2]);
 		selector = (TypeSelector) parts[2];
-		Assertions.assertEquals("bye", selector.getQualifiedName().getName());
+		Assertions.assertEquals("bye", selector.qualifiedName().name());
 	}
 
 }

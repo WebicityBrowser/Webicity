@@ -32,7 +32,7 @@ public final class SizeParser {
 			return (context, isHorizontal) -> mathCalculation.evaluate(calculation -> calculation.calculate(context, isHorizontal));
 		}
 		if (value instanceof PercentageValue percentageValue) {
-			return (context, isHorizontal) -> context.relativeFont().getSize() * percentageValue.getValue() / 100;
+			return (context, isHorizontal) -> context.relativeFont().getSize() * percentageValue.value() / 100;
 		}
 		return parseNonPercent(value);
 	}
@@ -53,8 +53,8 @@ public final class SizeParser {
 	}
 
 	private static float translateAbsoluteValue(AbsoluteLengthValue lengthValue) {
-		float initialValue = lengthValue.getValue();
-		switch (lengthValue.getUnit()) {
+		float initialValue = lengthValue.value();
+		switch (lengthValue.unit()) {
 			case PX:
 				return initialValue;
 			case CM:
@@ -70,13 +70,13 @@ public final class SizeParser {
 			case PT:
 				return initialValue * 96 / 72;
 			default:
-				throw new UnsupportedOperationException("Unrecognized AbsoluteLengthUnit: " + lengthValue.getUnit());
+				throw new UnsupportedOperationException("Unrecognized AbsoluteLengthUnit: " + lengthValue.unit());
 		}
 	}
 
 	private static SizeCalculation translateRelativeValue(RelativeLengthValue lengthValue) {
-		float initialValue = lengthValue.getValue();
-		switch (lengthValue.getUnit()) {
+		float initialValue = lengthValue.value();
+		switch (lengthValue.unit()) {
 		case EM:
 			return (context, isHorizontal) -> context.relativeFont().getSize() * initialValue;
 		case EX:
@@ -107,7 +107,7 @@ public final class SizeParser {
 		case VMAX:
 			return (context, isHorizontal) -> Math.max(context.viewportSize().width(), context.viewportSize().height()) * initialValue / 100;
 		default:
-			throw new UnsupportedOperationException("Unrecognized RelativeLengthUnit: " + lengthValue.getUnit());
+			throw new UnsupportedOperationException("Unrecognized RelativeLengthUnit: " + lengthValue.unit());
 		}
 	}
 
@@ -116,7 +116,7 @@ public final class SizeParser {
 			context.parentSize().width() :
 			context.parentSize().height();
 		if (axisValue == RelativeDimension.UNBOUNDED) return RelativeDimension.UNBOUNDED;
-		return axisValue * percentageValue.getValue() / 100;
+		return axisValue * percentageValue.value() / 100;
 	}
 
 	private static float getCharacterAdvance(SizeCalculationContext context, char c, float fallback) {

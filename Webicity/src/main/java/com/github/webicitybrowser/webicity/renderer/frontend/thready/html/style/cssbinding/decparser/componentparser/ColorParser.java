@@ -13,7 +13,7 @@ public final class ColorParser {
 	}
 
 	private static ColorFormat createColorFrom(ColorValue value) {
-		return new RGBA8Color(value.getRed(), value.getGreen(), value.getBlue(), value.getAlpha());
+		return new RGBA8Color(value.red(), value.green(), value.blue(), value.alpha());
 	}
 
 }

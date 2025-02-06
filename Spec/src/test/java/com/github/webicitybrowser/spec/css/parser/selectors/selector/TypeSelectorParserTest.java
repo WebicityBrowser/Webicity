@@ -30,9 +30,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(nameToken.value()).thenReturn("name");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { nameToken });
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		QualifiedName name = selector.getQualifiedName();
-		Assertions.assertEquals(QualifiedName.DEFAULT_NAMESPACE, name.getNamespace());
-		Assertions.assertEquals("name", name.getName());
+		QualifiedName name = selector.qualifiedName();
+		Assertions.assertEquals(QualifiedName.DEFAULT_NAMESPACE, name.namespace());
+		Assertions.assertEquals("name", name.name());
 	}
 	
 	@Test
@@ -44,9 +44,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(nameToken.value()).thenReturn("name");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken, nameToken });
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		QualifiedName name = selector.getQualifiedName();
-		Assertions.assertEquals(QualifiedName.NO_NAMESPACE, name.getNamespace());
-		Assertions.assertEquals("name", name.getName());
+		QualifiedName name = selector.qualifiedName();
+		Assertions.assertEquals(QualifiedName.NO_NAMESPACE, name.namespace());
+		Assertions.assertEquals("name", name.name());
 	}
 	
 	@Test
@@ -60,9 +60,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(nameToken.value()).thenReturn("name");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { namespaceToken, delimToken, nameToken });
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		QualifiedName name = selector.getQualifiedName();
-		Assertions.assertEquals("namespace", name.getNamespace());
-		Assertions.assertEquals("name", name.getName());
+		QualifiedName name = selector.qualifiedName();
+		Assertions.assertEquals("namespace", name.namespace());
+		Assertions.assertEquals("name", name.name());
 	}
 	
 	@Test
@@ -76,9 +76,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(nameToken.value()).thenReturn("name");
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { namespaceToken, delimToken, nameToken });
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		QualifiedName name = selector.getQualifiedName();
-		Assertions.assertEquals(QualifiedName.ANY_NAMESPACE, name.getNamespace());
-		Assertions.assertEquals("name", name.getName());
+		QualifiedName name = selector.qualifiedName();
+		Assertions.assertEquals(QualifiedName.ANY_NAMESPACE, name.namespace());
+		Assertions.assertEquals("name", name.name());
 	}
 
 	@Test
@@ -88,9 +88,9 @@ public class TypeSelectorParserTest {
 		Mockito.when(delimToken.value()).thenReturn((int) '*');
 		TokenStream tokenStream = new TokenStreamImp(new Token[] { delimToken });
 		TypeSelector selector = Assertions.assertDoesNotThrow(() -> parser.parse(tokenStream));
-		QualifiedName name = selector.getQualifiedName();
-		Assertions.assertEquals(QualifiedName.DEFAULT_NAMESPACE, name.getNamespace());
-		Assertions.assertEquals("*", name.getName());
+		QualifiedName name = selector.qualifiedName();
+		Assertions.assertEquals(QualifiedName.DEFAULT_NAMESPACE, name.namespace());
+		Assertions.assertEquals("*", name.name());
 	}
 	
 }

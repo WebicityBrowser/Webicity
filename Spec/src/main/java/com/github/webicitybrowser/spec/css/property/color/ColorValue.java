@@ -4,12 +4,12 @@ import com.github.webicitybrowser.spec.css.property.CSSValue;
 
 public interface ColorValue extends CSSValue {
 
-	int getRed();
+	int red();
 
-	int getGreen();
+	int green();
 
-	int getBlue();
+	int blue();
 
-	int getAlpha();
+	int alpha();
 
 }

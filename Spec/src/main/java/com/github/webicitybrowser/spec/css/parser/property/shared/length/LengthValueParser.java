@@ -62,32 +62,11 @@ public class LengthValueParser implements PropertyValueParser<CSSValue> {
 		case "vb":
 		case "vmin":
 		case "vmax":
-			return PropertyValueParseResultImp.of(createRelativeLengthValue(token.value(), token.unit()), 1);
+			return PropertyValueParseResultImp.of(RelativeLengthValue.of(token.value(), token.unit()), 1);
 
 		default:
 			return PropertyValueParseResultImp.empty();
 		}		
-	}
-
-	private static RelativeLengthValue createRelativeLengthValue(Number value, String unit) {
-		return new RelativeLengthValue() {
-
-			@Override
-			public RelativeLengthUnit getUnit() {
-				return RelativeLengthUnit.valueOf(unit.toUpperCase());
-			}
-
-			@Override
-			public float getValue() {
-				return value.floatValue();
-			}
-
-			@Override
-			public String toString() {
-				return value + unit;
-			}
-
-		};
 	}
 	
 }

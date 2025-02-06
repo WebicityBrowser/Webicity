@@ -24,7 +24,7 @@ public class LineHeightValueParser implements PropertyValueParser<CSSValue>	 {
 		if (tokens[offset] instanceof IdentToken identToken && identToken.value().equals("normal")) {
 			return PropertyValueParseResultImp.of(new AutoValue(), 1);
 		} else if (tokens[offset] instanceof NumberToken numberToken) {
-			return PropertyValueParseResultImp.of((NumberValue) () -> numberToken.value(), 1);
+			return PropertyValueParseResultImp.of(new NumberValue(numberToken.value()), 1);
 		}
 
 		return lengthPercentageValueParser.parse(tokens, offset, 1);

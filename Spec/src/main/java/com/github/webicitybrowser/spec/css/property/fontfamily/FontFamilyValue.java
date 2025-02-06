@@ -2,10 +2,8 @@ package com.github.webicitybrowser.spec.css.property.fontfamily;
 
 import com.github.webicitybrowser.spec.css.property.CSSValue;
 
-public interface FontFamilyValue extends CSSValue {
+public record FontFamilyValue(FontFamilyEntry[] entries) implements CSSValue {
 
-	FontFamilyEntry[] getEntries();
-
-	interface FontFamilyEntry {}
+	public interface FontFamilyEntry {}
 
 }

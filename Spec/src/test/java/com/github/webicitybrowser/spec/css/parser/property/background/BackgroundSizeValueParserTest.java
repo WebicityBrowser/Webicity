@@ -51,7 +51,7 @@ public class BackgroundSizeValueParserTest {
 		RelativeBackgroundSizeValue relativeBackgroundSizeValue = (RelativeBackgroundSizeValue) result;
 		Assertions.assertInstanceOf(PercentageValue.class, relativeBackgroundSizeValue.sizeX());
 		PercentageValue sizeX = (PercentageValue) relativeBackgroundSizeValue.sizeX();
-		Assertions.assertEquals(50, sizeX.getValue());
+		Assertions.assertEquals(50, sizeX.value());
 		Assertions.assertInstanceOf(AutoValue.class, relativeBackgroundSizeValue.sizeY());
 	}
 

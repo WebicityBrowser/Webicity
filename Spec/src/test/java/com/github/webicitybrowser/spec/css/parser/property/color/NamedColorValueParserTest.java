@@ -31,10 +31,10 @@ public class NamedColorValueParserTest {
 		Assertions.assertEquals(1, result.getLength());
 
 		ColorValue colorValue = result.getResult().get();
-		Assertions.assertEquals(102, colorValue.getRed());
-		Assertions.assertEquals(51, colorValue.getGreen());
-		Assertions.assertEquals(153, colorValue.getBlue());
-		Assertions.assertEquals(255, colorValue.getAlpha());
+		Assertions.assertEquals(102, colorValue.red());
+		Assertions.assertEquals(51, colorValue.green());
+		Assertions.assertEquals(153, colorValue.blue());
+		Assertions.assertEquals(255, colorValue.alpha());
 	}
 
 	@Test

@@ -37,7 +37,7 @@ public class QualifiedNameParser {
 		}
 
 		if (!isBarToken(stream.peek())) {
-			return createQualifiedName(QualifiedName.DEFAULT_NAMESPACE, QualifiedName.ANY_NAME);
+			return QualifiedName.create(QualifiedName.DEFAULT_NAMESPACE, QualifiedName.ANY_NAME);
 		}
 		stream.read();
 		
@@ -61,15 +61,15 @@ public class QualifiedNameParser {
 			return parseSecondQualifiedPart(namespace, stream);
 		}
 
-		return createQualifiedName(namespace, elementName);
+		return QualifiedName.create(namespace, elementName);
 	}
 
 	private QualifiedName parseSecondQualifiedPart(String namespace, TokenStream stream) throws ParseFormatException {
 		TokenLike token = stream.read();
 		if (token instanceof IdentToken identToken) {
-			return createQualifiedName(namespace, identToken.value());
+			return QualifiedName.create(namespace, identToken.value());
 		} else if (isGlobToken(token)) {
-			return createQualifiedName(namespace, QualifiedName.ANY_NAME);
+			return QualifiedName.create(namespace, QualifiedName.ANY_NAME);
 		} else {
 			fail(stream);
 			return null;
@@ -90,20 +90,6 @@ public class QualifiedNameParser {
 	
 	private void fail(TokenStream stream) throws ParseFormatException {
 		throw new ParseFormatException("Invalid qualified name format", stream.position());
-	}
-	
-	private QualifiedName createQualifiedName(String namespace, String name) {
-		return new QualifiedName() {	
-			@Override
-			public String getNamespace() {
-				return namespace.toLowerCase();
-			}
-			
-			@Override
-			public String getName() {
-				return name.toLowerCase();
-			}
-		};
 	}
 	
 }

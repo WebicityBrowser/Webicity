@@ -45,7 +45,7 @@ public class BackgroundPositionValueParserTest {
 
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);
 		BackgroundPositionValue result = parseResult.getResult().get();
-		Assertions.assertEquals(50, ((PercentageValue) result.horizontalPosition().offset()).getValue());
+		Assertions.assertEquals(50, ((PercentageValue) result.horizontalPosition().offset()).value());
 		Assertions.assertEquals(BackgroundAxisReference.CENTER, result.verticalPosition().reference());
 	}
 
@@ -73,8 +73,8 @@ public class BackgroundPositionValueParserTest {
 
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);
 		BackgroundPositionValue result = parseResult.getResult().get();
-		Assertions.assertEquals(40, ((PercentageValue) result.horizontalPosition().offset()).getValue());
-		Assertions.assertEquals(60, ((PercentageValue) result.verticalPosition().offset()).getValue());
+		Assertions.assertEquals(40, ((PercentageValue) result.horizontalPosition().offset()).value());
+		Assertions.assertEquals(60, ((PercentageValue) result.verticalPosition().offset()).value());
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class BackgroundPositionValueParserTest {
 
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);
 		BackgroundPositionValue result = parseResult.getResult().get();
-		Assertions.assertEquals(40, ((PercentageValue) result.horizontalPosition().offset()).getValue());
+		Assertions.assertEquals(40, ((PercentageValue) result.horizontalPosition().offset()).value());
 		Assertions.assertEquals(BackgroundAxisReference.TOP, result.verticalPosition().reference());
 	}
 
@@ -104,9 +104,9 @@ public class BackgroundPositionValueParserTest {
 		PropertyValueParseResult<BackgroundPositionValue> parseResult = bgPositionValueParser.parse(tokens, 0, tokens.length);
 		BackgroundPositionValue result = parseResult.getResult().get();
 		Assertions.assertEquals(BackgroundAxisReference.RIGHT, result.horizontalPosition().reference());
-		Assertions.assertEquals(60, ((PercentageValue) result.horizontalPosition().offset()).getValue());
+		Assertions.assertEquals(60, ((PercentageValue) result.horizontalPosition().offset()).value());
 		Assertions.assertEquals(BackgroundAxisReference.TOP, result.verticalPosition().reference());
-		Assertions.assertEquals(40, ((PercentageValue) result.verticalPosition().offset()).getValue());
+		Assertions.assertEquals(40, ((PercentageValue) result.verticalPosition().offset()).value());
 	}
 
 }

@@ -30,7 +30,7 @@ public class AttributeSelectorParser implements SelectorParser {
 			opParameter = parseAttribValue(stream);
 		}
 		
-		return createAttributeSelector(attribName, operation, opParameter);
+		return new AttributeSelector(attribName, operation, opParameter);
 	}
 	
 	private AttributeSelectorOperation parseOperation(TokenStream stream) throws ParseFormatException {
@@ -85,25 +85,6 @@ public class AttributeSelectorParser implements SelectorParser {
 	
 	private void fail(TokenStream stream) throws ParseFormatException {
 		throw new ParseFormatException("Invalid attribute selector format", stream.position());
-	}
-	
-	private AttributeSelector createAttributeSelector(QualifiedName attrName, AttributeSelectorOperation operation, String comparison) {
-		return new AttributeSelector() {
-			@Override
-			public AttributeSelectorOperation getOperation() {
-				return operation;
-			}
-			
-			@Override
-			public String getComparisonValue() {
-				return comparison;
-			}
-			
-			@Override
-			public QualifiedName getAttributeName() {
-				return attrName;
-			}
-		};
 	}
 
 }

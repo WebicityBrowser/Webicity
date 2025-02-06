@@ -1,5 +1,5 @@
 package com.github.webicitybrowser.spec.css.selectors.combinator;
 
-public interface SubsequentSiblingCombinator extends Combinator {
+public record SubsequentSiblingCombinator() implements Combinator {
 
 }

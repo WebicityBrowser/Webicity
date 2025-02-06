@@ -24,9 +24,9 @@ public class CSSOMFontFamilyDeclarationParser implements CSSOMNamedDeclarationPa
 
 	@Override
 	public Directive[] translatePropertyValue(FontFamilyValue value) {
-		FontSource[] fontSources = new FontSource[value.getEntries().length];
-		for (int i = 0; i < value.getEntries().length; i++) {
-			fontSources[i] = translateFontFamilyEntry(value.getEntries()[i]);
+		FontSource[] fontSources = new FontSource[value.entries().length];
+		for (int i = 0; i < value.entries().length; i++) {
+			fontSources[i] = translateFontFamilyEntry(value.entries()[i]);
 		}
 
 		return new Directive[] { FontFamilyDirective.of(fontSources) };
@@ -40,7 +40,7 @@ public class CSSOMFontFamilyDeclarationParser implements CSSOMNamedDeclarationPa
 	private FontSource translateFontFamilyEntry(FontFamilyEntry fontFamilyEntry) {
 		if (fontFamilyEntry instanceof NamedFontFamilyEntry) {
 			NamedFontFamilyEntry namedFontFamilyEntry = (NamedFontFamilyEntry) fontFamilyEntry;
-			return new NamedFontSource(namedFontFamilyEntry.getName());
+			return new NamedFontSource(namedFontFamilyEntry.name());
 		} else {
 			throw new IllegalArgumentException("Unknown FontFamilyEntry: " + fontFamilyEntry);
 		}
